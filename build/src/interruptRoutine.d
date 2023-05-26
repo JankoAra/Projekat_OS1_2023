@@ -1,0 +1,15 @@
+build/src/interruptRoutine.o: src/interruptRoutine.cpp \
+ src/../lib/console.h src/../lib/hw.h src/../h/MemoryAllocator.hpp \
+ src/../h/helper.hpp src/../h/riscv.hpp src/../h/syscall_c.hpp
+
+src/../lib/console.h:
+
+src/../lib/hw.h:
+
+src/../h/MemoryAllocator.hpp:
+
+src/../h/helper.hpp:
+
+src/../h/riscv.hpp:
+
+src/../h/syscall_c.hpp:

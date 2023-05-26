@@ -1,0 +1,286 @@
+GAS LISTING /tmp/cc5NAfcu.s 			page 1
+
+
+   1              		.file	"syscall_c.cpp"
+   2              		.option pic
+   3              		.option norelax
+   4              		.text
+   5              	.Ltext0:
+   6              		.align	2
+   7              		.globl	_Z9mem_allocm
+   9              	_Z9mem_allocm:
+  10              	.LFB1:
+  11              		.file 1 "src/syscall_c.cpp"
+   1:src/syscall_c.cpp **** #include "../h/syscall_c.hpp"
+   2:src/syscall_c.cpp **** 
+   3:src/syscall_c.cpp **** inline void scall() {
+   4:src/syscall_c.cpp **** 	__asm__ volatile("ecall");
+   5:src/syscall_c.cpp **** }
+   6:src/syscall_c.cpp **** 
+   7:src/syscall_c.cpp **** void* mem_alloc(size_t size) {
+  12              		.loc 1 7 30
+  13              		.cfi_startproc
+  14              	.LVL0:
+  15 0000 130101FF 		addi	sp,sp,-16
+  16              		.cfi_def_cfa_offset 16
+  17 0004 23348100 		sd	s0,8(sp)
+  18              		.cfi_offset 8, -8
+  19 0008 13040101 		addi	s0,sp,16
+  20              		.cfi_def_cfa 8, 0
+   8:src/syscall_c.cpp **** 	size = size / MEM_BLOCK_SIZE + (size % MEM_BLOCK_SIZE ? 1 : 0);
+  21              		.loc 1 8 2
+  22              		.loc 1 8 14 is_stmt 0
+  23 000c 93576500 		srli	a5,a0,6
+  24              		.loc 1 8 39
+  25 0010 1375F503 		andi	a0,a0,63
+  26              	.LVL1:
+  27              		.loc 1 8 56
+  28 0014 63040500 		beqz	a0,.L2
+  29 0018 13051000 		li	a0,1
+  30              	.L2:
+  31              		.loc 1 8 7 discriminator 4
+  32 001c 3385A700 		add	a0,a5,a0
+  33              	.LVL2:
+   9:src/syscall_c.cpp **** 	__asm__ volatile("mv a1, %[size]": :[size] "r"(size));
+  34              		.loc 1 9 2 is_stmt 1 discriminator 4
+  35              		.loc 1 9 55 is_stmt 0 discriminator 4
+  36              	#APP
+  37              	# 9 "src/syscall_c.cpp" 1
+  10              		__asm__ volatile("li a0, 0x01");    //op code = 0x01
+  38              		mv a1, a0
+  39              	# 0 "" 2
+  40              		.loc 1 10 2 is_stmt 1 discriminator 4
+  41              		.loc 1 10 33 is_stmt 0 discriminator 4
+  42              	# 10 "src/syscall_c.cpp" 1
+  11              	
+  12:src/syscall_c.cpp **** 	scall();
+  43              		li a0, 0x01
+  44              	# 0 "" 2
+  45              		.loc 1 12 2 is_stmt 1 discriminator 4
+  46              	#NO_APP
+GAS LISTING /tmp/cc5NAfcu.s 			page 2
+
+
+  47              	.LBB6:
+  48              	.LBB7:
+   4:src/syscall_c.cpp **** }
+  49              		.loc 1 4 2 discriminator 4
+   4:src/syscall_c.cpp **** }
+  50              		.loc 1 4 27 is_stmt 0 discriminator 4
+  51              	#APP
+  52              	# 4 "src/syscall_c.cpp" 1
+  53              		ecall
+  54              	# 0 "" 2
+  55              	#NO_APP
+  56              	.LBE7:
+  57              	.LBE6:
+  13:src/syscall_c.cpp **** 
+  14:src/syscall_c.cpp **** 	void* ret;
+  58              		.loc 1 14 2 is_stmt 1 discriminator 4
+  15:src/syscall_c.cpp **** 	__asm__ volatile("mv %[ptr], a0":[ptr] "=r"(ret));
+  59              		.loc 1 15 2 discriminator 4
+  60              		.loc 1 15 51 is_stmt 0 discriminator 4
+  61              	#APP
+  62              	# 15 "src/syscall_c.cpp" 1
+  16              		return ret;
+  63              		mv a0, a0
+  64              	# 0 "" 2
+  65              	.LVL3:
+  66              		.loc 1 16 2 is_stmt 1 discriminator 4
+  17:src/syscall_c.cpp **** }
+  67              		.loc 1 17 1 is_stmt 0 discriminator 4
+  68              	#NO_APP
+  69 0030 03348100 		ld	s0,8(sp)
+  70              		.cfi_restore 8
+  71              		.cfi_def_cfa 2, 16
+  72 0034 13010101 		addi	sp,sp,16
+  73              		.cfi_def_cfa_offset 0
+  74 0038 67800000 		jr	ra
+  75              		.cfi_endproc
+  76              	.LFE1:
+  78              		.align	2
+  79              		.globl	_Z8mem_freePv
+  81              	_Z8mem_freePv:
+  82              	.LFB2:
+  18:src/syscall_c.cpp **** 
+  19:src/syscall_c.cpp **** int mem_free(void* ptr) {
+  83              		.loc 1 19 25 is_stmt 1
+  84              		.cfi_startproc
+  85              	.LVL4:
+  86 003c 130101FF 		addi	sp,sp,-16
+  87              		.cfi_def_cfa_offset 16
+  88 0040 23348100 		sd	s0,8(sp)
+  89              		.cfi_offset 8, -8
+  90 0044 13040101 		addi	s0,sp,16
+  91              		.cfi_def_cfa 8, 0
+  20:src/syscall_c.cpp **** 	__asm__ volatile("mv a1, %[ptr]": :[ptr] "r"(ptr));
+  92              		.loc 1 20 2
+  93              		.loc 1 20 52 is_stmt 0
+  94              	#APP
+  95              	# 20 "src/syscall_c.cpp" 1
+GAS LISTING /tmp/cc5NAfcu.s 			page 3
+
+
+  21              		__asm__ volatile("li a0, 0x02");    //op code = 0x02
+  96              		mv a1, a0
+  97              	# 0 "" 2
+  98              		.loc 1 21 2 is_stmt 1
+  99              		.loc 1 21 33 is_stmt 0
+ 100              	# 21 "src/syscall_c.cpp" 1
+  22              	
+  23:src/syscall_c.cpp **** 	scall();
+ 101              		li a0, 0x02
+ 102              	# 0 "" 2
+ 103              		.loc 1 23 2 is_stmt 1
+ 104              	#NO_APP
+ 105              	.LBB8:
+ 106              	.LBB9:
+   4:src/syscall_c.cpp **** }
+ 107              		.loc 1 4 2
+   4:src/syscall_c.cpp **** }
+ 108              		.loc 1 4 27 is_stmt 0
+ 109              	#APP
+ 110              	# 4 "src/syscall_c.cpp" 1
+ 111              		ecall
+ 112              	# 0 "" 2
+ 113              	#NO_APP
+ 114              	.LBE9:
+ 115              	.LBE8:
+  24:src/syscall_c.cpp **** 
+  25:src/syscall_c.cpp **** 	int status;
+ 116              		.loc 1 25 2 is_stmt 1
+  26:src/syscall_c.cpp **** 	__asm__ volatile("mv %[status], a0":[status] "=r"(status));
+ 117              		.loc 1 26 2
+ 118              		.loc 1 26 60 is_stmt 0
+ 119              	#APP
+ 120              	# 26 "src/syscall_c.cpp" 1
+  27              		return status;
+ 121              		mv a0, a0
+ 122              	# 0 "" 2
+ 123              	.LVL5:
+ 124              		.loc 1 27 2 is_stmt 1
+  28:src/syscall_c.cpp **** }...
+ 125              		.loc 1 28 1 is_stmt 0
+ 126              	#NO_APP
+ 127 0058 1B050500 		sext.w	a0,a0
+ 128 005c 03348100 		ld	s0,8(sp)
+ 129              		.cfi_restore 8
+ 130              		.cfi_def_cfa 2, 16
+ 131 0060 13010101 		addi	sp,sp,16
+ 132              		.cfi_def_cfa_offset 0
+ 133 0064 67800000 		jr	ra
+ 134              		.cfi_endproc
+ 135              	.LFE2:
+ 137              	.Letext0:
+ 138              		.file 2 "src/../h/../lib/hw.h"
+ 139              		.file 3 "src/../h/syscall_c.hpp"
+GAS LISTING /tmp/cc5NAfcu.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 syscall_c.cpp
+     /tmp/cc5NAfcu.s:9      .text:0000000000000000 _Z9mem_allocm
+     /tmp/cc5NAfcu.s:13     .text:0000000000000000 .L0 
+     /tmp/cc5NAfcu.s:15     .text:0000000000000000 .L0 
+     /tmp/cc5NAfcu.s:16     .text:0000000000000004 .L0 
+     /tmp/cc5NAfcu.s:18     .text:0000000000000008 .L0 
+     /tmp/cc5NAfcu.s:20     .text:000000000000000c .L0 
+     /tmp/cc5NAfcu.s:22     .text:000000000000000c .L0 
+     /tmp/cc5NAfcu.s:23     .text:000000000000000c .L0 
+     /tmp/cc5NAfcu.s:25     .text:0000000000000010 .L0 
+     /tmp/cc5NAfcu.s:28     .text:0000000000000014 .L0 
+     /tmp/cc5NAfcu.s:32     .text:000000000000001c .L0 
+     /tmp/cc5NAfcu.s:35     .text:0000000000000020 .L0 
+   src/syscall_c.cpp:9      .text:0000000000000020 .L0 
+     /tmp/cc5NAfcu.s:41     .text:0000000000000024 .L0 
+   src/syscall_c.cpp:10     .text:0000000000000024 .L0 
+     /tmp/cc5NAfcu.s:49     .text:0000000000000028 .L0 
+     /tmp/cc5NAfcu.s:50     .text:0000000000000028 .L0 
+   src/syscall_c.cpp:4      .text:0000000000000028 .L0 
+     /tmp/cc5NAfcu.s:59     .text:000000000000002c .L0 
+     /tmp/cc5NAfcu.s:60     .text:000000000000002c .L0 
+   src/syscall_c.cpp:15     .text:000000000000002c .L0 
+     /tmp/cc5NAfcu.s:67     .text:0000000000000030 .L0 
+     /tmp/cc5NAfcu.s:69     .text:0000000000000030 .L0 
+     /tmp/cc5NAfcu.s:70     .text:0000000000000034 .L0 
+     /tmp/cc5NAfcu.s:71     .text:0000000000000034 .L0 
+     /tmp/cc5NAfcu.s:73     .text:0000000000000038 .L0 
+     /tmp/cc5NAfcu.s:75     .text:000000000000003c .L0 
+     /tmp/cc5NAfcu.s:81     .text:000000000000003c _Z8mem_freePv
+     /tmp/cc5NAfcu.s:84     .text:000000000000003c .L0 
+     /tmp/cc5NAfcu.s:86     .text:000000000000003c .L0 
+     /tmp/cc5NAfcu.s:87     .text:0000000000000040 .L0 
+     /tmp/cc5NAfcu.s:89     .text:0000000000000044 .L0 
+     /tmp/cc5NAfcu.s:91     .text:0000000000000048 .L0 
+     /tmp/cc5NAfcu.s:93     .text:0000000000000048 .L0 
+   src/syscall_c.cpp:20     .text:0000000000000048 .L0 
+     /tmp/cc5NAfcu.s:99     .text:000000000000004c .L0 
+   src/syscall_c.cpp:21     .text:000000000000004c .L0 
+     /tmp/cc5NAfcu.s:107    .text:0000000000000050 .L0 
+     /tmp/cc5NAfcu.s:108    .text:0000000000000050 .L0 
+   src/syscall_c.cpp:4      .text:0000000000000050 .L0 
+     /tmp/cc5NAfcu.s:117    .text:0000000000000054 .L0 
+     /tmp/cc5NAfcu.s:118    .text:0000000000000054 .L0 
+   src/syscall_c.cpp:26     .text:0000000000000054 .L0 
+     /tmp/cc5NAfcu.s:125    .text:0000000000000058 .L0 
+     /tmp/cc5NAfcu.s:127    .text:0000000000000058 .L0 
+     /tmp/cc5NAfcu.s:129    .text:0000000000000060 .L0 
+     /tmp/cc5NAfcu.s:130    .text:0000000000000060 .L0 
+     /tmp/cc5NAfcu.s:132    .text:0000000000000064 .L0 
+     /tmp/cc5NAfcu.s:134    .text:0000000000000068 .L0 
+     /tmp/cc5NAfcu.s:140    .text:0000000000000068 .L0 
+     /tmp/cc5NAfcu.s:30     .text:000000000000001c .L2
+     /tmp/cc5NAfcu.s:356    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/cc5NAfcu.s:738    .debug_str:0000000000000145 .LASF23
+     /tmp/cc5NAfcu.s:726    .debug_str:00000000000000db .LASF24
+     /tmp/cc5NAfcu.s:706    .debug_str:0000000000000048 .LASF25
+GAS LISTING /tmp/cc5NAfcu.s 			page 5
+
+
+     /tmp/cc5NAfcu.s:5      .text:0000000000000000 .Ltext0
+     /tmp/cc5NAfcu.s:137    .text:0000000000000068 .Letext0
+     /tmp/cc5NAfcu.s:692    .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/cc5NAfcu.s:694    .debug_str:0000000000000000 .LASF0
+     /tmp/cc5NAfcu.s:736    .debug_str:0000000000000132 .LASF1
+     /tmp/cc5NAfcu.s:722    .debug_str:00000000000000b7 .LASF2
+     /tmp/cc5NAfcu.s:714    .debug_str:0000000000000095 .LASF4
+     /tmp/cc5NAfcu.s:708    .debug_str:0000000000000066 .LASF3
+     /tmp/cc5NAfcu.s:700    .debug_str:000000000000002a .LASF5
+     /tmp/cc5NAfcu.s:712    .debug_str:0000000000000082 .LASF6
+     /tmp/cc5NAfcu.s:734    .debug_str:000000000000011f .LASF7
+     /tmp/cc5NAfcu.s:744    .debug_str:000000000000021d .LASF8
+     /tmp/cc5NAfcu.s:696    .debug_str:000000000000000d .LASF9
+     /tmp/cc5NAfcu.s:698    .debug_str:000000000000001b .LASF10
+     /tmp/cc5NAfcu.s:740    .debug_str:0000000000000209 .LASF11
+     /tmp/cc5NAfcu.s:702    .debug_str:0000000000000031 .LASF12
+     /tmp/cc5NAfcu.s:748    .debug_str:0000000000000237 .LASF13
+     /tmp/cc5NAfcu.s:720    .debug_str:00000000000000ab .LASF14
+     /tmp/cc5NAfcu.s:730    .debug_str:00000000000000fb .LASF15
+     /tmp/cc5NAfcu.s:724    .debug_str:00000000000000c5 .LASF16
+     /tmp/cc5NAfcu.s:718    .debug_str:00000000000000a2 .LASF18
+     /tmp/cc5NAfcu.s:728    .debug_str:00000000000000ed .LASF20
+     /tmp/cc5NAfcu.s:82     .text:000000000000003c .LFB2
+     /tmp/cc5NAfcu.s:135    .text:0000000000000068 .LFE2
+     /tmp/cc5NAfcu.s:647    .debug_loc:0000000000000000 .LLST1
+     /tmp/cc5NAfcu.s:704    .debug_str:0000000000000041 .LASF17
+     /tmp/cc5NAfcu.s:105    .text:0000000000000050 .LBB8
+     /tmp/cc5NAfcu.s:115    .text:0000000000000054 .LBE8
+     /tmp/cc5NAfcu.s:746    .debug_str:000000000000022d .LASF19
+     /tmp/cc5NAfcu.s:732    .debug_str:0000000000000111 .LASF21
+     /tmp/cc5NAfcu.s:10     .text:0000000000000000 .LFB1
+     /tmp/cc5NAfcu.s:76     .text:000000000000003c .LFE1
+     /tmp/cc5NAfcu.s:742    .debug_str:0000000000000218 .LASF22
+     /tmp/cc5NAfcu.s:661    .debug_loc:0000000000000039 .LLST0
+     /tmp/cc5NAfcu.s:47     .text:0000000000000028 .LBB6
+     /tmp/cc5NAfcu.s:57     .text:000000000000002c .LBE6
+     /tmp/cc5NAfcu.s:716    .debug_str:000000000000009c .LASF26
+     /tmp/cc5NAfcu.s:710    .debug_str:0000000000000078 .LASF27
+     /tmp/cc5NAfcu.s:85     .text:000000000000003c .LVL4
+     /tmp/cc5NAfcu.s:123    .text:0000000000000058 .LVL5
+     /tmp/cc5NAfcu.s:14     .text:0000000000000000 .LVL0
+     /tmp/cc5NAfcu.s:26     .text:0000000000000014 .LVL1
+     /tmp/cc5NAfcu.s:33     .text:0000000000000020 .LVL2
+     /tmp/cc5NAfcu.s:65     .text:0000000000000030 .LVL3
+     /tmp/cc5NAfcu.s:141    .debug_info:0000000000000000 .Ldebug_info0
+
+NO UNDEFINED SYMBOLS
