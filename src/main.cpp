@@ -58,7 +58,7 @@ int main() {
 //	}
 //	printInteger(i);
 
-	List<uint64> lista;
+	List<uint64> lista;;;
 	uint64 num = 10;
 	lista.addFirst(&num);
 	println("");
