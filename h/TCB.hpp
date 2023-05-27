@@ -22,11 +22,13 @@ public:
 
 	void setBlocked(bool block) { this->blocked = block; }
 
-	uint64& getTimeSlice() { return timeSlice; }
+	uint64 getTimeSlice() { return timeSlice; }
 
 	void setTimeSlice(uint64 value) { timeSlice = value; }
 
 	static void threadSleep(time_t sleepTime);
+
+	static void threadJoin(TCB* handle);
 
 	static void yield();
 
@@ -51,17 +53,18 @@ private:
 		Scheduler::put(this);
 	}
 
+	//kontekst procesora za datu nit
 	struct Context {
 		uint64 sp;
 		uint64 ra;
 	} context;
 
-	Body threadFunction;
-	uint64* stack;
-	void* args;
-	uint64 timeSlice;
-	bool finished;
-	bool blocked;
+	Body threadFunction;	//funkcija koja se izvrsava
+	uint64* stack;			//najniza adresa steka; stek raste ka nizim adresama, pokazuje na poslednju zauzetu
+	void* args;				//argumenti poziva funkcije
+	uint64 timeSlice;		//vremenski odsecak dodeljen datoj niti
+	bool finished;			//da li je nit zavrsila izvrsavanje funkcije
+	bool blocked;			//da li je nit blokirana
 
 	static void contextSwitch(Context* oldContext, Context* newContext);	//implementacija u asm
 };

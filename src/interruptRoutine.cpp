@@ -8,6 +8,7 @@
 #include "../h/helper.hpp"
 #include "../h/Riscv.hpp"
 #include "../h/syscall_c.hpp"
+#include "../h/TCB.hpp"
 
 extern "C" void interruptRoutine() {
 	uint64 scause = Riscv::r_scause();
@@ -34,6 +35,21 @@ extern "C" void interruptRoutine() {
 				break;
 			case 0x11:
 				//thread_create
+				thread_t* handle;
+				void (* function)(void*);
+				void* args;
+				uint64* sp;
+				__asm__ volatile("mv %[sp], a4":[sp]"=r"(sp));
+				__asm__ volatile("mv %[args], a3":[args]"=r"(args));
+				__asm__ volatile("mv %[f], a2":[f]"=r"(function));
+				__asm__ volatile("mv %[handle], a1":[handle]"=r"(handle));
+				*handle = TCB::createThread(function, args, sp);
+				if(*handle!=nullptr){
+					__asm__ volatile("li a0, 0");
+				}
+				else{
+					__asm__ volatile("li a0, -1");
+				}
 				break;
 			case 0x12:
 				//thread_exit
@@ -66,7 +82,12 @@ extern "C" void interruptRoutine() {
 				//putc
 				break;
 			default:
-				println("Nepostojeci op code");
+				printString("Nepostojeci op code: ");
+				printInteger(opCode);
+				printString("\nscause: ");
+				printInteger(scause);
+				printString("\nsepc: ");
+				printInteger(sepc);
 				break;
 		}
 		//sepc pokazuje na ecall instrukciju, treba preci na sledecu instrukciju
@@ -79,6 +100,10 @@ extern "C" void interruptRoutine() {
 		Riscv::mc_sip(Riscv::SIP_SSIP);
 	} else {
 		println("Greska u prekidnoj rutini");
+		printString("scause: ");
+		printInteger(scause);
+		printString("\nsepc: ");
+		printInteger(sepc);
 	}
 }
 

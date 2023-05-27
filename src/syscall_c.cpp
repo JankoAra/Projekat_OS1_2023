@@ -1,5 +1,6 @@
 #include "../h/syscall_c.hpp"
 #include "../h/Riscv.hpp"
+#include "../h/MemoryAllocator.hpp"
 
 inline void scall() {
 	__asm__ volatile("ecall");
@@ -30,7 +31,18 @@ int mem_free(void* ptr) {
 }
 
 int thread_create(thread_t* handle, void (* start_routine)(void*), void* arg) {
-	return 0;
+	uint64* stack = (uint64*)mem_alloc(DEFAULT_STACK_SIZE);
+	__asm__ volatile("mv a1, %[handle]": :[handle] "r"(handle));
+	__asm__ volatile("mv a2, %[function]": :[function] "r"(start_routine));
+	__asm__ volatile("mv a3, %[arg]": :[arg] "r"(arg));
+	__asm__ volatile("mv a4, %[sp]": :[sp] "r"(stack));
+	Riscv::loadOpCode(0x11);
+
+	scall();
+
+	int status;
+	__asm__ volatile("mv %[status], a0":[status] "=r"(status));
+	return status;
 }
 
 int thread_exit() {
