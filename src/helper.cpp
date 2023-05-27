@@ -1,6 +1,6 @@
 #include "../h/helper.hpp"
 #include "../lib/console.h"
-#include "../h/riscv.hpp"
+#include "../h/Riscv.hpp"
 
 void printString(char const *string) {
     uint64 oldMask = Riscv::r_sstatus() & Riscv::SSTATUS_SIE;

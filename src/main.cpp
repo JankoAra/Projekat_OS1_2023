@@ -1,7 +1,7 @@
 #include "../lib/console.h"
 #include "../lib/hw.h"
 #include "../h/helper.hpp"
-#include "../h/riscv.hpp"
+#include "../h/Riscv.hpp"
 #include "../h/syscall_c.hpp"
 #include "../h/List.hpp"
 //#include "../h/MemoryAllocator.hpp"
@@ -48,22 +48,22 @@ int main() {
 	Riscv::w_stvec((uint64)&interruptHandler);
 	//omoguci prekide
 	//Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
-//	uint64 i = 0;
-//	for (; i < 10000; i++) {
-//		void* ptr = mem_alloc(0xffffff);
-//		if (ptr == nullptr) break;
-//		if (mem_free(ptr) == -1) {
-//			i = 11111111;
-//		}
-//	}
-//	printInteger(i);
+	uint64 i = 0;
+	for (; i < 10000; i++) {
+		void* ptr = mem_alloc(0xffff);
+		if (ptr == nullptr) break;
+		if (mem_free(ptr) == -1) {
+			i = 11111111;
+		}
+	}
+	printInteger(i);
 
-	List<uint64> lista;;;
-	uint64 num = 10;
-	lista.addFirst(&num);
-	println("");
-	printInteger(*lista.peekFirst());
-	println("");
+//	List<uint64> lista;
+//	uint64 num = 10;
+//	lista.addFirst(&num);
+//	println("");
+//	printInteger(*lista.peekFirst());
+//	println("");
 	/*
     //omoguci prekide
     Riscv::ms_sstatus(Riscv::SSTATUS_SIE);

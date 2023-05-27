@@ -6,7 +6,7 @@
 #include "../lib/hw.h"
 #include "../h/MemoryAllocator.hpp"
 #include "../h/helper.hpp"
-#include "../h/riscv.hpp"
+#include "../h/Riscv.hpp"
 #include "../h/syscall_c.hpp"
 
 extern "C" void interruptRoutine() {

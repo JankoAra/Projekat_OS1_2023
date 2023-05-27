@@ -3,7 +3,7 @@
 //
 
 #include "../h/TCB.hpp"
-#include "../h/riscv.hpp"
+#include "../h/Riscv.hpp"
 
 TCB* TCB::running = nullptr;
 uint64 TCB::runningTimeSlice = 0;

@@ -70,6 +70,9 @@ public:
 	//write sstatus
 	static void w_sstatus(uint64 sstatus);
 
+	//upisuje kod sistemskog poziva u registar a0
+	static void loadOpCode(uint64 opCode);
+
 };
 
 inline uint64 Riscv::r_scause() {
@@ -136,6 +139,10 @@ inline uint64 Riscv::r_sstatus() {
 
 inline void Riscv::w_sstatus(uint64 sstatus) {
 	__asm__ volatile("csrw sstatus, %[sstatus]": :[sstatus] "r"(sstatus));
+}
+
+inline void Riscv::loadOpCode(uint64 opCode) {
+	__asm__ volatile("mv a0, %[code]": :[code] "r"(opCode));
 }
 
 #endif //PROJEKAT2023_RISCV_HPP
