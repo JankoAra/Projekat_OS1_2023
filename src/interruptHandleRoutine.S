@@ -1,0 +1,4 @@
+.global interruptHandleRoutine
+interruptHandleRoutine:
+
+ret

@@ -9,7 +9,9 @@ TCB* TCB::running = nullptr;
 uint64 TCB::runningTimeSlice = 0;
 
 TCB* TCB::createThread(TCB::Body function, void* args, uint64* stack) {
-	return new TCB(function, args, stack);
+	TCB* newThread = new TCB(function, args, stack);
+	Scheduler::put(newThread);
+	return newThread;
 }
 
 void TCB::dispatch() {
@@ -27,7 +29,9 @@ void TCB::yield() {
 	Riscv::popRegisters();
 }
 
-void TCB::functionWrapper(void*) {
-
+void TCB::wrapper() {
+	running->threadFunction(running->args);
+	running->finished = true;
+	TCB::yield();
 }
 

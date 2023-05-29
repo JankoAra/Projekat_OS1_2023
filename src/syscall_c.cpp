@@ -31,12 +31,20 @@ int mem_free(void* ptr) {
 }
 
 int thread_create(thread_t* handle, void (* start_routine)(void*), void* arg) {
-	uint64* stack = (uint64*)mem_alloc(DEFAULT_STACK_SIZE);
-	__asm__ volatile("mv a1, %[handle]": :[handle] "r"(handle));
-	__asm__ volatile("mv a2, %[function]": :[function] "r"(start_routine));
-	__asm__ volatile("mv a3, %[arg]": :[arg] "r"(arg));
+//	__asm__ volatile("mv s1, a1");
+//	__asm__ volatile("mv s2, a2");
+//	__asm__ volatile("mv s3, a3");
+	uint64* stack = (start_routine != nullptr ? (uint64*)MemoryAllocator::kmalloc(DEFAULT_STACK_SIZE) : nullptr);
 	__asm__ volatile("mv a4, %[sp]": :[sp] "r"(stack));
-	Riscv::loadOpCode(0x11);
+//	__asm__ volatile("mv a3, s3");
+//	__asm__ volatile("mv a2, s2");
+//	__asm__ volatile("mv a1, s1");
+	__asm__ volatile("mv a3, %[arg]": :[arg] "r"(arg));
+	__asm__ volatile("mv a2, %[function]": :[function] "r"(start_routine));
+	__asm__ volatile("mv a1, %[handle]": :[handle] "r"(handle));
+
+	__asm__ volatile("li a0, 0x11");
+	//Riscv::loadOpCode(0x11);
 
 	scall();
 

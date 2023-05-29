@@ -9,45 +9,60 @@
 #include "../h/Riscv.hpp"
 #include "../h/syscall_c.hpp"
 #include "../h/TCB.hpp"
+#pragma GCC optimize("O0")
 
 extern "C" void interruptRoutine() {
 	uint64 scause = Riscv::r_scause();
 	uint64 sepc = Riscv::r_sepc();
+	uint64 a0 ;
+	uint64 a1, a2, a3, a4, a5;
+	__asm__ volatile("mv %[ax], a0":[ax] "=r"(a0): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("mv %[ax], a1":[ax] "=r"(a1): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("mv %[ax], a2":[ax] "=r"(a2): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("mv %[ax], a3":[ax] "=r"(a3): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("mv %[ax], a4":[ax] "=r"(a4): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("mv %[ax], a5":[ax] "=r"(a5): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 
 	if (scause == 0x09 || scause == 0x08) {
 		//prekid zbog poziva ecall
-		uint64 opCode;
-		__asm__ volatile("mv %[op], a0":[op] "=r"(opCode));
+		uint64 opCode = a0;
+		//__asm__ volatile("mv %[op], a0":[op] "=r"(opCode));
 
 		switch (opCode) {
 			case 0x01:
 				//mem_alloc
 				size_t size;
-				__asm__ volatile("mv %[size], a1":[size] "=r"(size));
+				size = (size_t)a1;
+				//__asm__ volatile("mv %[size], a1":[size] "=r"(size));
 				size = size * MEM_BLOCK_SIZE;
 				MemoryAllocator::kmalloc(size);
 				break;
 			case 0x02:
 				//mem_free
 				void* ptr;
-				__asm__ volatile("mv %[ptr], a1" :[ptr]"=r"(ptr));
+				ptr = (void*)a1;
+				//__asm__ volatile("mv %[ptr], a1" :[ptr]"=r"(ptr));
 				MemoryAllocator::kfree(ptr);
 				break;
 			case 0x11:
 				//thread_create
 				thread_t* handle;
+				handle = (thread_t*)a1;
 				void (* function)(void*);
+				function = (void (*)(void*))a2;
 				void* args;
+				args = (void*)a3;
 				uint64* sp;
-				__asm__ volatile("mv %[sp], a4":[sp]"=r"(sp));
-				__asm__ volatile("mv %[args], a3":[args]"=r"(args));
-				__asm__ volatile("mv %[f], a2":[f]"=r"(function));
-				__asm__ volatile("mv %[handle], a1":[handle]"=r"(handle));
+				sp = (uint64*)a4;
+//				__asm__ volatile("mv %[handle], a1":[handle]"=r"(handle));
+//				__asm__ volatile("mv %[f], a2":[f]"=r"(function));
+//				__asm__ volatile("mv %[args], a3":[args]"=r"(args));
+//				__asm__ volatile("mv %[sp], a4":[sp]"=r"(sp));
+
 				*handle = TCB::createThread(function, args, sp);
-				if(*handle!=nullptr){
+				if (*handle != nullptr) {
 					__asm__ volatile("li a0, 0");
-				}
-				else{
+				} else {
 					__asm__ volatile("li a0, -1");
 				}
 				break;
@@ -99,7 +114,7 @@ extern "C" void interruptRoutine() {
 		//prekid od tajmera
 		Riscv::mc_sip(Riscv::SIP_SSIP);
 	} else {
-		println("Greska u prekidnoj rutini");
+		println("\nGreska u prekidnoj rutini");
 		printString("scause: ");
 		printInteger(scause);
 		printString("\nsepc: ");

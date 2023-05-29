@@ -1,5 +1,6 @@
 
 .extern interruptRoutine  #deklaracija imena interruptRoutine definisanog negde drugde
+.extern interruptHandleRoutine
 .align 4    #poravnanje adrese na 4 bajta, poslednja dva bita adrese su 00
 .global interruptHandler #izvozi globalno ime interruptHandler
 interruptHandler:
@@ -13,6 +14,7 @@ interruptHandler:
     addi fp, sp, 0 #frame pointer
 
     call interruptRoutine
+    #call interruptHandleRoutine
 
     sd x10, 10 * 8(fp) #da se ne pregazi a0
 

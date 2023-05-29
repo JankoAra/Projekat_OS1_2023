@@ -34,39 +34,35 @@ public:
 
 	static void dispatch();
 
-	static void functionWrapper(void*);
+	static void wrapper();
 
 	static TCB* running;
 	static uint64 runningTimeSlice;
 
 private:
-	TCB(Body function, void* args, uint64* stack) {
-		this->threadFunction = function;
-		this->args = args;
-		this->stack = stack;
-		this->timeSlice = DEFAULT_TIME_SLICE;
-		this->finished = false;
-		this->blocked = false;
-		this->context.ra = (uint64)&functionWrapper;
-		this->context.sp = (uint64)&stack[DEFAULT_STACK_SIZE];
-
-		Scheduler::put(this);
-	}
-
 	//kontekst procesora za datu nit
 	struct Context {
 		uint64 sp;
 		uint64 ra;
 	} context;
+	Body threadFunction;    //funkcija koja se izvrsava
+	uint64* stack;            //najniza adresa steka; stek raste ka nizim adresama, pokazuje na poslednju zauzetu
+	void* args;                //argumenti poziva funkcije
+	uint64 timeSlice;        //vremenski odsecak dodeljen datoj niti
+	bool finished;            //da li je nit zavrsila izvrsavanje funkcije
+	bool blocked;            //da li je nit blokirana
 
-	Body threadFunction;	//funkcija koja se izvrsava
-	uint64* stack;			//najniza adresa steka; stek raste ka nizim adresama, pokazuje na poslednju zauzetu
-	void* args;				//argumenti poziva funkcije
-	uint64 timeSlice;		//vremenski odsecak dodeljen datoj niti
-	bool finished;			//da li je nit zavrsila izvrsavanje funkcije
-	bool blocked;			//da li je nit blokirana
+	TCB(Body function, void* args, uint64* stack) : threadFunction(function), stack(stack), args(args),
+													timeSlice(DEFAULT_TIME_SLICE), finished(false), blocked(false) {
+		//formiranje pocetnog konteksta; specijalni uslovi za main funkciju kojoj se pocetni kontekst automatski formira
+		uint64 startRa = threadFunction != nullptr ? (uint64)&wrapper : 0;
+		uint64 startSp = stack != nullptr ? (uint64)&stack[DEFAULT_STACK_SIZE] : 0;
+		this->context.ra = startRa;
+		this->context.sp = startSp;
+	}
 
-	static void contextSwitch(Context* oldContext, Context* newContext);	//implementacija u asm
+
+	static void contextSwitch(Context* oldContext, Context* newContext);    //implementacija u asm
 };
 
 
