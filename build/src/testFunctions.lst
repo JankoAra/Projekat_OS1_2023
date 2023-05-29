@@ -1,0 +1,387 @@
+GAS LISTING /tmp/cczXbKkh.s 			page 1
+
+
+   1              		.file	"testFunctions.cpp"
+   2              		.option pic
+   3              		.option norelax
+   4              		.text
+   5              	.Ltext0:
+   6              		.section	.rodata.str1.8,"aMS",@progbits,1
+   7              		.align	3
+   8              	.LC0:
+   9 0000 0A416C6C 		.string	"\nAllocation failed for index "
+   9      6F636174 
+   9      696F6E20 
+   9      6661696C 
+   9      65642066 
+  10 001e 0000     		.align	3
+  11              	.LC1:
+  12 0020 0A446561 		.string	"\nDeallocation failed for index "
+  12      6C6C6F63 
+  12      6174696F 
+  12      6E206661 
+  12      696C6564 
+  13              		.text
+  14              		.align	2
+  15              		.globl	_Z10testMemoryv
+  17              	_Z10testMemoryv:
+  18              	.LFB3:
+  19              		.file 1 "src/testFunctions.cpp"
+   1:src/testFunctions.cpp **** //
+   2:src/testFunctions.cpp **** // Created by os on 5/29/23.
+   3:src/testFunctions.cpp **** //
+   4:src/testFunctions.cpp **** #include "../h/MemoryAllocator.hpp"
+   5:src/testFunctions.cpp **** #include "../h/helper.hpp"
+   6:src/testFunctions.cpp **** 
+   7:src/testFunctions.cpp **** void testMemory() {
+  20              		.loc 1 7 19
+  21              		.cfi_startproc
+  22 0000 13010181 		addi	sp,sp,-2032
+  23              		.cfi_def_cfa_offset 2032
+  24 0004 2334117E 		sd	ra,2024(sp)
+  25 0008 2330817E 		sd	s0,2016(sp)
+  26 000c 233C917C 		sd	s1,2008(sp)
+  27              		.cfi_offset 1, -8
+  28              		.cfi_offset 8, -16
+  29              		.cfi_offset 9, -24
+  30 0010 1304017F 		addi	s0,sp,2032
+  31              		.cfi_def_cfa 8, 0
+  32 0014 13010182 		addi	sp,sp,-2016
+   8:src/testFunctions.cpp **** 	const uint64 NumAllocations = 501;	//zasto nece za preko 500????
+  33              		.loc 1 8 2
+  34              	.LVL0:
+   9:src/testFunctions.cpp **** 	const uint64 AllocationSize = 16;
+  35              		.loc 1 9 2
+  10:src/testFunctions.cpp **** 
+  11:src/testFunctions.cpp **** 	// Allocate and initialize pointers
+  12:src/testFunctions.cpp **** 	int* allocations[NumAllocations];
+  36              		.loc 1 12 2
+  13:src/testFunctions.cpp **** 	for (uint64 i = 0; i < NumAllocations; ++i)
+  37              		.loc 1 13 2
+GAS LISTING /tmp/cczXbKkh.s 			page 2
+
+
+  38              	.LBB2:
+  39              		.loc 1 13 14 is_stmt 0
+  40 0018 13070000 		li	a4,0
+  41              	.LVL1:
+  42              	.L3:
+  43              		.loc 1 13 23 is_stmt 1 discriminator 3
+  44 001c 9307401F 		li	a5,500
+  45 0020 63E2E702 		bgtu	a4,a5,.L9
+  14:src/testFunctions.cpp **** 		allocations[i] = nullptr;
+  46              		.loc 1 14 3 discriminator 2
+  47              		.loc 1 14 18 is_stmt 0 discriminator 2
+  48 0024 B7F7FFFF 		li	a5,-4096
+  49 0028 93163700 		slli	a3,a4,3
+  50 002c 130604FE 		addi	a2,s0,-32
+  51 0030 B307F600 		add	a5,a2,a5
+  52 0034 B387D700 		add	a5,a5,a3
+  53 0038 23BC0704 		sd	zero,88(a5)
+  13:src/testFunctions.cpp **** 	for (uint64 i = 0; i < NumAllocations; ++i)
+  54              		.loc 1 13 2 is_stmt 1 discriminator 2
+  55 003c 13071700 		addi	a4,a4,1
+  56              	.LVL2:
+  57 0040 6FF0DFFD 		j	.L3
+  58              	.L9:
+  59              	.LBE2:
+  60              	.LBB3:
+  15:src/testFunctions.cpp **** 
+  16:src/testFunctions.cpp **** 	// Allocate memory
+  17:src/testFunctions.cpp **** 	for (uint64 i = 0; i < NumAllocations; ++i) {
+  61              		.loc 1 17 14 is_stmt 0
+  62 0044 93040000 		li	s1,0
+  63              	.LVL3:
+  64              	.L2:
+  65              		.loc 1 17 23 is_stmt 1 discriminator 1
+  66 0048 9307401F 		li	a5,500
+  67 004c 63E89704 		bgtu	s1,a5,.L4
+  18:src/testFunctions.cpp **** 		allocations[i] = static_cast<int*>(MemoryAllocator::kmalloc(AllocationSize));
+  68              		.loc 1 18 3
+  69              		.loc 1 18 62 is_stmt 0
+  70 0050 13050001 		li	a0,16
+  71 0054 97000000 		call	_ZN15MemoryAllocator7kmallocEm@plt
+  71      E7800000 
+  72              	.LVL4:
+  73              		.loc 1 18 18
+  74 005c 37F7FFFF 		li	a4,-4096
+  75 0060 93973400 		slli	a5,s1,3
+  76 0064 930604FE 		addi	a3,s0,-32
+  77 0068 3387E600 		add	a4,a3,a4
+  78 006c B307F700 		add	a5,a4,a5
+  79 0070 23BCA704 		sd	a0,88(a5)
+  19:src/testFunctions.cpp **** 		if (allocations[i] == nullptr) {
+  80              		.loc 1 19 3 is_stmt 1
+  81 0074 63060500 		beqz	a0,.L11
+  17:src/testFunctions.cpp **** 		allocations[i] = static_cast<int*>(MemoryAllocator::kmalloc(AllocationSize));
+  82              		.loc 1 17 2 discriminator 2
+  83 0078 93841400 		addi	s1,s1,1
+  84              	.LVL5:
+  85 007c 6FF0DFFC 		j	.L2
+GAS LISTING /tmp/cczXbKkh.s 			page 3
+
+
+  86              	.L11:
+  20:src/testFunctions.cpp **** 			printString("\nAllocation failed for index ");
+  87              		.loc 1 20 4
+  88              		.loc 1 20 15 is_stmt 0
+  89 0080 17050000 		lla	a0,.LC0
+  89      13050500 
+  90 0088 97000000 		call	_Z11printStringPKc@plt
+  90      E7800000 
+  91              	.LVL6:
+  21:src/testFunctions.cpp **** 			printInteger(i);
+  92              		.loc 1 21 4 is_stmt 1
+  93              		.loc 1 21 16 is_stmt 0
+  94 0090 13850400 		mv	a0,s1
+  95 0094 97000000 		call	_Z12printIntegerm@plt
+  95      E7800000 
+  96              	.LVL7:
+  97              	.L4:
+  17:src/testFunctions.cpp **** 		allocations[i] = static_cast<int*>(MemoryAllocator::kmalloc(AllocationSize));
+  98              		.loc 1 17 14 discriminator 1
+  99 009c 93040000 		li	s1,0
+ 100              	.LVL8:
+ 101 00a0 6F004002 		j	.L8
+ 102              	.LVL9:
+ 103              	.L12:
+ 104              	.LBE3:
+ 105              	.LBB4:
+  22:src/testFunctions.cpp **** 			break;
+  23:src/testFunctions.cpp **** 		}
+  24:src/testFunctions.cpp **** 	}
+  25:src/testFunctions.cpp **** 
+  26:src/testFunctions.cpp **** 	// Free memory
+  27:src/testFunctions.cpp **** 	for (uint64 i = 0; i < NumAllocations; ++i) {
+  28:src/testFunctions.cpp **** 		if (allocations[i] != nullptr) {
+  29:src/testFunctions.cpp **** 			if (MemoryAllocator::kfree(allocations[i]) != 0) {
+  30:src/testFunctions.cpp **** 				printString("\nDeallocation failed for index ");
+ 106              		.loc 1 30 5 is_stmt 1
+ 107              		.loc 1 30 16 is_stmt 0
+ 108 00a4 17050000 		lla	a0,.LC1
+ 108      13050500 
+ 109 00ac 97000000 		call	_Z11printStringPKc@plt
+ 109      E7800000 
+ 110              	.LVL10:
+  31:src/testFunctions.cpp **** 				printInteger(i);
+ 111              		.loc 1 31 5 is_stmt 1
+ 112              		.loc 1 31 17 is_stmt 0
+ 113 00b4 13850400 		mv	a0,s1
+ 114 00b8 97000000 		call	_Z12printIntegerm@plt
+ 114      E7800000 
+ 115              	.LVL11:
+ 116              	.L7:
+  27:src/testFunctions.cpp **** 		if (allocations[i] != nullptr) {
+ 117              		.loc 1 27 2 is_stmt 1 discriminator 2
+ 118 00c0 93841400 		addi	s1,s1,1
+ 119              	.LVL12:
+ 120              	.L8:
+  27:src/testFunctions.cpp **** 		if (allocations[i] != nullptr) {
+ 121              		.loc 1 27 23 discriminator 1
+GAS LISTING /tmp/cczXbKkh.s 			page 4
+
+
+ 122 00c4 9307401F 		li	a5,500
+ 123 00c8 63E89702 		bgtu	s1,a5,.L1
+  28:src/testFunctions.cpp **** 			if (MemoryAllocator::kfree(allocations[i]) != 0) {
+ 124              		.loc 1 28 3
+  28:src/testFunctions.cpp **** 			if (MemoryAllocator::kfree(allocations[i]) != 0) {
+ 125              		.loc 1 28 20 is_stmt 0
+ 126 00cc 37F7FFFF 		li	a4,-4096
+ 127 00d0 93973400 		slli	a5,s1,3
+ 128 00d4 930604FE 		addi	a3,s0,-32
+ 129 00d8 3387E600 		add	a4,a3,a4
+ 130 00dc B307F700 		add	a5,a4,a5
+ 131 00e0 03B58705 		ld	a0,88(a5)
+  28:src/testFunctions.cpp **** 			if (MemoryAllocator::kfree(allocations[i]) != 0) {
+ 132              		.loc 1 28 3
+ 133 00e4 E30E05FC 		beqz	a0,.L7
+  29:src/testFunctions.cpp **** 				printString("\nDeallocation failed for index ");
+ 134              		.loc 1 29 4 is_stmt 1
+  29:src/testFunctions.cpp **** 				printString("\nDeallocation failed for index ");
+ 135              		.loc 1 29 30 is_stmt 0
+ 136 00e8 97000000 		call	_ZN15MemoryAllocator5kfreeEPv@plt
+ 136      E7800000 
+ 137              	.LVL13:
+  29:src/testFunctions.cpp **** 				printString("\nDeallocation failed for index ");
+ 138              		.loc 1 29 4
+ 139 00f0 E30805FC 		beqz	a0,.L7
+ 140 00f4 6FF01FFB 		j	.L12
+ 141              	.L1:
+ 142              	.LBE4:
+  32:src/testFunctions.cpp **** 			}
+  33:src/testFunctions.cpp **** 		}
+  34:src/testFunctions.cpp **** 	}
+  35:src/testFunctions.cpp **** }...
+ 143              		.loc 1 35 1
+ 144 00f8 1301017E 		addi	sp,sp,2016
+ 145              		.cfi_def_cfa 2, 2032
+ 146 00fc 8330817E 		ld	ra,2024(sp)
+ 147              		.cfi_restore 1
+ 148 0100 0334017E 		ld	s0,2016(sp)
+ 149              		.cfi_restore 8
+ 150 0104 8334817D 		ld	s1,2008(sp)
+ 151              		.cfi_restore 9
+ 152              	.LVL14:
+ 153 0108 1301017F 		addi	sp,sp,2032
+ 154              		.cfi_def_cfa_offset 0
+ 155 010c 67800000 		jr	ra
+ 156              		.cfi_endproc
+ 157              	.LFE3:
+ 159              	.Letext0:
+ 160              		.file 2 "src/../h/../lib/hw.h"
+ 161              		.file 3 "src/../h/MemoryAllocator.hpp"
+ 162              		.file 4 "src/../h/helper.hpp"
+GAS LISTING /tmp/cczXbKkh.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 testFunctions.cpp
+     /tmp/cczXbKkh.s:17     .text:0000000000000000 _Z10testMemoryv
+     /tmp/cczXbKkh.s:21     .text:0000000000000000 .L0 
+     /tmp/cczXbKkh.s:22     .text:0000000000000000 .L0 
+     /tmp/cczXbKkh.s:23     .text:0000000000000004 .L0 
+     /tmp/cczXbKkh.s:27     .text:0000000000000010 .L0 
+     /tmp/cczXbKkh.s:28     .text:0000000000000010 .L0 
+     /tmp/cczXbKkh.s:29     .text:0000000000000010 .L0 
+     /tmp/cczXbKkh.s:31     .text:0000000000000014 .L0 
+     /tmp/cczXbKkh.s:35     .text:0000000000000018 .L0 
+     /tmp/cczXbKkh.s:36     .text:0000000000000018 .L0 
+     /tmp/cczXbKkh.s:37     .text:0000000000000018 .L0 
+     /tmp/cczXbKkh.s:39     .text:0000000000000018 .L0 
+     /tmp/cczXbKkh.s:40     .text:0000000000000018 .L0 
+     /tmp/cczXbKkh.s:44     .text:000000000000001c .L0 
+     /tmp/cczXbKkh.s:47     .text:0000000000000024 .L0 
+     /tmp/cczXbKkh.s:48     .text:0000000000000024 .L0 
+     /tmp/cczXbKkh.s:55     .text:000000000000003c .L0 
+     /tmp/cczXbKkh.s:62     .text:0000000000000044 .L0 
+     /tmp/cczXbKkh.s:66     .text:0000000000000048 .L0 
+     /tmp/cczXbKkh.s:69     .text:0000000000000050 .L0 
+     /tmp/cczXbKkh.s:70     .text:0000000000000050 .L0 
+     /tmp/cczXbKkh.s:74     .text:000000000000005c .L0 
+     /tmp/cczXbKkh.s:81     .text:0000000000000074 .L0 
+     /tmp/cczXbKkh.s:83     .text:0000000000000078 .L0 
+     /tmp/cczXbKkh.s:88     .text:0000000000000080 .L0 
+     /tmp/cczXbKkh.s:89     .text:0000000000000080 .L0 
+     /tmp/cczXbKkh.s:93     .text:0000000000000090 .L0 
+     /tmp/cczXbKkh.s:94     .text:0000000000000090 .L0 
+     /tmp/cczXbKkh.s:99     .text:000000000000009c .L0 
+     /tmp/cczXbKkh.s:107    .text:00000000000000a4 .L0 
+     /tmp/cczXbKkh.s:108    .text:00000000000000a4 .L0 
+     /tmp/cczXbKkh.s:112    .text:00000000000000b4 .L0 
+     /tmp/cczXbKkh.s:113    .text:00000000000000b4 .L0 
+     /tmp/cczXbKkh.s:118    .text:00000000000000c0 .L0 
+     /tmp/cczXbKkh.s:122    .text:00000000000000c4 .L0 
+     /tmp/cczXbKkh.s:125    .text:00000000000000cc .L0 
+     /tmp/cczXbKkh.s:126    .text:00000000000000cc .L0 
+     /tmp/cczXbKkh.s:133    .text:00000000000000e4 .L0 
+     /tmp/cczXbKkh.s:135    .text:00000000000000e8 .L0 
+     /tmp/cczXbKkh.s:136    .text:00000000000000e8 .L0 
+     /tmp/cczXbKkh.s:139    .text:00000000000000f0 .L0 
+     /tmp/cczXbKkh.s:144    .text:00000000000000f8 .L0 
+     /tmp/cczXbKkh.s:145    .text:00000000000000fc .L0 
+     /tmp/cczXbKkh.s:147    .text:0000000000000100 .L0 
+     /tmp/cczXbKkh.s:149    .text:0000000000000104 .L0 
+     /tmp/cczXbKkh.s:151    .text:0000000000000108 .L0 
+     /tmp/cczXbKkh.s:154    .text:000000000000010c .L0 
+     /tmp/cczXbKkh.s:156    .text:0000000000000110 .L0 
+     /tmp/cczXbKkh.s:163    .text:0000000000000110 .L0 
+     /tmp/cczXbKkh.s:8      .rodata.str1.8:0000000000000000 .LC0
+     /tmp/cczXbKkh.s:89     .text:0000000000000080 .L0 
+     /tmp/cczXbKkh.s:11     .rodata.str1.8:0000000000000020 .LC1
+     /tmp/cczXbKkh.s:108    .text:00000000000000a4 .L0 
+     /tmp/cczXbKkh.s:58     .text:0000000000000044 .L9
+     /tmp/cczXbKkh.s:42     .text:000000000000001c .L3
+GAS LISTING /tmp/cczXbKkh.s 			page 6
+
+
+     /tmp/cczXbKkh.s:97     .text:000000000000009c .L4
+     /tmp/cczXbKkh.s:86     .text:0000000000000080 .L11
+     /tmp/cczXbKkh.s:64     .text:0000000000000048 .L2
+     /tmp/cczXbKkh.s:120    .text:00000000000000c4 .L8
+     /tmp/cczXbKkh.s:141    .text:00000000000000f8 .L1
+     /tmp/cczXbKkh.s:116    .text:00000000000000c0 .L7
+     /tmp/cczXbKkh.s:103    .text:00000000000000a4 .L12
+     /tmp/cczXbKkh.s:594    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/cczXbKkh.s:1124   .debug_str:000000000000013d .LASF37
+     /tmp/cczXbKkh.s:1096   .debug_str:0000000000000055 .LASF38
+     /tmp/cczXbKkh.s:1152   .debug_str:00000000000002d9 .LASF39
+     /tmp/cczXbKkh.s:5      .text:0000000000000000 .Ltext0
+     /tmp/cczXbKkh.s:159    .text:0000000000000110 .Letext0
+     /tmp/cczXbKkh.s:1078   .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/cczXbKkh.s:1130   .debug_str:0000000000000229 .LASF0
+     /tmp/cczXbKkh.s:1116   .debug_str:00000000000000f8 .LASF1
+     /tmp/cczXbKkh.s:1110   .debug_str:00000000000000cc .LASF2
+     /tmp/cczXbKkh.s:1092   .debug_str:0000000000000049 .LASF4
+     /tmp/cczXbKkh.s:1114   .debug_str:00000000000000e6 .LASF3
+     /tmp/cczXbKkh.s:1084   .debug_str:0000000000000023 .LASF5
+     /tmp/cczXbKkh.s:1080   .debug_str:0000000000000000 .LASF6
+     /tmp/cczXbKkh.s:1102   .debug_str:0000000000000087 .LASF7
+     /tmp/cczXbKkh.s:1142   .debug_str:0000000000000289 .LASF8
+     /tmp/cczXbKkh.s:1090   .debug_str:000000000000003b .LASF9
+     /tmp/cczXbKkh.s:1170   .debug_str:000000000000037d .LASF10
+     /tmp/cczXbKkh.s:1106   .debug_str:00000000000000aa .LASF11
+     /tmp/cczXbKkh.s:1158   .debug_str:0000000000000336 .LASF12
+     /tmp/cczXbKkh.s:1146   .debug_str:00000000000002af .LASF13
+     /tmp/cczXbKkh.s:1118   .debug_str:000000000000010b .LASF14
+     /tmp/cczXbKkh.s:1098   .debug_str:000000000000006b .LASF15
+     /tmp/cczXbKkh.s:1144   .debug_str:0000000000000299 .LASF16
+     /tmp/cczXbKkh.s:1082   .debug_str:0000000000000013 .LASF40
+     /tmp/cczXbKkh.s:1150   .debug_str:00000000000002ca .LASF20
+     /tmp/cczXbKkh.s:1086   .debug_str:000000000000002a .LASF17
+     /tmp/cczXbKkh.s:1166   .debug_str:000000000000036c .LASF18
+     /tmp/cczXbKkh.s:1162   .debug_str:0000000000000358 .LASF19
+     /tmp/cczXbKkh.s:1128   .debug_str:000000000000021a .LASF21
+     /tmp/cczXbKkh.s:1120   .debug_str:0000000000000117 .LASF22
+     /tmp/cczXbKkh.s:1134   .debug_str:0000000000000242 .LASF24
+     /tmp/cczXbKkh.s:1100   .debug_str:0000000000000081 .LASF23
+     /tmp/cczXbKkh.s:1122   .debug_str:000000000000011f .LASF25
+     /tmp/cczXbKkh.s:1126   .debug_str:0000000000000201 .LASF41
+     /tmp/cczXbKkh.s:1132   .debug_str:0000000000000236 .LASF26
+     /tmp/cczXbKkh.s:1088   .debug_str:000000000000002f .LASF27
+     /tmp/cczXbKkh.s:1112   .debug_str:00000000000000da .LASF28
+     /tmp/cczXbKkh.s:1156   .debug_str:000000000000032c .LASF42
+     /tmp/cczXbKkh.s:1154   .debug_str:00000000000002f7 .LASF43
+     /tmp/cczXbKkh.s:1094   .debug_str:0000000000000050 .LASF29
+     /tmp/cczXbKkh.s:1148   .debug_str:00000000000002bf .LASF44
+     /tmp/cczXbKkh.s:1104   .debug_str:000000000000009a .LASF45
+     /tmp/cczXbKkh.s:18     .text:0000000000000000 .LFB3
+     /tmp/cczXbKkh.s:157    .text:0000000000000110 .LFE3
+     /tmp/cczXbKkh.s:1138   .debug_str:000000000000026d .LASF30
+     /tmp/cczXbKkh.s:1164   .debug_str:000000000000035d .LASF31
+     /tmp/cczXbKkh.s:1136   .debug_str:0000000000000261 .LASF32
+     /tmp/cczXbKkh.s:38     .text:0000000000000018 .LBB2
+     /tmp/cczXbKkh.s:59     .text:0000000000000044 .LBE2
+GAS LISTING /tmp/cczXbKkh.s 			page 7
+
+
+     /tmp/cczXbKkh.s:1039   .debug_loc:0000000000000000 .LLST0
+     /tmp/cczXbKkh.s:60     .text:0000000000000044 .LBB3
+     /tmp/cczXbKkh.s:104    .text:00000000000000a4 .LBE3
+     /tmp/cczXbKkh.s:1051   .debug_loc:0000000000000037 .LLST1
+     /tmp/cczXbKkh.s:72     .text:000000000000005c .LVL4
+     /tmp/cczXbKkh.s:91     .text:0000000000000090 .LVL6
+     /tmp/cczXbKkh.s:96     .text:000000000000009c .LVL7
+     /tmp/cczXbKkh.s:105    .text:00000000000000a4 .LBB4
+     /tmp/cczXbKkh.s:142    .text:00000000000000f8 .LBE4
+     /tmp/cczXbKkh.s:1058   .debug_loc:000000000000005a .LLST2
+     /tmp/cczXbKkh.s:110    .text:00000000000000b4 .LVL10
+     /tmp/cczXbKkh.s:115    .text:00000000000000c0 .LVL11
+     /tmp/cczXbKkh.s:137    .text:00000000000000f0 .LVL13
+     /tmp/cczXbKkh.s:1108   .debug_str:00000000000000b9 .LASF33
+     /tmp/cczXbKkh.s:1168   .debug_str:0000000000000371 .LASF35
+     /tmp/cczXbKkh.s:1160   .debug_str:0000000000000346 .LASF34
+     /tmp/cczXbKkh.s:1140   .debug_str:000000000000027c .LASF36
+     /tmp/cczXbKkh.s:34     .text:0000000000000018 .LVL0
+     /tmp/cczXbKkh.s:41     .text:000000000000001c .LVL1
+     /tmp/cczXbKkh.s:63     .text:0000000000000048 .LVL3
+     /tmp/cczXbKkh.s:100    .text:00000000000000a0 .LVL8
+     /tmp/cczXbKkh.s:102    .text:00000000000000a4 .LVL9
+     /tmp/cczXbKkh.s:152    .text:0000000000000108 .LVL14
+     /tmp/cczXbKkh.s:164    .debug_info:0000000000000000 .Ldebug_info0
+
+UNDEFINED SYMBOLS
+_ZN15MemoryAllocator7kmallocEm
+_Z11printStringPKc
+_Z12printIntegerm
+_ZN15MemoryAllocator5kfreeEPv

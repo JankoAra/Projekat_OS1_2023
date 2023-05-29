@@ -12,6 +12,8 @@
 
 extern "C" void interruptHandler();
 
+void testMemory();
+
 
 
 //uint64 temp;
@@ -30,11 +32,12 @@ extern "C" void interruptHandler();
 //	__asm__ volatile("mv ra, %[fAddress]": : [fAddress] "r"(&f));
 //}
 
-void nit1f(void*){
+void nit1f(void*) {
 	println("usao u nit 1");
 	TCB::dispatch();
 	println("opet u niti 1");
 }
+
 int main() {
 	//zabrani prekide
 	Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
@@ -44,15 +47,7 @@ int main() {
 	Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
 
 	//testiranje alociranja memorije
-//	uint64 i = 0;
-//	for (; i < 10000; i++) {
-//		void* ptr = mem_alloc(0xffff);
-//		if (ptr == nullptr) break;
-//		if (mem_free(ptr) == -1) {
-//			i = 11111111;
-//		}
-//	}
-//	printInteger(i);
+	//testMemory();
 
 	//testiranje liste
 //	List<uint64> lista;
@@ -63,11 +58,14 @@ int main() {
 //	println("");
 
 	//testiranje kreiranja niti
-	thread_t glavnaNit;
-	thread_t nit1;
-	thread_create(&glavnaNit, nullptr, nullptr);
-	TCB::running = glavnaNit;
-	thread_create(&nit1, nit1f, nullptr);
-	println("");
+//	thread_t glavnaNit;
+//	thread_t nit1;
+//	thread_create(&glavnaNit, nullptr, nullptr);
+//	TCB::running = glavnaNit;
+//	thread_create(&nit1, nit1f, nullptr);
+//	while(!nit1->isFinished()){
+//		glavnaNit->dispatch();
+//	}
+//	println("");
 	return 0;
 }

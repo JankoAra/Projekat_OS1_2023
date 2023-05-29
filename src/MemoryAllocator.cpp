@@ -3,6 +3,7 @@
 //
 
 #include "../h/MemoryAllocator.hpp"
+#include "../h/helper.hpp"
 
 bool MemoryAllocator::initialized = false;
 MemoryAllocator::FreeMemSegment* MemoryAllocator::freeMemHead = nullptr;
@@ -16,7 +17,7 @@ void* MemoryAllocator::kmalloc(size_t size) {
 		freeMemHead = (FreeMemSegment*)HEAP_START_ADDR;
 		freeMemHead->next = nullptr;
 		freeMemHead->prev = nullptr;
-		freeMemHead->size = (char*)HEAP_END_ADDR - (char*)HEAP_START_ADDR;
+		freeMemHead->size = (char*)HEAP_END_ADDR - (char*)HEAP_START_ADDR - sizeof(FreeMemSegment);
 		usedMemHead = nullptr;
 
 		initialized = true;
@@ -97,7 +98,11 @@ int MemoryAllocator::kfree(void* ptr) {
 
 int MemoryAllocator::tryToJoin(MemoryAllocator::FreeMemSegment* current) {
 	if (!current) return 0;
-	if (current->next && (char*)current + current->size == (char*)(current->next)) {
+	bool nextExists = current->next != nullptr;
+	char* nextAddr = (char*)current + current->size;
+	char* cnext = (char*)current->next;
+	bool nextIsConnected = (nextAddr == cnext);
+	if (nextExists && nextIsConnected) {
 		current->size += current->next->size;
 		current->next = current->next->next;
 		if (current->next) current->next->prev = current;
