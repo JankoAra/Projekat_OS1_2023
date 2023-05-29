@@ -9,24 +9,28 @@
 #include "../h/Riscv.hpp"
 #include "../h/syscall_c.hpp"
 #include "../h/TCB.hpp"
+
 #pragma GCC optimize("O0")
 
 extern "C" void interruptRoutine() {
-	uint64 scause = Riscv::r_scause();
-	uint64 sepc = Riscv::r_sepc();
-	uint64 a0 ;
-	uint64 a1, a2, a3, a4, a5;
+	//uint64 scause = Riscv::r_scause();
+	//uint64 sepc = Riscv::r_sepc();
+	uint64 scause, sepc;
+	__asm__ volatile("csrr %[scause], scause":[scause] "=r"(scause): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("csrr %[sepc], sepc":[sepc] "=r"(sepc): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	uint64 a0, a1, a2, a3, a4, a5, a6, a7;
 	__asm__ volatile("mv %[ax], a0":[ax] "=r"(a0): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	__asm__ volatile("mv %[ax], a1":[ax] "=r"(a1): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	__asm__ volatile("mv %[ax], a2":[ax] "=r"(a2): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	__asm__ volatile("mv %[ax], a3":[ax] "=r"(a3): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	__asm__ volatile("mv %[ax], a4":[ax] "=r"(a4): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	__asm__ volatile("mv %[ax], a5":[ax] "=r"(a5): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("mv %[ax], a6":[ax] "=r"(a6): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("mv %[ax], a7":[ax] "=r"(a7): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 
 	if (scause == 0x09 || scause == 0x08) {
 		//prekid zbog poziva ecall
 		uint64 opCode = a0;
-		//__asm__ volatile("mv %[op], a0":[op] "=r"(opCode));
 
 		switch (opCode) {
 			case 0x01:
@@ -97,7 +101,7 @@ extern "C" void interruptRoutine() {
 				//putc
 				break;
 			default:
-				printString("Nepostojeci op code: ");
+				printString("\nNepostojeci op code: ");
 				printInteger(opCode);
 				printString("\nscause: ");
 				printInteger(scause);
@@ -106,7 +110,11 @@ extern "C" void interruptRoutine() {
 				break;
 		}
 		//sepc pokazuje na ecall instrukciju, treba preci na sledecu instrukciju
-		Riscv::w_sepc(sepc + 4);
+		//sepc += 4;
+		__asm__ volatile("addi %[dst], %[src], 0x4":[dst]"=r"(sepc):[src]"r"(
+				sepc):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+		__asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+		//Riscv::w_sepc(sepc + 4);
 	} else if (scause == (1UL << 63 | 9)) {
 		//spoljasnji hardverski prekid
 		console_handler();

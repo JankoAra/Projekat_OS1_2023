@@ -3,28 +3,16 @@
 #include "../h/helper.hpp"
 #include "../h/Riscv.hpp"
 #include "../h/syscall_c.hpp"
+#include "../h/syscall_cpp.hpp"
 #include "../h/List.hpp"
 //#include "../h/MemoryAllocator.hpp"
 #include "../h/TCB.hpp"
 
+//#pragma GCC optimize("O0")
+
 extern "C" void interruptHandler();
 
-//override globalnog new
-void* operator new(size_t size) {
-	return mem_alloc(size);
-}
 
-void* operator new[](size_t size) {
-	return mem_alloc(size);
-}
-
-void operator delete(void* ptr)noexcept {
-mem_free(ptr);
-}
-
-void operator delete[](void* ptr)noexcept {
-mem_free(ptr);
-}
 
 //uint64 temp;
 //

@@ -9,7 +9,7 @@ inline void scall() {
 void* mem_alloc(size_t size) {
 	//size je u bajtovima, pretvara se u blokove
 	size = size / MEM_BLOCK_SIZE + (size % MEM_BLOCK_SIZE ? 1 : 0);
-	__asm__ volatile("mv a1, %[size]": :[size] "r"(size));
+	__asm__ volatile("mv a1, %[size]": :[size] "r"(size):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	Riscv::loadOpCode(0x01);
 
 	scall();
@@ -20,7 +20,7 @@ void* mem_alloc(size_t size) {
 }
 
 int mem_free(void* ptr) {
-	__asm__ volatile("mv a1, %[ptr]": :[ptr] "r"(ptr));
+	__asm__ volatile("mv a1, %[ptr]": :[ptr] "r"(ptr):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	Riscv::loadOpCode(0x02);
 
 	scall();
@@ -35,13 +35,13 @@ int thread_create(thread_t* handle, void (* start_routine)(void*), void* arg) {
 //	__asm__ volatile("mv s2, a2");
 //	__asm__ volatile("mv s3, a3");
 	uint64* stack = (start_routine != nullptr ? (uint64*)MemoryAllocator::kmalloc(DEFAULT_STACK_SIZE) : nullptr);
-	__asm__ volatile("mv a4, %[sp]": :[sp] "r"(stack));
+	__asm__ volatile("mv a4, %[sp]": :[sp] "r"(stack):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 //	__asm__ volatile("mv a3, s3");
 //	__asm__ volatile("mv a2, s2");
 //	__asm__ volatile("mv a1, s1");
-	__asm__ volatile("mv a3, %[arg]": :[arg] "r"(arg));
-	__asm__ volatile("mv a2, %[function]": :[function] "r"(start_routine));
-	__asm__ volatile("mv a1, %[handle]": :[handle] "r"(handle));
+	__asm__ volatile("mv a3, %[arg]": :[arg] "r"(arg):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("mv a2, %[function]": :[function] "r"(start_routine):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("mv a1, %[handle]": :[handle] "r"(handle):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 
 	__asm__ volatile("li a0, 0x11");
 	//Riscv::loadOpCode(0x11);
