@@ -6,7 +6,7 @@
 #define PROJEKAT2023_TCB_HPP
 
 #include "../lib/hw.h"
-#include "../h/Scheduler.hpp"
+//#include "../h/Scheduler.hpp"
 
 class TCB {
 public:

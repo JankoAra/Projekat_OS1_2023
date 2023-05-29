@@ -24,7 +24,7 @@ void* MemoryAllocator::kmalloc(size_t size) {
 	}
 
 	//alokacija uvek zaokruzena na blokove
-	size += sizeof(UsedMemSegment);
+	//size += sizeof(UsedMemSegment); ;prebaceno u mem_alloc
 	size_t blocks = size / MEM_BLOCK_SIZE + (size % MEM_BLOCK_SIZE ? 1 : 0);
 	size = blocks * MEM_BLOCK_SIZE;
 

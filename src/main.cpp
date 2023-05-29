@@ -48,24 +48,28 @@ int main() {
 
 	//testiranje alociranja memorije
 	//testMemory();
+//	uint64* ptr = new uint64;
+//	*ptr = 6;
+//	printInteger(*ptr);
 
 	//testiranje liste
-//	List<uint64> lista;
+//	List<uint64>* lista = new List<uint64>();
 //	uint64 num = 10;
-//	lista.addFirst(&num);
+//	lista->addFirst(&num);
 //	println("");
-//	printInteger(*lista.peekFirst());
+//	printInteger(*(lista->peekFirst()));
+//	delete lista;
 //	println("");
 
 	//testiranje kreiranja niti
-//	thread_t glavnaNit;
-//	thread_t nit1;
-//	thread_create(&glavnaNit, nullptr, nullptr);
-//	TCB::running = glavnaNit;
-//	thread_create(&nit1, nit1f, nullptr);
-//	while(!nit1->isFinished()){
-//		glavnaNit->dispatch();
-//	}
-//	println("");
+	thread_t glavnaNit;
+	thread_t nit1;
+	thread_create(&glavnaNit, nullptr, nullptr);
+	TCB::running = glavnaNit;
+	thread_create(&nit1, nit1f, nullptr);
+	while(!nit1->isFinished()){
+		glavnaNit->dispatch();
+	}
+	println("");
 	return 0;
 }

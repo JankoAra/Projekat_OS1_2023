@@ -11,15 +11,32 @@
 class TCB;
 
 class Scheduler {
-public:
-	static void put(TCB*);
-
-	static TCB* get();
-
 private:
-	static List<TCB> readyThreads;
+	List<TCB> readyThreads;
+	static Scheduler* singleton;
 
 	Scheduler() {}
+
+public:
+	static Scheduler& getInstance() {
+		if(singleton==nullptr){
+			Scheduler* instance = new Scheduler();
+			singleton = instance;
+		}
+		return *singleton;
+	}
+
+	void put(TCB* tcb) {
+		readyThreads.addLast(tcb);
+	}
+
+	TCB* get() {
+		if (readyThreads.isEmpty()) {
+			return nullptr;
+		}
+		TCB* tcb = readyThreads.removeFirst();
+		return tcb;
+	}
 };
 
 

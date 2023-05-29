@@ -25,6 +25,8 @@ public:
 
 	uint64 getNumOfElems() { return numOfElements; }
 
+	bool isEmpty() { return numOfElements == 0; }
+
 	void addFirst(T* data) {
 		Elem* elem = new Elem(data, head);
 		head = elem;
@@ -84,21 +86,31 @@ public:
 		return tail->data;
 	}
 
-	static void* operator new(size_t size) {
-		return MemoryAllocator::kmalloc(size);
+	~List() {
+		while (head) {
+			Elem* old = head;
+			head = head->next;
+			delete old;
+		}
+		head = tail = nullptr;
+		numOfElements = 0;
 	}
 
-	static void* operator new[](size_t size) {
-		return MemoryAllocator::kmalloc(size);
-	}
-
-	static void operator delete(void* ptr) {
-		MemoryAllocator::kfree(ptr);
-	}
-
-	static void operator delete[](void* ptr) {
-		MemoryAllocator::kfree(ptr);
-	}
+//	static void* operator new(size_t size) {
+//		return MemoryAllocator::kmalloc(size);
+//	}
+//
+//	static void* operator new[](size_t size) {
+//		return MemoryAllocator::kmalloc(size);
+//	}
+//
+//	static void operator delete(void* ptr) {
+//		MemoryAllocator::kfree(ptr);
+//	}
+//
+//	static void operator delete[](void* ptr) {
+//		MemoryAllocator::kfree(ptr);
+//	}
 
 };
 

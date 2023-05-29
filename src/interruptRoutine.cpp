@@ -40,6 +40,7 @@ extern "C" void interruptRoutine() {
 				//__asm__ volatile("mv %[size], a1":[size] "=r"(size));
 				size = size * MEM_BLOCK_SIZE;
 				MemoryAllocator::kmalloc(size);
+				__asm__ volatile("sd a0, 80(s0)");
 				break;
 			case 0x02:
 				//mem_free
@@ -47,6 +48,7 @@ extern "C" void interruptRoutine() {
 				ptr = (void*)a1;
 				//__asm__ volatile("mv %[ptr], a1" :[ptr]"=r"(ptr));
 				MemoryAllocator::kfree(ptr);
+				__asm__ volatile("sd a0, 80(s0)");
 				break;
 			case 0x11:
 				//thread_create
@@ -69,6 +71,7 @@ extern "C" void interruptRoutine() {
 				} else {
 					__asm__ volatile("li a0, -1");
 				}
+				__asm__ volatile("sd a0, 80(s0)");
 				break;
 			case 0x12:
 				//thread_exit
