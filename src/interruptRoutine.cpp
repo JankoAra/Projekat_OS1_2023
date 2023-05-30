@@ -15,9 +15,11 @@
 extern "C" void interruptRoutine() {
 	//uint64 scause = Riscv::r_scause();
 	//uint64 sepc = Riscv::r_sepc();
-	uint64 scause, sepc;
+	uint64 scause, sepc, sstatus;
 	__asm__ volatile("csrr %[scause], scause":[scause] "=r"(scause): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	__asm__ volatile("csrr %[sepc], sepc":[sepc] "=r"(sepc): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("csrr %[status], sstatus":[status] "=r"(
+			sstatus): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	uint64 a0, a1, a2, a3, a4, a5, a6, a7;
 	__asm__ volatile("mv %[ax], a0":[ax] "=r"(a0): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	__asm__ volatile("mv %[ax], a1":[ax] "=r"(a1): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
@@ -60,10 +62,6 @@ extern "C" void interruptRoutine() {
 				args = (void*)a3;
 				uint64* sp;
 				sp = (uint64*)a4;
-//				__asm__ volatile("mv %[handle], a1":[handle]"=r"(handle));
-//				__asm__ volatile("mv %[f], a2":[f]"=r"(function));
-//				__asm__ volatile("mv %[args], a3":[args]"=r"(args));
-//				__asm__ volatile("mv %[sp], a4":[sp]"=r"(sp));
 
 				*handle = TCB::createThread(function, args, sp);
 				if (*handle != nullptr) {

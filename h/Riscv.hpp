@@ -35,9 +35,12 @@ public:
 	static void w_stvec(uint64 stvec);
 
 	enum BitMaskSip {
-		SIP_SSIP = (1 << 1),    //postoji zahtev za softverski prekid
-		SIP_STIP = (1 << 5),    //postoji prekid od tajmera
-		SIP_SEIP = (1 << 9)        //postoji zahtev za spoljasnji hardverski prekid
+		//postoji zahtev za softverski prekid
+		SIP_SSIP = (1 << 1),
+		//postoji prekid od tajmera
+		SIP_STIP = (1 << 5),
+		//postoji zahtev za spoljasnji hardverski prekid
+		SIP_SEIP = (1 << 9)
 	};
 
 	//mask set sip
@@ -53,8 +56,11 @@ public:
 	static void w_sip(uint64 sip);
 
 	enum BitMaskSstatus {
+		//1 - dozvoljeni prekidi; 0- nedozvoljeni prekidi; igonrise se u korisnickom rezimu
 		SSTATUS_SIE = (1 << 1),
+		//prethodna vrednost bita SIE
 		SSTATUS_SPIE = (1 << 5),
+		//iz kog rezima se desio skok; 0 - iz korisnickog; 1 - iz sistemskog
 		SSTATUS_SPP = (1 << 8)
 	};
 

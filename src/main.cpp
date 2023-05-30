@@ -8,14 +8,11 @@
 //#include "../h/MemoryAllocator.hpp"
 #include "../h/TCB.hpp"
 
-//#pragma GCC optimize("O0")
+
 
 extern "C" void interruptHandler();
 
 void testMemory();
-
-
-
 //uint64 temp;
 //
 //void f() {
@@ -34,17 +31,24 @@ void testMemory();
 
 void nit1f(void*) {
 	println("usao u nit 1");
-	TCB::dispatch();
+	TCB::yield();
 	println("opet u niti 1");
 }
-
+uint64 sstatus;
+#pragma GCC optimize("O0")
 int main() {
+
+	__asm__ volatile("csrr %[status], sstatus":[status] "=r"(
+			sstatus): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	//zabrani prekide
 	Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
+	__asm__ volatile("csrr %[status], sstatus":[status] "=r"(
+			sstatus): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	//postavi adresu prekidne rutine u stvec
 	Riscv::w_stvec((uint64)&interruptHandler);
-	//omoguci prekide
-	Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
+	__asm__ volatile("csrr %[status], sstatus":[status] "=r"(
+			sstatus): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+
 
 	//testiranje alociranja memorije
 	//testMemory();
@@ -62,14 +66,17 @@ int main() {
 //	println("");
 
 	//testiranje kreiranja niti
-	thread_t glavnaNit;
-	thread_t nit1;
+	thread_t glavnaNit = nullptr;
+	thread_t nit1 = nullptr;
 	thread_create(&glavnaNit, nullptr, nullptr);
 	TCB::running = glavnaNit;
 	thread_create(&nit1, nit1f, nullptr);
 	while(!nit1->isFinished()){
-		glavnaNit->dispatch();
+		TCB::yield();
 	}
-	println("");
+	println("\nProsao while");
+
+	//omoguci prekide
+	Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
 	return 0;
 }

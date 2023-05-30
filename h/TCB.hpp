@@ -49,8 +49,8 @@ public:
 private:
 	//kontekst procesora za datu nit
 	struct Context {
-		uint64 sp;
 		uint64 ra;
+		uint64 sp;
 	} context;
 	Body threadFunction;    //funkcija koja se izvrsava
 	uint64* stack;            //najniza adresa steka; stek raste ka nizim adresama, pokazuje na poslednju zauzetu

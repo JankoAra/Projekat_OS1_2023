@@ -21,5 +21,8 @@ void Scheduler::put(TCB* tcb) {
 TCB* Scheduler::get() {
 	TCB* firstThread = head;
 	head = head->nextInScheduler;
+	if (head == nullptr) {
+		tail = head = nullptr;
+	}
 	return firstThread;
 }
