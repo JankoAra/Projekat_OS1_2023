@@ -76,6 +76,7 @@ extern "C" void interruptRoutine() {
 				break;
 			case 0x13:
 				//thread_dispatch
+				TCB::yield();
 				break;
 			case 0x14:
 				//thread_join

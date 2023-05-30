@@ -63,11 +63,22 @@ int thread_create(thread_t* handle, void (* start_routine)(void*), void* arg) {
 }
 
 int thread_exit() {
-	return 0;
+	//nema argumenata, samo kod sistemskog poziva
+	__asm__ volatile("li a0, 0x12");
+
+	scall();
+
+	int status;
+	__asm__ volatile("mv %[status], a0":[status] "=r"(status));
+	return status;
 }
 
 void thread_dispatch() {
+	//nema argumenata, samo kod sistemskog poziva
+	__asm__ volatile("li a0, 0x13");
 
+	scall();
+	//nema povratne vrednosti
 }
 
 void thread_join(thread_t handle) {

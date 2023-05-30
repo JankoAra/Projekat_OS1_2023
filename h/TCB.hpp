@@ -72,6 +72,10 @@ private:
 
 
 	static void contextSwitch(Context* oldContext, Context* newContext);    //implementacija u asm
+
+	static void* operator new(size_t size);
+
+	static void operator delete(void* ptr);
 };
 
 

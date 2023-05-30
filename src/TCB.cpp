@@ -5,6 +5,7 @@
 #include "../h/TCB.hpp"
 #include "../h/Riscv.hpp"
 #include "../h/Scheduler.hpp"
+#include "../h/MemoryAllocator.hpp"
 
 TCB* TCB::running = nullptr;
 uint64 TCB::runningTimeSlice = 0;
@@ -34,5 +35,13 @@ void TCB::wrapper() {
 	running->threadFunction(running->args);
 	running->finished = true;
 	TCB::yield();
+}
+
+void* TCB::operator new(size_t size) {
+	return MemoryAllocator::kmalloc(size+sizeof(MemoryAllocator::UsedMemSegment));
+}
+
+void TCB::operator delete(void* ptr) {
+	MemoryAllocator::kfree(ptr);
 }
 

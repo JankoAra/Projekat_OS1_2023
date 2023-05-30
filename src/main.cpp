@@ -30,9 +30,29 @@ void testMemory();
 //}
 
 void nit1f(void*) {
-	println("usao u nit 1");
-	TCB::yield();
-	println("opet u niti 1");
+	println("\nusao u nit 1");
+	__asm__ volatile("li t1, 100");
+	thread_dispatch();
+	volatile uint64 t1;
+	__asm__ volatile("mv %0, t1":"=r"(t1));
+	println("\nopet u niti 1");
+	printString("\nt1 = ");
+
+	printInteger(t1);
+}
+void nit2f(void* arg2) {
+	println("\nusao u nit 2");
+	__asm__ volatile("li t1, 200");
+	printInteger(*(uint64*)arg2);
+	*(uint64*)arg2+=10;
+	thread_dispatch();
+	volatile uint64 t1;
+	__asm__ volatile("mv %0, t1":"=r"(t1));
+	println("\nopet u niti 2");
+	printInteger(*(uint64*)arg2);
+	printString("\nt1 = ");
+
+	printInteger(t1);
 }
 uint64 sstatus;
 #pragma GCC optimize("O0")
@@ -48,6 +68,8 @@ int main() {
 	Riscv::w_stvec((uint64)&interruptHandler);
 	__asm__ volatile("csrr %[status], sstatus":[status] "=r"(
 			sstatus): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	//omoguci prekide
+	Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
 
 
 	//testiranje alociranja memorije
@@ -68,15 +90,20 @@ int main() {
 	//testiranje kreiranja niti
 	thread_t glavnaNit = nullptr;
 	thread_t nit1 = nullptr;
+	thread_t nit2 = nullptr;
 	thread_create(&glavnaNit, nullptr, nullptr);
 	TCB::running = glavnaNit;
+	uint64* arg = new uint64;
+	*arg = 666;
 	thread_create(&nit1, nit1f, nullptr);
-	while(!nit1->isFinished()){
-		TCB::yield();
+	thread_create(&nit2, nit2f, arg);
+	while(!nit1->isFinished() && !nit2->isFinished()){
+		thread_dispatch();
 	}
 	println("\nProsao while");
 
-	//omoguci prekide
-	Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
+	//zabrani prekide
+	Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
+	println("\nSad cu da izadjem");
 	return 0;
 }
