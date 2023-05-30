@@ -6,10 +6,10 @@
 #define PROJEKAT2023_TCB_HPP
 
 #include "../lib/hw.h"
-//#include "../h/Scheduler.hpp"
 
 class TCB {
 public:
+	friend class Scheduler;
 	using Body = void (*)(void*);
 
 	static TCB* createThread(Body function, void* args, uint64* stack);
@@ -39,6 +39,13 @@ public:
 	static TCB* running;
 	static uint64 runningTimeSlice;
 
+//	TCB* getNextInScheduler(){
+//		return nextInScheduler;
+//	}
+//	void setNextInScheduler(TCB* tcb){
+//		nextInScheduler = tcb;
+//	}
+
 private:
 	//kontekst procesora za datu nit
 	struct Context {
@@ -51,9 +58,11 @@ private:
 	uint64 timeSlice;        //vremenski odsecak dodeljen datoj niti
 	bool finished;            //da li je nit zavrsila izvrsavanje funkcije
 	bool blocked;            //da li je nit blokirana
+	TCB* nextInScheduler;    // pokazivac na sledecu nit u Scheduler-u
 
 	TCB(Body function, void* args, uint64* stack) : threadFunction(function), stack(stack), args(args),
-													timeSlice(DEFAULT_TIME_SLICE), finished(false), blocked(false) {
+													timeSlice(DEFAULT_TIME_SLICE), finished(false), blocked(false),
+													nextInScheduler(nullptr) {
 		//formiranje pocetnog konteksta; specijalni uslovi za main funkciju kojoj se pocetni kontekst automatski formira
 		uint64 startRa = threadFunction != nullptr ? (uint64)&wrapper : 0;
 		uint64 startSp = stack != nullptr ? (uint64)&stack[DEFAULT_STACK_SIZE] : 0;

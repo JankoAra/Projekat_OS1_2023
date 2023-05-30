@@ -6,37 +6,41 @@
 #define PROJEKAT2023_SCHEDULER_HPP
 
 
-#include "../h/List.hpp"
+//#include "../h/List.hpp"
+
 
 class TCB;
-
 class Scheduler {
+
 private:
-	List<TCB> readyThreads;
-	static Scheduler* singleton;
+	//List<TCB> readyThreads;
+	//static Scheduler* singleton;
+	static TCB* head, * tail;
 
 	Scheduler() {}
 
 public:
-	static Scheduler& getInstance() {
-		if(singleton==nullptr){
-			Scheduler* instance = new Scheduler();
-			singleton = instance;
-		}
-		return *singleton;
-	}
+//	static Scheduler& getInstance() {
+//		if (singleton == nullptr) {
+//			Scheduler* instance = new Scheduler();
+//			singleton = instance;
+//		}
+//		return *singleton;
+//	}
 
-	void put(TCB* tcb) {
-		readyThreads.addLast(tcb);
-	}
+	static void put(TCB* tcb);
+//	{
+//		readyThreads.addLast(tcb);
+//	}
 
-	TCB* get() {
-		if (readyThreads.isEmpty()) {
-			return nullptr;
-		}
-		TCB* tcb = readyThreads.removeFirst();
-		return tcb;
-	}
+	static TCB* get();
+//	{
+//		if (readyThreads.isEmpty()) {
+//			return nullptr;
+//		}
+//		TCB* tcb = readyThreads.removeFirst();
+//		return tcb;
+//	}
 };
 
 

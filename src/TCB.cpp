@@ -11,16 +11,16 @@ uint64 TCB::runningTimeSlice = 0;
 
 TCB* TCB::createThread(TCB::Body function, void* args, uint64* stack) {
 	TCB* newThread = new TCB(function, args, stack);
-	Scheduler::getInstance().put(newThread);
+	//Scheduler::getInstance().put(newThread);
 	return newThread;
 }
 
 void TCB::dispatch() {
 	TCB* old = TCB::running;
 	if (!old->isFinished() && !old->isBlocked()) {
-		Scheduler::getInstance().put(old);
+		//Scheduler::getInstance().put(old);
 	}
-	TCB::running = Scheduler::getInstance().get();
+	//TCB::running = Scheduler::getInstance().get();
 	TCB::contextSwitch(&old->context, &running->context);
 }
 
