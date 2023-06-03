@@ -39,35 +39,37 @@ void nit1f(void*) {
 	printString("\nt1 = ");
 
 	printInteger(t1);
+
+	println("Gotova nit 1");
 }
 void nit2f(void* arg2) {
 	println("\nusao u nit 2");
-	__asm__ volatile("li t1, 200");
+
 	printInteger(*(uint64*)arg2);
 	*(uint64*)arg2+=10;
+	__asm__ volatile("li t1, 200");
 	thread_dispatch();
 	volatile uint64 t1;
 	__asm__ volatile("mv %0, t1":"=r"(t1));
 	println("\nopet u niti 2");
-	printInteger(*(uint64*)arg2);
 	printString("\nt1 = ");
-
 	printInteger(t1);
+	println("");
+	println("Pokusavam da ugasim nit 2");
+	thread_exit();
+	println("Nisam uspeo da ugasim nit 2");
+	printInteger(*(uint64*)arg2);
+	println("Gotova nit 2");
 }
-uint64 sstatus;
 #pragma GCC optimize("O0")
 int main() {
 
-	__asm__ volatile("csrr %[status], sstatus":[status] "=r"(
-			sstatus): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	//zabrani prekide
 	Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
-	__asm__ volatile("csrr %[status], sstatus":[status] "=r"(
-			sstatus): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+
 	//postavi adresu prekidne rutine u stvec
 	Riscv::w_stvec((uint64)&interruptHandler);
-	__asm__ volatile("csrr %[status], sstatus":[status] "=r"(
-			sstatus): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+
 	//omoguci prekide
 	Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
 

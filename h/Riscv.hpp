@@ -10,6 +10,8 @@
 class Riscv {
 public:
 
+	static void popSppSpie();
+
 	//stavljanje registara x3-x31 na stek
 	static void pushRegisters();    //implementacija u asm
 
@@ -55,6 +57,8 @@ public:
 	//write sip
 	static void w_sip(uint64 sip);
 
+	//kada se pozove sret, SIE dobija vrednost SPIE, SPIE se postavlja na 1,
+	//rezim se postavlja na osnovu SPP bita, SPP se postavlja na 0
 	enum BitMaskSstatus {
 		//1 - dozvoljeni prekidi; 0- nedozvoljeni prekidi; igonrise se u korisnickom rezimu
 		SSTATUS_SIE = (1 << 1),
@@ -150,5 +154,7 @@ inline void Riscv::w_sstatus(uint64 sstatus) {
 inline void Riscv::loadOpCode(uint64 opCode) {
 	__asm__ volatile("mv a0, %[code]": :[code] "r"(opCode));
 }
+
+
 
 #endif //PROJEKAT2023_RISCV_HPP

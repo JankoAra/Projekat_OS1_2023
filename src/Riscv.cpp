@@ -3,3 +3,9 @@
 //
 
 #include "../h/Riscv.hpp"
+
+void Riscv::popSppSpie() {
+	//ra pokazuje iza ove funkcije na nastavak wrappera
+	__asm__ volatile("csrw sepc, ra");
+	__asm__ volatile("sret");
+}

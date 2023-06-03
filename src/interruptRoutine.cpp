@@ -11,10 +11,7 @@
 #include "../h/TCB.hpp"
 
 #pragma GCC optimize("O0")
-
 extern "C" void interruptRoutine() {
-	//uint64 scause = Riscv::r_scause();
-	//uint64 sepc = Riscv::r_sepc();
 	uint64 scause, sepc, sstatus;
 	__asm__ volatile("csrr %[scause], scause":[scause] "=r"(scause): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	__asm__ volatile("csrr %[sepc], sepc":[sepc] "=r"(sepc): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
@@ -33,7 +30,6 @@ extern "C" void interruptRoutine() {
 	if (scause == 0x09 || scause == 0x08) {
 		//prekid zbog poziva ecall
 		uint64 opCode = a0;
-
 		switch (opCode) {
 			case 0x01:
 				//mem_alloc
@@ -73,6 +69,8 @@ extern "C" void interruptRoutine() {
 				break;
 			case 0x12:
 				//thread_exit
+				TCB::running->setFinished(true);
+				TCB::yield();
 				break;
 			case 0x13:
 				//thread_dispatch
@@ -118,7 +116,7 @@ extern "C" void interruptRoutine() {
 		__asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 		//Riscv::w_sepc(sepc + 4);
 	} else if (scause == (1UL << 63 | 9)) {
-		//spoljasnji hardverski prekid
+		//spoljasnji hardverski prekid (od konzole)
 		console_handler();
 	} else if (scause == (1UL << 63 | 1)) {
 		//prekid od tajmera
