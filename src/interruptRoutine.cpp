@@ -100,13 +100,49 @@ extern "C" void interruptRoutine() {
 			case 0x42:
 				//putc
 				break;
+			case 0x90:
+				//printString
+				const char* string;
+				string = (const char*)a1;
+				while (*string != '\0') {
+					__putc(*string);
+					string++;
+				}
+				break;
+			case 0x91:
+				//printInteger
+				uint64 integer;
+				integer = a1;
+				static char digits[] = "0123456789";
+				char buf[16];
+				int i, neg;
+				uint x;
+
+				neg = 0;
+				if (integer < 0) {
+					neg = 1;
+					x = -integer;
+				} else {
+					x = integer;
+				}
+
+				i = 0;
+				do {
+					buf[i++] = digits[x % 10];
+				} while ((x /= 10) != 0);
+				if (neg) buf[i++] = '-';
+
+				while (--i >= 0) {
+					__putc(buf[i]);
+				}
+				break;
 			default:
-				printString("\nNepostojeci op code: ");
-				printInteger(opCode);
-				printString("\nscause: ");
-				printInteger(scause);
-				printString("\nsepc: ");
-				printInteger(sepc);
+//				printString("\nNepostojeci op code: ");
+//				printInteger(opCode);
+//				printString("\nscause: ");
+//				printInteger(scause);
+//				printString("\nsepc: ");
+//				printInteger(sepc);
 				break;
 		}
 		//sepc pokazuje na ecall instrukciju, treba preci na sledecu instrukciju
@@ -120,13 +156,23 @@ extern "C" void interruptRoutine() {
 		console_handler();
 	} else if (scause == (1UL << 63 | 1)) {
 		//prekid od tajmera
+		printString("\nPrekid od tajmera\n");
+		TCB::runningTimeSlice++;
+		if (TCB::runningTimeSlice >= TCB::running->getTimeSlice()) {
+			printString("\nMenjam kontekst\n");
+			TCB::yield();
+			TCB::runningTimeSlice = 0;
+		}
+
+		Riscv::w_sepc(sepc);
+		Riscv::w_sstatus(sstatus);
 		Riscv::mc_sip(Riscv::SIP_SSIP);
 	} else {
-		println("\nGreska u prekidnoj rutini");
-		printString("scause: ");
-		printInteger(scause);
-		printString("\nsepc: ");
-		printInteger(sepc);
+//		println("\nGreska u prekidnoj rutini");
+//		printString("scause: ");
+//		printInteger(scause);
+//		printString("\nsepc: ");
+//		printInteger(sepc);
 	}
 }
 

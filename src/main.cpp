@@ -9,8 +9,8 @@
 #include "../h/TCB.hpp"
 
 
-
 extern "C" void interruptHandler();
+//void userMain();
 
 void testMemory();
 //uint64 temp;
@@ -30,38 +30,62 @@ void testMemory();
 //}
 
 void nit1f(void*) {
-	println("\nusao u nit 1");
+	printString("\nusao u nit 1\n");
 	__asm__ volatile("li t1, 100");
-	thread_dispatch();
+	//thread_dispatch();
 	volatile uint64 t1;
 	__asm__ volatile("mv %0, t1":"=r"(t1));
-	println("\nopet u niti 1");
+	printString("\nopet u niti 1\n");
 	printString("\nt1 = ");
 
 	printInteger(t1);
 
-	println("Gotova nit 1");
+	for(int i=0;i<1000000;i++){
+		if(i%1200==0) {
+			printString("Nit1: ");
+			printInteger(i);
+			printString("\n");
+		}
+		if(i%120203==0){
+			//printString("\nyield n1\n");
+			//thread_dispatch();
+		}
+	}
+
+	printString("\nGotova nit 1\n");
 }
 void nit2f(void* arg2) {
-	println("\nusao u nit 2");
+	printString("\nusao u nit 2\n");
 
 	printInteger(*(uint64*)arg2);
 	*(uint64*)arg2+=10;
 	__asm__ volatile("li t1, 200");
-	thread_dispatch();
+	//thread_dispatch();
 	volatile uint64 t1;
 	__asm__ volatile("mv %0, t1":"=r"(t1));
-	println("\nopet u niti 2");
+	printString("\nopet u niti 2\n");
 	printString("\nt1 = ");
 	printInteger(t1);
-	println("");
-	println("Pokusavam da ugasim nit 2");
-	thread_exit();
-	println("Nisam uspeo da ugasim nit 2");
+	printString("\n");
+	for(int i=0;i<1000000;i++){
+		if(i%3500==0) {
+			printString("Nit2: ");
+			printInteger(i);
+			printString("\n");
+		}
+		if(i%54203==0){
+			printString("\nyield n2\n");
+			thread_dispatch();
+		}
+	}
+	printString("\nPokusavam da ugasim nit 2\n");
+	//thread_exit();
+	printString("\nNisam uspeo da ugasim nit 2\n");
 	printInteger(*(uint64*)arg2);
-	println("Gotova nit 2");
+	printString("\nGotova nit 2\n");
 }
 #pragma GCC optimize("O0")
+
 int main() {
 
 	//zabrani prekide
@@ -70,8 +94,7 @@ int main() {
 	//postavi adresu prekidne rutine u stvec
 	Riscv::w_stvec((uint64)&interruptHandler);
 
-	//omoguci prekide
-	Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
+
 
 
 	//testiranje alociranja memorije
@@ -99,13 +122,28 @@ int main() {
 	*arg = 666;
 	thread_create(&nit1, nit1f, nullptr);
 	thread_create(&nit2, nit2f, arg);
-	while(!nit1->isFinished() && !nit2->isFinished()){
+
+	//omoguci prekide
+	Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
+
+	while(!nit1->isFinished() || !nit2->isFinished()){
 		thread_dispatch();
 	}
-	println("\nProsao while");
+	printString("\nProsao while\n");
 
 	//zabrani prekide
 	Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
-	println("\nSad cu da izadjem");
+	printString("\nSad cu da izadjem\n");
+
+//testiranje svega
+//	thread_t mainHandle;
+//	thread_t userHandle;
+//	thread_create(&mainHandle, nullptr, nullptr);
+//	TCB::running = mainHandle;
+//	thread_create(&userHandle, (TCB::Body)userMain, nullptr);
+//	while (!userHandle->isFinished()) {
+//		thread_dispatch();
+//	}
+//	Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
 	return 0;
 }

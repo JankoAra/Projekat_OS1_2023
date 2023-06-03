@@ -17,8 +17,8 @@ void testMemory() {
 	for (uint64 i = 0; i < NumAllocations; ++i) {
 		allocations[i] = static_cast<int*>(MemoryAllocator::kmalloc(AllocationSize));
 		if (allocations[i] == nullptr) {
-			printString("\nAllocation failed for index ");
-			printInteger(i);
+//			printString("\nAllocation failed for index ");
+//			printInteger(i);
 			break;
 		}
 	}
@@ -27,8 +27,8 @@ void testMemory() {
 	for (uint64 i = 0; i < NumAllocations; ++i) {
 		if (allocations[i] != nullptr) {
 			if (MemoryAllocator::kfree(allocations[i]) != 0) {
-				printString("\nDeallocation failed for index ");
-				printInteger(i);
+//				printString("\nDeallocation failed for index ");
+//				printInteger(i);
 			}
 		}
 	}

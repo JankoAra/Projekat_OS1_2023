@@ -1,6 +1,7 @@
 #include "../h/syscall_c.hpp"
 #include "../h/Riscv.hpp"
 #include "../h/MemoryAllocator.hpp"
+#include "../lib/console.h"
 
 inline void scall() {
 	__asm__ volatile("ecall");
@@ -110,9 +111,9 @@ int sem_signal(sem_t id) {
 }
 
 char getc() {
-	return 0;
+	return __getc();
 }
 
-void putc(char) {
-
+void putc(char c) {
+	__putc(c);
 }

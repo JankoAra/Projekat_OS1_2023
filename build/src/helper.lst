@@ -1,4 +1,4 @@
-GAS LISTING /tmp/ccOTEJMS.s 			page 1
+GAS LISTING /tmp/ccOYJyl7.s 			page 1
 
 
    1              		.file	"helper.cpp"
@@ -14,404 +14,201 @@ GAS LISTING /tmp/ccOTEJMS.s 			page 1
    1:src/helper.cpp **** #include "../h/helper.hpp"
    2:src/helper.cpp **** #include "../lib/console.h"
    3:src/helper.cpp **** #include "../h/Riscv.hpp"
-   4:src/helper.cpp **** 
-   5:src/helper.cpp **** void printString(char const *string) {
-  12              		.loc 1 5 38
+   4:src/helper.cpp **** //#include "../h/syscall_c.hpp"
+   5:src/helper.cpp **** 
+   6:src/helper.cpp **** void printString(char const* string) {
+  12              		.loc 1 6 38
   13              		.cfi_startproc
   14              	.LVL0:
-  15 0000 130101FE 		addi	sp,sp,-32
-  16              		.cfi_def_cfa_offset 32
-  17 0004 233C1100 		sd	ra,24(sp)
-  18 0008 23388100 		sd	s0,16(sp)
-  19 000c 23349100 		sd	s1,8(sp)
-  20              		.cfi_offset 1, -8
-  21              		.cfi_offset 8, -16
-  22              		.cfi_offset 9, -24
-  23 0010 13040102 		addi	s0,sp,32
-  24              		.cfi_def_cfa 8, 0
-  25 0014 93040500 		mv	s1,a0
-  26              	.LVL1:
-  27              	.L3:
-   6:src/helper.cpp ****     while (*string != '\0') {
-  28              		.loc 1 6 5
-  29              		.loc 1 6 20
-  30              		.loc 1 6 12 is_stmt 0
-  31 0018 03C50400 		lbu	a0,0(s1)
-  32              		.loc 1 6 20
-  33 001c 630A0500 		beqz	a0,.L1
-   7:src/helper.cpp ****         __putc(*string);
-  34              		.loc 1 7 9 is_stmt 1
-  35              		.loc 1 7 15 is_stmt 0
-  36 0020 97000000 		call	__putc@plt
-  36      E7800000 
-  37              	.LVL2:
-   8:src/helper.cpp ****         string++;
-  38              		.loc 1 8 9 is_stmt 1
-  39              		.loc 1 8 15 is_stmt 0
-  40 0028 93841400 		addi	s1,s1,1
-  41              	.LVL3:
-   6:src/helper.cpp ****     while (*string != '\0') {
-  42              		.loc 1 6 5
-  43 002c 6FF0DFFE 		j	.L3
-  44              	.L1:
-   9:src/helper.cpp ****     }
-  10:src/helper.cpp **** }
-  45              		.loc 1 10 1
-  46 0030 83308101 		ld	ra,24(sp)
-GAS LISTING /tmp/ccOTEJMS.s 			page 2
-
-
-  47              		.cfi_restore 1
-  48 0034 03340101 		ld	s0,16(sp)
-  49              		.cfi_restore 8
-  50              		.cfi_def_cfa 2, 32
-  51 0038 83348100 		ld	s1,8(sp)
-  52              		.cfi_restore 9
-  53              	.LVL4:
-  54 003c 13010102 		addi	sp,sp,32
-  55              		.cfi_def_cfa_offset 0
-  56 0040 67800000 		jr	ra
-  57              		.cfi_endproc
-  58              	.LFE15:
-  60              		.align	2
-  61              		.globl	_Z7printlnPKc
-  63              	_Z7printlnPKc:
-  64              	.LFB16:
-  11:src/helper.cpp **** 
-  12:src/helper.cpp **** void println(char const *string) {
-  65              		.loc 1 12 34 is_stmt 1
-  66              		.cfi_startproc
-  67              	.LVL5:
-  68 0044 130101FF 		addi	sp,sp,-16
-  69              		.cfi_def_cfa_offset 16
-  70 0048 23341100 		sd	ra,8(sp)
-  71 004c 23308100 		sd	s0,0(sp)
-  72              		.cfi_offset 1, -8
-  73              		.cfi_offset 8, -16
-  74 0050 13040101 		addi	s0,sp,16
-  75              		.cfi_def_cfa 8, 0
-  13:src/helper.cpp ****     printString(string);
-  76              		.loc 1 13 5
-  77              		.loc 1 13 16 is_stmt 0
-  78 0054 97000000 		call	_Z11printStringPKc
-  78      E7800000 
-  79              	.LVL6:
-  14:src/helper.cpp ****     __putc('\n');
-  80              		.loc 1 14 5 is_stmt 1
-  81              		.loc 1 14 11 is_stmt 0
-  82 005c 1305A000 		li	a0,10
-  83 0060 97000000 		call	__putc@plt
-  83      E7800000 
-  84              	.LVL7:
+  15 0000 130101FF 		addi	sp,sp,-16
+  16              		.cfi_def_cfa_offset 16
+  17 0004 23348100 		sd	s0,8(sp)
+  18              		.cfi_offset 8, -8
+  19 0008 13040101 		addi	s0,sp,16
+  20              		.cfi_def_cfa 8, 0
+  21 000c 13030500 		mv	t1,a0
+   7:src/helper.cpp **** 
+   8:src/helper.cpp **** 	//stavljanje argumenata za sistemski poziv
+   9:src/helper.cpp **** 	__asm__ volatile("mv a1, %[ptr]": :[ptr] "r"(string):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7
+  22              		.loc 1 9 2
+  23              		.loc 1 9 102 is_stmt 0
+  24              	#APP
+  25              	# 9 "src/helper.cpp" 1
+  10              		__asm__ volatile("li a0, 0x90");
+  26              		mv a1, t1
+  27              	# 0 "" 2
+  28              	.LVL1:
+  29              		.loc 1 10 2 is_stmt 1
+  30              		.loc 1 10 33 is_stmt 0
+  31              	# 10 "src/helper.cpp" 1
+  11              	
+  12:src/helper.cpp **** 	__asm__ volatile("ecall");
+  32              		li a0, 0x90
+  33              	# 0 "" 2
+  34              		.loc 1 12 2 is_stmt 1
+  35              		.loc 1 12 27 is_stmt 0
+  36              	# 12 "src/helper.cpp" 1
+  13              	
+  14:src/helper.cpp **** 
   15:src/helper.cpp **** }
-  85              		.loc 1 15 1
-  86 0068 83308100 		ld	ra,8(sp)
-  87              		.cfi_restore 1
-  88 006c 03340100 		ld	s0,0(sp)
-  89              		.cfi_restore 8
-  90              		.cfi_def_cfa 2, 16
-  91 0070 13010101 		addi	sp,sp,16
-  92              		.cfi_def_cfa_offset 0
-  93 0074 67800000 		jr	ra
-  94              		.cfi_endproc
-  95              	.LFE16:
-  97              		.align	2
-  98              		.globl	_Z12printIntegerm
- 100              	_Z12printIntegerm:
-GAS LISTING /tmp/ccOTEJMS.s 			page 3
+  37              		ecall
+  38              	# 0 "" 2
+  39              		.loc 1 15 1
+  40              	#NO_APP
+  41 001c 03348100 		ld	s0,8(sp)
+  42              		.cfi_restore 8
+  43              		.cfi_def_cfa 2, 16
+GAS LISTING /tmp/ccOYJyl7.s 			page 2
 
 
- 101              	.LFB17:
+  44 0020 13010101 		addi	sp,sp,16
+  45              		.cfi_def_cfa_offset 0
+  46 0024 67800000 		jr	ra
+  47              		.cfi_endproc
+  48              	.LFE15:
+  50              		.align	2
+  51              		.globl	_Z12printIntegerm
+  53              	_Z12printIntegerm:
+  54              	.LFB16:
   16:src/helper.cpp **** 
-  17:src/helper.cpp **** void printInteger(uint64 integer) {
- 102              		.loc 1 17 35 is_stmt 1
- 103              		.cfi_startproc
- 104              	.LVL8:
- 105 0078 130101FD 		addi	sp,sp,-48
- 106              		.cfi_def_cfa_offset 48
- 107 007c 23341102 		sd	ra,40(sp)
- 108 0080 23308102 		sd	s0,32(sp)
- 109 0084 233C9100 		sd	s1,24(sp)
- 110              		.cfi_offset 1, -8
- 111              		.cfi_offset 8, -16
- 112              		.cfi_offset 9, -24
- 113 0088 13040103 		addi	s0,sp,48
- 114              		.cfi_def_cfa 8, 0
-  18:src/helper.cpp ****     static char digits[] = "0123456789";
- 115              		.loc 1 18 5
-  19:src/helper.cpp ****     char buf[16];
- 116              		.loc 1 19 5
-  20:src/helper.cpp ****     int i, neg;
- 117              		.loc 1 20 5
-  21:src/helper.cpp ****     uint x;
- 118              		.loc 1 21 5
-  22:src/helper.cpp **** 
-  23:src/helper.cpp ****     neg = 0;
- 119              		.loc 1 23 5
- 120              	.LVL9:
-  24:src/helper.cpp ****     if (integer < 0) {
- 121              		.loc 1 24 5
-  25:src/helper.cpp ****         neg = 1;
-  26:src/helper.cpp ****         x = -integer;
-  27:src/helper.cpp ****     } else {
-  28:src/helper.cpp ****         x = integer;
- 122              		.loc 1 28 9
- 123              		.loc 1 28 11 is_stmt 0
- 124 008c 1B050500 		sext.w	a0,a0
- 125              	.LVL10:
-  29:src/helper.cpp ****     }
-  30:src/helper.cpp **** 
-  31:src/helper.cpp ****     i = 0;
- 126              		.loc 1 31 5 is_stmt 1
- 127              		.loc 1 31 7 is_stmt 0
- 128 0090 93040000 		li	s1,0
- 129              	.LVL11:
- 130              	.L8:
-  32:src/helper.cpp ****     do {
- 131              		.loc 1 32 5 is_stmt 1
-  33:src/helper.cpp ****         buf[i++] = digits[x % 10];
- 132              		.loc 1 33 9
- 133              		.loc 1 33 29 is_stmt 0
- 134 0094 1306A000 		li	a2,10
- 135 0098 3B77C502 		remuw	a4,a0,a2
- 136              	.LVL12:
- 137              		.loc 1 33 33
- 138 009c 93160702 		slli	a3,a4,32
- 139 00a0 93D60602 		srli	a3,a3,32
-GAS LISTING /tmp/ccOTEJMS.s 			page 4
+  17:src/helper.cpp **** //void println(char const *string) {
+  18:src/helper.cpp **** //    printString(string);
+  19:src/helper.cpp **** //    __putc('\n');
+  20:src/helper.cpp **** //}
+  21:src/helper.cpp **** 
+  22:src/helper.cpp **** void printInteger(uint64 integer) {
+  55              		.loc 1 22 35 is_stmt 1
+  56              		.cfi_startproc
+  57              	.LVL2:
+  58 0028 130101FF 		addi	sp,sp,-16
+  59              		.cfi_def_cfa_offset 16
+  60 002c 23348100 		sd	s0,8(sp)
+  61              		.cfi_offset 8, -8
+  62 0030 13040101 		addi	s0,sp,16
+  63              		.cfi_def_cfa 8, 0
+  64 0034 13030500 		mv	t1,a0
+  23:src/helper.cpp **** 	//stavljanje argumenata za sistemski poziv
+  24:src/helper.cpp **** 	__asm__ volatile("mv a1, %[ptr]": :[ptr] "r"(integer):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a
+  65              		.loc 1 24 2
+  66              		.loc 1 24 103 is_stmt 0
+  67              	#APP
+  68              	# 24 "src/helper.cpp" 1
+  25              		__asm__ volatile("li a0, 0x91");
+  69              		mv a1, t1
+  70              	# 0 "" 2
+  71              	.LVL3:
+  72              		.loc 1 25 2 is_stmt 1
+  73              		.loc 1 25 33 is_stmt 0
+  74              	# 25 "src/helper.cpp" 1
+  26              	
+  27:src/helper.cpp **** 	__asm__ volatile("ecall");
+  75              		li a0, 0x91
+  76              	# 0 "" 2
+  77              		.loc 1 27 2 is_stmt 1
+  78              		.loc 1 27 27 is_stmt 0
+  79              	# 27 "src/helper.cpp" 1
+  28              	}
+  80              		ecall
+  81              	# 0 "" 2
+  82              		.loc 1 28 1
+  83              	#NO_APP
+  84 0044 03348100 		ld	s0,8(sp)
+  85              		.cfi_restore 8
+  86              		.cfi_def_cfa 2, 16
+  87 0048 13010101 		addi	sp,sp,16
+  88              		.cfi_def_cfa_offset 0
+  89 004c 67800000 		jr	ra
+GAS LISTING /tmp/ccOYJyl7.s 			page 3
 
 
- 140 00a4 17070000 		lla	a4,.LANCHOR0
- 140      13070700 
- 141 00ac 3307D700 		add	a4,a4,a3
- 142 00b0 03470700 		lbu	a4,0(a4)
- 143              		.loc 1 33 18
- 144 00b4 930604FE 		addi	a3,s0,-32
- 145 00b8 B3879600 		add	a5,a3,s1
- 146 00bc 9B841400 		addiw	s1,s1,1
- 147              	.LVL13:
- 148 00c0 2388E7FE 		sb	a4,-16(a5)
-  34:src/helper.cpp ****     } while ((x /= 10) != 0);
- 149              		.loc 1 34 24 is_stmt 1
- 150 00c4 1B070500 		sext.w	a4,a0
- 151              		.loc 1 34 17 is_stmt 0
- 152 00c8 3B55C502 		divuw	a0,a0,a2
- 153              	.LVL14:
- 154              		.loc 1 34 24
- 155 00cc 93079000 		li	a5,9
- 156 00d0 E3E2E7FC 		bgtu	a4,a5,.L8
- 157              	.LVL15:
- 158              	.L10:
-  35:src/helper.cpp ****     if (neg) buf[i++] = '-';
-  36:src/helper.cpp **** 
-  37:src/helper.cpp ****     while (--i >= 0) {
- 159              		.loc 1 37 5 is_stmt 1
- 160              		.loc 1 37 16
- 161 00d4 9B84F4FF 		addiw	s1,s1,-1
- 162              	.LVL16:
- 163 00d8 63CE0400 		bltz	s1,.L7
-  38:src/helper.cpp ****         __putc(buf[i]);
- 164              		.loc 1 38 9
- 165              		.loc 1 38 15 is_stmt 0
- 166 00dc 930704FE 		addi	a5,s0,-32
- 167 00e0 B3879700 		add	a5,a5,s1
- 168 00e4 03C507FF 		lbu	a0,-16(a5)
- 169 00e8 97000000 		call	__putc@plt
- 169      E7800000 
- 170              	.LVL17:
- 171 00f0 6FF05FFE 		j	.L10
- 172              	.L7:
-  39:src/helper.cpp ****     }
-  40:src/helper.cpp **** }
- 173              		.loc 1 40 1
- 174 00f4 83308102 		ld	ra,40(sp)
- 175              		.cfi_restore 1
- 176 00f8 03340102 		ld	s0,32(sp)
- 177              		.cfi_restore 8
- 178              		.cfi_def_cfa 2, 48
- 179 00fc 83348101 		ld	s1,24(sp)
- 180              		.cfi_restore 9
- 181 0100 13010103 		addi	sp,sp,48
- 182              		.cfi_def_cfa_offset 0
- 183 0104 67800000 		jr	ra
- 184              		.cfi_endproc
- 185              	.LFE17:
- 187              		.section	.rodata
- 188              		.align	3
-GAS LISTING /tmp/ccOTEJMS.s 			page 5
-
-
- 189              		.set	.LANCHOR0,. + 0
- 192              	_ZZ12printIntegermE6digits:
- 193 0000 30313233 		.string	"0123456789"
- 193      34353637 
- 193      383900
- 194              		.text
- 195              	.Letext0:
- 196              		.file 2 "src/../h/../lib/hw.h"
- 197              		.file 3 "src/../lib/console.h"
-GAS LISTING /tmp/ccOTEJMS.s 			page 6
+  90              		.cfi_endproc
+  91              	.LFE16:
+  93              	.Letext0:
+  94              		.file 2 "src/../h/../lib/hw.h"
+GAS LISTING /tmp/ccOYJyl7.s 			page 4
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 helper.cpp
-     /tmp/ccOTEJMS.s:9      .text:0000000000000000 _Z11printStringPKc
-     /tmp/ccOTEJMS.s:13     .text:0000000000000000 .L0 
-     /tmp/ccOTEJMS.s:15     .text:0000000000000000 .L0 
-     /tmp/ccOTEJMS.s:16     .text:0000000000000004 .L0 
-     /tmp/ccOTEJMS.s:20     .text:0000000000000010 .L0 
-     /tmp/ccOTEJMS.s:21     .text:0000000000000010 .L0 
-     /tmp/ccOTEJMS.s:22     .text:0000000000000010 .L0 
-     /tmp/ccOTEJMS.s:24     .text:0000000000000014 .L0 
-     /tmp/ccOTEJMS.s:29     .text:0000000000000018 .L0 
-     /tmp/ccOTEJMS.s:30     .text:0000000000000018 .L0 
-     /tmp/ccOTEJMS.s:31     .text:0000000000000018 .L0 
-     /tmp/ccOTEJMS.s:33     .text:000000000000001c .L0 
-     /tmp/ccOTEJMS.s:35     .text:0000000000000020 .L0 
-     /tmp/ccOTEJMS.s:36     .text:0000000000000020 .L0 
-     /tmp/ccOTEJMS.s:39     .text:0000000000000028 .L0 
-     /tmp/ccOTEJMS.s:40     .text:0000000000000028 .L0 
-     /tmp/ccOTEJMS.s:43     .text:000000000000002c .L0 
-     /tmp/ccOTEJMS.s:46     .text:0000000000000030 .L0 
-     /tmp/ccOTEJMS.s:47     .text:0000000000000034 .L0 
-     /tmp/ccOTEJMS.s:49     .text:0000000000000038 .L0 
-     /tmp/ccOTEJMS.s:50     .text:0000000000000038 .L0 
-     /tmp/ccOTEJMS.s:52     .text:000000000000003c .L0 
-     /tmp/ccOTEJMS.s:55     .text:0000000000000040 .L0 
-     /tmp/ccOTEJMS.s:57     .text:0000000000000044 .L0 
-     /tmp/ccOTEJMS.s:63     .text:0000000000000044 _Z7printlnPKc
-     /tmp/ccOTEJMS.s:66     .text:0000000000000044 .L0 
-     /tmp/ccOTEJMS.s:68     .text:0000000000000044 .L0 
-     /tmp/ccOTEJMS.s:69     .text:0000000000000048 .L0 
-     /tmp/ccOTEJMS.s:72     .text:0000000000000050 .L0 
-     /tmp/ccOTEJMS.s:73     .text:0000000000000050 .L0 
-     /tmp/ccOTEJMS.s:75     .text:0000000000000054 .L0 
-     /tmp/ccOTEJMS.s:77     .text:0000000000000054 .L0 
-     /tmp/ccOTEJMS.s:78     .text:0000000000000054 .L0 
-     /tmp/ccOTEJMS.s:81     .text:000000000000005c .L0 
-     /tmp/ccOTEJMS.s:82     .text:000000000000005c .L0 
-     /tmp/ccOTEJMS.s:86     .text:0000000000000068 .L0 
-     /tmp/ccOTEJMS.s:87     .text:000000000000006c .L0 
-     /tmp/ccOTEJMS.s:89     .text:0000000000000070 .L0 
-     /tmp/ccOTEJMS.s:90     .text:0000000000000070 .L0 
-     /tmp/ccOTEJMS.s:92     .text:0000000000000074 .L0 
-     /tmp/ccOTEJMS.s:94     .text:0000000000000078 .L0 
-     /tmp/ccOTEJMS.s:100    .text:0000000000000078 _Z12printIntegerm
-     /tmp/ccOTEJMS.s:103    .text:0000000000000078 .L0 
-     /tmp/ccOTEJMS.s:105    .text:0000000000000078 .L0 
-     /tmp/ccOTEJMS.s:106    .text:000000000000007c .L0 
-     /tmp/ccOTEJMS.s:110    .text:0000000000000088 .L0 
-     /tmp/ccOTEJMS.s:111    .text:0000000000000088 .L0 
-     /tmp/ccOTEJMS.s:112    .text:0000000000000088 .L0 
-     /tmp/ccOTEJMS.s:114    .text:000000000000008c .L0 
-     /tmp/ccOTEJMS.s:116    .text:000000000000008c .L0 
-     /tmp/ccOTEJMS.s:117    .text:000000000000008c .L0 
-     /tmp/ccOTEJMS.s:118    .text:000000000000008c .L0 
-     /tmp/ccOTEJMS.s:119    .text:000000000000008c .L0 
-     /tmp/ccOTEJMS.s:121    .text:000000000000008c .L0 
-     /tmp/ccOTEJMS.s:122    .text:000000000000008c .L0 
-GAS LISTING /tmp/ccOTEJMS.s 			page 7
+     /tmp/ccOYJyl7.s:9      .text:0000000000000000 _Z11printStringPKc
+     /tmp/ccOYJyl7.s:13     .text:0000000000000000 .L0 
+     /tmp/ccOYJyl7.s:15     .text:0000000000000000 .L0 
+     /tmp/ccOYJyl7.s:16     .text:0000000000000004 .L0 
+     /tmp/ccOYJyl7.s:18     .text:0000000000000008 .L0 
+     /tmp/ccOYJyl7.s:20     .text:000000000000000c .L0 
+     /tmp/ccOYJyl7.s:23     .text:0000000000000010 .L0 
+      src/helper.cpp:9      .text:0000000000000010 .L0 
+     /tmp/ccOYJyl7.s:30     .text:0000000000000014 .L0 
+      src/helper.cpp:10     .text:0000000000000014 .L0 
+     /tmp/ccOYJyl7.s:35     .text:0000000000000018 .L0 
+      src/helper.cpp:12     .text:0000000000000018 .L0 
+     /tmp/ccOYJyl7.s:41     .text:000000000000001c .L0 
+     /tmp/ccOYJyl7.s:42     .text:0000000000000020 .L0 
+     /tmp/ccOYJyl7.s:43     .text:0000000000000020 .L0 
+     /tmp/ccOYJyl7.s:45     .text:0000000000000024 .L0 
+     /tmp/ccOYJyl7.s:47     .text:0000000000000028 .L0 
+     /tmp/ccOYJyl7.s:53     .text:0000000000000028 _Z12printIntegerm
+     /tmp/ccOYJyl7.s:56     .text:0000000000000028 .L0 
+     /tmp/ccOYJyl7.s:58     .text:0000000000000028 .L0 
+     /tmp/ccOYJyl7.s:59     .text:000000000000002c .L0 
+     /tmp/ccOYJyl7.s:61     .text:0000000000000030 .L0 
+     /tmp/ccOYJyl7.s:63     .text:0000000000000034 .L0 
+     /tmp/ccOYJyl7.s:66     .text:0000000000000038 .L0 
+      src/helper.cpp:24     .text:0000000000000038 .L0 
+     /tmp/ccOYJyl7.s:73     .text:000000000000003c .L0 
+      src/helper.cpp:25     .text:000000000000003c .L0 
+     /tmp/ccOYJyl7.s:78     .text:0000000000000040 .L0 
+      src/helper.cpp:27     .text:0000000000000040 .L0 
+     /tmp/ccOYJyl7.s:84     .text:0000000000000044 .L0 
+     /tmp/ccOYJyl7.s:85     .text:0000000000000048 .L0 
+     /tmp/ccOYJyl7.s:86     .text:0000000000000048 .L0 
+     /tmp/ccOYJyl7.s:88     .text:000000000000004c .L0 
+     /tmp/ccOYJyl7.s:90     .text:0000000000000050 .L0 
+     /tmp/ccOYJyl7.s:95     .text:0000000000000050 .L0 
+     /tmp/ccOYJyl7.s:266    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/ccOYJyl7.s:498    .debug_str:00000000000000cf .LASF24
+     /tmp/ccOYJyl7.s:478    .debug_str:000000000000002f .LASF25
+     /tmp/ccOYJyl7.s:512    .debug_str:00000000000001e8 .LASF26
+     /tmp/ccOYJyl7.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccOYJyl7.s:93     .text:0000000000000050 .Letext0
+     /tmp/ccOYJyl7.s:468    .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccOYJyl7.s:500    .debug_str:0000000000000193 .LASF0
+     /tmp/ccOYJyl7.s:494    .debug_str:00000000000000b0 .LASF1
+     /tmp/ccOYJyl7.s:490    .debug_str:0000000000000090 .LASF2
+     /tmp/ccOYJyl7.s:476    .debug_str:0000000000000028 .LASF4
+     /tmp/ccOYJyl7.s:492    .debug_str:000000000000009e .LASF3
+     /tmp/ccOYJyl7.s:472    .debug_str:0000000000000013 .LASF5
+     /tmp/ccOYJyl7.s:470    .debug_str:0000000000000000 .LASF6
+     /tmp/ccOYJyl7.s:482    .debug_str:0000000000000045 .LASF7
+     /tmp/ccOYJyl7.s:506    .debug_str:00000000000001b2 .LASF8
+     /tmp/ccOYJyl7.s:474    .debug_str:000000000000001a .LASF9
+     /tmp/ccOYJyl7.s:522    .debug_str:000000000000023c .LASF10
+     /tmp/ccOYJyl7.s:486    .debug_str:000000000000006e .LASF11
+     /tmp/ccOYJyl7.s:516    .debug_str:000000000000020e .LASF12
+GAS LISTING /tmp/ccOYJyl7.s 			page 5
 
 
-     /tmp/ccOTEJMS.s:123    .text:000000000000008c .L0 
-     /tmp/ccOTEJMS.s:124    .text:000000000000008c .L0 
-     /tmp/ccOTEJMS.s:127    .text:0000000000000090 .L0 
-     /tmp/ccOTEJMS.s:128    .text:0000000000000090 .L0 
-     /tmp/ccOTEJMS.s:132    .text:0000000000000094 .L0 
-     /tmp/ccOTEJMS.s:133    .text:0000000000000094 .L0 
-     /tmp/ccOTEJMS.s:134    .text:0000000000000094 .L0 
-     /tmp/ccOTEJMS.s:138    .text:000000000000009c .L0 
-     /tmp/ccOTEJMS.s:144    .text:00000000000000b4 .L0 
-     /tmp/ccOTEJMS.s:150    .text:00000000000000c4 .L0 
-     /tmp/ccOTEJMS.s:152    .text:00000000000000c8 .L0 
-     /tmp/ccOTEJMS.s:155    .text:00000000000000cc .L0 
-     /tmp/ccOTEJMS.s:160    .text:00000000000000d4 .L0 
-     /tmp/ccOTEJMS.s:161    .text:00000000000000d4 .L0 
-     /tmp/ccOTEJMS.s:165    .text:00000000000000dc .L0 
-     /tmp/ccOTEJMS.s:166    .text:00000000000000dc .L0 
-     /tmp/ccOTEJMS.s:174    .text:00000000000000f4 .L0 
-     /tmp/ccOTEJMS.s:175    .text:00000000000000f8 .L0 
-     /tmp/ccOTEJMS.s:177    .text:00000000000000fc .L0 
-     /tmp/ccOTEJMS.s:178    .text:00000000000000fc .L0 
-     /tmp/ccOTEJMS.s:180    .text:0000000000000100 .L0 
-     /tmp/ccOTEJMS.s:182    .text:0000000000000104 .L0 
-     /tmp/ccOTEJMS.s:184    .text:0000000000000108 .L0 
-     /tmp/ccOTEJMS.s:189    .rodata:0000000000000000 .LANCHOR0
-     /tmp/ccOTEJMS.s:192    .rodata:0000000000000000 _ZZ12printIntegermE6digits
-     /tmp/ccOTEJMS.s:198    .text:0000000000000108 .L0 
-     /tmp/ccOTEJMS.s:140    .text:00000000000000a4 .L0 
-     /tmp/ccOTEJMS.s:44     .text:0000000000000030 .L1
-     /tmp/ccOTEJMS.s:27     .text:0000000000000018 .L3
-     /tmp/ccOTEJMS.s:130    .text:0000000000000094 .L8
-     /tmp/ccOTEJMS.s:172    .text:00000000000000f4 .L7
-     /tmp/ccOTEJMS.s:158    .text:00000000000000d4 .L10
-     /tmp/ccOTEJMS.s:499    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
-     /tmp/ccOTEJMS.s:948    .debug_str:00000000000000d7 .LASF28
-     /tmp/ccOTEJMS.s:928    .debug_str:0000000000000037 .LASF29
-     /tmp/ccOTEJMS.s:970    .debug_str:0000000000000211 .LASF30
-     /tmp/ccOTEJMS.s:5      .text:0000000000000000 .Ltext0
-     /tmp/ccOTEJMS.s:195    .text:0000000000000108 .Letext0
-     /tmp/ccOTEJMS.s:916    .debug_line:0000000000000000 .Ldebug_line0
-     /tmp/ccOTEJMS.s:952    .debug_str:00000000000001a0 .LASF0
-     /tmp/ccOTEJMS.s:950    .debug_str:000000000000019b .LASF3
-     /tmp/ccOTEJMS.s:944    .debug_str:00000000000000b8 .LASF1
-     /tmp/ccOTEJMS.s:940    .debug_str:0000000000000098 .LASF2
-     /tmp/ccOTEJMS.s:926    .debug_str:0000000000000030 .LASF4
-     /tmp/ccOTEJMS.s:942    .debug_str:00000000000000a6 .LASF5
-     /tmp/ccOTEJMS.s:920    .debug_str:0000000000000013 .LASF6
-     /tmp/ccOTEJMS.s:918    .debug_str:0000000000000000 .LASF7
-     /tmp/ccOTEJMS.s:932    .debug_str:000000000000004d .LASF8
-     /tmp/ccOTEJMS.s:960    .debug_str:00000000000001c6 .LASF9
-     /tmp/ccOTEJMS.s:924    .debug_str:0000000000000022 .LASF10
-     /tmp/ccOTEJMS.s:980    .debug_str:0000000000000265 .LASF11
-     /tmp/ccOTEJMS.s:936    .debug_str:0000000000000076 .LASF12
-     /tmp/ccOTEJMS.s:974    .debug_str:0000000000000237 .LASF13
-     /tmp/ccOTEJMS.s:966    .debug_str:00000000000001fa .LASF14
-     /tmp/ccOTEJMS.s:946    .debug_str:00000000000000cb .LASF15
-     /tmp/ccOTEJMS.s:934    .debug_str:0000000000000060 .LASF16
-     /tmp/ccOTEJMS.s:964    .debug_str:00000000000001e4 .LASF17
-GAS LISTING /tmp/ccOTEJMS.s 			page 8
+     /tmp/ccOYJyl7.s:510    .debug_str:00000000000001d8 .LASF13
+     /tmp/ccOYJyl7.s:496    .debug_str:00000000000000c3 .LASF14
+     /tmp/ccOYJyl7.s:484    .debug_str:0000000000000058 .LASF15
+     /tmp/ccOYJyl7.s:508    .debug_str:00000000000001c2 .LASF16
+     /tmp/ccOYJyl7.s:504    .debug_str:00000000000001a5 .LASF17
+     /tmp/ccOYJyl7.s:518    .debug_str:000000000000021e .LASF19
+     /tmp/ccOYJyl7.s:54     .text:0000000000000028 .LFB16
+     /tmp/ccOYJyl7.s:91     .text:0000000000000050 .LFE16
+     /tmp/ccOYJyl7.s:514    .debug_str:0000000000000206 .LASF21
+     /tmp/ccOYJyl7.s:433    .debug_loc:0000000000000000 .LLST1
+     /tmp/ccOYJyl7.s:520    .debug_str:0000000000000230 .LASF18
+     /tmp/ccOYJyl7.s:488    .debug_str:000000000000007d .LASF20
+     /tmp/ccOYJyl7.s:10     .text:0000000000000000 .LFB15
+     /tmp/ccOYJyl7.s:48     .text:0000000000000028 .LFE15
+     /tmp/ccOYJyl7.s:480    .debug_str:000000000000003e .LASF22
+     /tmp/ccOYJyl7.s:444    .debug_loc:0000000000000036 .LLST0
+     /tmp/ccOYJyl7.s:502    .debug_str:00000000000001a0 .LASF23
+     /tmp/ccOYJyl7.s:57     .text:0000000000000028 .LVL2
+     /tmp/ccOYJyl7.s:71     .text:000000000000003c .LVL3
+     /tmp/ccOYJyl7.s:14     .text:0000000000000000 .LVL0
+     /tmp/ccOYJyl7.s:28     .text:0000000000000014 .LVL1
+     /tmp/ccOYJyl7.s:96     .debug_info:0000000000000000 .Ldebug_info0
 
-
-     /tmp/ccOTEJMS.s:958    .debug_str:00000000000001b9 .LASF20
-     /tmp/ccOTEJMS.s:976    .debug_str:0000000000000247 .LASF22
-     /tmp/ccOTEJMS.s:101    .text:0000000000000078 .LFB17
-     /tmp/ccOTEJMS.s:185    .text:0000000000000108 .LFE17
-     /tmp/ccOTEJMS.s:972    .debug_str:000000000000022f .LASF24
-     /tmp/ccOTEJMS.s:820    .debug_loc:0000000000000000 .LLST2
-     /tmp/ccOTEJMS.s:968    .debug_str:000000000000020a .LASF18
-     /tmp/ccOTEJMS.s:834    .debug_loc:0000000000000039 .LLST3
-     /tmp/ccOTEJMS.s:856    .debug_loc:0000000000000098 .LLST4
-     /tmp/ccOTEJMS.s:170    .text:00000000000000f0 .LVL17
-     /tmp/ccOTEJMS.s:954    .debug_str:00000000000001ad .LASF19
-     /tmp/ccOTEJMS.s:922    .debug_str:000000000000001a .LASF21
-     /tmp/ccOTEJMS.s:962    .debug_str:00000000000001d6 .LASF23
-     /tmp/ccOTEJMS.s:64     .text:0000000000000044 .LFB16
-     /tmp/ccOTEJMS.s:95     .text:0000000000000078 .LFE16
-     /tmp/ccOTEJMS.s:930    .debug_str:0000000000000046 .LASF25
-     /tmp/ccOTEJMS.s:878    .debug_loc:00000000000000d9 .LLST1
-     /tmp/ccOTEJMS.s:79     .text:000000000000005c .LVL6
-     /tmp/ccOTEJMS.s:84     .text:0000000000000068 .LVL7
-     /tmp/ccOTEJMS.s:978    .debug_str:0000000000000259 .LASF26
-     /tmp/ccOTEJMS.s:938    .debug_str:0000000000000085 .LASF27
-     /tmp/ccOTEJMS.s:10     .text:0000000000000000 .LFB15
-     /tmp/ccOTEJMS.s:58     .text:0000000000000044 .LFE15
-     /tmp/ccOTEJMS.s:892    .debug_loc:0000000000000112 .LLST0
-     /tmp/ccOTEJMS.s:37     .text:0000000000000028 .LVL2
-     /tmp/ccOTEJMS.s:956    .debug_str:00000000000001b2 .LASF31
-     /tmp/ccOTEJMS.s:104    .text:0000000000000078 .LVL8
-     /tmp/ccOTEJMS.s:125    .text:0000000000000090 .LVL10
-     /tmp/ccOTEJMS.s:129    .text:0000000000000094 .LVL11
-     /tmp/ccOTEJMS.s:136    .text:000000000000009c .LVL12
-     /tmp/ccOTEJMS.s:147    .text:00000000000000c0 .LVL13
-     /tmp/ccOTEJMS.s:157    .text:00000000000000d4 .LVL15
-     /tmp/ccOTEJMS.s:162    .text:00000000000000d8 .LVL16
-     /tmp/ccOTEJMS.s:153    .text:00000000000000cc .LVL14
-     /tmp/ccOTEJMS.s:67     .text:0000000000000044 .LVL5
-     /tmp/ccOTEJMS.s:14     .text:0000000000000000 .LVL0
-     /tmp/ccOTEJMS.s:26     .text:0000000000000018 .LVL1
-     /tmp/ccOTEJMS.s:53     .text:000000000000003c .LVL4
-     /tmp/ccOTEJMS.s:199    .debug_info:0000000000000000 .Ldebug_info0
-
-UNDEFINED SYMBOLS
-__putc
+NO UNDEFINED SYMBOLS
