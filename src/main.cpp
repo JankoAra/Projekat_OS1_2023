@@ -40,13 +40,13 @@ void nit1f(void*) {
 
 	printInteger(t1);
 
-	for(int i=0;i<1000000;i++){
-		if(i%1200==0) {
+	for (int i = 0; i < 1000000; i++) {
+		if (i % 1200 == 0) {
 			printString("Nit1: ");
 			printInteger(i);
 			printString("\n");
 		}
-		if(i%120203==0){
+		if (i % 120203 == 0) {
 			//printString("\nyield n1\n");
 			//thread_dispatch();
 		}
@@ -54,11 +54,12 @@ void nit1f(void*) {
 
 	printString("\nGotova nit 1\n");
 }
+
 void nit2f(void* arg2) {
 	printString("\nusao u nit 2\n");
 
 	printInteger(*(uint64*)arg2);
-	*(uint64*)arg2+=10;
+	*(uint64*)arg2 += 10;
 	__asm__ volatile("li t1, 200");
 	//thread_dispatch();
 	volatile uint64 t1;
@@ -67,16 +68,17 @@ void nit2f(void* arg2) {
 	printString("\nt1 = ");
 	printInteger(t1);
 	printString("\n");
-	for(int i=0;i<1000000;i++){
-		if(i%3500==0) {
+	for (int i = 0; i < 1000000; i++) {
+		if (i % 100000 == 0) {
 			printString("Nit2: ");
 			printInteger(i);
 			printString("\n");
+			time_sleep(20);
 		}
-		if(i%54203==0){
-			printString("\nyield n2\n");
-			thread_dispatch();
-		}
+//		if (i % 54203 == 0) {
+//			printString("\nyield n2\n");
+//			thread_dispatch();
+//		}
 	}
 	printString("\nPokusavam da ugasim nit 2\n");
 	//thread_exit();
@@ -84,6 +86,15 @@ void nit2f(void* arg2) {
 	printInteger(*(uint64*)arg2);
 	printString("\nGotova nit 2\n");
 }
+
+void nit3f(void*) {
+	for (int i = 0; i < 20; i++) {
+		printInteger(i);
+		printString("\n");
+		time_sleep(10);
+	}
+}
+
 #pragma GCC optimize("O0")
 
 int main() {
@@ -116,19 +127,22 @@ int main() {
 	thread_t glavnaNit = nullptr;
 	thread_t nit1 = nullptr;
 	thread_t nit2 = nullptr;
+	thread_t nit3;
 	thread_create(&glavnaNit, nullptr, nullptr);
 	TCB::running = glavnaNit;
 	uint64* arg = new uint64;
 	*arg = 666;
 	thread_create(&nit1, nit1f, nullptr);
 	thread_create(&nit2, nit2f, arg);
+	thread_create(&nit3, nit3f, nullptr);
 
 	//omoguci prekide
 	Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
 
-	while(!nit1->isFinished() || !nit2->isFinished()){
+	while (!nit1->isFinished() || !nit2->isFinished()) {
 		thread_dispatch();
 	}
+
 	printString("\nProsao while\n");
 
 	//zabrani prekide

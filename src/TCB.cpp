@@ -22,7 +22,7 @@ TCB* TCB::createThread(TCB::Body function, void* args, uint64* stack) {
 
 void TCB::dispatch() {
 	TCB* old = TCB::running;
-	if (!old->finished && !old->blocked) {
+	if (!old->finished && !old->blocked && old->timeToSleep == 0) {
 		Scheduler::put(old);
 	}
 	TCB::running = Scheduler::get();
@@ -63,4 +63,5 @@ void* TCB::operator new(size_t size) {
 void TCB::operator delete(void* ptr) {
 	MemoryAllocator::kfree(ptr);
 }
+
 

@@ -90,8 +90,18 @@ void thread_join(thread_t handle) {
 
 }
 
-int time_sleep(time_t) {
-	return 0;
+int time_sleep(time_t timerPeriods) {
+	//stavljanje argumenata za sistemski poziv
+	__asm__ volatile("mv a1, %[time]": :[time] "r"(timerPeriods):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("li a0, 0x31");
+	//a0 = 0x31
+	//a1 = broj perioda tajmera na koji se uspavljuje nit
+
+	scall();
+
+	int status;
+	__asm__ volatile("mv %[status], a0":[status] "=r"(status));
+	return status;
 }
 
 int sem_open(sem_t* handle, unsigned int init) {

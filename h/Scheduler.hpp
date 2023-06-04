@@ -9,38 +9,28 @@
 //#include "../h/List.hpp"
 
 
-class TCB;
-class Scheduler {
 
+class TCB;
+
+typedef unsigned long time_t;
+
+class Scheduler {
 private:
-	//List<TCB> readyThreads;
-	//static Scheduler* singleton;
 	static TCB* head, * tail;
+	static TCB* sleepingHead;
 
 	Scheduler() {}
 
 public:
-//	static Scheduler& getInstance() {
-//		if (singleton == nullptr) {
-//			Scheduler* instance = new Scheduler();
-//			singleton = instance;
-//		}
-//		return *singleton;
-//	}
-
 	static void put(TCB* tcb);
-//	{
-//		readyThreads.addLast(tcb);
-//	}
 
 	static TCB* get();
-//	{
-//		if (readyThreads.isEmpty()) {
-//			return nullptr;
-//		}
-//		TCB* tcb = readyThreads.removeFirst();
-//		return tcb;
-//	}
+
+	static TCB* getSleepingHead() { return sleepingHead; }
+
+	static void putToSleep(TCB* tcb, time_t sleepTime);
+
+	static void wake();
 };
 
 

@@ -10,6 +10,7 @@
 class TCB {
 public:
 	friend class Scheduler;
+
 	using Body = void (*)(void*);
 
 	static TCB* createThread(Body function, void* args, uint64* stack);
@@ -26,7 +27,7 @@ public:
 
 	void setTimeSlice(uint64 value) { timeSlice = value; }
 
-	static void threadSleep(time_t sleepTime);
+	//static void threadSleep(time_t sleepTime);
 
 	static void threadJoin(TCB* handle);
 
@@ -59,10 +60,12 @@ private:
 	bool finished;            //da li je nit zavrsila izvrsavanje funkcije
 	bool blocked;            //da li je nit blokirana
 	TCB* nextInScheduler;    // pokazivac na sledecu nit u Scheduler-u
+	time_t timeToSleep;
+	TCB* nextSleeping;
 
 	TCB(Body function, void* args, uint64* stack) : threadFunction(function), stack(stack), args(args),
 													timeSlice(DEFAULT_TIME_SLICE), finished(false), blocked(false),
-													nextInScheduler(nullptr) {
+													nextInScheduler(nullptr), timeToSleep(0), nextSleeping(nullptr) {
 		//formiranje pocetnog konteksta; specijalni uslovi za main funkciju kojoj se pocetni kontekst automatski formira
 		uint64 startRa = threadFunction != nullptr ? (uint64)&wrapper : 0;
 		uint64 startSp = stack != nullptr ? (uint64)&stack[DEFAULT_STACK_SIZE] : 0;

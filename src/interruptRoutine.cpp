@@ -9,6 +9,7 @@
 #include "../h/Riscv.hpp"
 #include "../h/syscall_c.hpp"
 #include "../h/TCB.hpp"
+#include "../h/Scheduler.hpp"
 
 #pragma GCC optimize("O0")
 extern "C" void interruptRoutine() {
@@ -93,6 +94,18 @@ extern "C" void interruptRoutine() {
 				break;
 			case 0x31:
 				//time_sleep
+				time_t timerPeriods;
+				timerPeriods = (time_t)a1;
+				if (timerPeriods>0) {
+					__asm__ volatile("li a0, 0");
+				} else {
+					__asm__ volatile("li a0, -1");
+				}
+				__asm__ volatile("sd a0, 80(s0)");
+				if(timerPeriods>0) {
+					Scheduler::putToSleep(TCB::running, timerPeriods);
+					TCB::yield();
+				}
 				break;
 			case 0x41:
 				//getc
@@ -156,10 +169,11 @@ extern "C" void interruptRoutine() {
 		console_handler();
 	} else if (scause == (1UL << 63 | 1)) {
 		//prekid od tajmera
-		printString("\nPrekid od tajmera\n");
+		//printString("\nPrekid od tajmera\n");
+		Scheduler::wake();
 		TCB::runningTimeSlice++;
 		if (TCB::runningTimeSlice >= TCB::running->getTimeSlice()) {
-			printString("\nMenjam kontekst\n");
+			//printString("\nMenjam kontekst\n");
 			TCB::yield();
 			TCB::runningTimeSlice = 0;
 		}
