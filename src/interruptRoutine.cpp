@@ -10,6 +10,7 @@
 #include "../h/syscall_c.hpp"
 #include "../h/TCB.hpp"
 #include "../h/Scheduler.hpp"
+#include "../h/KSem.hpp"
 
 #pragma GCC optimize("O0")
 extern "C" void interruptRoutine() {
@@ -87,36 +88,64 @@ extern "C" void interruptRoutine() {
 				break;
 			case 0x21:
 				//sem_open
-				break;
-			case 0x22:
-				//sem_close
-				break;
-			case 0x23:
-				//sem_wait
-				break;
-			case 0x24:
-				//sem_signal
-				break;
-			case 0x31:
-				//time_sleep
-				time_t timerPeriods;
-				timerPeriods = (time_t)a1;
-				if (timerPeriods>0) {
+				sem_t* semHandle;
+				semHandle = (sem_t*)a1;
+				uint initVal;
+				initVal = (uint)a2;
+				*semHandle = KSem::initSem(initVal);
+				if (*semHandle != nullptr) {
 					__asm__ volatile("li a0, 0");
 				} else {
 					__asm__ volatile("li a0, -1");
 				}
 				__asm__ volatile("sd a0, 80(s0)");
-				if(timerPeriods>0) {
+				break;
+			case 0x22:
+				//sem_close
+				sem_t closeHandle;
+				closeHandle = (sem_t)a1;
+				KSem::closeSem(closeHandle);
+				__asm__ volatile("sd a0, 80(s0)");
+				break;
+			case 0x23:
+				//sem_wait
+				sem_t waitHandle;
+				waitHandle = (sem_t)a1;
+				waitHandle->wait();
+				__asm__ volatile("sd a0, 80(s0)");
+				break;
+			case 0x24:
+				//sem_signal
+				sem_t signalHandle;
+				signalHandle = (sem_t)a1;
+				signalHandle->signal();
+				__asm__ volatile("sd a0, 80(s0)");
+				break;
+			case 0x31:
+				//time_sleep
+				time_t timerPeriods;
+				timerPeriods = (time_t)a1;
+				if (timerPeriods > 0) {
+					__asm__ volatile("li a0, 0");
+				} else {
+					__asm__ volatile("li a0, -1");
+				}
+				__asm__ volatile("sd a0, 80(s0)");
+				if (timerPeriods > 0) {
 					Scheduler::putToSleep(TCB::running, timerPeriods);
 					TCB::yield();
 				}
 				break;
 			case 0x41:
 				//getc
+				__getc();
+				__asm__ volatile("sd a0, 80(s0)");
 				break;
 			case 0x42:
 				//putc
+				char c;
+				c = (char)a1;
+				__putc(c);
 				break;
 			case 0x90:
 				//printString
@@ -155,12 +184,12 @@ extern "C" void interruptRoutine() {
 				}
 				break;
 			default:
-//				printString("\nNepostojeci op code: ");
-//				printInteger(opCode);
-//				printString("\nscause: ");
-//				printInteger(scause);
-//				printString("\nsepc: ");
-//				printInteger(sepc);
+				printString("\nNepostojeci op code: ");
+				printInteger(opCode);
+				printString("\nscause: ");
+				printInteger(scause);
+				printString("\nsepc: ");
+				printInteger(sepc);
 				break;
 		}
 		//sepc pokazuje na ecall instrukciju, treba preci na sledecu instrukciju
@@ -187,11 +216,11 @@ extern "C" void interruptRoutine() {
 		Riscv::w_sstatus(sstatus);
 		Riscv::mc_sip(Riscv::SIP_SSIP);
 	} else {
-//		println("\nGreska u prekidnoj rutini");
-//		printString("scause: ");
-//		printInteger(scause);
-//		printString("\nsepc: ");
-//		printInteger(sepc);
+		printString("\nGreska u prekidnoj rutini\n");
+		printString("scause: ");
+		printInteger(scause);
+		printString("\nsepc: ");
+		printInteger(sepc);
 	}
 }
 

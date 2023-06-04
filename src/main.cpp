@@ -8,6 +8,7 @@
 //#include "../h/MemoryAllocator.hpp"
 #include "../h/TCB.hpp"
 #include "../h/ThreadQueue.hpp"
+//#include "../h/KSem.hpp"
 
 
 extern "C" void interruptHandler();
@@ -29,6 +30,8 @@ void testMemory();
 //	__asm__ volatile ("mv %[savedPC], ra":[savedPC] "=r"(temp));
 //	__asm__ volatile("mv ra, %[fAddress]": : [fAddress] "r"(&f));
 //}
+
+sem_t semA;
 
 void nit1f(void*) {
 	for (int i = 0; i < 8; i++) {
@@ -67,8 +70,11 @@ void nit2f(void* arg2) {
 	for (int i = 0; i < 10; i++) {
 		printInteger(3);
 		printString("\n");
+		sem_signal(semA);
+		printString("Nit 2 salje signal semaforu\n");
 		time_sleep(30);
 	}
+	sem_close(semA);
 	printString("\nKraj niti 2\n");
 	thread_exit();
 	printString("\nusao u nit 2\n");
@@ -106,6 +112,8 @@ void nit3f(void*) {
 	for (int i = 0; i < 20; i++) {
 		printInteger(i);
 		printString("\n");
+		sem_wait(semA);
+		printString("Nit 3 prosla semafor\n");
 		time_sleep(10);
 	}
 	printString("\nGotova nit3\n");
@@ -116,15 +124,20 @@ void idle(void*){
 	}
 }
 
+
+
 #pragma GCC optimize("O0")
 
 int main() {
+
 
 	//zabrani prekide
 	Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
 
 	//postavi adresu prekidne rutine u stvec
 	Riscv::w_stvec((uint64)&interruptHandler);
+
+	sem_open(&semA, 0);
 
 
 

@@ -111,25 +111,79 @@ int time_sleep(time_t timerPeriods) {
 }
 
 int sem_open(sem_t* handle, unsigned int init) {
-	return 0;
+	//stavljanje argumenata za sistemski poziv
+	__asm__ volatile("mv a2, %[val]": :[val] "r"(init):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("mv a1, %[handle]": :[handle] "r"(handle):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("li a0, 0x21");
+	//a0 = 0x21
+	//a1 = pokazivac na rucku semafora
+	//a2 = pocetna vrednost semafora
+
+	scall();
+
+	int status;
+	__asm__ volatile("mv %[status], a0":[status] "=r"(status));
+	return status;
 }
 
 int sem_close(sem_t handle) {
-	return 0;
+	//stavljanje argumenata za sistemski poziv
+	__asm__ volatile("mv a1, %[handle]": :[handle] "r"(handle):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("li a0, 0x22");
+	//a0 = 0x22
+	//a1 = pokazivac na rucku semafora
+
+	scall();
+
+	int status;
+	__asm__ volatile("mv %[status], a0":[status] "=r"(status));
+	return status;
 }
 
 int sem_wait(sem_t id) {
-	return 0;
+	//stavljanje argumenata za sistemski poziv
+	__asm__ volatile("mv a1, %[handle]": :[handle] "r"(id):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("li a0, 0x23");
+	//a0 = 0x23
+	//a1 = pokazivac na rucku semafora
+
+	scall();
+
+	int status;
+	__asm__ volatile("mv %[status], a0":[status] "=r"(status));
+	return status;
 }
 
 int sem_signal(sem_t id) {
-	return 0;
+	//stavljanje argumenata za sistemski poziv
+	__asm__ volatile("mv a1, %[handle]": :[handle] "r"(id):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("li a0, 0x24");
+	//a0 = 0x24
+	//a1 = pokazivac na rucku semafora
+
+	scall();
+
+	int status;
+	__asm__ volatile("mv %[status], a0":[status] "=r"(status));
+	return status;
 }
 
 char getc() {
-	return __getc();
+	//nema argumenata
+	__asm__ volatile("li a0, 0x41");
+
+	scall();
+
+	char character;
+	__asm__ volatile("mv %[status], a0":[status] "=r"(character));
+	return character;
 }
 
 void putc(char c) {
-	__putc(c);
+	//stavljanje argumenata
+	__asm__ volatile("mv a1, %[c]": :[c] "r"(c):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("li a0, 0x42");
+
+	scall();
+	//nema povratne vrednosti
 }

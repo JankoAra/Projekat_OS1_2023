@@ -21,9 +21,9 @@ void thread_dispatch();
 
 void thread_join(thread_t handle);
 
-class _sem;
+class KSem;
 
-typedef _sem* sem_t;
+typedef KSem* sem_t;
 
 int sem_open(sem_t* handle, unsigned init);
 
