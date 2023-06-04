@@ -87,7 +87,13 @@ void thread_dispatch() {
 }
 
 void thread_join(thread_t handle) {
+//stavljanje argumenata za sistemski poziv
+	__asm__ volatile("mv a1, %[handle]": :[handle] "r"(handle):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("li a0, 0x14");
+	//a0 = 0x14
+	//a1 = rucka niti na koju se ceka
 
+	scall();
 }
 
 int time_sleep(time_t timerPeriods) {

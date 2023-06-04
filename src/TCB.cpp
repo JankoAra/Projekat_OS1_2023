@@ -22,7 +22,7 @@ TCB* TCB::createThread(TCB::Body function, void* args, uint64* stack) {
 
 void TCB::dispatch() {
 	TCB* old = TCB::running;
-	if (!old->finished && !old->blocked && old->timeToSleep == 0) {
+	if (!old->finished && !old->blocked && old->timeToSleep == 0 && !old->needToJoin) {
 		Scheduler::put(old);
 	}
 	TCB::running = Scheduler::get();
@@ -62,6 +62,20 @@ void* TCB::operator new(size_t size) {
 
 void TCB::operator delete(void* ptr) {
 	MemoryAllocator::kfree(ptr);
+}
+
+void TCB::threadJoin(TCB* handle) {
+	if(handle->finished) return;
+	TCB::running->needToJoin = true;
+	handle->waitingToJoin.putLast(TCB::running);
+}
+
+void TCB::releaseJoined() {
+	while(!TCB::running->waitingToJoin.isEmpty()){
+		TCB* tcb = TCB::running->waitingToJoin.getFirst();
+		tcb->needToJoin = false;
+		Scheduler::put(tcb);
+	}
 }
 
 

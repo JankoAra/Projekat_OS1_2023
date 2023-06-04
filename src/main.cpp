@@ -7,6 +7,7 @@
 #include "../h/List.hpp"
 //#include "../h/MemoryAllocator.hpp"
 #include "../h/TCB.hpp"
+#include "../h/ThreadQueue.hpp"
 
 
 extern "C" void interruptHandler();
@@ -30,6 +31,13 @@ void testMemory();
 //}
 
 void nit1f(void*) {
+	for (int i = 0; i < 8; i++) {
+		printInteger(5);
+		printString("\n");
+		time_sleep(50);
+	}
+	printString("\nKraj niti 1\n");
+	thread_exit();
 	printString("\nusao u nit 1\n");
 	__asm__ volatile("li t1, 100");
 	//thread_dispatch();
@@ -56,6 +64,13 @@ void nit1f(void*) {
 }
 
 void nit2f(void* arg2) {
+	for (int i = 0; i < 10; i++) {
+		printInteger(3);
+		printString("\n");
+		time_sleep(30);
+	}
+	printString("\nKraj niti 2\n");
+	thread_exit();
 	printString("\nusao u nit 2\n");
 
 	printInteger(*(uint64*)arg2);
@@ -93,6 +108,12 @@ void nit3f(void*) {
 		printString("\n");
 		time_sleep(10);
 	}
+	printString("\nGotova nit3\n");
+}
+void idle(void*){
+	while(true){
+		thread_dispatch();
+	}
 }
 
 #pragma GCC optimize("O0")
@@ -127,24 +148,36 @@ int main() {
 	thread_t glavnaNit = nullptr;
 	thread_t nit1 = nullptr;
 	thread_t nit2 = nullptr;
-	thread_t nit3;
+	thread_t nit3 = nullptr;
+	thread_t idleNit = nullptr;
 	thread_create(&glavnaNit, nullptr, nullptr);
 	TCB::running = glavnaNit;
 	uint64* arg = new uint64;
 	*arg = 666;
-	thread_create(&nit1, nit1f, nullptr);
-	thread_create(&nit2, nit2f, arg);
-	thread_create(&nit3, nit3f, nullptr);
+	ThreadQueue* q = new ThreadQueue();
+	q->putLast(nit3);
+	q->putLast(nit2);
+	q->putLast(nit1);
+	thread_t nitred3 = q->getFirst();
+	thread_t nitred2 = q->getFirst();
+	thread_t nitred1 = q->getFirst();
+	thread_create(&idleNit, idle, nullptr);
+	thread_create(&nitred1, nit1f, nullptr);
+	thread_create(&nitred2, nit2f, arg);
+	thread_create(&nitred3, nit3f, nullptr);
 
 	//omoguci prekide
 	Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
 
-	while (!nit1->isFinished() || !nit2->isFinished()) {
-		thread_dispatch();
-	}
+//	while (!nitred1->isFinished() || !nitred2->isFinished()) {
+//		thread_dispatch();
+//	}
+	thread_join(nitred1);
+	thread_join(nitred2);
+	thread_join(nitred3);
 
 	printString("\nProsao while\n");
-
+	delete q;
 	//zabrani prekide
 	Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
 	printString("\nSad cu da izadjem\n");

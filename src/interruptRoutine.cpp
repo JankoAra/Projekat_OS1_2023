@@ -71,6 +71,7 @@ extern "C" void interruptRoutine() {
 			case 0x12:
 				//thread_exit
 				TCB::running->setFinished(true);
+				TCB::releaseJoined();
 				TCB::yield();
 				break;
 			case 0x13:
@@ -79,6 +80,10 @@ extern "C" void interruptRoutine() {
 				break;
 			case 0x14:
 				//thread_join
+				thread_t handleToJoin;
+				handleToJoin = (thread_t)a1;
+				TCB::threadJoin(handleToJoin);
+				TCB::yield();
 				break;
 			case 0x21:
 				//sem_open
