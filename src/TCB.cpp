@@ -16,7 +16,7 @@ TCB* TCB::createThread(TCB::Body function, void* args, uint64* stack) {
 	TCB* newThread = new TCB(function, args, stack);
 
 	//startovanje niti(stavljanje u Scheduler); main nit je vec aktivna, ne stavlja se u Scheduler
-	if (function != nullptr) Scheduler::put(newThread);
+	//if (function != nullptr) Scheduler::put(newThread);
 	return newThread;
 }
 

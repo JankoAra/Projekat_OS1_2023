@@ -48,6 +48,8 @@ private:
 	void (* body)(void*);
 
 	void* arg;
+
+	static void wrapper(void* thread);
 };
 
 
