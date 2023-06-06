@@ -62,6 +62,7 @@ extern "C" void interruptRoutine() {
 				sp = (uint64*)a4;
 
 				*handle = TCB::createThread(function, args, sp);
+				TCB::start(*handle);
 				if (*handle != nullptr) {
 					__asm__ volatile("li a0, 0");
 				} else {
@@ -88,12 +89,12 @@ extern "C" void interruptRoutine() {
 				break;
 			case 0x21:
 				//sem_open
-				sem_t* semHandle;
-				semHandle = (sem_t*)a1;
+				sem_t* openHandle;
+				openHandle = (sem_t*)a1;
 				uint initVal;
 				initVal = (uint)a2;
-				*semHandle = KSem::initSem(initVal);
-				if (*semHandle != nullptr) {
+				*openHandle = KSem::initSem(initVal);
+				if (*openHandle != nullptr) {
 					__asm__ volatile("li a0, 0");
 				} else {
 					__asm__ volatile("li a0, -1");

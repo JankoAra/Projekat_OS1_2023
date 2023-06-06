@@ -121,6 +121,7 @@ int sem_open(sem_t* handle, unsigned int init) {
 
 	scall();
 
+	//status == 0 ako je uspesno kreiran semafor; status == -1 ako nije
 	int status;
 	__asm__ volatile("mv %[status], a0":[status] "=r"(status));
 	return status;
@@ -131,7 +132,7 @@ int sem_close(sem_t handle) {
 	__asm__ volatile("mv a1, %[handle]": :[handle] "r"(handle):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	__asm__ volatile("li a0, 0x22");
 	//a0 = 0x22
-	//a1 = pokazivac na rucku semafora
+	//a1 = rucka semafora (pokazivac na semafor u kernelu)
 
 	scall();
 
@@ -145,7 +146,7 @@ int sem_wait(sem_t id) {
 	__asm__ volatile("mv a1, %[handle]": :[handle] "r"(id):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	__asm__ volatile("li a0, 0x23");
 	//a0 = 0x23
-	//a1 = pokazivac na rucku semafora
+	//a1 = rucka semafora (pokazivac na semafor u kernelu)
 
 	scall();
 
@@ -159,7 +160,7 @@ int sem_signal(sem_t id) {
 	__asm__ volatile("mv a1, %[handle]": :[handle] "r"(id):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 	__asm__ volatile("li a0, 0x24");
 	//a0 = 0x24
-	//a1 = pokazivac na rucku semafora
+	//a1 = rucka semafora (pokazivac na semafor u kernelu)
 
 	scall();
 

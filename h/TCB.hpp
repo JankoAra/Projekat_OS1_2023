@@ -15,6 +15,7 @@ public:
 	using Body = void (*)(void*);
 
 	static TCB* createThread(Body function, void* args, uint64* stack);
+	static void start(TCB* newTcb);
 
 	bool isFinished() { return finished; }
 

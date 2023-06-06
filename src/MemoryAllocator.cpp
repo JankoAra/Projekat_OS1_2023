@@ -9,7 +9,7 @@ bool MemoryAllocator::initialized = false;
 MemoryAllocator::FreeMemSegment* MemoryAllocator::freeMemHead = nullptr;
 MemoryAllocator::UsedMemSegment* MemoryAllocator::usedMemHead = nullptr;
 
-void* MemoryAllocator::kmalloc(size_t size) {
+void* MemoryAllocator::kmalloc(size_t size, Purpose pur) {
 	if (size <= 0) return nullptr;
 
 	//pocetna inicijalizacija
@@ -44,6 +44,7 @@ void* MemoryAllocator::kmalloc(size_t size) {
 		//ubacivanje novog fragmenta u listu zauzetih fragmenata
 		UsedMemSegment* newFragment = (UsedMemSegment*)current;
 		newFragment->size = size;
+		newFragment->purpose = pur;
 		UsedMemSegment* prevUsed = nullptr;
 		for (UsedMemSegment* cur = usedMemHead; cur && cur < newFragment; prevUsed = cur, cur = cur->next);
 		if (!prevUsed) {
@@ -108,4 +109,9 @@ int MemoryAllocator::tryToJoin(MemoryAllocator::FreeMemSegment* current) {
 		if (current->next) current->next->prev = current;
 		return 1;
 	} else return 0;
+}
+
+bool MemoryAllocator::checkPurpose(void* ptr, MemoryAllocator::Purpose p) {
+	ptr = (char*)ptr - sizeof(UsedMemSegment);
+	return ((UsedMemSegment*)ptr)->purpose == p;
 }

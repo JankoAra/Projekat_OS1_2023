@@ -1,66 +1,92 @@
 #ifndef _syscall_cpp
 #define _syscall_cpp
 
-#include "syscall_c.hpp"
+#include "../lib/hw.h"
 
-void* operator new (size_t);
-void* operator new[] (size_t);
-void operator delete (void*) noexcept;
-void operator delete[] (void*) noexcept;
+void* operator new(size_t);
+
+void* operator new[](size_t);
+
+void operator delete(void*)
+
+noexcept;
+
+void operator delete[](void*)
+
+noexcept;
+
+class TCB;
+
+typedef TCB* thread_t;
+
+class KSem;
+
+typedef KSem* sem_t;
 
 class Thread {
 public:
-    Thread (void (*body)(void*), void* arg);
-    virtual ~Thread ();
+	Thread(void (* body)(void*), void* arg);
 
-    int start ();
+	virtual ~Thread();
 
-    void join();
+	int start();
 
-    static void dispatch ();
-    static int sleep (time_t);
+	void join();
+
+	static void dispatch();
+
+	static int sleep(time_t);
 
 protected:
-    Thread ();
-    virtual void run () {}
+	Thread();
+
+	virtual void run() {}
 
 private:
-    thread_t myHandle;
-    void (*body)(void*); void* arg;
+	thread_t myHandle;
+
+	void (* body)(void*);
+
+	void* arg;
 };
 
 
 class Semaphore {
 public:
 
-    Semaphore (unsigned init = 1);
-    virtual ~Semaphore ();
+	Semaphore(unsigned init = 1);
 
-    int wait ();
-    int signal ();
+	virtual ~Semaphore();
+
+	int wait();
+
+	int signal();
 
 private:
-    sem_t myHandle;
+	sem_t myHandle;
 
 };
 
 
 class PeriodicThread : public Thread {
 public:
-    void terminate ();
+	void terminate();
 
 protected:
-    PeriodicThread (time_t period);
-    virtual void periodicActivation () {}
+	PeriodicThread(time_t period);
+
+	virtual void periodicActivation() {}
 
 private:
-    time_t period;
+	time_t period;
 };
 
 
 class Console {
 public:
-    static char getc ();
-    static void putc (char);
+	static char getc();
+
+	static void putc(char);
 };
+
 #endif

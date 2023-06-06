@@ -57,7 +57,7 @@ void TCB::wrapper() {
 }
 
 void* TCB::operator new(size_t size) {
-	return MemoryAllocator::kmalloc(size + sizeof(MemoryAllocator::UsedMemSegment));
+	return MemoryAllocator::kmalloc(size + sizeof(MemoryAllocator::UsedMemSegment), MemoryAllocator::THREAD);
 }
 
 void TCB::operator delete(void* ptr) {
@@ -76,6 +76,11 @@ void TCB::releaseJoined() {
 		tcb->needToJoin = false;
 		Scheduler::put(tcb);
 	}
+}
+
+void TCB::start(TCB* newTcb) {
+	//startovanje niti(stavljanje u Scheduler); main nit je vec aktivna, ne stavlja se u Scheduler
+	if (newTcb->threadFunction != nullptr) Scheduler::put(newTcb);
 }
 
 

@@ -9,6 +9,7 @@
 
 class MemoryAllocator {
 public:
+	enum Purpose{STACK, SEMAPHORE, THREAD, MISC, LIST_NODE};
 	struct FreeMemSegment {
 		FreeMemSegment* next;
 		FreeMemSegment* prev;
@@ -18,13 +19,16 @@ public:
 	struct UsedMemSegment {
 		UsedMemSegment* next;
 		size_t size;
+		Purpose purpose;
 	};
 
 	// alokacija 'size' bajtova
-	static void* kmalloc(size_t size);
+	static void* kmalloc(size_t size, Purpose pur = MISC);
 
 	// oslobadjanje bloka alociranog sa kmalloc, vraca -1 ako je neuspesno
 	static int kfree(void* ptr);
+
+	static bool checkPurpose(void* ptr, Purpose p);
 
 private:
 	MemoryAllocator() {}

@@ -11,18 +11,29 @@
 class KSem {
 public:
 	static KSem* initSem(uint val);
+
 	void wait();
+
 	void signal();
+
 	static int closeSem(sem_t handle);
 
 protected:
 	void block();
+
 	void unblock();
 
 private:
-	KSem(uint val):val(val),working(true){}
+	KSem(uint val) : val(val), working(true) {}
+
+	KSem(const KSem&) = delete;
+
+	KSem& operator=(const KSem&) = delete;
+
 	int val;
 	ThreadQueue blocked;
+
+	//da li je semafor ugasen ili ne
 	bool working;
 
 	static void* operator new(size_t size);

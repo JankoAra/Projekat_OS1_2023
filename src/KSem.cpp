@@ -7,7 +7,7 @@
 #include "../h/Scheduler.hpp"
 
 void* KSem::operator new(size_t size) {
-	return MemoryAllocator::kmalloc(size + sizeof(MemoryAllocator::UsedMemSegment));
+	return MemoryAllocator::kmalloc(size + sizeof(MemoryAllocator::UsedMemSegment), MemoryAllocator::SEMAPHORE);
 }
 
 void KSem::operator delete(void* ptr) {
@@ -19,12 +19,12 @@ KSem* KSem::initSem(uint val) {
 }
 
 void KSem::wait() {
-	if(!working) return;
+	if (!working) return;
 	if (--val < 0) block();
 }
 
 void KSem::signal() {
-	if(!working) return;
+	if (!working) return;
 	if (val++ < 0) unblock();
 }
 
@@ -41,8 +41,9 @@ void KSem::unblock() {
 }
 
 int KSem::closeSem(sem_t handle) {
-	handle->working=false;
-	while(!handle->blocked.isEmpty()){
+	if(!MemoryAllocator::checkPurpose(handle, MemoryAllocator::SEMAPHORE)) return -1;
+	handle->working = false;
+	while (!handle->blocked.isEmpty()) {
 		TCB* tcb = handle->blocked.getFirst();
 		tcb->setBlocked(false);
 		Scheduler::put(tcb);
