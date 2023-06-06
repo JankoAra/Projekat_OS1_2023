@@ -12,6 +12,9 @@
 #include "../h/Scheduler.hpp"
 #include "../h/KSem.hpp"
 
+#include "../test/printing.hpp"
+void printInteger(int i);
+
 #pragma GCC optimize("O0")
 extern "C" void interruptRoutine() {
 	uint64 scause, sepc, sstatus;
@@ -147,6 +150,31 @@ extern "C" void interruptRoutine() {
 				char c;
 				c = (char)a1;
 				__putc(c);
+				break;
+			case 0x80:
+				//alloc thread
+				thread_t* handleAlloc;
+				handleAlloc = (thread_t*)a1;
+				void (* foo)(void*);
+				foo = (void (*)(void*))a2;
+				void* argsAlloc;
+				argsAlloc = (void*)a3;
+				uint64* spAlloc;
+				spAlloc = (uint64*)a4;
+
+				*handleAlloc = TCB::createThread(foo, argsAlloc, spAlloc);
+				if (*handleAlloc != nullptr) {
+					__asm__ volatile("li a0, 0");
+				} else {
+					__asm__ volatile("li a0, -1");
+				}
+				__asm__ volatile("sd a0, 80(s0)");
+				break;
+			case 0x81:
+				//start thread
+				thread_t threadStartHandle;
+				threadStartHandle = (thread_t)a1;
+				Scheduler::put(threadStartHandle);
 				break;
 			case 0x90:
 				//printString

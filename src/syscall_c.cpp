@@ -2,6 +2,7 @@
 #include "../h/Riscv.hpp"
 #include "../h/MemoryAllocator.hpp"
 #include "../lib/console.h"
+#include "../h/TCB.hpp"
 
 inline void scall() {
 	__asm__ volatile("ecall");
@@ -187,4 +188,38 @@ void putc(char c) {
 
 	scall();
 	//nema povratne vrednosti
+}
+
+int thread_alloc(thread_t* handle, TCB::Body function, void* arg){
+	//stvaranje steka ako se ne radi o main kernel niti, posto ona automatski ima stek
+	uint64* stack = nullptr;
+	if (function != nullptr) {
+		stack = (uint64*)mem_alloc(DEFAULT_STACK_SIZE);
+	}
+	//uint64* stack = (start_routine != nullptr ? (uint64*)MemoryAllocator::kmalloc(DEFAULT_STACK_SIZE) : nullptr);
+	//stavljanje argumenata za sistemski poziv
+	__asm__ volatile("mv a4, %[sp]": :[sp] "r"(stack):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("mv a3, %[arg]": :[arg] "r"(arg):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("mv a2, %[function]": :[function] "r"(
+			function):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("mv a1, %[handle]": :[handle] "r"(handle):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("li a0, 0x80");
+	//a0 = 0x80
+	//a1 = adresa pokazivaca na rucku niti
+	//a2 = prva adresa funkcije koju nit izvrsava
+	//a3 = pokazivac na argumente funkcije
+	//a4 = pokazivac na najnizu adresu steka (stek raste ka nizim adresama, pokazuje na poslednju zauzetu)
+
+	scall();
+
+	int status;
+	__asm__ volatile("mv %[status], a0":[status] "=r"(status));
+	return status;
+}
+
+void thread_start(thread_t handle){
+	__asm__ volatile("mv a1, %[handle]": :[handle] "r"(handle):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+	__asm__ volatile("li a0, 0x81");
+
+	scall();
 }
