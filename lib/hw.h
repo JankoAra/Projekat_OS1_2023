@@ -20,13 +20,14 @@ extern const void* HEAP_END_ADDR;
 
 static const size_t MEM_BLOCK_SIZE = 64;
 
-extern const uint64 CONSOLE_STATUS;
-extern const uint64 CONSOLE_TX_DATA;
-extern const uint64 CONSOLE_RX_DATA;
+//registri sirine 8 bita
+extern const uint64 CONSOLE_STATUS;	//adresa statusnog registra 0x1000 0005
+extern const uint64 CONSOLE_TX_DATA;	//adresa tx data registra 0x1000 0000
+extern const uint64 CONSOLE_RX_DATA;	//adresa rx data registra 0x1000 0000
 
 static const uint64 CONSOLE_IRQ = 10;
-static const uint64 CONSOLE_TX_STATUS_BIT = 1 << 5;
-static const uint64 CONSOLE_RX_STATUS_BIT = 1;
+static const uint64 CONSOLE_TX_STATUS_BIT = 1 << 5;	//kontroler konzole moze da primi podatak koji ce poslati na konzolu
+static const uint64 CONSOLE_RX_STATUS_BIT = 1;	//moze se procitati podatak pristigao od konzole
 
 #ifdef __cplusplus
 extern "C" {

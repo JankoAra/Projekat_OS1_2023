@@ -11,9 +11,11 @@
 #include "../h/TCB.hpp"
 #include "../h/Scheduler.hpp"
 #include "../h/KSem.hpp"
+#include "../h/KConsole.hpp"
 
 #include "../test/printing.hpp"
-void printInteger(int i);
+
+//void printInteger(int i);
 
 #pragma GCC optimize("O0")
 extern "C" void interruptRoutine() {
@@ -229,7 +231,36 @@ extern "C" void interruptRoutine() {
 		//Riscv::w_sepc(sepc + 4);
 	} else if (scause == (1UL << 63 | 9)) {
 		//spoljasnji hardverski prekid (od konzole)
-		console_handler();
+		uint64 irq = plic_claim();
+		static uint8 i = 32;
+		static char c = '\n';
+		if (irq == CONSOLE_IRQ) {
+			if (*KConsole::sr & CONSOLE_RX_STATUS_BIT) {
+				//input smer, od tastature do bafera
+				//moze se procitati podatak pristigao od konzole
+				printString("\nrx grana\n");
+				printInteger(c = *KConsole::dr);
+				//printInteger(podatak);
+				//printString("\n");
+			} else if (*KConsole::sr & CONSOLE_TX_STATUS_BIT) {
+				//output smer, od bafera do ekrana
+				//kontroler konzole moze da primi podatak koji ce poslati na konzolu
+				//printString("\ntx grana\n");
+				//*KConsole::dr = (char)i;
+				*KConsole::dr = c;
+				if (i++ == 126)i = 32;
+			} else {
+				printString("\nnista\n");
+			}
+			//printString("\nobradjen prekid konzole\n");
+			plic_complete(irq);
+		} else {
+			printString("Neki drugi prekid\n");
+		}
+		//console_handler();
+		Riscv::w_sepc(sepc);
+		Riscv::w_sstatus(sstatus);
+		Riscv::mc_sip(Riscv::SIP_SEIP);
 	} else if (scause == (1UL << 63 | 1)) {
 		//prekid od tajmera
 		//printString("\nPrekid od tajmera\n");

@@ -16,9 +16,9 @@
 //#include "../h/KSem.hpp"
 
 #include "../test/printing.hpp"
-void printInteger(int i){
-	printInt(i);
-}
+//void printInteger(int i){
+//	printInt(i);
+//}
 extern Semaphore* semA;
 
 void testMemory() {
