@@ -12,9 +12,9 @@ class KSem {
 public:
 	static KSem* initSem(uint val);
 
-	void wait();
+	int wait();
 
-	void signal();
+	int signal();
 
 	static int closeSem(sem_t handle);
 

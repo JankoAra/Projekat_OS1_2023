@@ -18,14 +18,21 @@ KSem* KSem::initSem(uint val) {
 	return new KSem(val);
 }
 
-void KSem::wait() {
-	if (!working) return;
-	if (--val < 0) block();
+int KSem::wait() {
+	if (!MemoryAllocator::checkPurpose(this, MemoryAllocator::SEMAPHORE)) return -2;
+	if (!working) return -3;
+	if (--val < 0) {
+		block();
+		return -1;
+	}
+	return 0;
 }
 
-void KSem::signal() {
-	if (!working) return;
+int KSem::signal() {
+	if (!MemoryAllocator::checkPurpose(this, MemoryAllocator::SEMAPHORE)) return -2;
+	if (!working) return -3;
 	if (val++ < 0) unblock();
+	return 0;
 }
 
 void KSem::block() {
@@ -41,7 +48,7 @@ void KSem::unblock() {
 }
 
 int KSem::closeSem(sem_t handle) {
-	if(!MemoryAllocator::checkPurpose(handle, MemoryAllocator::SEMAPHORE)) return -1;
+	if (!MemoryAllocator::checkPurpose(handle, MemoryAllocator::SEMAPHORE)) return -2;
 	handle->working = false;
 	while (!handle->blocked.isEmpty()) {
 		TCB* tcb = handle->blocked.getFirst();
