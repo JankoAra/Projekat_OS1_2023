@@ -53,7 +53,6 @@ public:
 
 	TCB* getFirst();
 
-	// Overriding new and delete operators for ThreadQueue
 	static void* operator new(size_t size) {
 		return mem_alloc(size);
 	}

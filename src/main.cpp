@@ -22,7 +22,7 @@ void nit2f(void* arg2);
 
 void nit3f(void*);
 
-sem_t semA;
+Semaphore* semA;
 
 void idle(void*) {
 	while (1) {}
@@ -35,7 +35,8 @@ int main() {
 	//postavi adresu prekidne rutine u stvec
 	Riscv::w_stvec((uint64)&interruptHandler);
 
-	sem_open(&semA, 0);
+	//sem_open(&semA, 0);
+	semA = new Semaphore(0);
 
 
 

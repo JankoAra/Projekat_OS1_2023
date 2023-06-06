@@ -18,6 +18,10 @@ public:
 
 	static int closeSem(sem_t handle);
 
+	static void* operator new(size_t size);
+
+	static void operator delete(void* ptr);
+
 protected:
 	void block();
 
@@ -36,9 +40,7 @@ private:
 	//da li je semafor ugasen ili ne
 	bool working;
 
-	static void* operator new(size_t size);
 
-	static void operator delete(void* ptr);
 };
 
 

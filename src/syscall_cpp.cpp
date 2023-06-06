@@ -4,6 +4,7 @@
 #include "../h/syscall_cpp.hpp"
 #include "../h/syscall_c.hpp"
 #include "../h/TCB.hpp"
+#include "../h/KSem.hpp"
 
 //override globalnog new
 void* operator new(size_t size) {
@@ -61,19 +62,20 @@ Thread::Thread() {
 }
 
 Semaphore::Semaphore(unsigned int init) {
-
+	sem_open(&myHandle, init);
 }
 
 Semaphore::~Semaphore() {
-
+	sem_close(myHandle);
+	delete myHandle;
 }
 
 int Semaphore::wait() {
-	return 0;
+	return sem_wait(myHandle);
 }
 
 int Semaphore::signal() {
-	return 0;
+	return sem_signal(myHandle);
 }
 
 void PeriodicThread::terminate() {

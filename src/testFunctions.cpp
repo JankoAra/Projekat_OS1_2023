@@ -15,7 +15,7 @@
 #include "../h/ThreadQueue.hpp"
 //#include "../h/KSem.hpp"
 
-extern sem_t semA;
+extern Semaphore* semA;
 
 void testMemory() {
 	const uint64 NumAllocations = 500;    //zasto nece za preko 500????
@@ -50,7 +50,8 @@ void testMemory() {
 void nit1f(void*) {
 	for(int i=0;i<3;i++){
 		printString("\nNit 1 dolazi na semafor\n");
-		int res = sem_wait(semA);
+		//int res = sem_wait(semA);
+		int res = (*semA).wait();
 		if(res){
 			printString("\nNit 1 cekala na semaforu\n");
 		}
@@ -68,8 +69,15 @@ void nit1f(void*) {
 void nit2f(void* arg2) {
 	for(int i=0;i<3;i++){
 		printString("\nNit 2 daje signal\n");
-		sem_signal(semA);
-		sem_close(semA);
+		//sem_signal(semA);
+		int res = (*semA).signal();
+		printString("\nPovratna vrednost signala je ");
+		printInteger(res);
+		printString("\n");
+		//sem_close(semA);
+		printString("\nNit 2 ubija semafor\n");
+		delete semA;
+
 	}
 	printString("\nGotova nit 2\n");
 }
