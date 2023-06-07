@@ -33,7 +33,8 @@ void testMemory() {
 
 	// Allocate memory
 	for (uint64 i = 0; i < NumAllocations; ++i) {
-		allocations[i] = static_cast<int*>(MemoryAllocator::kmalloc(AllocationSize, MemoryAllocator::MISC));
+		allocations[i] = (int*)MemoryAllocator::kmalloc(
+				AllocationSize + sizeof(MemoryAllocator::UsedMemSegment), MemoryAllocator::MISC);
 		if (allocations[i] == nullptr) {
 //			printString("\nAllocation failed for index ");
 //			printInteger(i);
@@ -93,7 +94,7 @@ void nit3f(void*) {
 	do {
 		slovo = getc();
 		putc(slovo);
-		if(slovo=='\r') putc('\n');
+		if (slovo == '\r') putc('\n');
 	} while (slovo != '0');
 
 	printString("\nGotova nit3\n");

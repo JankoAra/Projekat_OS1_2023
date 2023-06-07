@@ -41,8 +41,7 @@ extern "C" void interruptRoutine() {
 			case 0x01:
 				//mem_alloc
 				size_t size;
-				size = (size_t)a1;
-				//__asm__ volatile("mv %[size], a1":[size] "=r"(size));
+				size = (size_t)a1;	//size je broj blokova koje treba alocirati
 				size = size * MEM_BLOCK_SIZE;
 				MemoryAllocator::kmalloc(size);
 				__asm__ volatile("sd a0, 80(s0)");
@@ -51,7 +50,6 @@ extern "C" void interruptRoutine() {
 				//mem_free
 				void* ptr;
 				ptr = (void*)a1;
-				//__asm__ volatile("mv %[ptr], a1" :[ptr]"=r"(ptr));
 				MemoryAllocator::kfree(ptr);
 				__asm__ volatile("sd a0, 80(s0)");
 				break;

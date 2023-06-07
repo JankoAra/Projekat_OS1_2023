@@ -10,18 +10,9 @@ MemoryAllocator::FreeMemSegment* MemoryAllocator::freeMemHead = nullptr;
 MemoryAllocator::UsedMemSegment* MemoryAllocator::usedMemHead = nullptr;
 
 void* MemoryAllocator::kmalloc(size_t size, Purpose pur) {
+	//size je u broju bajtova, ukljucuje i mesto potrebno za zaglavlje UsedMemSegment
 	if (size <= 0) return nullptr;
 
-	//pocetna inicijalizacija
-	if (!initialized) {
-		freeMemHead = (FreeMemSegment*)HEAP_START_ADDR;
-		freeMemHead->next = nullptr;
-		freeMemHead->prev = nullptr;
-		freeMemHead->size = (char*)HEAP_END_ADDR - (char*)HEAP_START_ADDR - sizeof(FreeMemSegment);
-		usedMemHead = nullptr;
-
-		initialized = true;
-	}
 
 	//alokacija uvek zaokruzena na blokove
 	//size += sizeof(UsedMemSegment); ;prebaceno u mem_alloc
@@ -34,20 +25,31 @@ void* MemoryAllocator::kmalloc(size_t size, Purpose pur) {
 
 		//pravljenje novog slobodnog fragmenta od ostatka fragmenta
 		FreeMemSegment* remainderFree = (FreeMemSegment*)((char*)current + size);
-		remainderFree->size = current->size - size;
-		remainderFree->prev = current->prev;
-		if (current->prev) current->prev->next = remainderFree;
-		remainderFree->next = current->next;
-		if (current->next) current->next->prev = remainderFree;
-		if (freeMemHead == current) freeMemHead = remainderFree;
-
+		size_t remainingSize = current->size - size;
+		if (remainingSize <= sizeof(UsedMemSegment)) {
+			//ne preostaje dovoljno veliki slobodni segment;dodeljujemo ceo trenutno alociranom
+			size += remainingSize;
+			if (current->prev) current->prev->next = current->next;
+			if (current->next) current->next->prev = current->prev;
+			if (freeMemHead == current) freeMemHead = current->next;
+		} else {
+			remainderFree->size = remainingSize;
+			remainderFree->prev = current->prev;
+			if (current->prev) current->prev->next = remainderFree;
+			remainderFree->next = current->next;
+			if (current->next) current->next->prev = remainderFree;
+			if (freeMemHead == current) freeMemHead = remainderFree;
+		}
 		//ubacivanje novog fragmenta u listu zauzetih fragmenata
 		UsedMemSegment* newFragment = (UsedMemSegment*)current;
 		newFragment->size = size;
 		newFragment->purpose = pur;
 		newFragment->usableFirstAddress = (char*)newFragment + sizeof(UsedMemSegment);
 		UsedMemSegment* prevUsed = nullptr;
-		for (UsedMemSegment* cur = usedMemHead; cur && cur < newFragment; prevUsed = cur, cur = cur->next);
+		for (UsedMemSegment* cur = usedMemHead;
+			 cur && ((char*)cur < (char*)newFragment); cur = cur->next) {
+			prevUsed = cur;
+		}
 		if (!prevUsed) {
 			newFragment->next = usedMemHead;
 			usedMemHead = newFragment;
@@ -64,12 +66,16 @@ void* MemoryAllocator::kmalloc(size_t size, Purpose pur) {
 int MemoryAllocator::kfree(void* ptr) {
 	if (!ptr) return 0;
 	if (!usedMemHead) return -1;
+	//ptr pokazuje na usableFirstAddress, pre toga je zaglavlje segmenta
 	ptr = (char*)ptr - sizeof(UsedMemSegment);
+
 	//trazenje adrese ptr u listi zauzetih segmenata
 	UsedMemSegment* currentUsed = usedMemHead;
 	UsedMemSegment* prevUsed = nullptr;
-	for (; currentUsed && currentUsed != ptr; prevUsed = currentUsed, currentUsed = currentUsed->next);
-	if (currentUsed != ptr) return -1;    //adresa ne odgovara segmentu alociranom preko kmalloc
+	for (; currentUsed && ((char*)currentUsed != (char*)ptr); currentUsed = currentUsed->next) {
+		prevUsed = currentUsed;
+	}
+	if ((char*)currentUsed != (char*)ptr) return -1;    //adresa ne odgovara segmentu alociranom preko kmalloc
 
 	//prevezivanje liste zauzetih segmenata
 	if (prevUsed) prevUsed->next = currentUsed->next;
@@ -77,11 +83,11 @@ int MemoryAllocator::kfree(void* ptr) {
 
 	//oslobadjanje segmenta i ubacivanje u listu slobodnih
 	FreeMemSegment* prevFree = nullptr;
-	if (!freeMemHead || ptr < (char*)freeMemHead) {
+	if (!freeMemHead || ((char*)ptr < (char*)freeMemHead)) {
 		prevFree = nullptr;
 	} else {
 		for (prevFree = freeMemHead;
-			 prevFree->next != nullptr && ptr > (char*)(prevFree->next); prevFree = prevFree->next);
+			 prevFree->next && (char*)ptr > (char*)(prevFree->next); prevFree = prevFree->next);
 	}
 	FreeMemSegment* newFree = (FreeMemSegment*)ptr;
 	size_t segmentSize = ((UsedMemSegment*)ptr)->size;
@@ -116,4 +122,17 @@ int MemoryAllocator::tryToJoin(MemoryAllocator::FreeMemSegment* current) {
 bool MemoryAllocator::checkPurpose(void* ptr, MemoryAllocator::Purpose p) {
 	ptr = (char*)ptr - sizeof(UsedMemSegment);
 	return ((UsedMemSegment*)ptr)->purpose == p;
+}
+
+void MemoryAllocator::initMemoryAllocator() {
+//pocetna inicijalizacija
+	if (!initialized) {
+		freeMemHead = (FreeMemSegment*)HEAP_START_ADDR;
+		freeMemHead->next = nullptr;
+		freeMemHead->prev = nullptr;
+		freeMemHead->size = (char*)HEAP_END_ADDR - (char*)HEAP_START_ADDR;//- sizeof(FreeMemSegment);
+		usedMemHead = nullptr;
+
+		initialized = true;
+	}
 }

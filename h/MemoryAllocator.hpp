@@ -31,6 +31,8 @@ public:
 
 	static bool checkPurpose(void* ptr, Purpose p);
 
+	static void initMemoryAllocator();
+
 private:
 	MemoryAllocator() {}
 

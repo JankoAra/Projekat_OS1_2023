@@ -48,11 +48,14 @@ int main() {
 	//postavi adresu prekidne rutine u stvec
 	Riscv::w_stvec((uint64)&interruptHandler);
 
+	MemoryAllocator::initMemoryAllocator();
+
+
 	//sem_open(&semA, 0);
 	semA = new Semaphore(1);
 
-	KConsole::initKConsole();
 
+	KConsole::initKConsole();
 
 
 
