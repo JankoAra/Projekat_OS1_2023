@@ -100,7 +100,7 @@ void WorkerC::workerBodyC(void *arg) {
         printString("C: i="); printInt(i); printString("\n");
     }
 
-    printString("A finished!\n");
+    printString("C finished!\n");
     finishedC = true;
     thread_dispatch();
 }
@@ -151,5 +151,7 @@ void Threads_CPP_API_test() {
         Thread::dispatch();
     }
 
-    for (auto thread: threads) { delete thread; }
+    for (auto thread: threads) {
+		delete thread;
+	}
 }

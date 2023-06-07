@@ -55,7 +55,12 @@ Thread::Thread(void (* body)(void*), void* arg) {
 }
 
 Thread::~Thread() {
-	thread_exit();
+	//ne treba da se gasi running nit, vec nit na koju pokazuje rucka od this
+	thread_join(this->myHandle);
+	delete myHandle;
+
+	//ovo nije dobro
+	//thread_exit();
 }
 
 int Thread::start() {

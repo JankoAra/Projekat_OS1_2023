@@ -44,13 +44,9 @@ public:
 	static TCB* running;
 	static uint64 runningTimeSlice;
 
-//	TCB* getNextInScheduler(){
-//		return nextInScheduler;
-//	}
-//	void setNextInScheduler(TCB* tcb){
-//		nextInScheduler = tcb;
-//	}
+	static void* operator new(size_t size);
 
+	static void operator delete(void* ptr);
 private:
 	//kontekst procesora za datu nit
 	struct Context {
@@ -84,9 +80,7 @@ private:
 
 	static void contextSwitch(Context* oldContext, Context* newContext);    //implementacija u asm
 
-	static void* operator new(size_t size);
 
-	static void operator delete(void* ptr);
 };
 
 
