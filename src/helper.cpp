@@ -1,5 +1,5 @@
 #include "../h/helper.hpp"
-#include "../lib/console.h"
+//#include "../lib/console.h"
 #include "../h/Riscv.hpp"
 //#include "../h/syscall_c.hpp"
 

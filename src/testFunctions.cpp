@@ -3,7 +3,7 @@
 //
 #include "../h/MemoryAllocator.hpp"
 #include "../h/helper.hpp"
-#include "../lib/console.h"
+//#include "../lib/console.h"
 #include "../lib/hw.h"
 #include "../h/helper.hpp"
 #include "../h/Riscv.hpp"
@@ -16,6 +16,7 @@
 //#include "../h/KSem.hpp"
 
 #include "../test/printing.hpp"
+
 //void printInteger(int i){
 //	printInt(i);
 //}
@@ -89,12 +90,11 @@ void nit2f(void* arg2) {
 
 void nit3f(void*) {
 	char slovo;
+	do {
+		slovo = getc();
+		putc(slovo);
+		if(slovo=='\r') putc('\n');
+	} while (slovo != '0');
 
-	slovo = getc();
-	putc(slovo);
-	slovo = getc();
-	putc(slovo);
-	slovo = getc();
-	putc(slovo);
 	printString("\nGotova nit3\n");
 }

@@ -49,7 +49,7 @@ public:
 	static char* dr;
 	static uint8* sr;
 	static bool initialized;
-	static constexpr int capacity = 30;
+	static constexpr int capacity = 50;
 	static char inputBuffer[capacity];
 	static char outputBuffer[capacity];
 	static int inputHead;

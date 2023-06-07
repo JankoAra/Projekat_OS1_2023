@@ -138,9 +138,9 @@ PeriodicThread::PeriodicThread(time_t period) {
 }
 
 char Console::getc() {
-	return 0;
+	return ::getc();
 }
 
-void Console::putc(char) {
-
+void Console::putc(char c) {
+	::putc(c);
 }

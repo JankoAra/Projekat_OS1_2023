@@ -1,4 +1,4 @@
-#include "../lib/console.h"
+//#include "../lib/console.h"
 #include "../lib/hw.h"
 #include "../h/helper.hpp"
 #include "../h/Riscv.hpp"
@@ -29,7 +29,7 @@ void nit3f(void*);
 Semaphore* semA;
 
 void idle(void*) {
-	while (1) {}
+	while (1) {thread_dispatch();}
 }
 
 void kernelConsumerFunction(void*) {
@@ -72,63 +72,53 @@ int main() {
 //	println("");
 
 	//testiranje kreiranja niti
-	thread_t glavnaNit = nullptr;
-	thread_t nit1 = nullptr;
-	thread_t nit2 = nullptr;
-	thread_t nit3 = nullptr;
-	thread_t idleNit = nullptr;
-	thread_t kernelConsumerThread = nullptr;
-	thread_create(&glavnaNit, nullptr, nullptr);
-	TCB::running = glavnaNit;
-	thread_create(&idleNit, idle, nullptr);
-	thread_create(&kernelConsumerThread, kernelConsumerFunction, nullptr);
-
-//	ThreadQueue* q = new ThreadQueue();
-//	q->putLast(nit3);
-//	q->putLast(nit2);
-//	q->putLast(nit1);
-//	thread_t nitred3 = q->getFirst();
-//	thread_t nitred2 = q->getFirst();
-//	thread_t nitred1 = q->getFirst();
-
-	thread_create(&nit1, nit1f, nullptr);
-	thread_create(&nit2, nit2f, nullptr);
-	thread_create(&nit3, nit3f, nullptr);
-
-	//omoguci prekide
-	Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
-
-
-
-//	while (!nitred1->isFinished() || !nitred2->isFinished()) {
-//		thread_dispatch();
-//	}
-	thread_join(nit1);
-	thread_join(nit2);
-	thread_join(nit3);
-	//thread_join(idleNit);
-
-	printString("\nGotove user niti\n");
-	//delete q;
-
-
-	//KConsole::printConsoleState();
-	//KConsole konzola;
-
-	printString("\nSad cu da izadjem\n");
-	//zabrani prekide
-	Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
+//	thread_t glavnaNit = nullptr;
+//	thread_t nit1 = nullptr;
+//	thread_t nit2 = nullptr;
+//	thread_t nit3 = nullptr;
+//	thread_t idleNit = nullptr;
+//	thread_t kernelConsumerThread = nullptr;
+//	thread_create(&glavnaNit, nullptr, nullptr);
+//	TCB::running = glavnaNit;
+//	thread_create(&idleNit, idle, nullptr);
+//	thread_create(&kernelConsumerThread, kernelConsumerFunction, nullptr);
+//
+//
+//	thread_create(&nit1, nit1f, nullptr);
+//	thread_create(&nit2, nit2f, nullptr);
+//	thread_create(&nit3, nit3f, nullptr);
+//
+//	//omoguci prekide
+//	Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
+//
+//	thread_join(nit1);
+//	thread_join(nit2);
+//	thread_join(nit3);
+//	//thread_join(idleNit);
+//
+//	printString("\nGotove user niti\n");
+//
+//	printString("\nSad cu da izadjem\n");
+//	while(KConsole::outputHead!=KConsole::outputTail){}
+//	//zabrani prekide
+//	Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
 
 
 //testiranje svega
-//	thread_t mainHandle;
-//	thread_t userHandle;
-//	thread_create(&mainHandle, nullptr, nullptr);
-//	TCB::running = mainHandle;
-//	thread_create(&userHandle, (TCB::Body)userMain, nullptr);
-//	while (!userHandle->isFinished()) {
-//		thread_dispatch();
-//	}
-//	Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
+	thread_t mainHandle;
+	thread_t userHandle;
+	thread_t idleHandle;
+	thread_t consoleOutputHandle;
+	thread_create(&mainHandle, nullptr, nullptr);
+	TCB::running = mainHandle;
+	thread_create(&idleHandle, idle, nullptr);
+	thread_create(&consoleOutputHandle, kernelConsumerFunction, nullptr);
+	thread_create(&userHandle, (TCB::Body)userMain, nullptr);
+
+	Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
+	thread_join(userHandle);
+	//printString("\nSad cu da izadjem\n");
+	while(KConsole::outputHead!=KConsole::outputTail){}
+	Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
 	return 0;
 }
