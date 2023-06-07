@@ -35,12 +35,28 @@ public:
 
 	static void printConsoleState();
 
+	static char getFromOutput();
+
+	static void placeInInput(char c);
+
+
+
 //private:
-	static sem_t inputSem;
-	static sem_t outputSem;
+	static sem_t inputBufferHasSpace;
+	static sem_t outputBufferHasSpace;
+	static sem_t charsToOutput;
+	static sem_t charsToInput;
 	static char* dr;
 	static uint8* sr;
 	static bool initialized;
+	static constexpr int capacity = 30;
+	static char inputBuffer[capacity];
+	static char outputBuffer[capacity];
+	static int inputHead;
+	static int inputTail;
+	static int outputHead;
+	static int outputTail;
+	static int inputBufferSize;
 };
 
 

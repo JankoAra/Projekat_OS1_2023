@@ -20,6 +20,10 @@ TCB* TCB::createThread(TCB::Body function, void* args, uint64* stack) {
 	return newThread;
 }
 
+void kernelConsumerFunction(void*);
+
+void idle(void*);
+
 void TCB::dispatch() {
 	TCB* old = TCB::running;
 	if (!old->finished && !old->blocked && old->timeToSleep == 0 && !old->needToJoin) {
@@ -30,7 +34,8 @@ void TCB::dispatch() {
 
 	//sada biramo u kom rezimu ce se izvrsavati nit, upisom bita SSTATUS_SPP
 	//ako treba da se izvrsava main kernel nit, povratak je u sistemski rezim, inace u korisnicki
-	if (TCB::running->threadFunction == nullptr) {
+	if (TCB::running->threadFunction == nullptr || TCB::running->threadFunction == kernelConsumerFunction ||
+		TCB::running->threadFunction == idle) {
 		Riscv::ms_sstatus(Riscv::SSTATUS_SPP);
 	} else {
 		Riscv::mc_sstatus(Riscv::SSTATUS_SPP);
@@ -65,13 +70,13 @@ void TCB::operator delete(void* ptr) {
 }
 
 void TCB::threadJoin(TCB* handle) {
-	if(handle->finished) return;
+	if (handle->finished) return;
 	TCB::running->needToJoin = true;
 	handle->waitingToJoin.putLast(TCB::running);
 }
 
 void TCB::releaseJoined() {
-	while(!TCB::running->waitingToJoin.isEmpty()){
+	while (!TCB::running->waitingToJoin.isEmpty()) {
 		TCB* tcb = TCB::running->waitingToJoin.getFirst();
 		tcb->needToJoin = false;
 		Scheduler::put(tcb);

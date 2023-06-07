@@ -1,4 +1,4 @@
-GAS LISTING /tmp/ccaKmH7i.s 			page 1
+GAS LISTING /tmp/ccpbktKi.s 			page 1
 
 
    1              		.file	"KConsole.cpp"
@@ -18,23 +18,32 @@ GAS LISTING /tmp/ccaKmH7i.s 			page 1
    5:src/KConsole.cpp **** #include "../h/KConsole.hpp"
    6:src/KConsole.cpp **** 
    7:src/KConsole.cpp **** bool KConsole::initialized = false;
-   8:src/KConsole.cpp **** sem_t KConsole::inputSem = nullptr;
-   9:src/KConsole.cpp **** sem_t KConsole::outputSem = nullptr;
-  10:src/KConsole.cpp **** char* KConsole::dr = nullptr;
-  11:src/KConsole.cpp **** uint8* KConsole::sr = nullptr;
-  12:src/KConsole.cpp **** 
-  13:src/KConsole.cpp **** void KConsole::initKConsole() {
-  12              		.loc 1 13 31
+   8:src/KConsole.cpp **** sem_t KConsole::inputBufferHasSpace = nullptr;
+   9:src/KConsole.cpp **** sem_t KConsole::outputBufferHasSpace = nullptr;
+  10:src/KConsole.cpp **** sem_t KConsole::charsToOutput = nullptr;
+  11:src/KConsole.cpp **** sem_t KConsole::charsToInput = nullptr;
+  12:src/KConsole.cpp **** char* KConsole::dr = nullptr;
+  13:src/KConsole.cpp **** uint8* KConsole::sr = nullptr;
+  14:src/KConsole.cpp **** int KConsole::inputHead = 0;
+  15:src/KConsole.cpp **** int KConsole::outputHead = 0;
+  16:src/KConsole.cpp **** int KConsole::outputTail = 0;
+  17:src/KConsole.cpp **** int KConsole::inputTail = 0;
+  18:src/KConsole.cpp **** int KConsole::inputBufferSize = 0;
+  19:src/KConsole.cpp **** char KConsole::inputBuffer[];
+  20:src/KConsole.cpp **** char KConsole::outputBuffer[];
+  21:src/KConsole.cpp **** 
+  22:src/KConsole.cpp **** void KConsole::initKConsole() {
+  12              		.loc 1 22 31
   13              		.cfi_startproc
-  14:src/KConsole.cpp **** 	if(initialized) return;
-  14              		.loc 1 14 2
+  23:src/KConsole.cpp **** 	if (initialized) return;
+  14              		.loc 1 23 2
   15 0000 97070000 		lbu	a5,.LANCHOR0
   15      83C70700 
   16 0008 63840700 		beqz	a5,.L7
   17 000c 67800000 		ret
   18              	.L7:
-  13:src/KConsole.cpp **** 	if(initialized) return;
-  19              		.loc 1 13 31 is_stmt 0
+  22:src/KConsole.cpp **** 	if (initialized) return;
+  19              		.loc 1 22 31 is_stmt 0
   20 0010 130101FE 		addi	sp,sp,-32
   21              		.cfi_def_cfa_offset 32
   22 0014 233C1100 		sd	ra,24(sp)
@@ -45,450 +54,982 @@ GAS LISTING /tmp/ccaKmH7i.s 			page 1
   27              		.cfi_offset 9, -24
   28 0020 13040102 		addi	s0,sp,32
   29              		.cfi_def_cfa 8, 0
-  15:src/KConsole.cpp **** 	dr = (char*)CONSOLE_RX_DATA;
-  30              		.loc 1 15 2 is_stmt 1
-  31              		.loc 1 15 5 is_stmt 0
+  24:src/KConsole.cpp **** 	dr = (char*)CONSOLE_RX_DATA;
+  30              		.loc 1 24 2 is_stmt 1
+  31              		.loc 1 24 5 is_stmt 0
   32 0024 97040000 		lla	s1,.LANCHOR0
+GAS LISTING /tmp/ccpbktKi.s 			page 2
+
+
   32      93840400 
   33 002c 97070000 		la	a5,CONSOLE_RX_DATA
   33      83B70700 
   34 0034 83B70700 		ld	a5,0(a5)
   35 0038 23B4F400 		sd	a5,8(s1)
-  16:src/KConsole.cpp **** 	sr = (uint8*)CONSOLE_STATUS;
-  36              		.loc 1 16 2 is_stmt 1
-  37              		.loc 1 16 5 is_stmt 0
+  25:src/KConsole.cpp **** 	sr = (uint8*)CONSOLE_STATUS;
+  36              		.loc 1 25 2 is_stmt 1
+  37              		.loc 1 25 5 is_stmt 0
   38 003c 97070000 		la	a5,CONSOLE_STATUS
-GAS LISTING /tmp/ccaKmH7i.s 			page 2
-
-
   38      83B70700 
   39 0044 83B70700 		ld	a5,0(a5)
   40 0048 23B8F400 		sd	a5,16(s1)
-  17:src/KConsole.cpp **** 	sem_open(&inputSem, 100);
-  41              		.loc 1 17 2 is_stmt 1
-  42              		.loc 1 17 10 is_stmt 0
-  43 004c 93054006 		li	a1,100
+  26:src/KConsole.cpp **** 	sem_open(&inputBufferHasSpace, capacity);
+  41              		.loc 1 26 2 is_stmt 1
+  42              		.loc 1 26 10 is_stmt 0
+  43 004c 9305E001 		li	a1,30
   44 0050 17050000 		lla	a0,.LANCHOR0+24
   44      13050500 
   45 0058 97000000 		call	_Z8sem_openPP4KSemj@plt
   45      E7800000 
   46              	.LVL0:
-  18:src/KConsole.cpp **** 	sem_open(&outputSem, 0);
-  47              		.loc 1 18 2 is_stmt 1
-  48              		.loc 1 18 10 is_stmt 0
-  49 0060 93050000 		li	a1,0
+  27:src/KConsole.cpp **** 	sem_open(&outputBufferHasSpace, capacity);
+  47              		.loc 1 27 2 is_stmt 1
+  48              		.loc 1 27 10 is_stmt 0
+  49 0060 9305E001 		li	a1,30
   50 0064 17050000 		lla	a0,.LANCHOR0+32
   50      13050500 
   51 006c 97000000 		call	_Z8sem_openPP4KSemj@plt
   51      E7800000 
   52              	.LVL1:
-  19:src/KConsole.cpp **** 	initialized = true;
-  53              		.loc 1 19 2 is_stmt 1
-  54              		.loc 1 19 14 is_stmt 0
-  55 0074 93071000 		li	a5,1
-  56 0078 2380F400 		sb	a5,0(s1)
-  20:src/KConsole.cpp **** }
-  57              		.loc 1 20 1
-  58 007c 83308101 		ld	ra,24(sp)
-  59              		.cfi_restore 1
-  60 0080 03340101 		ld	s0,16(sp)
-  61              		.cfi_restore 8
-  62              		.cfi_def_cfa 2, 32
-  63 0084 83348100 		ld	s1,8(sp)
-  64              		.cfi_restore 9
-  65 0088 13010102 		addi	sp,sp,32
-  66              		.cfi_def_cfa_offset 0
-  67 008c 67800000 		jr	ra
-  68              		.cfi_endproc
-  69              	.LFE3:
-  71              		.section	.rodata.str1.8,"aMS",@progbits,1
-  72              		.align	3
-  73              	.LC0:
-  74 0000 434F4E53 		.string	"CONSOLE_RX = "
-  74      4F4C455F 
-  74      5258203D 
-  74      2000
-  75 000e 0000     		.align	3
-  76              	.LC1:
-  77 0010 0A00     		.string	"\n"
-  78 0012 00000000 		.align	3
-  78      0000
-  79              	.LC2:
-  80 0018 434F4E53 		.string	"CONSOLE_STATUS = "
-  80      4F4C455F 
-  80      53544154 
-  80      5553203D 
-GAS LISTING /tmp/ccaKmH7i.s 			page 3
+  28:src/KConsole.cpp **** 	sem_open(&charsToInput, 0);
+  53              		.loc 1 28 2 is_stmt 1
+  54              		.loc 1 28 10 is_stmt 0
+  55 0074 93050000 		li	a1,0
+  56 0078 17050000 		lla	a0,.LANCHOR0+40
+  56      13050500 
+  57 0080 97000000 		call	_Z8sem_openPP4KSemj@plt
+  57      E7800000 
+  58              	.LVL2:
+  29:src/KConsole.cpp **** 	sem_open(&charsToOutput, 0);
+  59              		.loc 1 29 2 is_stmt 1
+  60              		.loc 1 29 10 is_stmt 0
+  61 0088 93050000 		li	a1,0
+  62 008c 17050000 		lla	a0,.LANCHOR0+48
+  62      13050500 
+  63 0094 97000000 		call	_Z8sem_openPP4KSemj@plt
+  63      E7800000 
+  64              	.LVL3:
+  30:src/KConsole.cpp **** 	initialized = true;
+  65              		.loc 1 30 2 is_stmt 1
+  66              		.loc 1 30 14 is_stmt 0
+  67 009c 93071000 		li	a5,1
+  68 00a0 2380F400 		sb	a5,0(s1)
+  31:src/KConsole.cpp **** }
+  69              		.loc 1 31 1
+  70 00a4 83308101 		ld	ra,24(sp)
+  71              		.cfi_restore 1
+GAS LISTING /tmp/ccpbktKi.s 			page 3
 
 
-  80      2000
-  81 002a 00000000 		.align	3
-  81      0000
-  82              	.LC3:
-  83 0030 2A434F4E 		.string	"*CONSOLE_RX = "
-  83      534F4C45 
-  83      5F525820 
-  83      3D2000
-  84 003f 00       		.align	3
-  85              	.LC4:
-  86 0040 2A434F4E 		.string	"*CONSOLE_STATUS = "
-  86      534F4C45 
-  86      5F535441 
-  86      54555320 
-  86      3D2000
-  87              		.text
-  88              		.align	2
-  89              		.globl	_ZN8KConsole17printConsoleStateEv
-  91              	_ZN8KConsole17printConsoleStateEv:
-  92              	.LFB4:
-  21:src/KConsole.cpp **** 
-  22:src/KConsole.cpp **** void KConsole::printConsoleState() {
-  93              		.loc 1 22 36 is_stmt 1
-  94              		.cfi_startproc
-  95 0090 130101FE 		addi	sp,sp,-32
-  96              		.cfi_def_cfa_offset 32
-  97 0094 233C1100 		sd	ra,24(sp)
-  98 0098 23388100 		sd	s0,16(sp)
-  99 009c 23349100 		sd	s1,8(sp)
- 100              		.cfi_offset 1, -8
- 101              		.cfi_offset 8, -16
- 102              		.cfi_offset 9, -24
- 103 00a0 13040102 		addi	s0,sp,32
- 104              		.cfi_def_cfa 8, 0
-  23:src/KConsole.cpp **** 	printString("CONSOLE_RX = ");
- 105              		.loc 1 23 2
- 106              		.loc 1 23 13 is_stmt 0
- 107 00a4 17050000 		lla	a0,.LC0
- 107      13050500 
- 108 00ac 97000000 		call	_Z11printStringPKc@plt
- 108      E7800000 
- 109              	.LVL2:
-  24:src/KConsole.cpp **** 	printInteger((uint64)dr);
- 110              		.loc 1 24 2 is_stmt 1
- 111              		.loc 1 24 14 is_stmt 0
- 112 00b4 97040000 		lla	s1,.LANCHOR0
- 112      93840400 
- 113 00bc 03B58400 		ld	a0,8(s1)
- 114 00c0 97000000 		call	_Z12printIntegerm@plt
- 114      E7800000 
- 115              	.LVL3:
-  25:src/KConsole.cpp **** 	printString("\n");
- 116              		.loc 1 25 2 is_stmt 1
- 117              		.loc 1 25 13 is_stmt 0
- 118 00c8 17050000 		lla	a0,.LC1
- 118      13050500 
- 119 00d0 97000000 		call	_Z11printStringPKc@plt
-GAS LISTING /tmp/ccaKmH7i.s 			page 4
+  72 00a8 03340101 		ld	s0,16(sp)
+  73              		.cfi_restore 8
+  74              		.cfi_def_cfa 2, 32
+  75 00ac 83348100 		ld	s1,8(sp)
+  76              		.cfi_restore 9
+  77 00b0 13010102 		addi	sp,sp,32
+  78              		.cfi_def_cfa_offset 0
+  79 00b4 67800000 		jr	ra
+  80              		.cfi_endproc
+  81              	.LFE3:
+  83              		.section	.rodata.str1.8,"aMS",@progbits,1
+  84              		.align	3
+  85              	.LC0:
+  86 0000 434F4E53 		.string	"CONSOLE_RX = "
+  86      4F4C455F 
+  86      5258203D 
+  86      2000
+  87 000e 0000     		.align	3
+  88              	.LC1:
+  89 0010 0A00     		.string	"\n"
+  90 0012 00000000 		.align	3
+  90      0000
+  91              	.LC2:
+  92 0018 434F4E53 		.string	"CONSOLE_STATUS = "
+  92      4F4C455F 
+  92      53544154 
+  92      5553203D 
+  92      2000
+  93 002a 00000000 		.align	3
+  93      0000
+  94              	.LC3:
+  95 0030 2A434F4E 		.string	"*CONSOLE_RX = "
+  95      534F4C45 
+  95      5F525820 
+  95      3D2000
+  96 003f 00       		.align	3
+  97              	.LC4:
+  98 0040 2A434F4E 		.string	"*CONSOLE_STATUS = "
+  98      534F4C45 
+  98      5F535441 
+  98      54555320 
+  98      3D2000
+  99              		.text
+ 100              		.align	2
+ 101              		.globl	_ZN8KConsole17printConsoleStateEv
+ 103              	_ZN8KConsole17printConsoleStateEv:
+ 104              	.LFB4:
+  32:src/KConsole.cpp **** 
+  33:src/KConsole.cpp **** void KConsole::printConsoleState() {
+ 105              		.loc 1 33 36 is_stmt 1
+ 106              		.cfi_startproc
+ 107 00b8 130101FE 		addi	sp,sp,-32
+ 108              		.cfi_def_cfa_offset 32
+ 109 00bc 233C1100 		sd	ra,24(sp)
+ 110 00c0 23388100 		sd	s0,16(sp)
+ 111 00c4 23349100 		sd	s1,8(sp)
+ 112              		.cfi_offset 1, -8
+GAS LISTING /tmp/ccpbktKi.s 			page 4
 
 
- 119      E7800000 
- 120              	.LVL4:
-  26:src/KConsole.cpp **** 	printString("CONSOLE_STATUS = ");
- 121              		.loc 1 26 2 is_stmt 1
- 122              		.loc 1 26 13 is_stmt 0
- 123 00d8 17050000 		lla	a0,.LC2
- 123      13050500 
- 124 00e0 97000000 		call	_Z11printStringPKc@plt
- 124      E7800000 
- 125              	.LVL5:
-  27:src/KConsole.cpp **** 	printInteger((uint64)sr);
- 126              		.loc 1 27 2 is_stmt 1
- 127              		.loc 1 27 14 is_stmt 0
- 128 00e8 03B50401 		ld	a0,16(s1)
- 129 00ec 97000000 		call	_Z12printIntegerm@plt
- 129      E7800000 
- 130              	.LVL6:
-  28:src/KConsole.cpp **** 	printString("\n");
- 131              		.loc 1 28 2 is_stmt 1
- 132              		.loc 1 28 13 is_stmt 0
- 133 00f4 17050000 		lla	a0,.LC1
- 133      13050500 
- 134 00fc 97000000 		call	_Z11printStringPKc@plt
- 134      E7800000 
- 135              	.LVL7:
-  29:src/KConsole.cpp **** 	printString("*CONSOLE_RX = ");
- 136              		.loc 1 29 2 is_stmt 1
- 137              		.loc 1 29 13 is_stmt 0
- 138 0104 17050000 		lla	a0,.LC3
- 138      13050500 
- 139 010c 97000000 		call	_Z11printStringPKc@plt
- 139      E7800000 
- 140              	.LVL8:
-  30:src/KConsole.cpp **** 	printInteger(*dr);
- 141              		.loc 1 30 2 is_stmt 1
- 142              		.loc 1 30 15 is_stmt 0
- 143 0114 83B78400 		ld	a5,8(s1)
- 144              		.loc 1 30 14
- 145 0118 03C50700 		lbu	a0,0(a5)
- 146 011c 97000000 		call	_Z12printIntegerm@plt
+ 113              		.cfi_offset 8, -16
+ 114              		.cfi_offset 9, -24
+ 115 00c8 13040102 		addi	s0,sp,32
+ 116              		.cfi_def_cfa 8, 0
+  34:src/KConsole.cpp **** 	printString("CONSOLE_RX = ");
+ 117              		.loc 1 34 2
+ 118              		.loc 1 34 13 is_stmt 0
+ 119 00cc 17050000 		lla	a0,.LC0
+ 119      13050500 
+ 120 00d4 97000000 		call	_Z11printStringPKc@plt
+ 120      E7800000 
+ 121              	.LVL4:
+  35:src/KConsole.cpp **** 	printInteger((uint64)dr);
+ 122              		.loc 1 35 2 is_stmt 1
+ 123              		.loc 1 35 14 is_stmt 0
+ 124 00dc 97040000 		lla	s1,.LANCHOR0
+ 124      93840400 
+ 125 00e4 03B58400 		ld	a0,8(s1)
+ 126 00e8 97000000 		call	_Z12printIntegerm@plt
+ 126      E7800000 
+ 127              	.LVL5:
+  36:src/KConsole.cpp **** 	printString("\n");
+ 128              		.loc 1 36 2 is_stmt 1
+ 129              		.loc 1 36 13 is_stmt 0
+ 130 00f0 17050000 		lla	a0,.LC1
+ 130      13050500 
+ 131 00f8 97000000 		call	_Z11printStringPKc@plt
+ 131      E7800000 
+ 132              	.LVL6:
+  37:src/KConsole.cpp **** 	printString("CONSOLE_STATUS = ");
+ 133              		.loc 1 37 2 is_stmt 1
+ 134              		.loc 1 37 13 is_stmt 0
+ 135 0100 17050000 		lla	a0,.LC2
+ 135      13050500 
+ 136 0108 97000000 		call	_Z11printStringPKc@plt
+ 136      E7800000 
+ 137              	.LVL7:
+  38:src/KConsole.cpp **** 	printInteger((uint64)sr);
+ 138              		.loc 1 38 2 is_stmt 1
+ 139              		.loc 1 38 14 is_stmt 0
+ 140 0110 03B50401 		ld	a0,16(s1)
+ 141 0114 97000000 		call	_Z12printIntegerm@plt
+ 141      E7800000 
+ 142              	.LVL8:
+  39:src/KConsole.cpp **** 	printString("\n");
+ 143              		.loc 1 39 2 is_stmt 1
+ 144              		.loc 1 39 13 is_stmt 0
+ 145 011c 17050000 		lla	a0,.LC1
+ 145      13050500 
+ 146 0124 97000000 		call	_Z11printStringPKc@plt
  146      E7800000 
  147              	.LVL9:
-  31:src/KConsole.cpp **** 	printString("\n");
- 148              		.loc 1 31 2 is_stmt 1
- 149              		.loc 1 31 13 is_stmt 0
- 150 0124 17050000 		lla	a0,.LC1
+  40:src/KConsole.cpp **** 	printString("*CONSOLE_RX = ");
+ 148              		.loc 1 40 2 is_stmt 1
+ 149              		.loc 1 40 13 is_stmt 0
+ 150 012c 17050000 		lla	a0,.LC3
  150      13050500 
- 151 012c 97000000 		call	_Z11printStringPKc@plt
+GAS LISTING /tmp/ccpbktKi.s 			page 5
+
+
+ 151 0134 97000000 		call	_Z11printStringPKc@plt
  151      E7800000 
  152              	.LVL10:
-  32:src/KConsole.cpp **** 	printString("*CONSOLE_STATUS = ");
- 153              		.loc 1 32 2 is_stmt 1
- 154              		.loc 1 32 13 is_stmt 0
- 155 0134 17050000 		lla	a0,.LC4
- 155      13050500 
- 156 013c 97000000 		call	_Z11printStringPKc@plt
- 156      E7800000 
-GAS LISTING /tmp/ccaKmH7i.s 			page 5
-
-
- 157              	.LVL11:
-  33:src/KConsole.cpp **** 	printInteger(*sr);
- 158              		.loc 1 33 2 is_stmt 1
- 159              		.loc 1 33 15 is_stmt 0
- 160 0144 83B70401 		ld	a5,16(s1)
- 161              		.loc 1 33 14
- 162 0148 03C50700 		lbu	a0,0(a5)
- 163 014c 97000000 		call	_Z12printIntegerm@plt
+  41:src/KConsole.cpp **** 	printInteger(*dr);
+ 153              		.loc 1 41 2 is_stmt 1
+ 154              		.loc 1 41 15 is_stmt 0
+ 155 013c 83B78400 		ld	a5,8(s1)
+ 156              		.loc 1 41 14
+ 157 0140 03C50700 		lbu	a0,0(a5)
+ 158 0144 97000000 		call	_Z12printIntegerm@plt
+ 158      E7800000 
+ 159              	.LVL11:
+  42:src/KConsole.cpp **** 	printString("\n");
+ 160              		.loc 1 42 2 is_stmt 1
+ 161              		.loc 1 42 13 is_stmt 0
+ 162 014c 17050000 		lla	a0,.LC1
+ 162      13050500 
+ 163 0154 97000000 		call	_Z11printStringPKc@plt
  163      E7800000 
  164              	.LVL12:
-  34:src/KConsole.cpp **** 	printString("\n");
- 165              		.loc 1 34 2 is_stmt 1
- 166              		.loc 1 34 13 is_stmt 0
- 167 0154 17050000 		lla	a0,.LC1
+  43:src/KConsole.cpp **** 	printString("*CONSOLE_STATUS = ");
+ 165              		.loc 1 43 2 is_stmt 1
+ 166              		.loc 1 43 13 is_stmt 0
+ 167 015c 17050000 		lla	a0,.LC4
  167      13050500 
- 168 015c 97000000 		call	_Z11printStringPKc@plt
+ 168 0164 97000000 		call	_Z11printStringPKc@plt
  168      E7800000 
  169              	.LVL13:
-  35:src/KConsole.cpp **** }
- 170              		.loc 1 35 1
- 171 0164 83308101 		ld	ra,24(sp)
- 172              		.cfi_restore 1
- 173 0168 03340101 		ld	s0,16(sp)
- 174              		.cfi_restore 8
- 175              		.cfi_def_cfa 2, 32
- 176 016c 83348100 		ld	s1,8(sp)
- 177              		.cfi_restore 9
- 178 0170 13010102 		addi	sp,sp,32
- 179              		.cfi_def_cfa_offset 0
- 180 0174 67800000 		jr	ra
- 181              		.cfi_endproc
- 182              	.LFE4:
- 184              		.globl	_ZN8KConsole2srE
- 185              		.globl	_ZN8KConsole2drE
- 186              		.globl	_ZN8KConsole9outputSemE
- 187              		.globl	_ZN8KConsole8inputSemE
- 188              		.globl	_ZN8KConsole11initializedE
- 189              		.bss
- 190              		.align	3
- 191              		.set	.LANCHOR0,. + 0
- 194              	_ZN8KConsole11initializedE:
- 195 0000 00       		.zero	1
- 196 0001 00000000 		.zero	7
- 196      000000
- 199              	_ZN8KConsole2drE:
- 200 0008 00000000 		.zero	8
- 200      00000000 
- 203              	_ZN8KConsole2srE:
- 204 0010 00000000 		.zero	8
- 204      00000000 
- 207              	_ZN8KConsole8inputSemE:
- 208 0018 00000000 		.zero	8
- 208      00000000 
- 211              	_ZN8KConsole9outputSemE:
- 212 0020 00000000 		.zero	8
- 212      00000000 
- 213              		.text
-GAS LISTING /tmp/ccaKmH7i.s 			page 6
+  44:src/KConsole.cpp **** 	printInteger(*sr);
+ 170              		.loc 1 44 2 is_stmt 1
+ 171              		.loc 1 44 15 is_stmt 0
+ 172 016c 83B70401 		ld	a5,16(s1)
+ 173              		.loc 1 44 14
+ 174 0170 03C50700 		lbu	a0,0(a5)
+ 175 0174 97000000 		call	_Z12printIntegerm@plt
+ 175      E7800000 
+ 176              	.LVL14:
+  45:src/KConsole.cpp **** 	printString("\n");
+ 177              		.loc 1 45 2 is_stmt 1
+ 178              		.loc 1 45 13 is_stmt 0
+ 179 017c 17050000 		lla	a0,.LC1
+ 179      13050500 
+ 180 0184 97000000 		call	_Z11printStringPKc@plt
+ 180      E7800000 
+ 181              	.LVL15:
+  46:src/KConsole.cpp **** }
+ 182              		.loc 1 46 1
+ 183 018c 83308101 		ld	ra,24(sp)
+ 184              		.cfi_restore 1
+ 185 0190 03340101 		ld	s0,16(sp)
+ 186              		.cfi_restore 8
+ 187              		.cfi_def_cfa 2, 32
+ 188 0194 83348100 		ld	s1,8(sp)
+ 189              		.cfi_restore 9
+ 190 0198 13010102 		addi	sp,sp,32
+ 191              		.cfi_def_cfa_offset 0
+ 192 019c 67800000 		jr	ra
+GAS LISTING /tmp/ccpbktKi.s 			page 6
 
 
- 214              	.Letext0:
- 215              		.file 2 "src/../h/../lib/hw.h"
- 216              		.file 3 "src/../h/../h/syscall_c.hpp"
- 217              		.file 4 "src/../h/KConsole.hpp"
- 218              		.file 5 "src/../h/../test/printing.hpp"
- 219              		.file 6 "src/../h/../h/helper.hpp"
-GAS LISTING /tmp/ccaKmH7i.s 			page 7
+ 193              		.cfi_endproc
+ 194              	.LFE4:
+ 196              		.align	2
+ 197              		.globl	_ZN8KConsole13getFromOutputEv
+ 199              	_ZN8KConsole13getFromOutputEv:
+ 200              	.LFB5:
+  47:src/KConsole.cpp **** 
+  48:src/KConsole.cpp **** char KConsole::getFromOutput() {
+ 201              		.loc 1 48 32 is_stmt 1
+ 202              		.cfi_startproc
+ 203 01a0 130101FE 		addi	sp,sp,-32
+ 204              		.cfi_def_cfa_offset 32
+ 205 01a4 233C1100 		sd	ra,24(sp)
+ 206 01a8 23388100 		sd	s0,16(sp)
+ 207 01ac 23349100 		sd	s1,8(sp)
+ 208              		.cfi_offset 1, -8
+ 209              		.cfi_offset 8, -16
+ 210              		.cfi_offset 9, -24
+ 211 01b0 13040102 		addi	s0,sp,32
+ 212              		.cfi_def_cfa 8, 0
+  49:src/KConsole.cpp **** 	sem_wait(charsToOutput);
+ 213              		.loc 1 49 2
+ 214              		.loc 1 49 10 is_stmt 0
+ 215 01b4 97040000 		lla	s1,.LANCHOR0
+ 215      93840400 
+ 216 01bc 03B50403 		ld	a0,48(s1)
+ 217 01c0 97000000 		call	_Z8sem_waitP4KSem@plt
+ 217      E7800000 
+ 218              	.LVL16:
+  50:src/KConsole.cpp **** 	char c = outputBuffer[outputHead];
+ 219              		.loc 1 50 2 is_stmt 1
+ 220              		.loc 1 50 34 is_stmt 0
+ 221 01c8 83A78403 		lw	a5,56(s1)
+ 222              		.loc 1 50 7
+ 223 01cc 3387F400 		add	a4,s1,a5
+ 224              	.LVL17:
+  51:src/KConsole.cpp **** 	outputHead = (outputHead + 1) % capacity;
+ 225              		.loc 1 51 2 is_stmt 1
+ 226              		.loc 1 51 27 is_stmt 0
+ 227 01d0 9B871700 		addiw	a5,a5,1
+ 228              		.loc 1 51 32
+ 229 01d4 9306E001 		li	a3,30
+ 230 01d8 BBE7D702 		remw	a5,a5,a3
+ 231              		.loc 1 51 13
+ 232 01dc 23ACF402 		sw	a5,56(s1)
+  52:src/KConsole.cpp **** 	return c;
+ 233              		.loc 1 52 2 is_stmt 1
+  53:src/KConsole.cpp **** }
+ 234              		.loc 1 53 1 is_stmt 0
+ 235 01e0 03450704 		lbu	a0,64(a4)
+ 236 01e4 83308101 		ld	ra,24(sp)
+ 237              		.cfi_restore 1
+ 238 01e8 03340101 		ld	s0,16(sp)
+ 239              		.cfi_restore 8
+ 240              		.cfi_def_cfa 2, 32
+ 241 01ec 83348100 		ld	s1,8(sp)
+ 242              		.cfi_restore 9
+GAS LISTING /tmp/ccpbktKi.s 			page 7
+
+
+ 243 01f0 13010102 		addi	sp,sp,32
+ 244              		.cfi_def_cfa_offset 0
+ 245 01f4 67800000 		jr	ra
+ 246              		.cfi_endproc
+ 247              	.LFE5:
+ 249              		.align	2
+ 250              		.globl	_ZN8KConsole12placeInInputEc
+ 252              	_ZN8KConsole12placeInInputEc:
+ 253              	.LFB6:
+  54:src/KConsole.cpp **** 
+  55:src/KConsole.cpp **** void KConsole::placeInInput(char c) {
+ 254              		.loc 1 55 37 is_stmt 1
+ 255              		.cfi_startproc
+ 256              	.LVL18:
+  56:src/KConsole.cpp **** 	if (inputBufferSize == capacity) return;
+ 257              		.loc 1 56 2
+ 258              		.loc 1 56 22 is_stmt 0
+ 259 01f8 17070000 		lw	a4,.LANCHOR0+96
+ 259      03270700 
+ 260              		.loc 1 56 2
+ 261 0200 9307E001 		li	a5,30
+ 262 0204 630EF704 		beq	a4,a5,.L15
+  55:src/KConsole.cpp **** 	if (inputBufferSize == capacity) return;
+ 263              		.loc 1 55 37
+ 264 0208 130101FF 		addi	sp,sp,-16
+ 265              		.cfi_def_cfa_offset 16
+ 266 020c 23341100 		sd	ra,8(sp)
+ 267 0210 23308100 		sd	s0,0(sp)
+ 268              		.cfi_offset 1, -8
+ 269              		.cfi_offset 8, -16
+ 270 0214 13040101 		addi	s0,sp,16
+ 271              		.cfi_def_cfa 8, 0
+  57:src/KConsole.cpp **** 	inputBuffer[inputTail] = c;
+ 272              		.loc 1 57 2 is_stmt 1
+ 273              		.loc 1 57 23 is_stmt 0
+ 274 0218 97060000 		lla	a3,.LANCHOR0
+ 274      93860600 
+ 275 0220 83A74606 		lw	a5,100(a3)
+ 276              		.loc 1 57 25
+ 277 0224 3386F600 		add	a2,a3,a5
+ 278 0228 2304A606 		sb	a0,104(a2)
+  58:src/KConsole.cpp **** 	inputTail = (inputTail + 1) % capacity;
+ 279              		.loc 1 58 2 is_stmt 1
+ 280              		.loc 1 58 25 is_stmt 0
+ 281 022c 9B871700 		addiw	a5,a5,1
+ 282              		.loc 1 58 30
+ 283 0230 1306E001 		li	a2,30
+ 284 0234 BBE7C702 		remw	a5,a5,a2
+ 285              		.loc 1 58 12
+ 286 0238 23A2F606 		sw	a5,100(a3)
+  59:src/KConsole.cpp **** 	inputBufferSize++;
+ 287              		.loc 1 59 2 is_stmt 1
+ 288              		.loc 1 59 17 is_stmt 0
+ 289 023c 1B071700 		addiw	a4,a4,1
+ 290 0240 23A0E606 		sw	a4,96(a3)
+  60:src/KConsole.cpp **** 	sem_signal(charsToInput);
+ 291              		.loc 1 60 2 is_stmt 1
+GAS LISTING /tmp/ccpbktKi.s 			page 8
+
+
+ 292              		.loc 1 60 12 is_stmt 0
+ 293 0244 03B58602 		ld	a0,40(a3)
+ 294              	.LVL19:
+ 295 0248 97000000 		call	_Z10sem_signalP4KSem@plt
+ 295      E7800000 
+ 296              	.LVL20:
+  61:src/KConsole.cpp **** }
+ 297              		.loc 1 61 1
+ 298 0250 83308100 		ld	ra,8(sp)
+ 299              		.cfi_restore 1
+ 300 0254 03340100 		ld	s0,0(sp)
+ 301              		.cfi_restore 8
+ 302              		.cfi_def_cfa 2, 16
+ 303 0258 13010101 		addi	sp,sp,16
+ 304              		.cfi_def_cfa_offset 0
+ 305 025c 67800000 		jr	ra
+ 306              	.LVL21:
+ 307              	.L15:
+ 308 0260 67800000 		ret
+ 309              		.cfi_endproc
+ 310              	.LFE6:
+ 312              		.align	2
+ 313              		.globl	_ZN8KConsole5kputcEc
+ 315              	_ZN8KConsole5kputcEc:
+ 316              	.LFB7:
+  62:src/KConsole.cpp **** 
+  63:src/KConsole.cpp **** void KConsole::kputc(char c) {
+ 317              		.loc 1 63 30 is_stmt 1
+ 318              		.cfi_startproc
+ 319              	.LVL22:
+ 320 0264 130101FE 		addi	sp,sp,-32
+ 321              		.cfi_def_cfa_offset 32
+ 322 0268 233C1100 		sd	ra,24(sp)
+ 323 026c 23388100 		sd	s0,16(sp)
+ 324 0270 23349100 		sd	s1,8(sp)
+ 325 0274 23302101 		sd	s2,0(sp)
+ 326              		.cfi_offset 1, -8
+ 327              		.cfi_offset 8, -16
+ 328              		.cfi_offset 9, -24
+ 329              		.cfi_offset 18, -32
+ 330 0278 13040102 		addi	s0,sp,32
+ 331              		.cfi_def_cfa 8, 0
+ 332 027c 13090500 		mv	s2,a0
+  64:src/KConsole.cpp **** 	sem_wait(outputBufferHasSpace);
+ 333              		.loc 1 64 2
+ 334              		.loc 1 64 10 is_stmt 0
+ 335 0280 97040000 		lla	s1,.LANCHOR0
+ 335      93840400 
+ 336 0288 03B50402 		ld	a0,32(s1)
+ 337              	.LVL23:
+ 338 028c 97000000 		call	_Z8sem_waitP4KSem@plt
+ 338      E7800000 
+ 339              	.LVL24:
+  65:src/KConsole.cpp **** 	outputBuffer[outputTail] = c;
+ 340              		.loc 1 65 2 is_stmt 1
+ 341              		.loc 1 65 25 is_stmt 0
+ 342 0294 83A78408 		lw	a5,136(s1)
+GAS LISTING /tmp/ccpbktKi.s 			page 9
+
+
+ 343              		.loc 1 65 27
+ 344 0298 3387F400 		add	a4,s1,a5
+ 345 029c 23002705 		sb	s2,64(a4)
+  66:src/KConsole.cpp **** 	outputTail = (outputTail + 1) % capacity;
+ 346              		.loc 1 66 2 is_stmt 1
+ 347              		.loc 1 66 27 is_stmt 0
+ 348 02a0 9B871700 		addiw	a5,a5,1
+ 349              		.loc 1 66 32
+ 350 02a4 1307E001 		li	a4,30
+ 351 02a8 BBE7E702 		remw	a5,a5,a4
+ 352              		.loc 1 66 13
+ 353 02ac 23A4F408 		sw	a5,136(s1)
+  67:src/KConsole.cpp **** 	sem_signal(charsToOutput);
+ 354              		.loc 1 67 2 is_stmt 1
+ 355              		.loc 1 67 12 is_stmt 0
+ 356 02b0 03B50403 		ld	a0,48(s1)
+ 357 02b4 97000000 		call	_Z10sem_signalP4KSem@plt
+ 357      E7800000 
+ 358              	.LVL25:
+  68:src/KConsole.cpp **** }
+ 359              		.loc 1 68 1
+ 360 02bc 83308101 		ld	ra,24(sp)
+ 361              		.cfi_restore 1
+ 362 02c0 03340101 		ld	s0,16(sp)
+ 363              		.cfi_restore 8
+ 364              		.cfi_def_cfa 2, 32
+ 365 02c4 83348100 		ld	s1,8(sp)
+ 366              		.cfi_restore 9
+ 367 02c8 03390100 		ld	s2,0(sp)
+ 368              		.cfi_restore 18
+ 369 02cc 13010102 		addi	sp,sp,32
+ 370              		.cfi_def_cfa_offset 0
+ 371 02d0 67800000 		jr	ra
+ 372              		.cfi_endproc
+ 373              	.LFE7:
+ 375              		.align	2
+ 376              		.globl	_ZN8KConsole5kgetcEv
+ 378              	_ZN8KConsole5kgetcEv:
+ 379              	.LFB8:
+  69:src/KConsole.cpp **** 
+  70:src/KConsole.cpp **** char KConsole::kgetc() {
+ 380              		.loc 1 70 24 is_stmt 1
+ 381              		.cfi_startproc
+ 382 02d4 130101FE 		addi	sp,sp,-32
+ 383              		.cfi_def_cfa_offset 32
+ 384 02d8 233C1100 		sd	ra,24(sp)
+ 385 02dc 23388100 		sd	s0,16(sp)
+ 386 02e0 23349100 		sd	s1,8(sp)
+ 387              		.cfi_offset 1, -8
+ 388              		.cfi_offset 8, -16
+ 389              		.cfi_offset 9, -24
+ 390 02e4 13040102 		addi	s0,sp,32
+ 391              		.cfi_def_cfa 8, 0
+  71:src/KConsole.cpp **** 	sem_wait(charsToInput);
+ 392              		.loc 1 71 2
+ 393              		.loc 1 71 10 is_stmt 0
+ 394 02e8 97040000 		lla	s1,.LANCHOR0
+GAS LISTING /tmp/ccpbktKi.s 			page 10
+
+
+ 394      93840400 
+ 395 02f0 03B58402 		ld	a0,40(s1)
+ 396 02f4 97000000 		call	_Z8sem_waitP4KSem@plt
+ 396      E7800000 
+ 397              	.LVL26:
+  72:src/KConsole.cpp **** 	char c = inputBuffer[inputHead];
+ 398              		.loc 1 72 2 is_stmt 1
+ 399              		.loc 1 72 32 is_stmt 0
+ 400 02fc 83A7C408 		lw	a5,140(s1)
+ 401              		.loc 1 72 7
+ 402 0300 3387F400 		add	a4,s1,a5
+ 403              	.LVL27:
+  73:src/KConsole.cpp **** 	inputHead = (inputHead + 1) % capacity;
+ 404              		.loc 1 73 2 is_stmt 1
+ 405              		.loc 1 73 25 is_stmt 0
+ 406 0304 9B871700 		addiw	a5,a5,1
+ 407              		.loc 1 73 30
+ 408 0308 9306E001 		li	a3,30
+ 409 030c BBE7D702 		remw	a5,a5,a3
+ 410              		.loc 1 73 12
+ 411 0310 23A6F408 		sw	a5,140(s1)
+  74:src/KConsole.cpp **** 	inputBufferSize--;
+ 412              		.loc 1 74 2 is_stmt 1
+ 413              		.loc 1 74 17 is_stmt 0
+ 414 0314 83A70406 		lw	a5,96(s1)
+ 415 0318 9B87F7FF 		addiw	a5,a5,-1
+ 416 031c 23A0F406 		sw	a5,96(s1)
+  75:src/KConsole.cpp **** 	return c;
+ 417              		.loc 1 75 2 is_stmt 1
+  76:src/KConsole.cpp **** }
+ 418              		.loc 1 76 1 is_stmt 0
+ 419 0320 03458706 		lbu	a0,104(a4)
+ 420 0324 83308101 		ld	ra,24(sp)
+ 421              		.cfi_restore 1
+ 422 0328 03340101 		ld	s0,16(sp)
+ 423              		.cfi_restore 8
+ 424              		.cfi_def_cfa 2, 32
+ 425 032c 83348100 		ld	s1,8(sp)
+ 426              		.cfi_restore 9
+ 427 0330 13010102 		addi	sp,sp,32
+ 428              		.cfi_def_cfa_offset 0
+ 429 0334 67800000 		jr	ra
+ 430              		.cfi_endproc
+ 431              	.LFE8:
+ 433              		.globl	_ZN8KConsole12outputBufferE
+ 434              		.globl	_ZN8KConsole11inputBufferE
+ 435              		.globl	_ZN8KConsole15inputBufferSizeE
+ 436              		.globl	_ZN8KConsole9inputTailE
+ 437              		.globl	_ZN8KConsole10outputTailE
+ 438              		.globl	_ZN8KConsole10outputHeadE
+ 439              		.globl	_ZN8KConsole9inputHeadE
+ 440              		.globl	_ZN8KConsole2srE
+ 441              		.globl	_ZN8KConsole2drE
+ 442              		.globl	_ZN8KConsole12charsToInputE
+ 443              		.globl	_ZN8KConsole13charsToOutputE
+ 444              		.globl	_ZN8KConsole20outputBufferHasSpaceE
+ 445              		.globl	_ZN8KConsole19inputBufferHasSpaceE
+GAS LISTING /tmp/ccpbktKi.s 			page 11
+
+
+ 446              		.globl	_ZN8KConsole11initializedE
+ 447              		.bss
+ 448              		.align	3
+ 449              		.set	.LANCHOR0,. + 0
+ 452              	_ZN8KConsole11initializedE:
+ 453 0000 00       		.zero	1
+ 454 0001 00000000 		.zero	7
+ 454      000000
+ 457              	_ZN8KConsole2drE:
+ 458 0008 00000000 		.zero	8
+ 458      00000000 
+ 461              	_ZN8KConsole2srE:
+ 462 0010 00000000 		.zero	8
+ 462      00000000 
+ 465              	_ZN8KConsole19inputBufferHasSpaceE:
+ 466 0018 00000000 		.zero	8
+ 466      00000000 
+ 469              	_ZN8KConsole20outputBufferHasSpaceE:
+ 470 0020 00000000 		.zero	8
+ 470      00000000 
+ 473              	_ZN8KConsole12charsToInputE:
+ 474 0028 00000000 		.zero	8
+ 474      00000000 
+ 477              	_ZN8KConsole13charsToOutputE:
+ 478 0030 00000000 		.zero	8
+ 478      00000000 
+ 481              	_ZN8KConsole10outputHeadE:
+ 482 0038 00000000 		.zero	4
+ 483 003c 00000000 		.zero	4
+ 486              	_ZN8KConsole12outputBufferE:
+ 487 0040 00000000 		.zero	30
+ 487      00000000 
+ 487      00000000 
+ 487      00000000 
+ 487      00000000 
+ 488 005e 0000     		.zero	2
+ 491              	_ZN8KConsole15inputBufferSizeE:
+ 492 0060 00000000 		.zero	4
+ 495              	_ZN8KConsole9inputTailE:
+ 496 0064 00000000 		.zero	4
+ 499              	_ZN8KConsole11inputBufferE:
+ 500 0068 00000000 		.zero	30
+ 500      00000000 
+ 500      00000000 
+ 500      00000000 
+ 500      00000000 
+ 501 0086 0000     		.zero	2
+ 504              	_ZN8KConsole10outputTailE:
+ 505 0088 00000000 		.zero	4
+ 508              	_ZN8KConsole9inputHeadE:
+ 509 008c 00000000 		.zero	4
+ 510              		.text
+ 511              	.Letext0:
+ 512              		.file 2 "src/../h/../lib/hw.h"
+ 513              		.file 3 "src/../h/../h/syscall_c.hpp"
+ 514              		.file 4 "src/../h/KConsole.hpp"
+ 515              		.file 5 "src/../h/../h/helper.hpp"
+GAS LISTING /tmp/ccpbktKi.s 			page 12
+
+
+GAS LISTING /tmp/ccpbktKi.s 			page 13
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 KConsole.cpp
-     /tmp/ccaKmH7i.s:9      .text:0000000000000000 _ZN8KConsole12initKConsoleEv
-     /tmp/ccaKmH7i.s:13     .text:0000000000000000 .L0 
-     /tmp/ccaKmH7i.s:14     .text:0000000000000000 .L0 
-     /tmp/ccaKmH7i.s:15     .text:0000000000000000 .L0 
-     /tmp/ccaKmH7i.s:20     .text:0000000000000010 .L0 
-     /tmp/ccaKmH7i.s:21     .text:0000000000000014 .L0 
-     /tmp/ccaKmH7i.s:25     .text:0000000000000020 .L0 
-     /tmp/ccaKmH7i.s:26     .text:0000000000000020 .L0 
-     /tmp/ccaKmH7i.s:27     .text:0000000000000020 .L0 
-     /tmp/ccaKmH7i.s:29     .text:0000000000000024 .L0 
-     /tmp/ccaKmH7i.s:31     .text:0000000000000024 .L0 
-     /tmp/ccaKmH7i.s:32     .text:0000000000000024 .L0 
-     /tmp/ccaKmH7i.s:37     .text:000000000000003c .L0 
-     /tmp/ccaKmH7i.s:38     .text:000000000000003c .L0 
-     /tmp/ccaKmH7i.s:42     .text:000000000000004c .L0 
-     /tmp/ccaKmH7i.s:43     .text:000000000000004c .L0 
-     /tmp/ccaKmH7i.s:48     .text:0000000000000060 .L0 
-     /tmp/ccaKmH7i.s:49     .text:0000000000000060 .L0 
-     /tmp/ccaKmH7i.s:54     .text:0000000000000074 .L0 
-     /tmp/ccaKmH7i.s:55     .text:0000000000000074 .L0 
-     /tmp/ccaKmH7i.s:58     .text:000000000000007c .L0 
-     /tmp/ccaKmH7i.s:59     .text:0000000000000080 .L0 
-     /tmp/ccaKmH7i.s:61     .text:0000000000000084 .L0 
-     /tmp/ccaKmH7i.s:62     .text:0000000000000084 .L0 
-     /tmp/ccaKmH7i.s:64     .text:0000000000000088 .L0 
-     /tmp/ccaKmH7i.s:66     .text:000000000000008c .L0 
-     /tmp/ccaKmH7i.s:68     .text:0000000000000090 .L0 
-     /tmp/ccaKmH7i.s:91     .text:0000000000000090 _ZN8KConsole17printConsoleStateEv
-     /tmp/ccaKmH7i.s:94     .text:0000000000000090 .L0 
-     /tmp/ccaKmH7i.s:95     .text:0000000000000090 .L0 
-     /tmp/ccaKmH7i.s:96     .text:0000000000000094 .L0 
-     /tmp/ccaKmH7i.s:100    .text:00000000000000a0 .L0 
-     /tmp/ccaKmH7i.s:101    .text:00000000000000a0 .L0 
-     /tmp/ccaKmH7i.s:102    .text:00000000000000a0 .L0 
-     /tmp/ccaKmH7i.s:104    .text:00000000000000a4 .L0 
-     /tmp/ccaKmH7i.s:106    .text:00000000000000a4 .L0 
-     /tmp/ccaKmH7i.s:107    .text:00000000000000a4 .L0 
-     /tmp/ccaKmH7i.s:111    .text:00000000000000b4 .L0 
-     /tmp/ccaKmH7i.s:112    .text:00000000000000b4 .L0 
-     /tmp/ccaKmH7i.s:117    .text:00000000000000c8 .L0 
-     /tmp/ccaKmH7i.s:118    .text:00000000000000c8 .L0 
-     /tmp/ccaKmH7i.s:122    .text:00000000000000d8 .L0 
-     /tmp/ccaKmH7i.s:123    .text:00000000000000d8 .L0 
-     /tmp/ccaKmH7i.s:127    .text:00000000000000e8 .L0 
-     /tmp/ccaKmH7i.s:128    .text:00000000000000e8 .L0 
-     /tmp/ccaKmH7i.s:132    .text:00000000000000f4 .L0 
-     /tmp/ccaKmH7i.s:133    .text:00000000000000f4 .L0 
-     /tmp/ccaKmH7i.s:137    .text:0000000000000104 .L0 
-     /tmp/ccaKmH7i.s:138    .text:0000000000000104 .L0 
-     /tmp/ccaKmH7i.s:142    .text:0000000000000114 .L0 
-     /tmp/ccaKmH7i.s:143    .text:0000000000000114 .L0 
-     /tmp/ccaKmH7i.s:145    .text:0000000000000118 .L0 
-     /tmp/ccaKmH7i.s:149    .text:0000000000000124 .L0 
-     /tmp/ccaKmH7i.s:150    .text:0000000000000124 .L0 
-     /tmp/ccaKmH7i.s:154    .text:0000000000000134 .L0 
-GAS LISTING /tmp/ccaKmH7i.s 			page 8
+     /tmp/ccpbktKi.s:9      .text:0000000000000000 _ZN8KConsole12initKConsoleEv
+     /tmp/ccpbktKi.s:13     .text:0000000000000000 .L0 
+     /tmp/ccpbktKi.s:14     .text:0000000000000000 .L0 
+     /tmp/ccpbktKi.s:15     .text:0000000000000000 .L0 
+     /tmp/ccpbktKi.s:20     .text:0000000000000010 .L0 
+     /tmp/ccpbktKi.s:21     .text:0000000000000014 .L0 
+     /tmp/ccpbktKi.s:25     .text:0000000000000020 .L0 
+     /tmp/ccpbktKi.s:26     .text:0000000000000020 .L0 
+     /tmp/ccpbktKi.s:27     .text:0000000000000020 .L0 
+     /tmp/ccpbktKi.s:29     .text:0000000000000024 .L0 
+     /tmp/ccpbktKi.s:31     .text:0000000000000024 .L0 
+     /tmp/ccpbktKi.s:32     .text:0000000000000024 .L0 
+     /tmp/ccpbktKi.s:37     .text:000000000000003c .L0 
+     /tmp/ccpbktKi.s:38     .text:000000000000003c .L0 
+     /tmp/ccpbktKi.s:42     .text:000000000000004c .L0 
+     /tmp/ccpbktKi.s:43     .text:000000000000004c .L0 
+     /tmp/ccpbktKi.s:48     .text:0000000000000060 .L0 
+     /tmp/ccpbktKi.s:49     .text:0000000000000060 .L0 
+     /tmp/ccpbktKi.s:54     .text:0000000000000074 .L0 
+     /tmp/ccpbktKi.s:55     .text:0000000000000074 .L0 
+     /tmp/ccpbktKi.s:60     .text:0000000000000088 .L0 
+     /tmp/ccpbktKi.s:61     .text:0000000000000088 .L0 
+     /tmp/ccpbktKi.s:66     .text:000000000000009c .L0 
+     /tmp/ccpbktKi.s:67     .text:000000000000009c .L0 
+     /tmp/ccpbktKi.s:70     .text:00000000000000a4 .L0 
+     /tmp/ccpbktKi.s:71     .text:00000000000000a8 .L0 
+     /tmp/ccpbktKi.s:73     .text:00000000000000ac .L0 
+     /tmp/ccpbktKi.s:74     .text:00000000000000ac .L0 
+     /tmp/ccpbktKi.s:76     .text:00000000000000b0 .L0 
+     /tmp/ccpbktKi.s:78     .text:00000000000000b4 .L0 
+     /tmp/ccpbktKi.s:80     .text:00000000000000b8 .L0 
+     /tmp/ccpbktKi.s:103    .text:00000000000000b8 _ZN8KConsole17printConsoleStateEv
+     /tmp/ccpbktKi.s:106    .text:00000000000000b8 .L0 
+     /tmp/ccpbktKi.s:107    .text:00000000000000b8 .L0 
+     /tmp/ccpbktKi.s:108    .text:00000000000000bc .L0 
+     /tmp/ccpbktKi.s:112    .text:00000000000000c8 .L0 
+     /tmp/ccpbktKi.s:113    .text:00000000000000c8 .L0 
+     /tmp/ccpbktKi.s:114    .text:00000000000000c8 .L0 
+     /tmp/ccpbktKi.s:116    .text:00000000000000cc .L0 
+     /tmp/ccpbktKi.s:118    .text:00000000000000cc .L0 
+     /tmp/ccpbktKi.s:119    .text:00000000000000cc .L0 
+     /tmp/ccpbktKi.s:123    .text:00000000000000dc .L0 
+     /tmp/ccpbktKi.s:124    .text:00000000000000dc .L0 
+     /tmp/ccpbktKi.s:129    .text:00000000000000f0 .L0 
+     /tmp/ccpbktKi.s:130    .text:00000000000000f0 .L0 
+     /tmp/ccpbktKi.s:134    .text:0000000000000100 .L0 
+     /tmp/ccpbktKi.s:135    .text:0000000000000100 .L0 
+     /tmp/ccpbktKi.s:139    .text:0000000000000110 .L0 
+     /tmp/ccpbktKi.s:140    .text:0000000000000110 .L0 
+     /tmp/ccpbktKi.s:144    .text:000000000000011c .L0 
+     /tmp/ccpbktKi.s:145    .text:000000000000011c .L0 
+     /tmp/ccpbktKi.s:149    .text:000000000000012c .L0 
+     /tmp/ccpbktKi.s:150    .text:000000000000012c .L0 
+     /tmp/ccpbktKi.s:154    .text:000000000000013c .L0 
+     /tmp/ccpbktKi.s:155    .text:000000000000013c .L0 
+GAS LISTING /tmp/ccpbktKi.s 			page 14
 
 
-     /tmp/ccaKmH7i.s:155    .text:0000000000000134 .L0 
-     /tmp/ccaKmH7i.s:159    .text:0000000000000144 .L0 
-     /tmp/ccaKmH7i.s:160    .text:0000000000000144 .L0 
-     /tmp/ccaKmH7i.s:162    .text:0000000000000148 .L0 
-     /tmp/ccaKmH7i.s:166    .text:0000000000000154 .L0 
-     /tmp/ccaKmH7i.s:167    .text:0000000000000154 .L0 
-     /tmp/ccaKmH7i.s:171    .text:0000000000000164 .L0 
-     /tmp/ccaKmH7i.s:172    .text:0000000000000168 .L0 
-     /tmp/ccaKmH7i.s:174    .text:000000000000016c .L0 
-     /tmp/ccaKmH7i.s:175    .text:000000000000016c .L0 
-     /tmp/ccaKmH7i.s:177    .text:0000000000000170 .L0 
-     /tmp/ccaKmH7i.s:179    .text:0000000000000174 .L0 
-     /tmp/ccaKmH7i.s:181    .text:0000000000000178 .L0 
-     /tmp/ccaKmH7i.s:203    .bss:0000000000000010 _ZN8KConsole2srE
-     /tmp/ccaKmH7i.s:199    .bss:0000000000000008 _ZN8KConsole2drE
-     /tmp/ccaKmH7i.s:211    .bss:0000000000000020 _ZN8KConsole9outputSemE
-     /tmp/ccaKmH7i.s:207    .bss:0000000000000018 _ZN8KConsole8inputSemE
-     /tmp/ccaKmH7i.s:194    .bss:0000000000000000 _ZN8KConsole11initializedE
-     /tmp/ccaKmH7i.s:191    .bss:0000000000000000 .LANCHOR0
-     /tmp/ccaKmH7i.s:220    .text:0000000000000178 .L0 
-     /tmp/ccaKmH7i.s:15     .text:0000000000000000 .L0 
-     /tmp/ccaKmH7i.s:32     .text:0000000000000024 .L0 
-     /tmp/ccaKmH7i.s:33     .text:000000000000002c .L0 
-     /tmp/ccaKmH7i.s:38     .text:000000000000003c .L0 
-     /tmp/ccaKmH7i.s:44     .text:0000000000000050 .L0 
-     /tmp/ccaKmH7i.s:50     .text:0000000000000064 .L0 
-     /tmp/ccaKmH7i.s:73     .rodata.str1.8:0000000000000000 .LC0
-     /tmp/ccaKmH7i.s:107    .text:00000000000000a4 .L0 
-     /tmp/ccaKmH7i.s:112    .text:00000000000000b4 .L0 
-     /tmp/ccaKmH7i.s:76     .rodata.str1.8:0000000000000010 .LC1
-     /tmp/ccaKmH7i.s:118    .text:00000000000000c8 .L0 
-     /tmp/ccaKmH7i.s:79     .rodata.str1.8:0000000000000018 .LC2
-     /tmp/ccaKmH7i.s:123    .text:00000000000000d8 .L0 
-     /tmp/ccaKmH7i.s:133    .text:00000000000000f4 .L0 
-     /tmp/ccaKmH7i.s:82     .rodata.str1.8:0000000000000030 .LC3
-     /tmp/ccaKmH7i.s:138    .text:0000000000000104 .L0 
-     /tmp/ccaKmH7i.s:150    .text:0000000000000124 .L0 
-     /tmp/ccaKmH7i.s:85     .rodata.str1.8:0000000000000040 .LC4
-     /tmp/ccaKmH7i.s:155    .text:0000000000000134 .L0 
-     /tmp/ccaKmH7i.s:167    .text:0000000000000154 .L0 
-     /tmp/ccaKmH7i.s:18     .text:0000000000000010 .L7
-     /tmp/ccaKmH7i.s:690    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
-     /tmp/ccaKmH7i.s:1167   .debug_str:000000000000014b .LASF39
-     /tmp/ccaKmH7i.s:1209   .debug_str:000000000000034f .LASF40
-     /tmp/ccaKmH7i.s:1193   .debug_str:00000000000002d4 .LASF41
-     /tmp/ccaKmH7i.s:5      .text:0000000000000000 .Ltext0
-     /tmp/ccaKmH7i.s:214    .text:0000000000000178 .Letext0
-     /tmp/ccaKmH7i.s:1121   .debug_line:0000000000000000 .Ldebug_line0
-     /tmp/ccaKmH7i.s:1173   .debug_str:0000000000000225 .LASF0
-     /tmp/ccaKmH7i.s:1161   .debug_str:000000000000011b .LASF1
-     /tmp/ccaKmH7i.s:1153   .debug_str:00000000000000e5 .LASF2
-     /tmp/ccaKmH7i.s:1195   .debug_str:00000000000002f2 .LASF3
-     /tmp/ccaKmH7i.s:1133   .debug_str:0000000000000049 .LASF4
-     /tmp/ccaKmH7i.s:1159   .debug_str:0000000000000109 .LASF5
-     /tmp/ccaKmH7i.s:1125   .debug_str:0000000000000013 .LASF6
-     /tmp/ccaKmH7i.s:1123   .debug_str:0000000000000000 .LASF7
-     /tmp/ccaKmH7i.s:1143   .debug_str:0000000000000093 .LASF8
-GAS LISTING /tmp/ccaKmH7i.s 			page 9
+     /tmp/ccpbktKi.s:157    .text:0000000000000140 .L0 
+     /tmp/ccpbktKi.s:161    .text:000000000000014c .L0 
+     /tmp/ccpbktKi.s:162    .text:000000000000014c .L0 
+     /tmp/ccpbktKi.s:166    .text:000000000000015c .L0 
+     /tmp/ccpbktKi.s:167    .text:000000000000015c .L0 
+     /tmp/ccpbktKi.s:171    .text:000000000000016c .L0 
+     /tmp/ccpbktKi.s:172    .text:000000000000016c .L0 
+     /tmp/ccpbktKi.s:174    .text:0000000000000170 .L0 
+     /tmp/ccpbktKi.s:178    .text:000000000000017c .L0 
+     /tmp/ccpbktKi.s:179    .text:000000000000017c .L0 
+     /tmp/ccpbktKi.s:183    .text:000000000000018c .L0 
+     /tmp/ccpbktKi.s:184    .text:0000000000000190 .L0 
+     /tmp/ccpbktKi.s:186    .text:0000000000000194 .L0 
+     /tmp/ccpbktKi.s:187    .text:0000000000000194 .L0 
+     /tmp/ccpbktKi.s:189    .text:0000000000000198 .L0 
+     /tmp/ccpbktKi.s:191    .text:000000000000019c .L0 
+     /tmp/ccpbktKi.s:193    .text:00000000000001a0 .L0 
+     /tmp/ccpbktKi.s:199    .text:00000000000001a0 _ZN8KConsole13getFromOutputEv
+     /tmp/ccpbktKi.s:202    .text:00000000000001a0 .L0 
+     /tmp/ccpbktKi.s:203    .text:00000000000001a0 .L0 
+     /tmp/ccpbktKi.s:204    .text:00000000000001a4 .L0 
+     /tmp/ccpbktKi.s:208    .text:00000000000001b0 .L0 
+     /tmp/ccpbktKi.s:209    .text:00000000000001b0 .L0 
+     /tmp/ccpbktKi.s:210    .text:00000000000001b0 .L0 
+     /tmp/ccpbktKi.s:212    .text:00000000000001b4 .L0 
+     /tmp/ccpbktKi.s:214    .text:00000000000001b4 .L0 
+     /tmp/ccpbktKi.s:215    .text:00000000000001b4 .L0 
+     /tmp/ccpbktKi.s:220    .text:00000000000001c8 .L0 
+     /tmp/ccpbktKi.s:221    .text:00000000000001c8 .L0 
+     /tmp/ccpbktKi.s:223    .text:00000000000001cc .L0 
+     /tmp/ccpbktKi.s:226    .text:00000000000001d0 .L0 
+     /tmp/ccpbktKi.s:227    .text:00000000000001d0 .L0 
+     /tmp/ccpbktKi.s:229    .text:00000000000001d4 .L0 
+     /tmp/ccpbktKi.s:232    .text:00000000000001dc .L0 
+     /tmp/ccpbktKi.s:234    .text:00000000000001e0 .L0 
+     /tmp/ccpbktKi.s:235    .text:00000000000001e0 .L0 
+     /tmp/ccpbktKi.s:237    .text:00000000000001e8 .L0 
+     /tmp/ccpbktKi.s:239    .text:00000000000001ec .L0 
+     /tmp/ccpbktKi.s:240    .text:00000000000001ec .L0 
+     /tmp/ccpbktKi.s:242    .text:00000000000001f0 .L0 
+     /tmp/ccpbktKi.s:244    .text:00000000000001f4 .L0 
+     /tmp/ccpbktKi.s:246    .text:00000000000001f8 .L0 
+     /tmp/ccpbktKi.s:252    .text:00000000000001f8 _ZN8KConsole12placeInInputEc
+     /tmp/ccpbktKi.s:255    .text:00000000000001f8 .L0 
+     /tmp/ccpbktKi.s:257    .text:00000000000001f8 .L0 
+     /tmp/ccpbktKi.s:258    .text:00000000000001f8 .L0 
+     /tmp/ccpbktKi.s:259    .text:00000000000001f8 .L0 
+     /tmp/ccpbktKi.s:261    .text:0000000000000200 .L0 
+     /tmp/ccpbktKi.s:264    .text:0000000000000208 .L0 
+     /tmp/ccpbktKi.s:265    .text:000000000000020c .L0 
+     /tmp/ccpbktKi.s:268    .text:0000000000000214 .L0 
+     /tmp/ccpbktKi.s:269    .text:0000000000000214 .L0 
+     /tmp/ccpbktKi.s:271    .text:0000000000000218 .L0 
+     /tmp/ccpbktKi.s:273    .text:0000000000000218 .L0 
+     /tmp/ccpbktKi.s:274    .text:0000000000000218 .L0 
+     /tmp/ccpbktKi.s:277    .text:0000000000000224 .L0 
+     /tmp/ccpbktKi.s:280    .text:000000000000022c .L0 
+GAS LISTING /tmp/ccpbktKi.s 			page 15
 
 
-     /tmp/ccaKmH7i.s:1181   .debug_str:0000000000000256 .LASF9
-     /tmp/ccaKmH7i.s:1131   .debug_str:000000000000003b .LASF10
-     /tmp/ccaKmH7i.s:1219   .debug_str:000000000000039b .LASF11
-     /tmp/ccaKmH7i.s:1147   .debug_str:00000000000000be .LASF12
-     /tmp/ccaKmH7i.s:1205   .debug_str:0000000000000339 .LASF13
-     /tmp/ccaKmH7i.s:1187   .debug_str:000000000000029e .LASF14
-     /tmp/ccaKmH7i.s:1165   .debug_str:000000000000013f .LASF15
-     /tmp/ccaKmH7i.s:1137   .debug_str:0000000000000055 .LASF16
-     /tmp/ccaKmH7i.s:1183   .debug_str:0000000000000266 .LASF17
-     /tmp/ccaKmH7i.s:1129   .debug_str:0000000000000035 .LASF18
-     /tmp/ccaKmH7i.s:1149   .debug_str:00000000000000cd .LASF42
-     /tmp/ccaKmH7i.s:1211   .debug_str:0000000000000360 .LASF43
-     /tmp/ccaKmH7i.s:1207   .debug_str:0000000000000349 .LASF44
-     /tmp/ccaKmH7i.s:1189   .debug_str:00000000000002ae .LASF45
-     /tmp/ccaKmH7i.s:1201   .debug_str:0000000000000316 .LASF46
-     /tmp/ccaKmH7i.s:1199   .debug_str:0000000000000301 .LASF47
-     /tmp/ccaKmH7i.s:1163   .debug_str:000000000000012e .LASF48
-     /tmp/ccaKmH7i.s:1169   .debug_str:000000000000020f .LASF19
-     /tmp/ccaKmH7i.s:1203   .debug_str:000000000000031c .LASF21
-     /tmp/ccaKmH7i.s:1213   .debug_str:0000000000000369 .LASF20
-     /tmp/ccaKmH7i.s:1185   .debug_str:000000000000027c .LASF22
-     /tmp/ccaKmH7i.s:1171   .debug_str:000000000000021c .LASF23
-     /tmp/ccaKmH7i.s:1155   .debug_str:00000000000000f3 .LASF24
-     /tmp/ccaKmH7i.s:1157   .debug_str:00000000000000fd .LASF25
-     /tmp/ccaKmH7i.s:1175   .debug_str:0000000000000232 .LASF26
-     /tmp/ccaKmH7i.s:1135   .debug_str:0000000000000050 .LASF27
-     /tmp/ccaKmH7i.s:1127   .debug_str:000000000000001a .LASF28
-     /tmp/ccaKmH7i.s:1141   .debug_str:000000000000007c .LASF29
-     /tmp/ccaKmH7i.s:1145   .debug_str:00000000000000a6 .LASF30
-     /tmp/ccaKmH7i.s:1139   .debug_str:000000000000006b .LASF31
-     /tmp/ccaKmH7i.s:1191   .debug_str:00000000000002c3 .LASF32
-     /tmp/ccaKmH7i.s:92     .text:0000000000000090 .LFB4
-     /tmp/ccaKmH7i.s:182    .text:0000000000000178 .LFE4
-     /tmp/ccaKmH7i.s:109    .text:00000000000000b4 .LVL2
-     /tmp/ccaKmH7i.s:115    .text:00000000000000c8 .LVL3
-     /tmp/ccaKmH7i.s:120    .text:00000000000000d8 .LVL4
-     /tmp/ccaKmH7i.s:125    .text:00000000000000e8 .LVL5
-     /tmp/ccaKmH7i.s:130    .text:00000000000000f4 .LVL6
-     /tmp/ccaKmH7i.s:135    .text:0000000000000104 .LVL7
-     /tmp/ccaKmH7i.s:140    .text:0000000000000114 .LVL8
-     /tmp/ccaKmH7i.s:147    .text:0000000000000124 .LVL9
-     /tmp/ccaKmH7i.s:152    .text:0000000000000134 .LVL10
-     /tmp/ccaKmH7i.s:157    .text:0000000000000144 .LVL11
-     /tmp/ccaKmH7i.s:164    .text:0000000000000154 .LVL12
-     /tmp/ccaKmH7i.s:169    .text:0000000000000164 .LVL13
-     /tmp/ccaKmH7i.s:10     .text:0000000000000000 .LFB3
-     /tmp/ccaKmH7i.s:69     .text:0000000000000090 .LFE3
-     /tmp/ccaKmH7i.s:46     .text:0000000000000060 .LVL0
-     /tmp/ccaKmH7i.s:52     .text:0000000000000074 .LVL1
-     /tmp/ccaKmH7i.s:1151   .debug_str:00000000000000d2 .LASF33
-     /tmp/ccaKmH7i.s:1217   .debug_str:000000000000038f .LASF35
-     /tmp/ccaKmH7i.s:1177   .debug_str:0000000000000237 .LASF34
-     /tmp/ccaKmH7i.s:1179   .debug_str:0000000000000249 .LASF36
-     /tmp/ccaKmH7i.s:1215   .debug_str:000000000000037b .LASF37
-     /tmp/ccaKmH7i.s:1197   .debug_str:00000000000002f8 .LASF38
-     /tmp/ccaKmH7i.s:221    .debug_info:0000000000000000 .Ldebug_info0
+     /tmp/ccpbktKi.s:281    .text:000000000000022c .L0 
+     /tmp/ccpbktKi.s:283    .text:0000000000000230 .L0 
+     /tmp/ccpbktKi.s:286    .text:0000000000000238 .L0 
+     /tmp/ccpbktKi.s:288    .text:000000000000023c .L0 
+     /tmp/ccpbktKi.s:289    .text:000000000000023c .L0 
+     /tmp/ccpbktKi.s:292    .text:0000000000000244 .L0 
+     /tmp/ccpbktKi.s:293    .text:0000000000000244 .L0 
+     /tmp/ccpbktKi.s:298    .text:0000000000000250 .L0 
+     /tmp/ccpbktKi.s:299    .text:0000000000000254 .L0 
+     /tmp/ccpbktKi.s:301    .text:0000000000000258 .L0 
+     /tmp/ccpbktKi.s:302    .text:0000000000000258 .L0 
+     /tmp/ccpbktKi.s:304    .text:000000000000025c .L0 
+     /tmp/ccpbktKi.s:309    .text:0000000000000264 .L0 
+     /tmp/ccpbktKi.s:315    .text:0000000000000264 _ZN8KConsole5kputcEc
+     /tmp/ccpbktKi.s:318    .text:0000000000000264 .L0 
+     /tmp/ccpbktKi.s:320    .text:0000000000000264 .L0 
+     /tmp/ccpbktKi.s:321    .text:0000000000000268 .L0 
+     /tmp/ccpbktKi.s:326    .text:0000000000000278 .L0 
+     /tmp/ccpbktKi.s:327    .text:0000000000000278 .L0 
+     /tmp/ccpbktKi.s:328    .text:0000000000000278 .L0 
+     /tmp/ccpbktKi.s:329    .text:0000000000000278 .L0 
+     /tmp/ccpbktKi.s:331    .text:000000000000027c .L0 
+     /tmp/ccpbktKi.s:334    .text:0000000000000280 .L0 
+     /tmp/ccpbktKi.s:335    .text:0000000000000280 .L0 
+     /tmp/ccpbktKi.s:341    .text:0000000000000294 .L0 
+     /tmp/ccpbktKi.s:342    .text:0000000000000294 .L0 
+     /tmp/ccpbktKi.s:344    .text:0000000000000298 .L0 
+     /tmp/ccpbktKi.s:347    .text:00000000000002a0 .L0 
+     /tmp/ccpbktKi.s:348    .text:00000000000002a0 .L0 
+     /tmp/ccpbktKi.s:350    .text:00000000000002a4 .L0 
+     /tmp/ccpbktKi.s:353    .text:00000000000002ac .L0 
+     /tmp/ccpbktKi.s:355    .text:00000000000002b0 .L0 
+     /tmp/ccpbktKi.s:356    .text:00000000000002b0 .L0 
+     /tmp/ccpbktKi.s:360    .text:00000000000002bc .L0 
+     /tmp/ccpbktKi.s:361    .text:00000000000002c0 .L0 
+     /tmp/ccpbktKi.s:363    .text:00000000000002c4 .L0 
+     /tmp/ccpbktKi.s:364    .text:00000000000002c4 .L0 
+     /tmp/ccpbktKi.s:366    .text:00000000000002c8 .L0 
+     /tmp/ccpbktKi.s:368    .text:00000000000002cc .L0 
+     /tmp/ccpbktKi.s:370    .text:00000000000002d0 .L0 
+     /tmp/ccpbktKi.s:372    .text:00000000000002d4 .L0 
+     /tmp/ccpbktKi.s:378    .text:00000000000002d4 _ZN8KConsole5kgetcEv
+     /tmp/ccpbktKi.s:381    .text:00000000000002d4 .L0 
+     /tmp/ccpbktKi.s:382    .text:00000000000002d4 .L0 
+     /tmp/ccpbktKi.s:383    .text:00000000000002d8 .L0 
+     /tmp/ccpbktKi.s:387    .text:00000000000002e4 .L0 
+     /tmp/ccpbktKi.s:388    .text:00000000000002e4 .L0 
+     /tmp/ccpbktKi.s:389    .text:00000000000002e4 .L0 
+     /tmp/ccpbktKi.s:391    .text:00000000000002e8 .L0 
+     /tmp/ccpbktKi.s:393    .text:00000000000002e8 .L0 
+     /tmp/ccpbktKi.s:394    .text:00000000000002e8 .L0 
+     /tmp/ccpbktKi.s:399    .text:00000000000002fc .L0 
+     /tmp/ccpbktKi.s:400    .text:00000000000002fc .L0 
+     /tmp/ccpbktKi.s:402    .text:0000000000000300 .L0 
+     /tmp/ccpbktKi.s:405    .text:0000000000000304 .L0 
+     /tmp/ccpbktKi.s:406    .text:0000000000000304 .L0 
+     /tmp/ccpbktKi.s:408    .text:0000000000000308 .L0 
+GAS LISTING /tmp/ccpbktKi.s 			page 16
 
-GAS LISTING /tmp/ccaKmH7i.s 			page 10
 
+     /tmp/ccpbktKi.s:411    .text:0000000000000310 .L0 
+     /tmp/ccpbktKi.s:413    .text:0000000000000314 .L0 
+     /tmp/ccpbktKi.s:414    .text:0000000000000314 .L0 
+     /tmp/ccpbktKi.s:418    .text:0000000000000320 .L0 
+     /tmp/ccpbktKi.s:419    .text:0000000000000320 .L0 
+     /tmp/ccpbktKi.s:421    .text:0000000000000328 .L0 
+     /tmp/ccpbktKi.s:423    .text:000000000000032c .L0 
+     /tmp/ccpbktKi.s:424    .text:000000000000032c .L0 
+     /tmp/ccpbktKi.s:426    .text:0000000000000330 .L0 
+     /tmp/ccpbktKi.s:428    .text:0000000000000334 .L0 
+     /tmp/ccpbktKi.s:430    .text:0000000000000338 .L0 
+     /tmp/ccpbktKi.s:486    .bss:0000000000000040 _ZN8KConsole12outputBufferE
+     /tmp/ccpbktKi.s:499    .bss:0000000000000068 _ZN8KConsole11inputBufferE
+     /tmp/ccpbktKi.s:491    .bss:0000000000000060 _ZN8KConsole15inputBufferSizeE
+     /tmp/ccpbktKi.s:495    .bss:0000000000000064 _ZN8KConsole9inputTailE
+     /tmp/ccpbktKi.s:504    .bss:0000000000000088 _ZN8KConsole10outputTailE
+     /tmp/ccpbktKi.s:481    .bss:0000000000000038 _ZN8KConsole10outputHeadE
+     /tmp/ccpbktKi.s:508    .bss:000000000000008c _ZN8KConsole9inputHeadE
+     /tmp/ccpbktKi.s:461    .bss:0000000000000010 _ZN8KConsole2srE
+     /tmp/ccpbktKi.s:457    .bss:0000000000000008 _ZN8KConsole2drE
+     /tmp/ccpbktKi.s:473    .bss:0000000000000028 _ZN8KConsole12charsToInputE
+     /tmp/ccpbktKi.s:477    .bss:0000000000000030 _ZN8KConsole13charsToOutputE
+     /tmp/ccpbktKi.s:469    .bss:0000000000000020 _ZN8KConsole20outputBufferHasSpaceE
+     /tmp/ccpbktKi.s:465    .bss:0000000000000018 _ZN8KConsole19inputBufferHasSpaceE
+     /tmp/ccpbktKi.s:452    .bss:0000000000000000 _ZN8KConsole11initializedE
+     /tmp/ccpbktKi.s:449    .bss:0000000000000000 .LANCHOR0
+     /tmp/ccpbktKi.s:516    .text:0000000000000338 .L0 
+     /tmp/ccpbktKi.s:15     .text:0000000000000000 .L0 
+     /tmp/ccpbktKi.s:32     .text:0000000000000024 .L0 
+     /tmp/ccpbktKi.s:33     .text:000000000000002c .L0 
+     /tmp/ccpbktKi.s:38     .text:000000000000003c .L0 
+     /tmp/ccpbktKi.s:44     .text:0000000000000050 .L0 
+     /tmp/ccpbktKi.s:50     .text:0000000000000064 .L0 
+     /tmp/ccpbktKi.s:56     .text:0000000000000078 .L0 
+     /tmp/ccpbktKi.s:62     .text:000000000000008c .L0 
+     /tmp/ccpbktKi.s:85     .rodata.str1.8:0000000000000000 .LC0
+     /tmp/ccpbktKi.s:119    .text:00000000000000cc .L0 
+     /tmp/ccpbktKi.s:124    .text:00000000000000dc .L0 
+     /tmp/ccpbktKi.s:88     .rodata.str1.8:0000000000000010 .LC1
+     /tmp/ccpbktKi.s:130    .text:00000000000000f0 .L0 
+     /tmp/ccpbktKi.s:91     .rodata.str1.8:0000000000000018 .LC2
+     /tmp/ccpbktKi.s:135    .text:0000000000000100 .L0 
+     /tmp/ccpbktKi.s:145    .text:000000000000011c .L0 
+     /tmp/ccpbktKi.s:94     .rodata.str1.8:0000000000000030 .LC3
+     /tmp/ccpbktKi.s:150    .text:000000000000012c .L0 
+     /tmp/ccpbktKi.s:162    .text:000000000000014c .L0 
+     /tmp/ccpbktKi.s:97     .rodata.str1.8:0000000000000040 .LC4
+     /tmp/ccpbktKi.s:167    .text:000000000000015c .L0 
+     /tmp/ccpbktKi.s:179    .text:000000000000017c .L0 
+     /tmp/ccpbktKi.s:215    .text:00000000000001b4 .L0 
+     /tmp/ccpbktKi.s:259    .text:00000000000001f8 .L0 
+     /tmp/ccpbktKi.s:274    .text:0000000000000218 .L0 
+     /tmp/ccpbktKi.s:335    .text:0000000000000280 .L0 
+     /tmp/ccpbktKi.s:394    .text:00000000000002e8 .L0 
+     /tmp/ccpbktKi.s:18     .text:0000000000000010 .L7
+     /tmp/ccpbktKi.s:307    .text:0000000000000260 .L15
+     /tmp/ccpbktKi.s:1303   .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+GAS LISTING /tmp/ccpbktKi.s 			page 17
+
+
+     /tmp/ccpbktKi.s:1941   .debug_str:0000000000000240 .LASF69
+     /tmp/ccpbktKi.s:2005   .debug_str:0000000000000546 .LASF70
+     /tmp/ccpbktKi.s:1985   .debug_str:00000000000004a1 .LASF71
+     /tmp/ccpbktKi.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccpbktKi.s:511    .text:0000000000000338 .Letext0
+     /tmp/ccpbktKi.s:1867   .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccpbktKi.s:1951   .debug_str:000000000000035a .LASF0
+     /tmp/ccpbktKi.s:1927   .debug_str:00000000000001ca .LASF1
+     /tmp/ccpbktKi.s:1917   .debug_str:0000000000000188 .LASF2
+     /tmp/ccpbktKi.s:1987   .debug_str:00000000000004bf .LASF3
+     /tmp/ccpbktKi.s:1895   .debug_str:00000000000000bd .LASF4
+     /tmp/ccpbktKi.s:1925   .debug_str:00000000000001b8 .LASF5
+     /tmp/ccpbktKi.s:1875   .debug_str:0000000000000031 .LASF6
+     /tmp/ccpbktKi.s:1873   .debug_str:000000000000001e .LASF7
+     /tmp/ccpbktKi.s:1909   .debug_str:0000000000000149 .LASF8
+     /tmp/ccpbktKi.s:1965   .debug_str:00000000000003e1 .LASF9
+     /tmp/ccpbktKi.s:1893   .debug_str:00000000000000af .LASF10
+     /tmp/ccpbktKi.s:2019   .debug_str:00000000000005c4 .LASF11
+     /tmp/ccpbktKi.s:1911   .debug_str:000000000000015c .LASF12
+     /tmp/ccpbktKi.s:2001   .debug_str:0000000000000530 .LASF13
+     /tmp/ccpbktKi.s:1973   .debug_str:0000000000000443 .LASF14
+     /tmp/ccpbktKi.s:1931   .debug_str:00000000000001ee .LASF15
+     /tmp/ccpbktKi.s:1899   .debug_str:00000000000000d1 .LASF16
+     /tmp/ccpbktKi.s:1967   .debug_str:00000000000003f1 .LASF17
+     /tmp/ccpbktKi.s:1885   .debug_str:000000000000006c .LASF18
+     /tmp/ccpbktKi.s:1913   .debug_str:000000000000016b .LASF72
+     /tmp/ccpbktKi.s:2007   .debug_str:0000000000000557 .LASF73
+     /tmp/ccpbktKi.s:2003   .debug_str:0000000000000540 .LASF27
+     /tmp/ccpbktKi.s:1979   .debug_str:000000000000046f .LASF29
+     /tmp/ccpbktKi.s:1993   .debug_str:00000000000004e5 .LASF23
+     /tmp/ccpbktKi.s:1991   .debug_str:00000000000004d0 .LASF25
+     /tmp/ccpbktKi.s:1929   .debug_str:00000000000001dd .LASF74
+     /tmp/ccpbktKi.s:1943   .debug_str:0000000000000304 .LASF19
+     /tmp/ccpbktKi.s:1995   .debug_str:00000000000004eb .LASF21
+     /tmp/ccpbktKi.s:2009   .debug_str:0000000000000560 .LASF20
+     /tmp/ccpbktKi.s:1971   .debug_str:0000000000000421 .LASF22
+     /tmp/ccpbktKi.s:1887   .debug_str:0000000000000072 .LASF24
+     /tmp/ccpbktKi.s:1937   .debug_str:0000000000000210 .LASF26
+     /tmp/ccpbktKi.s:1897   .debug_str:00000000000000c4 .LASF28
+     /tmp/ccpbktKi.s:1907   .debug_str:000000000000012c .LASF30
+     /tmp/ccpbktKi.s:1877   .debug_str:0000000000000038 .LASF31
+     /tmp/ccpbktKi.s:1871   .debug_str:0000000000000009 .LASF32
+     /tmp/ccpbktKi.s:2017   .debug_str:00000000000005b6 .LASF33
+     /tmp/ccpbktKi.s:1881   .debug_str:0000000000000055 .LASF34
+     /tmp/ccpbktKi.s:1921   .debug_str:000000000000019f .LASF35
+     /tmp/ccpbktKi.s:1879   .debug_str:000000000000004c .LASF75
+     /tmp/ccpbktKi.s:1983   .debug_str:0000000000000495 .LASF36
+     /tmp/ccpbktKi.s:1923   .debug_str:00000000000001ab .LASF37
+     /tmp/ccpbktKi.s:1883   .debug_str:0000000000000062 .LASF38
+     /tmp/ccpbktKi.s:1947   .debug_str:000000000000032c .LASF39
+     /tmp/ccpbktKi.s:1989   .debug_str:00000000000004c5 .LASF40
+     /tmp/ccpbktKi.s:1933   .debug_str:00000000000001fa .LASF41
+     /tmp/ccpbktKi.s:1975   .debug_str:0000000000000453 .LASF42
+     /tmp/ccpbktKi.s:1957   .debug_str:00000000000003a3 .LASF43
+     /tmp/ccpbktKi.s:1999   .debug_str:000000000000052b .LASF44
+     /tmp/ccpbktKi.s:2015   .debug_str:000000000000059b .LASF45
+     /tmp/ccpbktKi.s:1997   .debug_str:0000000000000508 .LASF46
+GAS LISTING /tmp/ccpbktKi.s 			page 18
+
+
+     /tmp/ccpbktKi.s:1949   .debug_str:0000000000000336 .LASF47
+     /tmp/ccpbktKi.s:1953   .debug_str:0000000000000367 .LASF48
+     /tmp/ccpbktKi.s:1901   .debug_str:00000000000000e7 .LASF49
+     /tmp/ccpbktKi.s:1905   .debug_str:000000000000011b .LASF50
+     /tmp/ccpbktKi.s:1981   .debug_str:0000000000000484 .LASF51
+     /tmp/ccpbktKi.s:1903   .debug_str:0000000000000103 .LASF52
+     /tmp/ccpbktKi.s:1959   .debug_str:00000000000003a8 .LASF53
+     /tmp/ccpbktKi.s:1969   .debug_str:0000000000000407 .LASF54
+     /tmp/ccpbktKi.s:1915   .debug_str:0000000000000170 .LASF55
+     /tmp/ccpbktKi.s:1955   .debug_str:0000000000000384 .LASF56
+     /tmp/ccpbktKi.s:1945   .debug_str:0000000000000311 .LASF57
+     /tmp/ccpbktKi.s:1891   .debug_str:0000000000000093 .LASF58
+     /tmp/ccpbktKi.s:379    .text:00000000000002d4 .LFB8
+     /tmp/ccpbktKi.s:431    .text:0000000000000338 .LFE8
+     /tmp/ccpbktKi.s:397    .text:00000000000002fc .LVL26
+     /tmp/ccpbktKi.s:316    .text:0000000000000264 .LFB7
+     /tmp/ccpbktKi.s:373    .text:00000000000002d4 .LFE7
+     /tmp/ccpbktKi.s:1804   .debug_loc:0000000000000000 .LLST1
+     /tmp/ccpbktKi.s:339    .text:0000000000000294 .LVL24
+     /tmp/ccpbktKi.s:358    .text:00000000000002bc .LVL25
+     /tmp/ccpbktKi.s:253    .text:00000000000001f8 .LFB6
+     /tmp/ccpbktKi.s:310    .text:0000000000000264 .LFE6
+     /tmp/ccpbktKi.s:1818   .debug_loc:0000000000000039 .LLST0
+     /tmp/ccpbktKi.s:296    .text:0000000000000250 .LVL20
+     /tmp/ccpbktKi.s:200    .text:00000000000001a0 .LFB5
+     /tmp/ccpbktKi.s:247    .text:00000000000001f8 .LFE5
+     /tmp/ccpbktKi.s:218    .text:00000000000001c8 .LVL16
+     /tmp/ccpbktKi.s:104    .text:00000000000000b8 .LFB4
+     /tmp/ccpbktKi.s:194    .text:00000000000001a0 .LFE4
+     /tmp/ccpbktKi.s:121    .text:00000000000000dc .LVL4
+     /tmp/ccpbktKi.s:127    .text:00000000000000f0 .LVL5
+     /tmp/ccpbktKi.s:132    .text:0000000000000100 .LVL6
+     /tmp/ccpbktKi.s:137    .text:0000000000000110 .LVL7
+     /tmp/ccpbktKi.s:142    .text:000000000000011c .LVL8
+     /tmp/ccpbktKi.s:147    .text:000000000000012c .LVL9
+     /tmp/ccpbktKi.s:152    .text:000000000000013c .LVL10
+     /tmp/ccpbktKi.s:159    .text:000000000000014c .LVL11
+     /tmp/ccpbktKi.s:164    .text:000000000000015c .LVL12
+     /tmp/ccpbktKi.s:169    .text:000000000000016c .LVL13
+     /tmp/ccpbktKi.s:176    .text:000000000000017c .LVL14
+     /tmp/ccpbktKi.s:181    .text:000000000000018c .LVL15
+     /tmp/ccpbktKi.s:10     .text:0000000000000000 .LFB3
+     /tmp/ccpbktKi.s:81     .text:00000000000000b8 .LFE3
+     /tmp/ccpbktKi.s:46     .text:0000000000000060 .LVL0
+     /tmp/ccpbktKi.s:52     .text:0000000000000074 .LVL1
+     /tmp/ccpbktKi.s:58     .text:0000000000000088 .LVL2
+     /tmp/ccpbktKi.s:64     .text:000000000000009c .LVL3
+     /tmp/ccpbktKi.s:1939   .debug_str:000000000000022e .LASF59
+     /tmp/ccpbktKi.s:1869   .debug_str:0000000000000000 .LASF61
+     /tmp/ccpbktKi.s:2011   .debug_str:0000000000000572 .LASF60
+     /tmp/ccpbktKi.s:1935   .debug_str:0000000000000205 .LASF62
+     /tmp/ccpbktKi.s:1889   .debug_str:0000000000000080 .LASF63
+     /tmp/ccpbktKi.s:1977   .debug_str:0000000000000463 .LASF64
+     /tmp/ccpbktKi.s:1961   .debug_str:00000000000003c2 .LASF65
+     /tmp/ccpbktKi.s:1963   .debug_str:00000000000003d4 .LASF66
+     /tmp/ccpbktKi.s:2013   .debug_str:0000000000000587 .LASF67
+     /tmp/ccpbktKi.s:1919   .debug_str:0000000000000196 .LASF68
+GAS LISTING /tmp/ccpbktKi.s 			page 19
+
+
+     /tmp/ccpbktKi.s:319    .text:0000000000000264 .LVL22
+     /tmp/ccpbktKi.s:337    .text:000000000000028c .LVL23
+     /tmp/ccpbktKi.s:256    .text:00000000000001f8 .LVL18
+     /tmp/ccpbktKi.s:294    .text:0000000000000248 .LVL19
+     /tmp/ccpbktKi.s:306    .text:0000000000000260 .LVL21
+     /tmp/ccpbktKi.s:517    .debug_info:0000000000000000 .Ldebug_info0
 
 UNDEFINED SYMBOLS
 CONSOLE_RX_DATA
@@ -496,3 +1037,5 @@ CONSOLE_STATUS
 _Z8sem_openPP4KSemj
 _Z11printStringPKc
 _Z12printIntegerm
+_Z8sem_waitP4KSem
+_Z10sem_signalP4KSem

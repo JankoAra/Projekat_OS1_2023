@@ -144,14 +144,14 @@ extern "C" void interruptRoutine() {
 				break;
 			case 0x41:
 				//getc
-				__getc();
+				KConsole::kgetc();
 				__asm__ volatile("sd a0, 80(s0)");
 				break;
 			case 0x42:
 				//putc
 				char c;
 				c = (char)a1;
-				__putc(c);
+				KConsole::kputc(c);
 				break;
 			case 0x80:
 				//alloc thread
@@ -183,7 +183,7 @@ extern "C" void interruptRoutine() {
 				const char* string;
 				string = (const char*)a1;
 				while (*string != '\0') {
-					__putc(*string);
+					putc(*string);
 					string++;
 				}
 				break;
@@ -211,7 +211,7 @@ extern "C" void interruptRoutine() {
 				if (neg) buf[i++] = '-';
 
 				while (--i >= 0) {
-					__putc(buf[i]);
+					putc(buf[i]);
 				}
 				break;
 			default:
@@ -228,29 +228,14 @@ extern "C" void interruptRoutine() {
 		__asm__ volatile("addi %[dst], %[src], 0x4":[dst]"=r"(sepc):[src]"r"(
 				sepc):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 		__asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+		__asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 		//Riscv::w_sepc(sepc + 4);
 	} else if (scause == (1UL << 63 | 9)) {
 		//spoljasnji hardverski prekid (od konzole)
 		uint64 irq = plic_claim();
-		static uint8 i = 32;
-		static char c = '\n';
 		if (irq == CONSOLE_IRQ) {
 			if (*KConsole::sr & CONSOLE_RX_STATUS_BIT) {
-				//input smer, od tastature do bafera
-				//moze se procitati podatak pristigao od konzole
-				printString("\nrx grana\n");
-				printInteger(c = *KConsole::dr);
-				//printInteger(podatak);
-				//printString("\n");
-			} else if (*KConsole::sr & CONSOLE_TX_STATUS_BIT) {
-				//output smer, od bafera do ekrana
-				//kontroler konzole moze da primi podatak koji ce poslati na konzolu
-				//printString("\ntx grana\n");
-				//*KConsole::dr = (char)i;
-				*KConsole::dr = c;
-				if (i++ == 126)i = 32;
-			} else {
-				printString("\nnista\n");
+				KConsole::placeInInput(*KConsole::dr);
 			}
 			//printString("\nobradjen prekid konzole\n");
 			plic_complete(irq);

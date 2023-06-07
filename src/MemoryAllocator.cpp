@@ -45,6 +45,7 @@ void* MemoryAllocator::kmalloc(size_t size, Purpose pur) {
 		UsedMemSegment* newFragment = (UsedMemSegment*)current;
 		newFragment->size = size;
 		newFragment->purpose = pur;
+		newFragment->usableFirstAddress = (char*)newFragment + sizeof(UsedMemSegment);
 		UsedMemSegment* prevUsed = nullptr;
 		for (UsedMemSegment* cur = usedMemHead; cur && cur < newFragment; prevUsed = cur, cur = cur->next);
 		if (!prevUsed) {
@@ -54,7 +55,8 @@ void* MemoryAllocator::kmalloc(size_t size, Purpose pur) {
 			newFragment->next = prevUsed->next;
 			prevUsed->next = newFragment;
 		}
-		return (char*)newFragment + sizeof(UsedMemSegment);
+		//return (char*)newFragment + sizeof(UsedMemSegment);
+		return newFragment->usableFirstAddress;
 	}
 	return nullptr;
 }

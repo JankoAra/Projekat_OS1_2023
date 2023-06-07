@@ -52,48 +52,49 @@ void testMemory() {
 }
 
 void nit1f(void*) {
-	for(int i=0;i<3;i++){
-		printString("\nNit 1 dolazi na semafor\n");
-		//int res = sem_wait(semA);
-		int res = (*semA).wait();
-		if(res){
-			printString("\nNit 1 cekala na semaforu\n");
-		}
-		else{
-			printString("\nNit 1 nije cekala\n");
-		}
-		printString("\nsem_wait za nit 1 vratio ");
-		printInteger(res);
-		printString("\n");
-	}
+//	for(int i=0;i<3;i++){
+//		printString("\nNit 1 dolazi na semafor\n");
+//		//int res = sem_wait(semA);
+//		int res = (*semA).wait();
+//		if(res){
+//			printString("\nNit 1 cekala na semaforu\n");
+//		}
+//		else{
+//			printString("\nNit 1 nije cekala\n");
+//		}
+//		printString("\nsem_wait za nit 1 vratio ");
+//		printInteger(res);
+//		printString("\n");
+//	}
 
 	printString("\nGotova nit 1\n");
 }
 
 void nit2f(void* arg2) {
-	for(int i=0;i<3;i++){
-		printString("\nNit 2 daje signal\n");
-		//sem_signal(semA);
-		int res = (*semA).signal();
-		printString("\nPovratna vrednost signala je ");
-		printInteger(res);
-		printString("\n");
-		//sem_close(semA);
-		printString("\nNit 2 ubija semafor\n");
-		delete semA;
-
-	}
+//	for(int i=0;i<3;i++){
+//		printString("\nNit 2 daje signal\n");
+//		//sem_signal(semA);
+//		int res = (*semA).signal();
+//		printString("\nPovratna vrednost signala je ");
+//		printInteger(res);
+//		printString("\n");
+//		//sem_close(semA);
+//		printString("\nNit 2 ubija semafor\n");
+//		delete semA;
+//
+//	}
 	printString("\nGotova nit 2\n");
 }
 
 
 void nit3f(void*) {
-//	for (int i = 0; i < 20; i++) {
-//		printInteger(i);
-//		printString("\n");
-//		sem_wait(semA);
-//		printString("Nit 3 prosla semafor\n");
-//		time_sleep(10);
-//	}
+	char slovo;
+
+	slovo = getc();
+	putc(slovo);
+	slovo = getc();
+	putc(slovo);
+	slovo = getc();
+	putc(slovo);
 	printString("\nGotova nit3\n");
 }

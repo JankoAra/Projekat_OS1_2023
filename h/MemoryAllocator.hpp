@@ -20,6 +20,7 @@ public:
 		UsedMemSegment* next;
 		size_t size;
 		Purpose purpose;
+		void* usableFirstAddress;
 	};
 
 	// alokacija 'size' bajtova
