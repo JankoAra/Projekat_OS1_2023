@@ -31,14 +31,14 @@ void* MemoryAllocator::kmalloc(size_t size, Purpose pur) {
 			size += remainingSize;
 			if (current->prev) current->prev->next = current->next;
 			if (current->next) current->next->prev = current->prev;
-			if (freeMemHead == current) freeMemHead = current->next;
+			if (freeMemHead == current) { freeMemHead = current->next; }
 		} else {
 			remainderFree->size = remainingSize;
 			remainderFree->prev = current->prev;
 			if (current->prev) current->prev->next = remainderFree;
 			remainderFree->next = current->next;
 			if (current->next) current->next->prev = remainderFree;
-			if (freeMemHead == current) freeMemHead = remainderFree;
+			if (freeMemHead == current) { freeMemHead = remainderFree; }
 		}
 		//ubacivanje novog fragmenta u listu zauzetih fragmenata
 		UsedMemSegment* newFragment = (UsedMemSegment*)current;

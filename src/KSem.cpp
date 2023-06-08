@@ -31,7 +31,9 @@ int KSem::wait() {
 int KSem::signal() {
 	if (!MemoryAllocator::checkPurpose(this, MemoryAllocator::SEMAPHORE)) return -2;
 	if (!working) return -3;
-	if (val++ < 0) unblock();
+	if (val++ < 0) {
+		unblock();
+	}
 	return 0;
 }
 

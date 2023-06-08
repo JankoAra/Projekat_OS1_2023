@@ -23,6 +23,7 @@ TCB* TCB::createThread(TCB::Body function, void* args, uint64* stack) {
 void kernelConsumerFunction(void*);
 
 void idle(void*);
+void userMain();
 
 void TCB::dispatch() {
 	TCB* old = TCB::running;

@@ -112,7 +112,7 @@ Thread::Thread() {
 }
 
 void Thread::wrapper(void* thread) {
-	if(thread!=nullptr){
+	if (thread != nullptr) {
 		((Thread*)thread)->run();
 	}
 }
@@ -135,11 +135,19 @@ int Semaphore::signal() {
 }
 
 void PeriodicThread::terminate() {
-
 }
 
-PeriodicThread::PeriodicThread(time_t period) {
+PeriodicThread::PeriodicThread(time_t period) : Thread(periodicWrapper, this), period(period) {
+}
 
+void PeriodicThread::periodicWrapper(void* pThread) {
+	if (pThread != nullptr) {
+		PeriodicThread* ptr = (PeriodicThread*)pThread;
+		while (1) {
+			ptr->periodicActivation();
+			Thread::sleep(ptr->period);
+		}
+	}
 }
 
 char Console::getc() {

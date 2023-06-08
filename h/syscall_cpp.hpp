@@ -81,6 +81,8 @@ protected:
 
 private:
 	time_t period;
+
+	static void periodicWrapper(void* pThread);
 };
 
 
