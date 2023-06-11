@@ -12,54 +12,55 @@ class TCB;
 
 class ThreadQueue {
 private:
-	struct Node {
-		TCB* data;
-		Node* next;
+    struct Node {
+        TCB *data;
+        Node *next;
 
-		Node(TCB* d) : data(d), next(nullptr) {}
+        Node(TCB *d) : data(d), next(nullptr) {}
 
-		static void* operator new(size_t size) {
-			return mem_alloc(size);
-		}
+        static void *operator new(size_t size) {
+            return mem_alloc(size);
+        }
 
-		static void operator delete(void* ptr) {
-			mem_free(ptr);
-		}
-	};
+        static void operator delete(void *ptr) {
+            mem_free(ptr);
+        }
+    };
 
-	Node* front;
-	Node* back;
+    Node *front;
+    Node *back;
 
 public:
-	ThreadQueue() : front(nullptr), back(nullptr) {}
+    ThreadQueue() : front(nullptr), back(nullptr) {}
 
-	ThreadQueue(const ThreadQueue&) = delete;
+    ThreadQueue(const ThreadQueue &) = delete;
 
-	ThreadQueue& operator=(const ThreadQueue&) = delete;
+    ThreadQueue &operator=(const ThreadQueue &) = delete;
 
-	~ThreadQueue() {
-		while (!isEmpty()) {
-			Node* node = front;
-			front = front->next;
-			delete node;
-		}
-	}
+    ~ThreadQueue() {
+        while (!isEmpty()) {
+            Node *node = front;
+            front = front->next;
+            delete node;
+        }
+    }
 
-	bool isEmpty() const {
-		return front == nullptr;
-	}
+    bool isEmpty() const {
+        bool ret = front == nullptr;
+        return ret;
+    }
 
-	void putLast(TCB* tcb);
+    void putLast(TCB *tcb);
 
-	TCB* getFirst();
+    TCB *getFirst();
 
-	static void* operator new(size_t size) {
-		return mem_alloc(size);
-	}
+    static void *operator new(size_t size) {
+        return mem_alloc(size);
+    }
 
-	static void operator delete(void* ptr) {
-		mem_free(ptr);
-	}
+    static void operator delete(void *ptr) {
+        mem_free(ptr);
+    }
 };
 
 

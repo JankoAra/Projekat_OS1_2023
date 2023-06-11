@@ -63,11 +63,13 @@ void TCB::wrapper() {
 }
 
 void* TCB::operator new(size_t size) {
-	return MemoryAllocator::kmalloc(size + sizeof(MemoryAllocator::UsedMemSegment), MemoryAllocator::THREAD);
+    return mem_alloc(size);
+	//return MemoryAllocator::kmalloc(size + sizeof(MemoryAllocator::UsedMemSegment), MemoryAllocator::THREAD);
 }
 
 void TCB::operator delete(void* ptr) {
-	MemoryAllocator::kfree(ptr);
+    mem_free(ptr);
+	//MemoryAllocator::kfree(ptr);
 }
 
 void TCB::threadJoin(TCB* handle) {
