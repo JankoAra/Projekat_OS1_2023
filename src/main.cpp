@@ -57,7 +57,6 @@ int main() {
     //cekanje da se userMain zavrsi
     thread_join(userHandle);
 
-
     //printString("\nSad cu da izadjem\n");
 
     //flush output bafera za konzolu

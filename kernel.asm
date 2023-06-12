@@ -1415,7 +1415,6 @@ inline void Riscv::ms_sstatus(uint64 mask) {
     80001c88:	fffff097          	auipc	ra,0xfffff
     80001c8c:	7c0080e7          	jalr	1984(ra) # 80001448 <_Z11thread_joinP3TCB>
 
-
     //printString("\nSad cu da izadjem\n");
 
     //flush output bafera za konzolu
