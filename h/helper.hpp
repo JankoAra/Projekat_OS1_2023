@@ -9,4 +9,6 @@
 
 void printInteger(uint64 integer);
 
+void kPrintInt(uint64 integer);
+
 #endif

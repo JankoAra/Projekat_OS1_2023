@@ -19,252 +19,199 @@
 
 #pragma GCC optimize("O0")
 extern "C" void interruptRoutine() {
-	uint64 scause, sepc, sstatus;
-	__asm__ volatile("csrr %[scause], scause":[scause] "=r"(scause): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-	__asm__ volatile("csrr %[sepc], sepc":[sepc] "=r"(sepc): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-	__asm__ volatile("csrr %[status], sstatus":[status] "=r"(
-			sstatus): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-	uint64 a0, a1, a2, a3, a4, a5, a6, a7;
-	__asm__ volatile("mv %[ax], a0":[ax] "=r"(a0): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-	__asm__ volatile("mv %[ax], a1":[ax] "=r"(a1): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-	__asm__ volatile("mv %[ax], a2":[ax] "=r"(a2): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-	__asm__ volatile("mv %[ax], a3":[ax] "=r"(a3): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-	__asm__ volatile("mv %[ax], a4":[ax] "=r"(a4): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-	__asm__ volatile("mv %[ax], a5":[ax] "=r"(a5): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-	__asm__ volatile("mv %[ax], a6":[ax] "=r"(a6): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-	__asm__ volatile("mv %[ax], a7":[ax] "=r"(a7): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+    //bitni sistemski registri
+    uint64 scause, sepc, sstatus;
+    __asm__ volatile("csrr %[scause], scause":[scause] "=r"(scause): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+    __asm__ volatile("csrr %[sepc], sepc":[sepc] "=r"(sepc): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+    __asm__ volatile("csrr %[stat], sstatus":[stat] "=r"(sstatus): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 
-	if (scause == 0x09 || scause == 0x08) {
-		//prekid zbog poziva ecall
-		uint64 opCode = a0;
-		switch (opCode) {
-			case 0x01:
-				//mem_alloc
-				size_t size;
-				size = (size_t)a1;	//size je broj blokova koje treba alocirati
-				size = size * MEM_BLOCK_SIZE;
-				MemoryAllocator::kmalloc(size);
-				__asm__ volatile("sd a0, 80(s0)");
-				break;
-			case 0x02:
-				//mem_free
-				void* ptr;
-				ptr = (void*)a1;
-				MemoryAllocator::kfree(ptr);
-				__asm__ volatile("sd a0, 80(s0)");
-				break;
-			case 0x11:
-				//thread_create
-				thread_t* handle;
-				handle = (thread_t*)a1;
-				void (* function)(void*);
-				function = (void (*)(void*))a2;
-				void* args;
-				args = (void*)a3;
-				uint64* sp;
-				sp = (uint64*)a4;
+    //argumenti preneti sistemskom pozivu
+    uint64 a0, a1, a2, a3, a4, a5, a6, a7;
+    __asm__ volatile("mv %[ax], a0":[ax] "=r"(a0): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+    __asm__ volatile("mv %[ax], a1":[ax] "=r"(a1): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+    __asm__ volatile("mv %[ax], a2":[ax] "=r"(a2): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+    __asm__ volatile("mv %[ax], a3":[ax] "=r"(a3): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+    __asm__ volatile("mv %[ax], a4":[ax] "=r"(a4): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+    __asm__ volatile("mv %[ax], a5":[ax] "=r"(a5): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+    __asm__ volatile("mv %[ax], a6":[ax] "=r"(a6): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+    __asm__ volatile("mv %[ax], a7":[ax] "=r"(a7): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 
-				*handle = TCB::createThread(function, args, sp);
-				TCB::start(*handle);
-				if (*handle != nullptr) {
-					__asm__ volatile("li a0, 0");
-				} else {
-					__asm__ volatile("li a0, -1");
-				}
-				__asm__ volatile("sd a0, 80(s0)");
-				break;
-			case 0x12:
-				//thread_exit
-				TCB::running->setFinished(true);
-				TCB::releaseJoined();
-				TCB::yield();
-				break;
-			case 0x13:
-				//thread_dispatch
-				TCB::yield();
-				break;
-			case 0x14:
-				//thread_join
-				thread_t handleToJoin;
-				handleToJoin = (thread_t)a1;
-				TCB::threadJoin(handleToJoin);
-				TCB::yield();
-				break;
-			case 0x21:
-				//sem_open
-				sem_t* openHandle;
-				openHandle = (sem_t*)a1;
-				uint initVal;
-				initVal = (uint)a2;
-				*openHandle = KSem::initSem(initVal);
-				if (*openHandle != nullptr) {
-					__asm__ volatile("li a0, 0");
-				} else {
-					__asm__ volatile("li a0, -1");
-				}
-				__asm__ volatile("sd a0, 80(s0)");
-				break;
-			case 0x22:
-				//sem_close
-				sem_t closeHandle;
-				closeHandle = (sem_t)a1;
-				KSem::closeSem(closeHandle);
-				__asm__ volatile("sd a0, 80(s0)");
-				break;
-			case 0x23:
-				//sem_wait
-				sem_t waitHandle;
-				waitHandle = (sem_t)a1;
-				waitHandle->wait();
-				__asm__ volatile("sd a0, 80(s0)");
-				break;
-			case 0x24:
-				//sem_signal
-				sem_t signalHandle;
-				signalHandle = (sem_t)a1;
-				signalHandle->signal();
-				__asm__ volatile("sd a0, 80(s0)");
-				break;
-			case 0x31:
-				//time_sleep
-				time_t timerPeriods;
-				timerPeriods = (time_t)a1;
-				if (timerPeriods > 0) {
-					__asm__ volatile("li a0, 0");
-				} else {
-					__asm__ volatile("li a0, -1");
-				}
-				__asm__ volatile("sd a0, 80(s0)");
-				if (timerPeriods > 0) {
-					Scheduler::putToSleep(TCB::running, timerPeriods);
-					TCB::yield();
-				}
-				break;
-			case 0x41:
-				//getc
-				KConsole::kgetc();
-				__asm__ volatile("sd a0, 80(s0)");
-				break;
-			case 0x42:
-				//putc
-				char c;
-				c = (char)a1;
-				KConsole::kputc(c);
-				break;
-			case 0x80:
-				//alloc thread
-				thread_t* handleAlloc;
-				handleAlloc = (thread_t*)a1;
-				void (* foo)(void*);
-				foo = (void (*)(void*))a2;
-				void* argsAlloc;
-				argsAlloc = (void*)a3;
-				uint64* spAlloc;
-				spAlloc = (uint64*)a4;
+    if (scause == 0x09 || scause == 0x08) {
+        //prekid zbog poziva ecall
+        switch (a0) {
+            case 0x01:
+                //mem_alloc
+                //a1 = broj blokova koje treba alocirati
+                MemoryAllocator::kmalloc((size_t)a1 * MEM_BLOCK_SIZE);
+                __asm__ volatile("sd a0, 80(s0)");
+                break;
+            case 0x02:
+                //mem_free
+                //a1 = pokazivac na memoriju koju dealociramo, dobijen sa mem_alloc
+                MemoryAllocator::kfree((void*)a1);
+                __asm__ volatile("sd a0, 80(s0)");
+                break;
+            case 0x11:
+                //thread_create
+                //a1 = pokazivac na rucku u koju upisujemo identifikator niti(adresa u memoriji)
+                //a2 = pokazivac na funkciju koju nit treba da izvrsava
+                //a3 = argumenti funkcije koju nit treba da izvrsava
+                //a4 = poslednja lokacija alociranog steka(najniza adresa)
+                *((thread_t*)a1) = TCB::createThread((TCB::Body)a2, (void*)a3, (uint64*)a4);
+                TCB::start(*((thread_t*)a1));
+                if (*((thread_t*)a1) != nullptr) {
+                    __asm__ volatile("li a0, 0");
+                } else {
+                    __asm__ volatile("li a0, -1");
+                }
+                __asm__ volatile("sd a0, 80(s0)");
+                break;
+            case 0x12:
+                //thread_exit
+                TCB::running->setFinished(true);
+                TCB::releaseJoined();
+                TCB::yield();
+                break;
+            case 0x13:
+                //thread_dispatch
+                TCB::yield();
+                break;
+            case 0x14:
+                //thread_join
+                //a1 = rucka niti na koju tekuca nit treba da ceka
+                TCB::threadJoin((thread_t)a1);
+                TCB::yield();
+                break;
+            case 0x21:
+                //sem_open
+                //a1 = pokazivac na rucku semafora, u koju se upisuje adresa semafora u memoriji
+                *((sem_t*)a1) = KSem::initSem((uint)a2);
+                if (*((sem_t*)a1) != nullptr) {
+                    __asm__ volatile("li a0, 0");
+                } else {
+                    __asm__ volatile("li a0, -1");
+                }
+                __asm__ volatile("sd a0, 80(s0)");
+                break;
+            case 0x22:
+                //sem_close
+                //a1 = rucka semafora
+                KSem::closeSem((sem_t)a1);
+                __asm__ volatile("sd a0, 80(s0)");
+                break;
+            case 0x23:
+                //sem_wait
+                //a1 = rucka semafora
+                ((sem_t)a1)->wait();
+                __asm__ volatile("sd a0, 80(s0)");
+                break;
+            case 0x24:
+                //sem_signal
+                //a1 = rucka semafora
+                ((sem_t)a1)->signal();
+                __asm__ volatile("sd a0, 80(s0)");
+                break;
+            case 0x31:
+                //time_sleep
+                //a1 = broj perioda tajmera na koji se uspavljuje tekuca nit
+                if ((time_t)a1 > 0) {
+                    __asm__ volatile("li a0, 0");
+                } else {
+                    __asm__ volatile("li a0, -1");
+                }
+                __asm__ volatile("sd a0, 80(s0)");
+                if ((time_t)a1 > 0) {
+                    Scheduler::putToSleep(TCB::running, (time_t)a1);
+                    TCB::yield();
+                }
+                break;
+            case 0x41:
+                //getc
+                KConsole::kgetc();
+                __asm__ volatile("sd a0, 80(s0)");
+                break;
+            case 0x42:
+                //putc
+                //a1 = karakter koji se upisuje u bafer za ispis na konzolu
+                KConsole::kputc((char)a1);
+                break;
+            case 0x80:
+                //alloc thread
+                //a1 = pokazivac na rucku u koju upisujemo identifikator niti(adresa u memoriji)
+                //a2 = pokazivac na funkciju koju nit treba da izvrsava
+                //a3 = argumenti funkcije koju nit treba da izvrsava
+                //a4 = poslednja lokacija alociranog steka(najniza adresa)
+                *((thread_t*)a1) = TCB::createThread((TCB::Body)a2, (void*)a3, (uint64*)a4);
+                if (*((thread_t*)a1) != nullptr) {
+                    __asm__ volatile("li a0, 0");
+                } else {
+                    __asm__ volatile("li a0, -1");
+                }
+                __asm__ volatile("sd a0, 80(s0)");
+                break;
+            case 0x81:
+                //start thread
+                //a1 = rucka niti koja se stavlja u scheduler
+                Scheduler::put((thread_t)a1);
+                break;
+            case 0x91:
+                //printInteger
+                //a1 = integer za ispis
+                kPrintInt(a1);
+                break;
+            default:
+                printString("\nNepostojeci op code: ");
+                printInteger(a0);
+                printString("\nscause: ");
+                printInteger(scause);
+                printString("\nsepc: ");
+                printInteger(sepc);
+                break;
+        }
+        //sepc pokazuje na ecall instrukciju, treba preci na sledecu instrukciju
+        //sepc += 4;
+        __asm__ volatile("addi %[dst], %[src], 0x4":[dst]"=r"(sepc):[src]"r"(
+                sepc):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+        __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+        __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+        //Riscv::w_sepc(sepc + 4);
+    } else if (scause == 0x8000000000000009) {
+        //spoljasnji hardverski prekid (od konzole)
+        uint64 irq = plic_claim();
+        if (irq == CONSOLE_IRQ) {
+            if (*KConsole::sr & CONSOLE_RX_STATUS_BIT) {
+                KConsole::placeInInput(*KConsole::dr);
+            }
+            //printString("\nobradjen prekid konzole\n");
+            plic_complete(irq);
+        } else {
+            printString("Neki drugi prekid\n");
+        }
+        //console_handler();
+        Riscv::w_sepc(sepc);
+        Riscv::w_sstatus(sstatus);
+        Riscv::mc_sip(Riscv::SIP_SEIP);
+    } else if (scause == 0x8000000000000001) {
+        //prekid od tajmera
+        //printString("\nPrekid od tajmera\n");
+        Scheduler::wake();
+        TCB::runningTimeSlice++;
+        if (TCB::runningTimeSlice >= TCB::running->getTimeSlice()) {
+            //printString("\nMenjam kontekst\n");
+            TCB::yield();
+            TCB::runningTimeSlice = 0;
+        }
 
-				*handleAlloc = TCB::createThread(foo, argsAlloc, spAlloc);
-				if (*handleAlloc != nullptr) {
-					__asm__ volatile("li a0, 0");
-				} else {
-					__asm__ volatile("li a0, -1");
-				}
-				__asm__ volatile("sd a0, 80(s0)");
-				break;
-			case 0x81:
-				//start thread
-				thread_t threadStartHandle;
-				threadStartHandle = (thread_t)a1;
-				Scheduler::put(threadStartHandle);
-				break;
-			case 0x90:
-				//printString
-				const char* string;
-				string = (const char*)a1;
-				while (*string != '\0') {
-					putc(*string);
-					string++;
-				}
-				break;
-			case 0x91:
-				//printInteger
-				uint64 integer;
-				integer = a1;
-				static char digits[] = "0123456789";
-				char buf[16];
-				int i, neg;
-				uint x;
-
-				neg = 0;
-				if (integer < 0) {
-					neg = 1;
-					x = -integer;
-				} else {
-					x = integer;
-				}
-
-				i = 0;
-				do {
-					buf[i++] = digits[x % 10];
-				} while ((x /= 10) != 0);
-				if (neg) buf[i++] = '-';
-
-				while (--i >= 0) {
-					putc(buf[i]);
-				}
-				break;
-			default:
-				printString("\nNepostojeci op code: ");
-				printInteger(opCode);
-				printString("\nscause: ");
-				printInteger(scause);
-				printString("\nsepc: ");
-				printInteger(sepc);
-				break;
-		}
-		//sepc pokazuje na ecall instrukciju, treba preci na sledecu instrukciju
-		//sepc += 4;
-		__asm__ volatile("addi %[dst], %[src], 0x4":[dst]"=r"(sepc):[src]"r"(
-				sepc):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-		__asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-		__asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-		//Riscv::w_sepc(sepc + 4);
-	} else if (scause == (1UL << 63 | 9)) {
-		//spoljasnji hardverski prekid (od konzole)
-		uint64 irq = plic_claim();
-		if (irq == CONSOLE_IRQ) {
-			if (*KConsole::sr & CONSOLE_RX_STATUS_BIT) {
-				KConsole::placeInInput(*KConsole::dr);
-			}
-			//printString("\nobradjen prekid konzole\n");
-			plic_complete(irq);
-		} else {
-			printString("Neki drugi prekid\n");
-		}
-		//console_handler();
-		Riscv::w_sepc(sepc);
-		Riscv::w_sstatus(sstatus);
-		Riscv::mc_sip(Riscv::SIP_SEIP);
-	} else if (scause == (1UL << 63 | 1)) {
-		//prekid od tajmera
-		//printString("\nPrekid od tajmera\n");
-		Scheduler::wake();
-		TCB::runningTimeSlice++;
-		if (TCB::runningTimeSlice >= TCB::running->getTimeSlice()) {
-			//printString("\nMenjam kontekst\n");
-			TCB::yield();
-			TCB::runningTimeSlice = 0;
-		}
-
-		Riscv::w_sepc(sepc);
-		Riscv::w_sstatus(sstatus);
-		Riscv::mc_sip(Riscv::SIP_SSIP);
-	} else {
-		printString("\nGreska u prekidnoj rutini\n");
-		printString("scause: ");
-		printInteger(scause);
-		printString("\nsepc: ");
-		printInteger(sepc);
-	}
+        Riscv::w_sepc(sepc);
+        Riscv::w_sstatus(sstatus);
+        Riscv::mc_sip(Riscv::SIP_SSIP);
+    } else {
+        printString("\nGreska u prekidnoj rutini\n");
+        printString("scause: ");
+        printInteger(scause);
+        printString("\nsepc: ");
+        printInteger(sepc);
+    }
 }
 
 //stara verzija
