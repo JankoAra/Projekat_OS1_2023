@@ -36,7 +36,7 @@ extern "C" void interruptRoutine() {
     __asm__ volatile("mv %[ax], a6":[ax] "=r"(a6): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
     __asm__ volatile("mv %[ax], a7":[ax] "=r"(a7): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 
-    if (scause == 0x09 || scause == 0x08) {
+    if (scause == 0x9 || scause == 0x8) {
         //prekid zbog poziva ecall
         switch (a0) {
             case 0x01:
@@ -161,20 +161,17 @@ extern "C" void interruptRoutine() {
                 break;
             default:
                 printString("\nNepostojeci op code: ");
-                printInteger(a0);
+                kPrintInt(a0);
                 printString("\nscause: ");
-                printInteger(scause);
+                kPrintInt(scause);
                 printString("\nsepc: ");
-                printInteger(sepc);
+                kPrintInt(sepc);
                 break;
         }
         //sepc pokazuje na ecall instrukciju, treba preci na sledecu instrukciju
-        //sepc += 4;
-        __asm__ volatile("addi %[dst], %[src], 0x4":[dst]"=r"(sepc):[src]"r"(
-                sepc):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-        __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-        __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-        //Riscv::w_sepc(sepc + 4);
+        sepc += 4;
+        __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc));
+        __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus));
     } else if (scause == 0x8000000000000009) {
         //spoljasnji hardverski prekid (od konzole)
         uint64 irq = plic_claim();
@@ -183,13 +180,12 @@ extern "C" void interruptRoutine() {
                 KConsole::placeInInput(*KConsole::dr);
             }
             //printString("\nobradjen prekid konzole\n");
-            plic_complete(irq);
         } else {
             printString("Neki drugi prekid\n");
         }
-        //console_handler();
-        Riscv::w_sepc(sepc);
-        Riscv::w_sstatus(sstatus);
+        plic_complete(irq);
+        __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc));
+        __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus));
         Riscv::mc_sip(Riscv::SIP_SEIP);
     } else if (scause == 0x8000000000000001) {
         //prekid od tajmera
@@ -199,18 +195,18 @@ extern "C" void interruptRoutine() {
         if (TCB::runningTimeSlice >= TCB::running->getTimeSlice()) {
             //printString("\nMenjam kontekst\n");
             TCB::yield();
-            TCB::runningTimeSlice = 0;
+            //TCB::runningTimeSlice = 0;
         }
 
-        Riscv::w_sepc(sepc);
-        Riscv::w_sstatus(sstatus);
+        __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc));
+        __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus));
         Riscv::mc_sip(Riscv::SIP_SSIP);
     } else {
         printString("\nGreska u prekidnoj rutini\n");
         printString("scause: ");
-        printInteger(scause);
+        kPrintInt(scause);
         printString("\nsepc: ");
-        printInteger(sepc);
+        kPrintInt(sepc);
     }
 }
 
