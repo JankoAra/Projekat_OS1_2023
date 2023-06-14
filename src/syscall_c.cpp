@@ -11,7 +11,8 @@ inline void scall() {
 
 void* mem_alloc(size_t size) {
     //na size se dodaje zaglavlje segmenta
-    size += sizeof(MemoryAllocator::UsedMemSegment);
+    //size += sizeof(MemoryAllocator::UsedMemSegment);
+    size += sizeof(uint64);
     //size je u bajtovima, pretvara se u blokove
     size = size / MEM_BLOCK_SIZE + (size % MEM_BLOCK_SIZE ? 1 : 0);
 
@@ -48,7 +49,7 @@ int thread_create(thread_t* handle, void (* start_routine)(void*), void* arg) {
     //stvaranje steka ako se ne radi o main kernel niti, posto ona automatski ima stek
     uint64* stack = nullptr;
     if (start_routine != nullptr) {
-        stack = (uint64*) mem_alloc(DEFAULT_STACK_SIZE);
+        stack = (uint64*)mem_alloc(DEFAULT_STACK_SIZE);
     }
     //stavljanje argumenata za sistemski poziv
     __asm__ volatile("mv a4, %[sp]": :[sp] "r"(stack):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
@@ -196,7 +197,7 @@ int thread_alloc(thread_t* handle, TCB::Body function, void* arg) {
     //stvaranje steka ako se ne radi o main kernel niti, posto ona automatski ima stek
     uint64* stack = nullptr;
     if (function != nullptr) {
-        stack = (uint64*) mem_alloc(DEFAULT_STACK_SIZE);
+        stack = (uint64*)mem_alloc(DEFAULT_STACK_SIZE);
     }
     //uint64* stack = (start_routine != nullptr ? (uint64*)MemoryAllocator::kmalloc(DEFAULT_STACK_SIZE) : nullptr);
     //stavljanje argumenata za sistemski poziv

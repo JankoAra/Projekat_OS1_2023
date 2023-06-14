@@ -6,7 +6,7 @@ build/src/interruptRoutine.o: src/interruptRoutine.cpp \
  src/../h/Scheduler.hpp src/../h/KSem.hpp src/../h/KConsole.hpp \
  src/../h/../h/syscall_c.hpp src/../h/../test/printing.hpp \
  src/../h/../test/../h/syscall_c.hpp src/../h/../h/helper.hpp \
- src/../test/printing.hpp
+ src/../h/KMemory.hpp src/../test/printing.hpp
 
 src/../lib/console.h:
 
@@ -41,5 +41,7 @@ src/../h/../test/printing.hpp:
 src/../h/../test/../h/syscall_c.hpp:
 
 src/../h/../h/helper.hpp:
+
+src/../h/KMemory.hpp:
 
 src/../test/printing.hpp:

@@ -12,7 +12,7 @@
 #include "../h/Scheduler.hpp"
 #include "../h/KSem.hpp"
 #include "../h/KConsole.hpp"
-
+#include "../h/KMemory.hpp"
 #include "../test/printing.hpp"
 
 //void printInteger(int i);
@@ -42,13 +42,15 @@ extern "C" void interruptRoutine() {
             case 0x01:
                 //mem_alloc
                 //a1 = broj blokova koje treba alocirati
-                MemoryAllocator::kmalloc((size_t)a1 * MEM_BLOCK_SIZE);
+                //MemoryAllocator::kmalloc((size_t)a1 * MEM_BLOCK_SIZE);
+                KMemory::kmalloc((size_t)a1);
                 __asm__ volatile("sd a0, 80(s0)");
                 break;
             case 0x02:
                 //mem_free
                 //a1 = pokazivac na memoriju koju dealociramo, dobijen sa mem_alloc
-                MemoryAllocator::kfree((void*)a1);
+                //MemoryAllocator::kfree((void*)a1);
+                KMemory::kfree((void*)a1);
                 __asm__ volatile("sd a0, 80(s0)");
                 break;
             case 0x11:

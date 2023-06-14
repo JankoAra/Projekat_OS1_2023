@@ -12,7 +12,7 @@ public:
 	enum Purpose{STACK, SEMAPHORE, THREAD, MISC, LIST_NODE};
 	struct FreeMemSegment {
 		FreeMemSegment* next;
-		FreeMemSegment* prev;
+		//FreeMemSegment* prev;
 		size_t size;
 	};
 

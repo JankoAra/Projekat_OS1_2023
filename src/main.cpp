@@ -10,6 +10,7 @@
 #include "../h/KConsole.hpp"
 
 #include "../test/printing.hpp"
+#include "../h/KMemory.hpp"
 
 
 extern "C" void interruptHandler();
@@ -34,8 +35,10 @@ int main() {
     //postavi adresu prekidne rutine u stvec
     __asm__ volatile("csrw stvec, %[handler]": :[handler] "r"(&interruptHandler));
 
+    KMemory::initializeMemory();
+
     //inicijalizacija alokatora memorije
-    MemoryAllocator::initMemoryAllocator();
+    //MemoryAllocator::initMemoryAllocator();
 
     //inicijalizacija komunikacije sa konzolom
     KConsole::initKConsole();
