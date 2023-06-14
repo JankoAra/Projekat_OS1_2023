@@ -40,14 +40,16 @@ int KSem::signal() {
 }
 
 void KSem::block() {
-	TCB::running->setBlocked(true);
+	//TCB::running->setBlocked(true);
+    TCB::running->setStatus(TCB::BLOCKED);
 	blocked.putLast(TCB::running);
 	TCB::yield();
 }
 
 void KSem::unblock() {
 	TCB* tcb = blocked.getFirst();
-	tcb->setBlocked(false);
+	//tcb->setBlocked(false);
+    tcb->setStatus(TCB::ACTIVE);
 	Scheduler::put(tcb);
 }
 
@@ -56,7 +58,8 @@ int KSem::closeSem(sem_t handle) {
 	handle->working = false;
 	while (!handle->blocked.isEmpty()) {
 		TCB* tcb = handle->blocked.getFirst();
-		tcb->setBlocked(false);
+		//tcb->setBlocked(false);
+        tcb->setStatus(TCB::ACTIVE);
 		Scheduler::put(tcb);
 	}
 	return 0;

@@ -15,10 +15,10 @@ public:
     using Body = void (*)(void*);
 
     enum ThreadStatus {
-        CREATED, ACTIVE, BLOCKED, SLEEPING, FINISHED
+        CREATED, ACTIVE, BLOCKED, JOINING, SLEEPING, FINISHED
     };
 
-    void setStatus(ThreadStatus status) { this->status = status; }
+    void setStatus(ThreadStatus stat) { this->status = stat; }
 
     ThreadStatus getStatus() { return this->status; }
 
@@ -26,13 +26,13 @@ public:
 
     static void start(TCB* newTcb);
 
-    bool isFinished() { return finished; }
-
-    void setFinished(bool finish) { this->finished = finish; }
-
-    bool isBlocked() { return blocked; }
-
-    void setBlocked(bool block) { this->blocked = block; }
+//    bool isFinished() { return finished; }
+//
+//    void setFinished(bool finish) { this->finished = finish; }
+//
+//    bool isBlocked() { return blocked; }
+//
+//    void setBlocked(bool block) { this->blocked = block; }
 
     uint64 getTimeSlice() { return timeSlice; }
 
@@ -67,20 +67,19 @@ private:
     uint64* stack;            //najniza adresa steka; stek raste ka nizim adresama, pokazuje na poslednju zauzetu
     void* args;                //argumenti poziva funkcije
     uint64 timeSlice;        //vremenski odsecak dodeljen datoj niti
-    bool finished;            //da li je nit zavrsila izvrsavanje funkcije
-    bool blocked;            //da li je nit blokirana
-    bool needToJoin;        //da li je nit pozvala join i ceka da se neka druga zavrsi
+   // bool finished;            //da li je nit zavrsila izvrsavanje funkcije
+    //bool blocked;            //da li je nit blokirana
+   // bool needToJoin;        //da li je nit pozvala join i ceka da se neka druga zavrsi
     TCB* nextInScheduler;    // pokazivac na sledecu nit u Scheduler-u
     time_t timeToSleep;        //vreme na koje je uspavana nit
     TCB* nextSleeping;        //sledeca nit u listi za spavanje u Scheduler-u
     ThreadQueue waitingToJoin;    //red niti koje su pozvale join nad ovom niti
-    ThreadStatus status;
+    ThreadStatus status;    //status niti
 
 
     TCB(Body function, void* args, uint64* stack) : threadFunction(function), stack(stack), args(args),
-                                                    timeSlice(DEFAULT_TIME_SLICE), finished(false), blocked(false),
-                                                    needToJoin(false),
-                                                    nextInScheduler(nullptr), timeToSleep(0), nextSleeping(nullptr) {
+                                                    timeSlice(DEFAULT_TIME_SLICE), nextInScheduler(nullptr), timeToSleep(0),
+                                                    nextSleeping(nullptr), status(CREATED) {
         //formiranje pocetnog konteksta; specijalni uslovi za main funkciju kojoj se pocetni kontekst automatski formira
         uint64 startRa = threadFunction != nullptr ? (uint64)&wrapper : 0;
         uint64 startSp = stack != nullptr ? (uint64)&stack[DEFAULT_STACK_SIZE] : 0;

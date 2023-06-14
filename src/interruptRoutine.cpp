@@ -68,7 +68,8 @@ extern "C" void interruptRoutine() {
                 break;
             case 0x12:
                 //thread_exit
-                TCB::running->setFinished(true);
+                //TCB::running->setFinished(true);
+                TCB::running->setStatus(TCB::FINISHED);
                 TCB::releaseJoined();
                 TCB::yield();
                 break;

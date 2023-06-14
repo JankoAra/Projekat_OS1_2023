@@ -28,28 +28,32 @@ void* MemoryAllocator::kmalloc(size_t size, Purpose pur) {
     size = blocks * MEM_BLOCK_SIZE;
 
     //trazenje slobodnog segmenta po first-fit algoritmu
-    for (FreeMemSegment* current = freeMemHead; current; current = current->next) {
-        if (current->size < size) continue;
+    for (FreeMemSegment* firstFit = freeMemHead; firstFit; firstFit = firstFit->next) {
+        if (firstFit->size < size) continue;
 
         //pravljenje novog slobodnog fragmenta od ostatka fragmenta
-        FreeMemSegment* remainderFree = (FreeMemSegment*) ((char*) current + size);
-        size_t remainingSize = current->size - size;
+        FreeMemSegment* remainderFree = (FreeMemSegment*) ((char*) firstFit + size);
+        size_t remainingSize = firstFit->size - size;
         if (remainingSize <= sizeof(UsedMemSegment)) {
             //ne preostaje dovoljno veliki slobodni segment;dodeljujemo ceo trenutno alociranom
             size += remainingSize;
-            if (current->prev) current->prev->next = current->next;
-            if (current->next) current->next->prev = current->prev;
-            if (freeMemHead == current) { freeMemHead = current->next; }
+            if (firstFit->prev) firstFit->prev->next = firstFit->next;
+            if (firstFit->next) firstFit->next->prev = firstFit->prev;
+            if (freeMemHead == firstFit) {
+                freeMemHead = firstFit->next;
+            }
         } else {
             remainderFree->size = remainingSize;
-            remainderFree->prev = current->prev;
-            if (current->prev) current->prev->next = remainderFree;
-            remainderFree->next = current->next;
-            if (current->next) current->next->prev = remainderFree;
-            if (freeMemHead == current) { freeMemHead = remainderFree; }
+            remainderFree->prev = firstFit->prev;
+            if (firstFit->prev) firstFit->prev->next = remainderFree;
+            remainderFree->next = firstFit->next;
+            if (firstFit->next) firstFit->next->prev = remainderFree;
+            if (freeMemHead == firstFit) {
+                freeMemHead = remainderFree;
+            }
         }
         //ubacivanje novog fragmenta u listu zauzetih fragmenata
-        UsedMemSegment* newFragment = (UsedMemSegment*) current;
+        UsedMemSegment* newFragment = (UsedMemSegment*) firstFit;
         newFragment->size = size;
         newFragment->purpose = pur;
         newFragment->usableFirstAddress = (char*) newFragment + sizeof(UsedMemSegment);

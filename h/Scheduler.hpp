@@ -5,11 +5,6 @@
 #ifndef PROJEKAT2023_SCHEDULER_HPP
 #define PROJEKAT2023_SCHEDULER_HPP
 
-
-//#include "../h/List.hpp"
-
-
-
 class TCB;
 
 typedef unsigned long time_t;
