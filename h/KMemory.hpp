@@ -10,15 +10,22 @@
 class KMemory {
 public:
     static void initializeMemory();
+
     static void* kmalloc(size_t size);
-    static void kfree(void* ptr);
+
+    static int kfree(void* ptr);
+
 private:
     static bool initialized;
     static uint64 numOfBlocks;
     static uint64 blocksForBitVector;
     static uint64 usableBlocks;
-    static uint64 bitsInBitVector;
-    static bool* bitVector;
+    static uint64 sizeOfBitVectorInUint64;
+    static uint64* bitVector;
+
+    inline static uint64 maskBit(uint64 bitPos) {
+        return (uint64)1 << bitPos;
+    }
 };
 
 
