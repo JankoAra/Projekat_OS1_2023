@@ -60,7 +60,7 @@ extern "C" void interruptRoutine() {
                 //a3 = argumenti funkcije koju nit treba da izvrsava
                 //a4 = poslednja lokacija alociranog steka(najniza adresa)
                 *((thread_t*)a1) = TCB::createThread((TCB::Body)a2, (void*)a3, (uint64*)a4);
-                if((TCB::Body)a2!=nullptr){
+                if ((TCB::Body)a2 != nullptr) {
                     Scheduler::put(*((thread_t*)a1));
                     (*((thread_t*)a1))->setStatus(TCB::ACTIVE);
                 }
@@ -159,7 +159,10 @@ extern "C" void interruptRoutine() {
             case 0x81:
                 //start thread
                 //a1 = rucka niti koja se stavlja u scheduler
-                Scheduler::put((thread_t)a1);
+                //if (((thread_t)a1)->getBody() != nullptr) {
+                    Scheduler::put((thread_t)a1);
+                    ((thread_t)a1)->setStatus(TCB::ACTIVE);
+                //}
                 break;
             case 0x91:
                 //printInteger
@@ -201,8 +204,8 @@ extern "C" void interruptRoutine() {
         TCB::runningTimeSlice++;
         if (TCB::runningTimeSlice >= TCB::running->getTimeSlice()) {
             //printString("\nMenjam kontekst\n");
-            //TCB::yield();
-            TCB::dispatch();
+            TCB::yield();
+            //TCB::dispatch();
             //TCB::runningTimeSlice = 0;
         }
 

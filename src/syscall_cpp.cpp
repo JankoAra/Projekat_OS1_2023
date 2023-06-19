@@ -82,7 +82,8 @@ void Thread::dispatch() {
 }
 
 int Thread::sleep(time_t t) {
-	Scheduler::putToSleep(TCB::running, t);
+	//Scheduler::putToSleep(TCB::running, t);
+    time_sleep(t);
 	return 0;
 }
 

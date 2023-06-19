@@ -38,6 +38,8 @@ public:
 
     void setTimeSlice(uint64 value) { timeSlice = value; }
 
+    Body getBody(){return threadFunction;}
+
     //static void threadSleep(time_t sleepTime);
 
     static void threadJoin(TCB* handle);
