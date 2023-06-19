@@ -12,7 +12,7 @@ inline void scall() {
 void* mem_alloc(size_t size) {
     //na size se dodaje zaglavlje segmenta
     //size += sizeof(MemoryAllocator::UsedMemSegment);
-    size += sizeof(uint64);
+    size += 2*sizeof(uint64);
     //size je u bajtovima, pretvara se u blokove
     size = size / MEM_BLOCK_SIZE + (size % MEM_BLOCK_SIZE ? 1 : 0);
 

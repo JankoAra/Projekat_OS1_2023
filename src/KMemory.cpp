@@ -7,7 +7,8 @@
 bool KMemory::initialized = false;
 uint64 KMemory::numOfBlocks = 0;
 uint64 KMemory::blocksForBitVector = 0;
-uint64 KMemory::usableBlocks = 0;
+uint64 KMemory::freeBlocksLeft = 0;
+uint64 KMemory::firstFreeBlock = 0;
 uint64 KMemory::sizeOfBitVectorInUint64 = 0;
 uint64* KMemory::bitVector = nullptr;
 
@@ -20,6 +21,7 @@ void KMemory::initializeMemory() {
             numOfBlocks / (sizeof(uint64) * 8);    //broj uint64 potrebnih da se smesti ceo bit vektor
     numOfBlocks = sizeOfBitVectorInUint64 * sizeof(uint64) * 8; //da se zaokruzi broj postojecih blokova na umnozak 64
     blocksForBitVector = (sizeOfBitVectorInUint64 * sizeof(uint64) + MEM_BLOCK_SIZE - 1) / MEM_BLOCK_SIZE;
+    freeBlocksLeft = numOfBlocks;
     bitVector = (uint64*)HEAP_START_ADDR;
     for (uint64 i = 0; i < sizeOfBitVectorInUint64; i++) {
         bitVector[i] = 0;   //ni jedan blok nije zauzet, svi bitovi su 0
@@ -82,13 +84,15 @@ void* KMemory::kmalloc(size_t size) {
             currentElem++;
         }
     }
-
-    return (char*)addr + sizeof(uint64);
+    freeBlocksLeft -= size;
+    return (char*)addr + 2 * sizeof(uint64);
 }
 
 int KMemory::kfree(void* ptr) {
-    ptr = (char*)ptr - sizeof(uint64);
+    if(!ptr) return 0;
+    ptr = (char*)ptr - 2 * sizeof(uint64);
     uint64 blocksToFree = *(uint64*)ptr;
+    freeBlocksLeft += blocksToFree;
     uint64 blockNum = ((char*)ptr - (char*)HEAP_START_ADDR) / MEM_BLOCK_SIZE;
     if (((char*)ptr - (char*)HEAP_START_ADDR) % MEM_BLOCK_SIZE > 0) return -1;
     uint64 currentElem = blockNum / 64;

@@ -19,7 +19,8 @@ private:
     static bool initialized;
     static uint64 numOfBlocks;
     static uint64 blocksForBitVector;
-    static uint64 usableBlocks;
+    static uint64 freeBlocksLeft;
+    static uint64 firstFreeBlock;
     static uint64 sizeOfBitVectorInUint64;
     static uint64* bitVector;
 

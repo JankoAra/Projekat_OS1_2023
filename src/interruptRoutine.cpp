@@ -60,7 +60,10 @@ extern "C" void interruptRoutine() {
                 //a3 = argumenti funkcije koju nit treba da izvrsava
                 //a4 = poslednja lokacija alociranog steka(najniza adresa)
                 *((thread_t*)a1) = TCB::createThread((TCB::Body)a2, (void*)a3, (uint64*)a4);
-                TCB::start(*((thread_t*)a1));
+                if((TCB::Body)a2!=nullptr){
+                    Scheduler::put(*((thread_t*)a1));
+                    (*((thread_t*)a1))->setStatus(TCB::ACTIVE);
+                }
                 if (*((thread_t*)a1) != nullptr) {
                     __asm__ volatile("li a0, 0");
                 } else {
@@ -78,6 +81,7 @@ extern "C" void interruptRoutine() {
             case 0x13:
                 //thread_dispatch
                 TCB::yield();
+                //TCB::dispatch();
                 break;
             case 0x14:
                 //thread_join
@@ -197,7 +201,8 @@ extern "C" void interruptRoutine() {
         TCB::runningTimeSlice++;
         if (TCB::runningTimeSlice >= TCB::running->getTimeSlice()) {
             //printString("\nMenjam kontekst\n");
-            TCB::yield();
+            //TCB::yield();
+            TCB::dispatch();
             //TCB::runningTimeSlice = 0;
         }
 

@@ -47,9 +47,9 @@ void TCB::dispatch() {
 }
 
 void TCB::yield() {
-    Riscv::pushRegisters();
+    //Riscv::pushRegisters();
     TCB::dispatch();
-    Riscv::popRegisters();
+    //Riscv::popRegisters();
 }
 
 void TCB::wrapper() {

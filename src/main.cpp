@@ -50,6 +50,7 @@ int main() {
     thread_t consoleOutputHandle;
     thread_create(&mainHandle, nullptr, nullptr);
     TCB::running = mainHandle;
+    TCB::running->setStatus(TCB::ACTIVE);
     thread_create(&userHandle, (TCB::Body) userMain, nullptr);
     thread_create(&consoleOutputHandle, kernelConsumerFunction, nullptr);
     thread_create(&idleHandle, idle, nullptr);
