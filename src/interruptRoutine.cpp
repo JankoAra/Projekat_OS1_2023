@@ -15,7 +15,7 @@
 #include "../h/KMemory.hpp"
 #include "../test/printing.hpp"
 
-//void printInteger(int i);
+int main();
 
 #pragma GCC optimize("O0")
 extern "C" void interruptRoutine() {
@@ -59,7 +59,7 @@ extern "C" void interruptRoutine() {
                 //a4 = poslednja lokacija alociranog steka(najniza adresa)
                 *((thread_t*)a1) = TCB::createThread((TCB::Body)a2, (void*)a3, (uint64*)a4);
                 if (*((thread_t*)a1) != nullptr) {
-                    if ((TCB::Body)a2 != nullptr) {
+                    if ((TCB::Body)a2 != (TCB::Body)main) {
                         Scheduler::put(*((thread_t*)a1));
                     }
                     __asm__ volatile("li a0, 0");
@@ -102,6 +102,7 @@ extern "C" void interruptRoutine() {
                 //a1 = rucka semafora
                 KSem::closeSem((sem_t)a1);
                 __asm__ volatile("sd a0, 80(s0)");
+                delete (sem_t)a1;
                 break;
             case 0x23:
                 //sem_wait
@@ -156,7 +157,9 @@ extern "C" void interruptRoutine() {
             case 0x81:
                 //start thread
                 //a1 = rucka niti koja se stavlja u scheduler
-                Scheduler::put((thread_t)a1);
+                if (((thread_t)a1)->getBody() != (TCB::Body)main) {
+                    Scheduler::put((thread_t)a1);
+                }
                 break;
             case 0x91:
                 //printInteger
@@ -198,7 +201,6 @@ extern "C" void interruptRoutine() {
         if (TCB::getRunningTimeSlice() >= TCB::getRunning()->getTimeSlice()) {
             TCB::dispatch();
         }
-
         __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc));
         __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus));
         Riscv::mc_sip(Riscv::SIP_SSIP);
@@ -208,5 +210,7 @@ extern "C" void interruptRoutine() {
         kPrintInt(scause);
         printString("\nsepc: ");
         kPrintInt(sepc);
+//        Riscv::mc_sstatus(Riscv::SSTATUS_SPIE);
+//        Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
     }
 }

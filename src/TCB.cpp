@@ -12,6 +12,8 @@ void idle(void*);
 
 void userMain();
 
+int main();
+
 TCB* TCB::running = nullptr;
 uint64 TCB::runningTimeSlice = 0;
 
@@ -30,7 +32,7 @@ void TCB::dispatch() {
 
     //sada biramo u kom rezimu ce se izvrsavati nit, upisom bita SSTATUS_SPP
     //ako treba da se izvrsava kernel nit, povratak je u sistemski rezim, inace u korisnicki
-    if (TCB::running->threadFunction == nullptr || TCB::running->threadFunction == kernelConsumerFunction ||
+    if (TCB::running->threadFunction == (TCB::Body)main || TCB::running->threadFunction == kernelConsumerFunction ||
         TCB::running->threadFunction == idle) {
         Riscv::ms_sstatus(Riscv::SSTATUS_SPP);
     } else {
@@ -73,7 +75,7 @@ void TCB::releaseJoined() {
 
 void TCB::start(TCB* newTcb) {
     //startovanje niti(stavljanje u Scheduler); main nit je vec aktivna, ne stavlja se u Scheduler
-    if (newTcb->threadFunction != nullptr) {
+    if (newTcb->threadFunction != (TCB::Body)main) {
         Scheduler::put(newTcb);
     }
 }

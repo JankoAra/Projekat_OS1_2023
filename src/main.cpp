@@ -7,7 +7,6 @@
 #include "../h/ThreadQueue.hpp"
 //#include "../h/KSem.hpp"
 #include "../h/KConsole.hpp"
-
 #include "../test/printing.hpp"
 #include "../h/KMemory.hpp"
 
@@ -27,10 +26,9 @@ void kernelConsumerFunction(void*) {
         *KConsole::dr = c;
         sem_signal(KConsole::outputBufferHasSpace);
     }
-
 }
 
-int main2() {
+int main() {
     //postavljanje adrese prekidne rutine u stvec
     __asm__ volatile("csrw stvec, %[handler]": :[handler] "r"(&interruptHandler));
 
@@ -45,10 +43,10 @@ int main2() {
     thread_t userHandle;
     thread_t idleHandle;
     thread_t consoleOutputHandle;
-    thread_create(&mainHandle, nullptr, nullptr);
+    thread_create(&mainHandle, (TCB::Body)main, nullptr);
     TCB::setRunning(mainHandle);
     mainHandle->setStatus(TCB::ACTIVE);
-    thread_create(&userHandle, (TCB::Body) userMain, nullptr);
+    thread_create(&userHandle, (TCB::Body)userMain, nullptr);
     thread_create(&consoleOutputHandle, kernelConsumerFunction, nullptr);
     thread_create(&idleHandle, idle, nullptr);
 

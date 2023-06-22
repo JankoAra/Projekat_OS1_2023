@@ -8,6 +8,7 @@
 #include "../lib/hw.h"
 #include "../h/ThreadQueue.hpp"
 
+int main();
 class TCB {
 public:
     friend class Scheduler;
@@ -58,7 +59,7 @@ private:
                                                     nextSleeping(nullptr), status(CREATED) {
         //formiranje pocetnog konteksta;
         //specijalni uslovi za main funkciju kojoj se pocetni kontekst automatski formira
-        uint64 startRa = threadFunction != nullptr ? (uint64)&wrapper : 0;
+        uint64 startRa = threadFunction != (TCB::Body)main ? (uint64)&wrapper : 0;
         uint64 startSp = stack != nullptr ? (uint64)((char*)stack + DEFAULT_STACK_SIZE) : 0;
         this->context.ra = startRa;
         this->context.sp = startSp;

@@ -3,6 +3,7 @@
 #include "../lib/console.h"
 #include "../h/TCB.hpp"
 
+int main();
 //poziv ecall, prelazak u sistemski rezim i odlazak u prekidnu rutinu
 inline void scall() {
     __asm__ volatile("ecall");
@@ -47,7 +48,7 @@ int mem_free(void* ptr) {
 int thread_create(thread_t* handle, void (* start_routine)(void*), void* arg) {
     //stvaranje steka ako se ne radi o main kernel niti, posto ona automatski ima stek
     uint64* stack = nullptr;
-    if (start_routine != nullptr) {
+    if (start_routine != (TCB::Body)main) {
         stack = (uint64*)mem_alloc(DEFAULT_STACK_SIZE);
         if(!stack) return -1;
     }
@@ -196,10 +197,10 @@ void putc(char c) {
 int thread_alloc(thread_t* handle, TCB::Body function, void* arg) {
     //stvaranje steka ako se ne radi o main kernel niti, posto ona automatski ima stek
     uint64* stack = nullptr;
-    if (function != nullptr) {
+    if (function != (TCB::Body)main) {
         stack = (uint64*)mem_alloc(DEFAULT_STACK_SIZE);
+        if(!stack) return -1;
     }
-    //uint64* stack = (start_routine != nullptr ? (uint64*)MemoryAllocator::kmalloc(DEFAULT_STACK_SIZE) : nullptr);
     //stavljanje argumenata za sistemski poziv
     __asm__ volatile("mv a4, %[sp]": :[sp] "r"(stack):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
     __asm__ volatile("mv a3, %[arg]": :[arg] "r"(arg):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");

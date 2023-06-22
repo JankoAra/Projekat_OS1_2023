@@ -7,6 +7,8 @@
 #include "../h/KSem.hpp"
 #include "../h/Scheduler.hpp"
 
+int main();
+
 //override globalnog new
 void* operator new(size_t size) {
     return mem_alloc(size);
@@ -33,7 +35,7 @@ Thread::Thread(void (* body)(void*), void* arg) {
     this->arg = arg;
     //stvaranje steka ako se ne radi o main kernel niti, posto ona automatski ima stek
     uint64* stack = nullptr;
-    if (body != nullptr) {
+    if (body != (TCB::Body)main) {
         stack = (uint64*)mem_alloc(DEFAULT_STACK_SIZE);
     }
     //stavljanje argumenata za sistemski poziv
@@ -84,11 +86,7 @@ int Thread::sleep(time_t t) {
 Thread::Thread() {
     this->body = wrapper;
     this->arg = this;
-    //stvaranje steka ako se ne radi o main kernel niti, posto ona automatski ima stek
-    uint64* stack = nullptr;
-    if (body != nullptr) {
-        stack = (uint64*)mem_alloc(DEFAULT_STACK_SIZE);
-    }
+    uint64* stack = (uint64*)mem_alloc(DEFAULT_STACK_SIZE);
     //stavljanje argumenata za sistemski poziv
     __asm__ volatile("mv a4, %[sp]": :[sp] "r"(stack):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
     __asm__ volatile("mv a3, %[arg]": :[arg] "r"(arg):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
