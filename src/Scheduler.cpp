@@ -63,7 +63,6 @@ void Scheduler::wake() {
         TCB* thread = sleepingHead;
         sleepingHead = sleepingHead->nextSleeping;
         thread->nextSleeping = nullptr;
-        thread->status = TCB::ACTIVE;
         Scheduler::put(thread);
     }
 }

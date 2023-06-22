@@ -52,16 +52,14 @@ void TCB::wrapper() {
 
 void* TCB::operator new(size_t size) {
     return mem_alloc(size);
-    //return MemoryAllocator::kmalloc(size + sizeof(MemoryAllocator::UsedMemSegment), MemoryAllocator::THREAD);
 }
 
 void TCB::operator delete(void* ptr) {
     mem_free(ptr);
-    //MemoryAllocator::kfree(ptr);
 }
 
 void TCB::threadJoin(TCB* handle) {
-    if (handle->status == FINISHED) return;
+    if (handle->status == FINISHED || TCB::running == handle) return;
     TCB::running->status = JOINING;
     handle->waitingToJoin.putLast(TCB::running);
 }
@@ -69,7 +67,6 @@ void TCB::threadJoin(TCB* handle) {
 void TCB::releaseJoined() {
     while (!TCB::running->waitingToJoin.isEmpty()) {
         TCB* tcb = TCB::running->waitingToJoin.getFirst();
-        tcb->status = ACTIVE;
         Scheduler::put(tcb);
     }
 }

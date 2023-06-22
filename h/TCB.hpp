@@ -32,8 +32,6 @@ public:
 
     Body getBody() { return threadFunction; }
 
-    //static void threadSleep(time_t sleepTime);
-
     static TCB* getRunning() { return running; }
 
     static void setRunning(TCB* newRunning) { running = newRunning; }

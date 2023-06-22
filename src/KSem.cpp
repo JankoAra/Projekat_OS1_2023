@@ -8,12 +8,10 @@
 
 void* KSem::operator new(size_t size) {
     return mem_alloc(size);
-	//return MemoryAllocator::kmalloc(size + sizeof(MemoryAllocator::UsedMemSegment), MemoryAllocator::SEMAPHORE);
 }
 
 void KSem::operator delete(void* ptr) {
     mem_free(ptr);
-	//MemoryAllocator::kfree(ptr);
 }
 
 KSem* KSem::initSem(uint val) {
@@ -21,7 +19,6 @@ KSem* KSem::initSem(uint val) {
 }
 
 int KSem::wait() {
-	//if (!MemoryAllocator::checkPurpose(this, MemoryAllocator::SEMAPHORE)) return -2;
 	if (!working) return -3;
 	if (--val < 0) {
 		block();
@@ -31,7 +28,6 @@ int KSem::wait() {
 }
 
 int KSem::signal() {
-	//if (!MemoryAllocator::checkPurpose(this, MemoryAllocator::SEMAPHORE)) return -2;
 	if (!working) return -3;
 	if (val++ < 0) {
 		unblock();
@@ -40,7 +36,6 @@ int KSem::signal() {
 }
 
 void KSem::block() {
-	//TCB::running->setBlocked(true);
     TCB::getRunning()->setStatus(TCB::BLOCKED);
 	blocked.putLast(TCB::getRunning());
 	TCB::dispatch();
@@ -48,18 +43,13 @@ void KSem::block() {
 
 void KSem::unblock() {
 	TCB* tcb = blocked.getFirst();
-	//tcb->setBlocked(false);
-    tcb->setStatus(TCB::ACTIVE);
 	Scheduler::put(tcb);
 }
 
 int KSem::closeSem(sem_t handle) {
-	//if (!MemoryAllocator::checkPurpose(handle, MemoryAllocator::SEMAPHORE)) return -2;
 	handle->working = false;
 	while (!handle->blocked.isEmpty()) {
 		TCB* tcb = handle->blocked.getFirst();
-		//tcb->setBlocked(false);
-        tcb->setStatus(TCB::ACTIVE);
 		Scheduler::put(tcb);
 	}
 	return 0;

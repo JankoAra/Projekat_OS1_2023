@@ -10,7 +10,7 @@
 #include "../h/syscall_c.hpp"
 #include "../h/syscall_cpp.hpp"
 #include "../visak/List.hpp"
-//#include "../h/MemoryAllocator.hpp"
+#include "../h/KMemory.hpp"
 #include "../h/TCB.hpp"
 #include "../h/ThreadQueue.hpp"
 //#include "../h/KSem.hpp"
@@ -83,20 +83,18 @@ void nit1f(void*) {
 
     printString("\nGotova nit 1\n");
 }
-
+class per:public PeriodicThread{
+public:
+    per(time_t period): PeriodicThread(period){}
+    void periodicActivation() override{
+        printString("Janko\n");
+    }
+};
 void nit2f(void* arg2) {
-//	for(int i=0;i<3;i++){
-//		printString("\nNit 2 daje signal\n");
-//		//sem_signal(semA);
-//		int res = (*semA).signal();
-//		printString("\nPovratna vrednost signala je ");
-//		printInteger(res);
-//		printString("\n");
-//		//sem_close(semA);
-//		printString("\nNit 2 ubija semafor\n");
-//		delete semA;
-//
-//	}
+    PeriodicThread* pt = new per(10);
+    pt->start();
+    time_sleep(15);
+    pt->terminate();
     printString("\nGotova nit 2\n");
 }
 
@@ -112,16 +110,15 @@ void nit3f(void*) {
     printString("\nGotova nit3\n");
 }
 
-int testMain() {
+int main() {
 //postavi adresu prekidne rutine u stvec
     __asm__ volatile("csrw stvec, %[handler]": :[handler] "r"(&interruptHandler));
 
     //inicijalizacija alokatora memorije
-    MemoryAllocator::initMemoryAllocator();
+    KMemory::initializeMemory();
 
     //inicijalizacija komunikacije sa konzolom
     KConsole::initKConsole();
-    // testMemory();
 
 
 
@@ -141,34 +138,34 @@ int testMain() {
 //	println("");
 
     //testiranje kreiranja niti
-//	thread_t glavnaNit = nullptr;
-//	thread_t nit1 = nullptr;
-//	thread_t nit2 = nullptr;
-//	thread_t nit3 = nullptr;
-//	thread_t idleNit = nullptr;
-//	thread_t kernelConsumerThread = nullptr;
-//	thread_create(&glavnaNit, nullptr, nullptr);
-//	TCB::running = glavnaNit;
-//	thread_create(&idleNit, idle, nullptr);
-//	thread_create(&kernelConsumerThread, kernelConsumerFunction, nullptr);
-//
-//
-//	thread_create(&nit1, nit1f, nullptr);
-//	thread_create(&nit2, nit2f, nullptr);
-//	thread_create(&nit3, nit3f, nullptr);
-//
-//	//omoguci prekide
-//	Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
-//
-//	thread_join(nit1);
-//	thread_join(nit2);
-//	thread_join(nit3);
-//	//thread_join(idleNit);
-//
-//	printString("\nGotove user niti\n");
-//
-//	printString("\nSad cu da izadjem\n");
-//	while(KConsole::outputHead!=KConsole::outputTail){}
+	thread_t glavnaNit = nullptr;
+	thread_t nit1 = nullptr;
+	thread_t nit2 = nullptr;
+	thread_t nit3 = nullptr;
+	thread_t idleNit = nullptr;
+	thread_t kernelConsumerThread = nullptr;
+	thread_create(&glavnaNit, nullptr, nullptr);
+	TCB::setRunning(glavnaNit);
+	thread_create(&idleNit, idle, nullptr);
+	thread_create(&kernelConsumerThread, kernelConsumerFunction, nullptr);
+
+
+	thread_create(&nit1, nit1f, nullptr);
+	thread_create(&nit2, nit2f, nullptr);
+	thread_create(&nit3, nit3f, nullptr);
+
+	//omoguci prekide
+	Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
+
+	thread_join(nit1);
+	thread_join(nit2);
+	thread_join(nit3);
+	//thread_join(idleNit);
+
+	printString("\nGotove user niti\n");
+
+	printString("\nSad cu da izadjem\n");
+	while(KConsole::outputHead!=KConsole::outputTail){}
 //	//zabrani prekide
     Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
 

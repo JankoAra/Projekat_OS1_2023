@@ -7,7 +7,7 @@
 
 #include "../h/ThreadQueue.hpp"
 
-
+//klasa napravljena po uzoru na semafor u skolskom jezgru
 class KSem {
 public:
 	static KSem* initSem(uint val);
@@ -16,6 +16,7 @@ public:
 
 	int signal();
 
+    //deaktiviranje semafora i oslobadjanje svih niti koje cekaju na njemu
 	static int closeSem(sem_t handle);
 
 	static void* operator new(size_t size);

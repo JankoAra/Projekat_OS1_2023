@@ -156,10 +156,7 @@ extern "C" void interruptRoutine() {
             case 0x81:
                 //start thread
                 //a1 = rucka niti koja se stavlja u scheduler
-                //if (((thread_t)a1)->getBody() != nullptr) {
-                    Scheduler::put((thread_t)a1);
-                    ((thread_t)a1)->setStatus(TCB::ACTIVE);
-                //}
+                Scheduler::put((thread_t)a1);
                 break;
             case 0x91:
                 //printInteger
@@ -196,14 +193,10 @@ extern "C" void interruptRoutine() {
         Riscv::mc_sip(Riscv::SIP_SEIP);
     } else if (scause == 0x8000000000000001) {
         //prekid od tajmera
-        //printString("\nPrekid od tajmera\n");
         Scheduler::wake();
         TCB::getRunningTimeSlice()++;
         if (TCB::getRunningTimeSlice() >= TCB::getRunning()->getTimeSlice()) {
-            //printString("\nMenjam kontekst\n");
             TCB::dispatch();
-            //TCB::dispatch();
-            //TCB::runningTimeSlice = 0;
         }
 
         __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc));

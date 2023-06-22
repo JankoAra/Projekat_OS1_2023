@@ -5,7 +5,6 @@
 #ifndef PROJEKAT2023_THREADQUEUE_HPP
 #define PROJEKAT2023_THREADQUEUE_HPP
 
-#include "../visak/MemoryAllocator.hpp"
 #include "../h/syscall_c.hpp"
 
 class TCB;
@@ -13,22 +12,22 @@ class TCB;
 class ThreadQueue {
 private:
     struct Node {
-        TCB *data;
-        Node *next;
+        TCB* data;
+        Node* next;
 
-        Node(TCB *d) : data(d), next(nullptr) {}
+        Node(TCB* d) : data(d), next(nullptr) {}
 
-        static void *operator new(size_t size) {
+        static void* operator new(size_t size) {
             return mem_alloc(size);
         }
 
-        static void operator delete(void *ptr) {
+        static void operator delete(void* ptr) {
             mem_free(ptr);
         }
     };
 
-    Node *front;
-    Node *back;
+    Node* front;
+    Node* back;
 
 public:
     ThreadQueue() : front(nullptr), back(nullptr) {}
@@ -39,26 +38,25 @@ public:
 
     ~ThreadQueue() {
         while (!isEmpty()) {
-            Node *node = front;
+            Node* node = front;
             front = front->next;
             delete node;
         }
     }
 
     bool isEmpty() const {
-        bool ret = front == nullptr;
-        return ret;
+        return front == nullptr;
     }
 
-    void putLast(TCB *tcb);
+    void putLast(TCB* tcb);
 
-    TCB *getFirst();
+    TCB* getFirst();
 
-    static void *operator new(size_t size) {
+    static void* operator new(size_t size) {
         return mem_alloc(size);
     }
 
-    static void operator delete(void *ptr) {
+    static void operator delete(void* ptr) {
         mem_free(ptr);
     }
 };

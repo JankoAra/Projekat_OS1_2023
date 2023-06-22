@@ -56,9 +56,6 @@ Thread::~Thread() {
     //ne treba da se gasi running nit, vec nit na koju pokazuje rucka od this
     thread_join(this->myHandle);
     delete myHandle;
-
-    //ovo nije dobro
-    //thread_exit();
 }
 
 int Thread::start() {
@@ -80,7 +77,6 @@ void Thread::dispatch() {
 }
 
 int Thread::sleep(time_t t) {
-    //Scheduler::putToSleep(TCB::running, t);
     time_sleep(t);
     return 0;
 }
@@ -93,7 +89,6 @@ Thread::Thread() {
     if (body != nullptr) {
         stack = (uint64*)mem_alloc(DEFAULT_STACK_SIZE);
     }
-    //uint64* stack = (start_routine != nullptr ? (uint64*)MemoryAllocator::kmalloc(DEFAULT_STACK_SIZE) : nullptr);
     //stavljanje argumenata za sistemski poziv
     __asm__ volatile("mv a4, %[sp]": :[sp] "r"(stack):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
     __asm__ volatile("mv a3, %[arg]": :[arg] "r"(arg):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
@@ -134,6 +129,7 @@ int Semaphore::signal() {
 }
 
 void PeriodicThread::terminate() {
+    this->period = -1;
 }
 
 PeriodicThread::PeriodicThread(time_t period) : Thread(), period(period) {
@@ -141,10 +137,12 @@ PeriodicThread::PeriodicThread(time_t period) : Thread(), period(period) {
 }
 
 void PeriodicThread::run() {
-    while (1) {
+    while (period != -1UL) {
         periodicActivation();
+        if (period == -1UL) break;
         sleep(period);
     }
+    thread_exit();
 }
 
 char Console::getc() {
