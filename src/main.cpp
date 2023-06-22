@@ -1,15 +1,10 @@
 #include "../lib/hw.h"
-#include "../h/helper.hpp"
 #include "../h/Riscv.hpp"
+#include "../h/KMemory.hpp"
+#include "../h/KConsole.hpp"
+#include "../h/TCB.hpp"
 #include "../h/syscall_c.hpp"
 #include "../h/syscall_cpp.hpp"
-#include "../h/TCB.hpp"
-#include "../h/ThreadQueue.hpp"
-//#include "../h/KSem.hpp"
-#include "../h/KConsole.hpp"
-#include "../test/printing.hpp"
-#include "../h/KMemory.hpp"
-
 
 extern "C" void interruptHandler();
 
@@ -28,7 +23,7 @@ void kernelConsumerFunction(void*) {
     }
 }
 
-int main() {
+int main2() {
     //postavljanje adrese prekidne rutine u stvec
     __asm__ volatile("csrw stvec, %[handler]": :[handler] "r"(&interruptHandler));
 

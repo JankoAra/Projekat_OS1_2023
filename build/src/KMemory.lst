@@ -1,4 +1,4 @@
-GAS LISTING /tmp/cci2wY0e.s 			page 1
+GAS LISTING /tmp/ccwLviyZ.s 			page 1
 
 
    1              		.file	"KMemory.cpp"
@@ -21,27 +21,29 @@ GAS LISTING /tmp/cci2wY0e.s 			page 1
    8:src/KMemory.cpp **** uint64 KMemory::numOfBlocks = 0;
    9:src/KMemory.cpp **** uint64 KMemory::sizeOfBitVectorInUint64 = 0;
   10:src/KMemory.cpp **** uint64* KMemory::bitVector = nullptr;
-  11:src/KMemory.cpp **** 
-  12:src/KMemory.cpp **** void KMemory::initializeMemory() {
-  13:src/KMemory.cpp ****     if (initialized) return;
-  14:src/KMemory.cpp ****     uint64 sizeInBytes = (char*)HEAP_END_ADDR - (char*)HEAP_START_ADDR;
-  15:src/KMemory.cpp ****     numOfBlocks = sizeInBytes / MEM_BLOCK_SIZE;
-  16:src/KMemory.cpp ****     sizeOfBitVectorInUint64 = numOfBlocks / (sizeof(uint64) * 8);
-  17:src/KMemory.cpp ****     numOfBlocks = sizeOfBitVectorInUint64 * sizeof(uint64) * 8; //da se zaokruzi broj postojecih bl
-  18:src/KMemory.cpp ****     uint64 blocksForBitVector = (sizeOfBitVectorInUint64 * sizeof(uint64) + MEM_BLOCK_SIZE - 1) / M
-  19:src/KMemory.cpp ****     bitVector = (uint64*)HEAP_START_ADDR;
-  20:src/KMemory.cpp ****     for (uint64 i = 0; i < sizeOfBitVectorInUint64; i++) {
-  21:src/KMemory.cpp ****         bitVector[i] = 0;   //ni jedan blok nije zauzet, svi bitovi su 0
-  22:src/KMemory.cpp ****     }
-  23:src/KMemory.cpp **** 
-  24:src/KMemory.cpp ****     //zauzimanje blokova za bit vector
-  25:src/KMemory.cpp ****     kmalloc(blocksForBitVector);
-  26:src/KMemory.cpp **** 
-  27:src/KMemory.cpp ****     initialized = true;
-  28:src/KMemory.cpp **** }
-  29:src/KMemory.cpp **** 
-  30:src/KMemory.cpp **** void* KMemory::kmalloc(size_t size) {
-  12              		.loc 1 30 37
+  11:src/KMemory.cpp **** uint64 KMemory::freeBlocksLeft = 0;
+  12:src/KMemory.cpp **** 
+  13:src/KMemory.cpp **** void KMemory::initializeMemory() {
+  14:src/KMemory.cpp ****     if (initialized) return;
+  15:src/KMemory.cpp ****     uint64 sizeInBytes = (char*)HEAP_END_ADDR - (char*)HEAP_START_ADDR;
+  16:src/KMemory.cpp ****     numOfBlocks = sizeInBytes / MEM_BLOCK_SIZE;
+  17:src/KMemory.cpp ****     sizeOfBitVectorInUint64 = numOfBlocks / (sizeof(uint64) * 8);
+  18:src/KMemory.cpp ****     numOfBlocks = sizeOfBitVectorInUint64 * sizeof(uint64) * 8; //da se zaokruzi broj postojecih bl
+  19:src/KMemory.cpp ****     uint64 blocksForBitVector = (sizeOfBitVectorInUint64 * sizeof(uint64) + MEM_BLOCK_SIZE - 1) / M
+  20:src/KMemory.cpp ****     bitVector = (uint64*)HEAP_START_ADDR;
+  21:src/KMemory.cpp ****     freeBlocksLeft = numOfBlocks;
+  22:src/KMemory.cpp ****     for (uint64 i = 0; i < sizeOfBitVectorInUint64; i++) {
+  23:src/KMemory.cpp ****         bitVector[i] = 0;   //ni jedan blok nije zauzet, svi bitovi su 0
+  24:src/KMemory.cpp ****     }
+  25:src/KMemory.cpp **** 
+  26:src/KMemory.cpp ****     //zauzimanje blokova za bit vector
+  27:src/KMemory.cpp ****     kmalloc(blocksForBitVector);
+  28:src/KMemory.cpp **** 
+  29:src/KMemory.cpp ****     initialized = true;
+  30:src/KMemory.cpp **** }
+  31:src/KMemory.cpp **** 
+  32:src/KMemory.cpp **** void* KMemory::kmalloc(size_t size) {
+  12              		.loc 1 32 37
   13              		.cfi_startproc
   14              	.LVL0:
   15 0000 130101FF 		addi	sp,sp,-16
@@ -50,94 +52,99 @@ GAS LISTING /tmp/cci2wY0e.s 			page 1
   18              		.cfi_offset 8, -8
   19 0008 13040101 		addi	s0,sp,16
   20              		.cfi_def_cfa 8, 0
-  31:src/KMemory.cpp ****     if (size <= 0) return nullptr;
-  21              		.loc 1 31 5
-  22 000c 63000514 		beqz	a0,.L11
-  32:src/KMemory.cpp ****     //size je broj blokova
-  33:src/KMemory.cpp ****     uint64 currentElem = 0;
-  34:src/KMemory.cpp ****     uint64 currentBit = 63;
-  35:src/KMemory.cpp ****     uint64 firstZeroElem = 0;
-  36:src/KMemory.cpp ****     uint64 firstZeroBit = 63;
-GAS LISTING /tmp/cci2wY0e.s 			page 2
+  33:src/KMemory.cpp ****     if (size <= 0 || freeBlocksLeft < size) return nullptr;
+  21              		.loc 1 33 5
+  22 000c 63000516 		beqz	a0,.L11
+  23              		.loc 1 33 37 is_stmt 0 discriminator 2
+  24 0010 97070000 		ld	a5,.LANCHOR0
+  24      83B70700 
+GAS LISTING /tmp/ccwLviyZ.s 			page 2
 
 
-  37:src/KMemory.cpp ****     uint64 zerosFound = 0;
-  38:src/KMemory.cpp ****     bool zeroFound = false;
-  23              		.loc 1 38 10 is_stmt 0
-  24 0010 13030000 		li	t1,0
-  37:src/KMemory.cpp ****     bool zeroFound = false;
-  25              		.loc 1 37 12
-  26 0014 13070000 		li	a4,0
-  36:src/KMemory.cpp ****     uint64 zerosFound = 0;
-  27              		.loc 1 36 12
-  28 0018 1308F003 		li	a6,63
-  35:src/KMemory.cpp ****     uint64 firstZeroBit = 63;
-  29              		.loc 1 35 12
-  30 001c 93080000 		li	a7,0
-  34:src/KMemory.cpp ****     uint64 firstZeroElem = 0;
-  31              		.loc 1 34 12
-  32 0020 9307F003 		li	a5,63
-  33:src/KMemory.cpp ****     uint64 currentBit = 63;
-  33              		.loc 1 33 12
-  34 0024 93050000 		li	a1,0
-  35 0028 6F008000 		j	.L3
-  36              	.LVL1:
-  37              	.L14:
-  38              	.LBB9:
-  39:src/KMemory.cpp ****     //trazanje uzastopnih nula u bit vektoru
-  40:src/KMemory.cpp ****     while (currentElem < sizeOfBitVectorInUint64) {
-  41:src/KMemory.cpp ****         if (currentBit == 63 && bitVector[currentElem] == 0xffffffffffffffff) {
-  42:src/KMemory.cpp ****             currentElem++;
-  43:src/KMemory.cpp ****             continue;
-  44:src/KMemory.cpp ****         }
-  45:src/KMemory.cpp ****         uint64 bit = bitVector[currentElem] & maskBit(currentBit);
-  46:src/KMemory.cpp ****         if (bit > 0) {
-  47:src/KMemory.cpp ****             zeroFound = false;
-  48:src/KMemory.cpp ****             zerosFound = 0;
-  49:src/KMemory.cpp ****         } else if (!zeroFound) {
-  50:src/KMemory.cpp ****             zeroFound = true;
-  51:src/KMemory.cpp ****             zerosFound = 1;
-  52:src/KMemory.cpp ****             firstZeroBit = currentBit;
-  53:src/KMemory.cpp ****             firstZeroElem = currentElem;
-  54:src/KMemory.cpp ****         } else {
-  55:src/KMemory.cpp ****             zerosFound++;
-  56:src/KMemory.cpp ****         }
-  57:src/KMemory.cpp ****         if (zerosFound == size) break;
-  58:src/KMemory.cpp ****         if (currentBit-- == 0) {
-  39              		.loc 1 58 23
-  40 002c 93870600 		mv	a5,a3
-  41              	.LVL2:
-  42              	.L3:
-  43              	.LBE9:
-  40:src/KMemory.cpp ****         if (currentBit == 63 && bitVector[currentElem] == 0xffffffffffffffff) {
-  44              		.loc 1 40 5 is_stmt 1
-  40:src/KMemory.cpp ****         if (currentBit == 63 && bitVector[currentElem] == 0xffffffffffffffff) {
-  45              		.loc 1 40 24
-  46 0030 97060000 		ld	a3,.LANCHOR0
-  46      83B60600 
-  47 0038 63FAD508 		bleu	a3,a1,.L4
-  48              	.LBB12:
-  41:src/KMemory.cpp ****             currentElem++;
-GAS LISTING /tmp/cci2wY0e.s 			page 3
+  25              		.loc 1 33 19 discriminator 2
+  26 0018 63EEA714 		bltu	a5,a0,.L12
+  34:src/KMemory.cpp ****     //size je broj blokova
+  35:src/KMemory.cpp ****     uint64 currentElem = 0;
+  36:src/KMemory.cpp ****     uint64 currentBit = 63;
+  37:src/KMemory.cpp ****     uint64 firstZeroElem = 0;
+  38:src/KMemory.cpp ****     uint64 firstZeroBit = 63;
+  39:src/KMemory.cpp ****     uint64 zerosFound = 0;
+  40:src/KMemory.cpp ****     bool zeroFound = false;
+  27              		.loc 1 40 10
+  28 001c 13030000 		li	t1,0
+  39:src/KMemory.cpp ****     bool zeroFound = false;
+  29              		.loc 1 39 12
+  30 0020 13070000 		li	a4,0
+  38:src/KMemory.cpp ****     uint64 zerosFound = 0;
+  31              		.loc 1 38 12
+  32 0024 1308F003 		li	a6,63
+  37:src/KMemory.cpp ****     uint64 firstZeroBit = 63;
+  33              		.loc 1 37 12
+  34 0028 93080000 		li	a7,0
+  36:src/KMemory.cpp ****     uint64 firstZeroElem = 0;
+  35              		.loc 1 36 12
+  36 002c 9307F003 		li	a5,63
+  35:src/KMemory.cpp ****     uint64 currentBit = 63;
+  37              		.loc 1 35 12
+  38 0030 93050000 		li	a1,0
+  39 0034 6F008000 		j	.L3
+  40              	.LVL1:
+  41              	.L15:
+  42              	.LBB9:
+  41:src/KMemory.cpp ****     //trazanje uzastopnih nula u bit vektoru
+  42:src/KMemory.cpp ****     while (currentElem < sizeOfBitVectorInUint64) {
+  43:src/KMemory.cpp ****         if (currentBit == 63 && bitVector[currentElem] == 0xffffffffffffffff) {
+  44:src/KMemory.cpp ****             currentElem++;
+  45:src/KMemory.cpp ****             continue;
+  46:src/KMemory.cpp ****         }
+  47:src/KMemory.cpp ****         uint64 bit = bitVector[currentElem] & maskBit(currentBit);
+  48:src/KMemory.cpp ****         if (bit > 0) {
+  49:src/KMemory.cpp ****             zeroFound = false;
+  50:src/KMemory.cpp ****             zerosFound = 0;
+  51:src/KMemory.cpp ****         } else if (!zeroFound) {
+  52:src/KMemory.cpp ****             zeroFound = true;
+  53:src/KMemory.cpp ****             zerosFound = 1;
+  54:src/KMemory.cpp ****             firstZeroBit = currentBit;
+  55:src/KMemory.cpp ****             firstZeroElem = currentElem;
+  56:src/KMemory.cpp ****         } else {
+  57:src/KMemory.cpp ****             zerosFound++;
+  58:src/KMemory.cpp ****         }
+  59:src/KMemory.cpp ****         if (zerosFound == size) break;
+  60:src/KMemory.cpp ****         if (currentBit-- == 0) {
+  43              		.loc 1 60 23
+  44 0038 93870600 		mv	a5,a3
+  45              	.LVL2:
+  46              	.L3:
+  47              	.LBE9:
+  42:src/KMemory.cpp ****         if (currentBit == 63 && bitVector[currentElem] == 0xffffffffffffffff) {
+  48              		.loc 1 42 5 is_stmt 1
+GAS LISTING /tmp/ccwLviyZ.s 			page 3
 
 
-  49              		.loc 1 41 9
-  50 003c 9306F003 		li	a3,63
-  51 0040 638AD702 		beq	a5,a3,.L17
-  52              	.L5:
-  45:src/KMemory.cpp ****         if (bit > 0) {
-  53              		.loc 1 45 9
-  45:src/KMemory.cpp ****         if (bit > 0) {
-  54              		.loc 1 45 43 is_stmt 0
-  55 0044 93963500 		slli	a3,a1,3
-  56 0048 17060000 		ld	a2,.LANCHOR0+8
-  56      03360600 
-  57 0050 B306D600 		add	a3,a2,a3
-  58 0054 83B60600 		ld	a3,0(a3)
-  59              	.LVL3:
-  60              	.LBB10:
-  61              	.LBB11:
-  62              		.file 2 "src/../h/KMemory.hpp"
+  42:src/KMemory.cpp ****         if (currentBit == 63 && bitVector[currentElem] == 0xffffffffffffffff) {
+  49              		.loc 1 42 24
+  50 003c 97060000 		ld	a3,.LANCHOR0+8
+  50      83B60600 
+  51 0044 63FAD508 		bleu	a3,a1,.L4
+  52              	.LBB12:
+  43:src/KMemory.cpp ****             currentElem++;
+  53              		.loc 1 43 9
+  54 0048 9306F003 		li	a3,63
+  55 004c 638AD702 		beq	a5,a3,.L18
+  56              	.L5:
+  47:src/KMemory.cpp ****         if (bit > 0) {
+  57              		.loc 1 47 9
+  47:src/KMemory.cpp ****         if (bit > 0) {
+  58              		.loc 1 47 43 is_stmt 0
+  59 0050 93963500 		slli	a3,a1,3
+  60 0054 17060000 		ld	a2,.LANCHOR0+16
+  60      03360600 
+  61 005c B306D600 		add	a3,a2,a3
+  62 0060 83B60600 		ld	a3,0(a3)
+  63              	.LVL3:
+  64              	.LBB10:
+  65              	.LBB11:
+  66              		.file 2 "src/../h/KMemory.hpp"
    1:src/../h/KMemory.hpp **** //
    2:src/../h/KMemory.hpp **** // Created by os on 6/14/23.
    3:src/../h/KMemory.hpp **** //
@@ -167,997 +174,1056 @@ GAS LISTING /tmp/cci2wY0e.s 			page 1
   27:src/../h/KMemory.hpp ****     //adresa pocetka bit vektora (HEAP_START_ADDR)
   28:src/../h/KMemory.hpp ****     static uint64* bitVector;
   29:src/../h/KMemory.hpp **** 
-  30:src/../h/KMemory.hpp ****     //maska sa 1 na mestu bitPos i ostalim nulama (bitPos=0..63)
-  31:src/../h/KMemory.hpp ****     inline static uint64 maskBit(uint64 bitPos) {
-  32:src/../h/KMemory.hpp ****         return (uint64)1 << bitPos;
-  63              		.loc 2 32 9 is_stmt 1
-  64              		.loc 2 32 29 is_stmt 0
-  65 0058 13061000 		li	a2,1
-  66 005c 3316F600 		sll	a2,a2,a5
-  67              	.LVL4:
-  68              	.LBE11:
-  69              	.LBE10:
-  45:src/KMemory.cpp ****         if (bit > 0) {
-GAS LISTING /tmp/cci2wY0e.s 			page 4
+  30:src/../h/KMemory.hpp ****     static uint64 freeBlocksLeft;
+  31:src/../h/KMemory.hpp **** 
+  32:src/../h/KMemory.hpp ****     //maska sa 1 na mestu bitPos i ostalim nulama (bitPos=0..63)
+  33:src/../h/KMemory.hpp ****     inline static uint64 maskBit(uint64 bitPos) {
+GAS LISTING /tmp/ccwLviyZ.s 			page 4
 
 
-  70              		.loc 1 45 65
-  71 0060 B3F6C600 		and	a3,a3,a2
-  72              	.LVL5:
-  46:src/KMemory.cpp ****             zeroFound = false;
-  73              		.loc 1 46 9 is_stmt 1
-  74 0064 639A0602 		bnez	a3,.L12
-  49:src/KMemory.cpp ****             zeroFound = true;
-  75              		.loc 1 49 16
-  76 0068 63080304 		beqz	t1,.L13
-  55:src/KMemory.cpp ****         }
-  77              		.loc 1 55 13
-  55:src/KMemory.cpp ****         }
-  78              		.loc 1 55 23 is_stmt 0
-  79 006c 13071700 		addi	a4,a4,1
-  80              	.LVL6:
-  81 0070 6F000003 		j	.L7
-  82              	.LVL7:
-  83              	.L17:
-  41:src/KMemory.cpp ****             currentElem++;
-  84              		.loc 1 41 54 discriminator 1
-  85 0074 93963500 		slli	a3,a1,3
-  86 0078 17060000 		ld	a2,.LANCHOR0+8
-  86      03360600 
-  87 0080 B306D600 		add	a3,a2,a3
-  88 0084 03B60600 		ld	a2,0(a3)
-  41:src/KMemory.cpp ****             currentElem++;
-  89              		.loc 1 41 30 discriminator 1
-  90 0088 9306F0FF 		li	a3,-1
-  91 008c E31CD6FA 		bne	a2,a3,.L5
-  42:src/KMemory.cpp ****             continue;
-  92              		.loc 1 42 13 is_stmt 1 discriminator 2
-  42:src/KMemory.cpp ****             continue;
-  93              		.loc 1 42 24 is_stmt 0 discriminator 2
-  94 0090 93851500 		addi	a1,a1,1
-  95              	.LVL8:
-  43:src/KMemory.cpp ****         }
-  96              		.loc 1 43 13 is_stmt 1 discriminator 2
-  97 0094 6FF0DFF9 		j	.L3
-  98              	.LVL9:
-  99              	.L12:
-  47:src/KMemory.cpp ****             zerosFound = 0;
- 100              		.loc 1 47 23 is_stmt 0
- 101 0098 13030000 		li	t1,0
- 102              	.LVL10:
-  48:src/KMemory.cpp ****         } else if (!zeroFound) {
- 103              		.loc 1 48 24
- 104 009c 13070000 		li	a4,0
- 105              	.LVL11:
- 106              	.L7:
-  57:src/KMemory.cpp ****         if (currentBit-- == 0) {
- 107              		.loc 1 57 9 is_stmt 1
- 108 00a0 6306A702 		beq	a4,a0,.L4
- 109              		.loc 1 58 9
- 110              		.loc 1 58 23 is_stmt 0
- 111 00a4 9386F7FF 		addi	a3,a5,-1
- 112              	.LVL12:
- 113              		.loc 1 58 9
-GAS LISTING /tmp/cci2wY0e.s 			page 5
+  34:src/../h/KMemory.hpp ****         return (uint64)1 << bitPos;
+  67              		.loc 2 34 9 is_stmt 1
+  68              		.loc 2 34 29 is_stmt 0
+  69 0064 13061000 		li	a2,1
+  70 0068 3316F600 		sll	a2,a2,a5
+  71              	.LVL4:
+  72              	.LBE11:
+  73              	.LBE10:
+  47:src/KMemory.cpp ****         if (bit > 0) {
+  74              		.loc 1 47 65
+  75 006c B3F6C600 		and	a3,a3,a2
+  76              	.LVL5:
+  48:src/KMemory.cpp ****             zeroFound = false;
+  77              		.loc 1 48 9 is_stmt 1
+  78 0070 639A0602 		bnez	a3,.L13
+  51:src/KMemory.cpp ****             zeroFound = true;
+  79              		.loc 1 51 16
+  80 0074 63080304 		beqz	t1,.L14
+  57:src/KMemory.cpp ****         }
+  81              		.loc 1 57 13
+  57:src/KMemory.cpp ****         }
+  82              		.loc 1 57 23 is_stmt 0
+  83 0078 13071700 		addi	a4,a4,1
+  84              	.LVL6:
+  85 007c 6F000003 		j	.L7
+  86              	.LVL7:
+  87              	.L18:
+  43:src/KMemory.cpp ****             currentElem++;
+  88              		.loc 1 43 54 discriminator 1
+  89 0080 93963500 		slli	a3,a1,3
+  90 0084 17060000 		ld	a2,.LANCHOR0+16
+  90      03360600 
+  91 008c B306D600 		add	a3,a2,a3
+  92 0090 03B60600 		ld	a2,0(a3)
+  43:src/KMemory.cpp ****             currentElem++;
+  93              		.loc 1 43 30 discriminator 1
+  94 0094 9306F0FF 		li	a3,-1
+  95 0098 E31CD6FA 		bne	a2,a3,.L5
+  44:src/KMemory.cpp ****             continue;
+  96              		.loc 1 44 13 is_stmt 1 discriminator 2
+  44:src/KMemory.cpp ****             continue;
+  97              		.loc 1 44 24 is_stmt 0 discriminator 2
+  98 009c 93851500 		addi	a1,a1,1
+  99              	.LVL8:
+  45:src/KMemory.cpp ****         }
+ 100              		.loc 1 45 13 is_stmt 1 discriminator 2
+ 101 00a0 6FF0DFF9 		j	.L3
+ 102              	.LVL9:
+ 103              	.L13:
+  49:src/KMemory.cpp ****             zerosFound = 0;
+ 104              		.loc 1 49 23 is_stmt 0
+ 105 00a4 13030000 		li	t1,0
+ 106              	.LVL10:
+  50:src/KMemory.cpp ****         } else if (!zeroFound) {
+ 107              		.loc 1 50 24
+ 108 00a8 13070000 		li	a4,0
+ 109              	.LVL11:
+GAS LISTING /tmp/ccwLviyZ.s 			page 5
 
 
- 114 00a8 E39207F8 		bnez	a5,.L14
-  59:src/KMemory.cpp ****             currentBit = 63;
- 115              		.loc 1 59 13 is_stmt 1
- 116              	.LVL13:
-  60:src/KMemory.cpp ****             currentElem++;
- 117              		.loc 1 60 13
- 118              		.loc 1 60 24 is_stmt 0
- 119 00ac 93851500 		addi	a1,a1,1
- 120              	.LVL14:
-  59:src/KMemory.cpp ****             currentBit = 63;
- 121              		.loc 1 59 24
- 122 00b0 9307F003 		li	a5,63
- 123 00b4 6FF0DFF7 		j	.L3
- 124              	.LVL15:
- 125              	.L13:
-  52:src/KMemory.cpp ****             firstZeroElem = currentElem;
- 126              		.loc 1 52 26
- 127 00b8 13880700 		mv	a6,a5
- 128              	.LVL16:
-  53:src/KMemory.cpp ****         } else {
- 129              		.loc 1 53 27
- 130 00bc 93880500 		mv	a7,a1
- 131              	.LVL17:
-  50:src/KMemory.cpp ****             zerosFound = 1;
- 132              		.loc 1 50 23
- 133 00c0 13031000 		li	t1,1
- 134              	.LVL18:
-  51:src/KMemory.cpp ****             firstZeroBit = currentBit;
- 135              		.loc 1 51 24
- 136 00c4 13071000 		li	a4,1
- 137              	.LVL19:
- 138 00c8 6FF09FFD 		j	.L7
- 139              	.LVL20:
- 140              	.L4:
- 141              	.LBE12:
-  61:src/KMemory.cpp ****         }
-  62:src/KMemory.cpp ****     }
-  63:src/KMemory.cpp ****     if (zerosFound != size) return nullptr;
- 142              		.loc 1 63 5 is_stmt 1
- 143 00cc 6314A708 		bne	a4,a0,.L15
-  64:src/KMemory.cpp **** 
-  65:src/KMemory.cpp ****     //alociranje blokova
-  66:src/KMemory.cpp ****     uint64 blockNum = firstZeroElem * 64 + (63 - firstZeroBit);
- 144              		.loc 1 66 5
- 145              		.loc 1 66 37 is_stmt 0
- 146 00d0 93976800 		slli	a5,a7,6
- 147              	.LVL21:
- 148              		.loc 1 66 42
- 149 00d4 B3870741 		sub	a5,a5,a6
- 150              		.loc 1 66 12
- 151 00d8 9387F703 		addi	a5,a5,63
- 152              	.LVL22:
-  67:src/KMemory.cpp ****     void* addr = (char*)HEAP_START_ADDR + blockNum * MEM_BLOCK_SIZE;
- 153              		.loc 1 67 5 is_stmt 1
- 154              		.loc 1 67 41 is_stmt 0
- 155 00dc 97060000 		la	a3,HEAP_START_ADDR
- 155      83B60600 
-GAS LISTING /tmp/cci2wY0e.s 			page 6
+ 110              	.L7:
+  59:src/KMemory.cpp ****         if (currentBit-- == 0) {
+ 111              		.loc 1 59 9 is_stmt 1
+ 112 00ac 6306A702 		beq	a4,a0,.L4
+ 113              		.loc 1 60 9
+ 114              		.loc 1 60 23 is_stmt 0
+ 115 00b0 9386F7FF 		addi	a3,a5,-1
+ 116              	.LVL12:
+ 117              		.loc 1 60 9
+ 118 00b4 E39207F8 		bnez	a5,.L15
+  61:src/KMemory.cpp ****             currentBit = 63;
+ 119              		.loc 1 61 13 is_stmt 1
+ 120              	.LVL13:
+  62:src/KMemory.cpp ****             currentElem++;
+ 121              		.loc 1 62 13
+ 122              		.loc 1 62 24 is_stmt 0
+ 123 00b8 93851500 		addi	a1,a1,1
+ 124              	.LVL14:
+  61:src/KMemory.cpp ****             currentBit = 63;
+ 125              		.loc 1 61 24
+ 126 00bc 9307F003 		li	a5,63
+ 127 00c0 6FF0DFF7 		j	.L3
+ 128              	.LVL15:
+ 129              	.L14:
+  54:src/KMemory.cpp ****             firstZeroElem = currentElem;
+ 130              		.loc 1 54 26
+ 131 00c4 13880700 		mv	a6,a5
+ 132              	.LVL16:
+  55:src/KMemory.cpp ****         } else {
+ 133              		.loc 1 55 27
+ 134 00c8 93880500 		mv	a7,a1
+ 135              	.LVL17:
+  52:src/KMemory.cpp ****             zerosFound = 1;
+ 136              		.loc 1 52 23
+ 137 00cc 13031000 		li	t1,1
+ 138              	.LVL18:
+  53:src/KMemory.cpp ****             firstZeroBit = currentBit;
+ 139              		.loc 1 53 24
+ 140 00d0 13071000 		li	a4,1
+ 141              	.LVL19:
+ 142 00d4 6FF09FFD 		j	.L7
+ 143              	.LVL20:
+ 144              	.L4:
+ 145              	.LBE12:
+  63:src/KMemory.cpp ****         }
+  64:src/KMemory.cpp ****     }
+  65:src/KMemory.cpp ****     if (zerosFound != size) return nullptr;
+ 146              		.loc 1 65 5 is_stmt 1
+ 147 00d8 6312A70A 		bne	a4,a0,.L16
+  66:src/KMemory.cpp **** 
+  67:src/KMemory.cpp ****     //alociranje blokova
+  68:src/KMemory.cpp ****     uint64 blockNum = firstZeroElem * 64 + (63 - firstZeroBit);
+ 148              		.loc 1 68 5
+ 149              		.loc 1 68 37 is_stmt 0
+ 150 00dc 93976800 		slli	a5,a7,6
+ 151              	.LVL21:
+ 152              		.loc 1 68 42
+GAS LISTING /tmp/ccwLviyZ.s 			page 6
 
 
- 156 00e4 83B50600 		ld	a1,0(a3)
- 157              	.LVL23:
- 158              		.loc 1 67 52
- 159 00e8 93976700 		slli	a5,a5,6
- 160              	.LVL24:
- 161              		.loc 1 67 11
- 162 00ec B385F500 		add	a1,a1,a5
- 163              	.LVL25:
-  68:src/KMemory.cpp ****     *(uint64*)addr = size;  //da znamo koliko blokova je alocirano zaredom
- 164              		.loc 1 68 5 is_stmt 1
- 165              		.loc 1 68 20 is_stmt 0
- 166 00f0 23B0A500 		sd	a0,0(a1)
-  69:src/KMemory.cpp **** 
-  70:src/KMemory.cpp ****     //upisivanje 1 u bit vektor
-  71:src/KMemory.cpp ****     currentElem = firstZeroElem;
- 167              		.loc 1 71 5 is_stmt 1
- 168              	.LVL26:
-  72:src/KMemory.cpp ****     currentBit = firstZeroBit;
- 169              		.loc 1 72 5
- 170 00f4 6F008000 		j	.L8
- 171              	.LVL27:
- 172              	.L10:
-  73:src/KMemory.cpp ****     while (zerosFound > 0) {
-  74:src/KMemory.cpp ****         bitVector[currentElem] |= maskBit(currentBit);
-  75:src/KMemory.cpp ****         zerosFound--;
-  76:src/KMemory.cpp ****         if (currentBit-- == 0) {
-  77:src/KMemory.cpp ****             currentBit = 63;
- 173              		.loc 1 77 24 is_stmt 0
- 174 00f8 13880700 		mv	a6,a5
- 175              	.L8:
- 176              	.LVL28:
-  73:src/KMemory.cpp ****     while (zerosFound > 0) {
- 177              		.loc 1 73 5 is_stmt 1
-  73:src/KMemory.cpp ****     while (zerosFound > 0) {
- 178              		.loc 1 73 23
- 179 00fc 63000704 		beqz	a4,.L9
-  74:src/KMemory.cpp ****         zerosFound--;
- 180              		.loc 1 74 9
- 181              	.LVL29:
- 182              	.LBB13:
- 183              	.LBB14:
- 184              		.loc 2 32 9
- 185              		.loc 2 32 29 is_stmt 0
- 186 0100 93061000 		li	a3,1
- 187 0104 33960601 		sll	a2,a3,a6
- 188              	.LVL30:
- 189              	.LBE14:
- 190              	.LBE13:
-  74:src/KMemory.cpp ****         zerosFound--;
- 191              		.loc 1 74 32
- 192 0108 93973800 		slli	a5,a7,3
- 193 010c 97060000 		ld	a3,.LANCHOR0+8
- 193      83B60600 
- 194 0114 B387F600 		add	a5,a3,a5
- 195 0118 83B60700 		ld	a3,0(a5)
- 196 011c B3E6C600 		or	a3,a3,a2
- 197 0120 23B0D700 		sd	a3,0(a5)
-GAS LISTING /tmp/cci2wY0e.s 			page 7
+ 153 00e0 B3870741 		sub	a5,a5,a6
+ 154              		.loc 1 68 12
+ 155 00e4 9387F703 		addi	a5,a5,63
+ 156              	.LVL22:
+  69:src/KMemory.cpp ****     void* addr = (char*)HEAP_START_ADDR + blockNum * MEM_BLOCK_SIZE;
+ 157              		.loc 1 69 5 is_stmt 1
+ 158              		.loc 1 69 41 is_stmt 0
+ 159 00e8 97060000 		la	a3,HEAP_START_ADDR
+ 159      83B60600 
+ 160 00f0 83B50600 		ld	a1,0(a3)
+ 161              	.LVL23:
+ 162              		.loc 1 69 52
+ 163 00f4 93976700 		slli	a5,a5,6
+ 164              	.LVL24:
+ 165              		.loc 1 69 11
+ 166 00f8 B385F500 		add	a1,a1,a5
+ 167              	.LVL25:
+  70:src/KMemory.cpp ****     *(uint64*)addr = size;  //da znamo koliko blokova je alocirano zaredom
+ 168              		.loc 1 70 5 is_stmt 1
+ 169              		.loc 1 70 20 is_stmt 0
+ 170 00fc 23B0A500 		sd	a0,0(a1)
+  71:src/KMemory.cpp **** 
+  72:src/KMemory.cpp ****     //upisivanje 1 u bit vektor
+  73:src/KMemory.cpp ****     currentElem = firstZeroElem;
+ 171              		.loc 1 73 5 is_stmt 1
+ 172              	.LVL26:
+  74:src/KMemory.cpp ****     currentBit = firstZeroBit;
+ 173              		.loc 1 74 5
+ 174 0100 6F008000 		j	.L8
+ 175              	.LVL27:
+ 176              	.L10:
+  75:src/KMemory.cpp ****     while (zerosFound > 0) {
+  76:src/KMemory.cpp ****         bitVector[currentElem] |= maskBit(currentBit);
+  77:src/KMemory.cpp ****         zerosFound--;
+  78:src/KMemory.cpp ****         if (currentBit-- == 0) {
+  79:src/KMemory.cpp ****             currentBit = 63;
+ 177              		.loc 1 79 24 is_stmt 0
+ 178 0104 13880700 		mv	a6,a5
+ 179              	.L8:
+ 180              	.LVL28:
+  75:src/KMemory.cpp ****     while (zerosFound > 0) {
+ 181              		.loc 1 75 5 is_stmt 1
+  75:src/KMemory.cpp ****     while (zerosFound > 0) {
+ 182              		.loc 1 75 23
+ 183 0108 63000704 		beqz	a4,.L9
+  76:src/KMemory.cpp ****         zerosFound--;
+ 184              		.loc 1 76 9
+ 185              	.LVL29:
+ 186              	.LBB13:
+ 187              	.LBB14:
+ 188              		.loc 2 34 9
+ 189              		.loc 2 34 29 is_stmt 0
+ 190 010c 93061000 		li	a3,1
+ 191 0110 33960601 		sll	a2,a3,a6
+ 192              	.LVL30:
+ 193              	.LBE14:
+ 194              	.LBE13:
+GAS LISTING /tmp/ccwLviyZ.s 			page 7
 
 
-  75:src/KMemory.cpp ****         if (currentBit-- == 0) {
- 198              		.loc 1 75 9 is_stmt 1
-  75:src/KMemory.cpp ****         if (currentBit-- == 0) {
- 199              		.loc 1 75 19 is_stmt 0
- 200 0124 1307F7FF 		addi	a4,a4,-1
- 201              	.LVL31:
-  76:src/KMemory.cpp ****             currentBit = 63;
- 202              		.loc 1 76 9 is_stmt 1
-  76:src/KMemory.cpp ****             currentBit = 63;
- 203              		.loc 1 76 23 is_stmt 0
- 204 0128 9307F8FF 		addi	a5,a6,-1
- 205              	.LVL32:
-  76:src/KMemory.cpp ****             currentBit = 63;
- 206              		.loc 1 76 9
- 207 012c E31608FC 		bnez	a6,.L10
- 208              		.loc 1 77 13 is_stmt 1
- 209              	.LVL33:
-  78:src/KMemory.cpp ****             currentElem++;
- 210              		.loc 1 78 13
- 211              		.loc 1 78 24 is_stmt 0
- 212 0130 93881800 		addi	a7,a7,1
- 213              	.LVL34:
-  77:src/KMemory.cpp ****             currentElem++;
- 214              		.loc 1 77 24
- 215 0134 9307F003 		li	a5,63
- 216 0138 6FF01FFC 		j	.L10
- 217              	.LVL35:
- 218              	.L9:
-  79:src/KMemory.cpp ****         }
-  80:src/KMemory.cpp ****     }
-  81:src/KMemory.cpp ****     return (char*)addr + 2 * sizeof(uint64);    //offset 2 da bi bilo zaokruzeno na 16 zbog steka
- 219              		.loc 1 81 5 is_stmt 1
- 220              		.loc 1 81 43 is_stmt 0
- 221 013c 13850501 		addi	a0,a1,16
- 222              	.LVL36:
- 223              	.L1:
-  82:src/KMemory.cpp **** }
- 224              		.loc 1 82 1
- 225 0140 03348100 		ld	s0,8(sp)
- 226              		.cfi_remember_state
- 227              		.cfi_restore 8
- 228              		.cfi_def_cfa 2, 16
- 229 0144 13010101 		addi	sp,sp,16
- 230              		.cfi_def_cfa_offset 0
- 231 0148 67800000 		jr	ra
- 232              	.LVL37:
- 233              	.L11:
- 234              		.cfi_restore_state
-  31:src/KMemory.cpp ****     //size je broj blokova
- 235              		.loc 1 31 27
- 236 014c 13050000 		li	a0,0
- 237              	.LVL38:
- 238 0150 6FF01FFF 		j	.L1
- 239              	.LVL39:
- 240              	.L15:
-  63:src/KMemory.cpp **** 
- 241              		.loc 1 63 36
-GAS LISTING /tmp/cci2wY0e.s 			page 8
+  76:src/KMemory.cpp ****         zerosFound--;
+ 195              		.loc 1 76 32
+ 196 0114 93973800 		slli	a5,a7,3
+ 197 0118 97060000 		ld	a3,.LANCHOR0+16
+ 197      83B60600 
+ 198 0120 B387F600 		add	a5,a3,a5
+ 199 0124 83B60700 		ld	a3,0(a5)
+ 200 0128 B3E6C600 		or	a3,a3,a2
+ 201 012c 23B0D700 		sd	a3,0(a5)
+  77:src/KMemory.cpp ****         if (currentBit-- == 0) {
+ 202              		.loc 1 77 9 is_stmt 1
+  77:src/KMemory.cpp ****         if (currentBit-- == 0) {
+ 203              		.loc 1 77 19 is_stmt 0
+ 204 0130 1307F7FF 		addi	a4,a4,-1
+ 205              	.LVL31:
+  78:src/KMemory.cpp ****             currentBit = 63;
+ 206              		.loc 1 78 9 is_stmt 1
+  78:src/KMemory.cpp ****             currentBit = 63;
+ 207              		.loc 1 78 23 is_stmt 0
+ 208 0134 9307F8FF 		addi	a5,a6,-1
+ 209              	.LVL32:
+  78:src/KMemory.cpp ****             currentBit = 63;
+ 210              		.loc 1 78 9
+ 211 0138 E31608FC 		bnez	a6,.L10
+ 212              		.loc 1 79 13 is_stmt 1
+ 213              	.LVL33:
+  80:src/KMemory.cpp ****             currentElem++;
+ 214              		.loc 1 80 13
+ 215              		.loc 1 80 24 is_stmt 0
+ 216 013c 93881800 		addi	a7,a7,1
+ 217              	.LVL34:
+  79:src/KMemory.cpp ****             currentElem++;
+ 218              		.loc 1 79 24
+ 219 0140 9307F003 		li	a5,63
+ 220 0144 6FF01FFC 		j	.L10
+ 221              	.LVL35:
+ 222              	.L9:
+  81:src/KMemory.cpp ****         }
+  82:src/KMemory.cpp ****     }
+  83:src/KMemory.cpp ****     freeBlocksLeft -= size;
+ 223              		.loc 1 83 5 is_stmt 1
+ 224              		.loc 1 83 20 is_stmt 0
+ 225 0148 17070000 		lla	a4,.LANCHOR0
+ 225      13070700 
+ 226              	.LVL36:
+ 227 0150 83370700 		ld	a5,0(a4)
+ 228 0154 3385A740 		sub	a0,a5,a0
+ 229              	.LVL37:
+ 230 0158 2330A700 		sd	a0,0(a4)
+  84:src/KMemory.cpp ****     return (char*)addr + 2 * sizeof(uint64);    //offset 2 da bi bilo zaokruzeno na 16 zbog steka
+ 231              		.loc 1 84 5 is_stmt 1
+ 232              		.loc 1 84 43 is_stmt 0
+ 233 015c 13850501 		addi	a0,a1,16
+ 234              	.LVL38:
+ 235              	.L1:
+  85:src/KMemory.cpp **** }
+ 236              		.loc 1 85 1
+GAS LISTING /tmp/ccwLviyZ.s 			page 8
 
 
- 242 0154 13050000 		li	a0,0
- 243              	.LVL40:
- 244 0158 6FF09FFE 		j	.L1
- 245              		.cfi_endproc
- 246              	.LFE2:
- 248              		.align	2
- 249              		.globl	_ZN7KMemory16initializeMemoryEv
- 251              	_ZN7KMemory16initializeMemoryEv:
- 252              	.LFB1:
-  12:src/KMemory.cpp ****     if (initialized) return;
- 253              		.loc 1 12 34 is_stmt 1
- 254              		.cfi_startproc
-  13:src/KMemory.cpp ****     uint64 sizeInBytes = (char*)HEAP_END_ADDR - (char*)HEAP_START_ADDR;
- 255              		.loc 1 13 5
- 256 015c 97070000 		lbu	a5,.LANCHOR0+16
- 256      83C70700 
- 257 0164 6396070A 		bnez	a5,.L23
-  12:src/KMemory.cpp ****     if (initialized) return;
- 258              		.loc 1 12 34 is_stmt 0
- 259 0168 130101FF 		addi	sp,sp,-16
- 260              		.cfi_def_cfa_offset 16
- 261 016c 23341100 		sd	ra,8(sp)
- 262 0170 23308100 		sd	s0,0(sp)
- 263              		.cfi_offset 1, -8
- 264              		.cfi_offset 8, -16
- 265 0174 13040101 		addi	s0,sp,16
- 266              		.cfi_def_cfa 8, 0
-  14:src/KMemory.cpp ****     numOfBlocks = sizeInBytes / MEM_BLOCK_SIZE;
- 267              		.loc 1 14 5 is_stmt 1
-  14:src/KMemory.cpp ****     numOfBlocks = sizeInBytes / MEM_BLOCK_SIZE;
- 268              		.loc 1 14 26 is_stmt 0
- 269 0178 97070000 		la	a5,HEAP_END_ADDR
- 269      83B70700 
- 270 0180 83B70700 		ld	a5,0(a5)
-  14:src/KMemory.cpp ****     numOfBlocks = sizeInBytes / MEM_BLOCK_SIZE;
- 271              		.loc 1 14 49
- 272 0184 17070000 		la	a4,HEAP_START_ADDR
- 272      03370700 
- 273 018c 83360700 		ld	a3,0(a4)
-  14:src/KMemory.cpp ****     numOfBlocks = sizeInBytes / MEM_BLOCK_SIZE;
- 274              		.loc 1 14 47
- 275 0190 B387D740 		sub	a5,a5,a3
- 276              	.LVL41:
-  15:src/KMemory.cpp ****     sizeOfBitVectorInUint64 = numOfBlocks / (sizeof(uint64) * 8);
- 277              		.loc 1 15 5 is_stmt 1
-  16:src/KMemory.cpp ****     numOfBlocks = sizeOfBitVectorInUint64 * sizeof(uint64) * 8; //da se zaokruzi broj postojecih bl
- 278              		.loc 1 16 5
-  16:src/KMemory.cpp ****     numOfBlocks = sizeOfBitVectorInUint64 * sizeof(uint64) * 8; //da se zaokruzi broj postojecih bl
- 279              		.loc 1 16 43 is_stmt 0
- 280 0194 93D7C700 		srli	a5,a5,12
- 281              	.LVL42:
-  16:src/KMemory.cpp ****     numOfBlocks = sizeOfBitVectorInUint64 * sizeof(uint64) * 8; //da se zaokruzi broj postojecih bl
- 282              		.loc 1 16 29
- 283 0198 17070000 		lla	a4,.LANCHOR0
- 283      13070700 
- 284 01a0 2330F700 		sd	a5,0(a4)
-  17:src/KMemory.cpp ****     uint64 blocksForBitVector = (sizeOfBitVectorInUint64 * sizeof(uint64) + MEM_BLOCK_SIZE - 1) / M
-GAS LISTING /tmp/cci2wY0e.s 			page 9
+ 237 0160 03348100 		ld	s0,8(sp)
+ 238              		.cfi_remember_state
+ 239              		.cfi_restore 8
+ 240              		.cfi_def_cfa 2, 16
+ 241 0164 13010101 		addi	sp,sp,16
+ 242              		.cfi_def_cfa_offset 0
+ 243 0168 67800000 		jr	ra
+ 244              	.LVL39:
+ 245              	.L11:
+ 246              		.cfi_restore_state
+  33:src/KMemory.cpp ****     //size je broj blokova
+ 247              		.loc 1 33 52
+ 248 016c 13050000 		li	a0,0
+ 249              	.LVL40:
+ 250 0170 6FF01FFF 		j	.L1
+ 251              	.LVL41:
+ 252              	.L12:
+ 253 0174 13050000 		li	a0,0
+ 254              	.LVL42:
+ 255 0178 6FF09FFE 		j	.L1
+ 256              	.LVL43:
+ 257              	.L16:
+  65:src/KMemory.cpp **** 
+ 258              		.loc 1 65 36
+ 259 017c 13050000 		li	a0,0
+ 260              	.LVL44:
+ 261 0180 6FF01FFE 		j	.L1
+ 262              		.cfi_endproc
+ 263              	.LFE2:
+ 265              		.align	2
+ 266              		.globl	_ZN7KMemory16initializeMemoryEv
+ 268              	_ZN7KMemory16initializeMemoryEv:
+ 269              	.LFB1:
+  13:src/KMemory.cpp ****     if (initialized) return;
+ 270              		.loc 1 13 34 is_stmt 1
+ 271              		.cfi_startproc
+  14:src/KMemory.cpp ****     uint64 sizeInBytes = (char*)HEAP_END_ADDR - (char*)HEAP_START_ADDR;
+ 272              		.loc 1 14 5
+ 273 0184 97070000 		lbu	a5,.LANCHOR0+24
+ 273      83C70700 
+ 274 018c 6398070A 		bnez	a5,.L24
+  13:src/KMemory.cpp ****     if (initialized) return;
+ 275              		.loc 1 13 34 is_stmt 0
+ 276 0190 130101FF 		addi	sp,sp,-16
+ 277              		.cfi_def_cfa_offset 16
+ 278 0194 23341100 		sd	ra,8(sp)
+ 279 0198 23308100 		sd	s0,0(sp)
+ 280              		.cfi_offset 1, -8
+ 281              		.cfi_offset 8, -16
+ 282 019c 13040101 		addi	s0,sp,16
+ 283              		.cfi_def_cfa 8, 0
+  15:src/KMemory.cpp ****     numOfBlocks = sizeInBytes / MEM_BLOCK_SIZE;
+ 284              		.loc 1 15 5 is_stmt 1
+  15:src/KMemory.cpp ****     numOfBlocks = sizeInBytes / MEM_BLOCK_SIZE;
+ 285              		.loc 1 15 26 is_stmt 0
+ 286 01a0 97070000 		la	a5,HEAP_END_ADDR
+ 286      83B70700 
+GAS LISTING /tmp/ccwLviyZ.s 			page 9
 
 
- 285              		.loc 1 17 5 is_stmt 1
-  17:src/KMemory.cpp ****     uint64 blocksForBitVector = (sizeOfBitVectorInUint64 * sizeof(uint64) + MEM_BLOCK_SIZE - 1) / M
- 286              		.loc 1 17 60 is_stmt 0
- 287 01a4 13966700 		slli	a2,a5,6
-  17:src/KMemory.cpp ****     uint64 blocksForBitVector = (sizeOfBitVectorInUint64 * sizeof(uint64) + MEM_BLOCK_SIZE - 1) / M
- 288              		.loc 1 17 17
- 289 01a8 233CC700 		sd	a2,24(a4)
-  18:src/KMemory.cpp ****     bitVector = (uint64*)HEAP_START_ADDR;
- 290              		.loc 1 18 5 is_stmt 1
-  18:src/KMemory.cpp ****     bitVector = (uint64*)HEAP_START_ADDR;
- 291              		.loc 1 18 75 is_stmt 0
- 292 01ac 13858700 		addi	a0,a5,8
- 293 01b0 13153500 		slli	a0,a0,3
-  18:src/KMemory.cpp ****     bitVector = (uint64*)HEAP_START_ADDR;
- 294              		.loc 1 18 92
- 295 01b4 1305F5FF 		addi	a0,a0,-1
-  18:src/KMemory.cpp ****     bitVector = (uint64*)HEAP_START_ADDR;
- 296              		.loc 1 18 12
- 297 01b8 13556500 		srli	a0,a0,6
- 298              	.LVL43:
-  19:src/KMemory.cpp ****     for (uint64 i = 0; i < sizeOfBitVectorInUint64; i++) {
- 299              		.loc 1 19 5 is_stmt 1
-  19:src/KMemory.cpp ****     for (uint64 i = 0; i < sizeOfBitVectorInUint64; i++) {
- 300              		.loc 1 19 15 is_stmt 0
- 301 01bc 2334D700 		sd	a3,8(a4)
-  20:src/KMemory.cpp ****         bitVector[i] = 0;   //ni jedan blok nije zauzet, svi bitovi su 0
- 302              		.loc 1 20 5 is_stmt 1
- 303              	.LVL44:
- 304              	.LBB15:
-  20:src/KMemory.cpp ****         bitVector[i] = 0;   //ni jedan blok nije zauzet, svi bitovi su 0
- 305              		.loc 1 20 17 is_stmt 0
- 306 01c0 93070000 		li	a5,0
- 307              	.LVL45:
- 308              	.L21:
-  20:src/KMemory.cpp ****         bitVector[i] = 0;   //ni jedan blok nije zauzet, svi bitovi su 0
- 309              		.loc 1 20 26 is_stmt 1 discriminator 3
- 310 01c4 17070000 		ld	a4,.LANCHOR0
- 310      03370700 
- 311 01cc 63F0E702 		bleu	a4,a5,.L20
-  21:src/KMemory.cpp ****     }
- 312              		.loc 1 21 9 discriminator 2
-  21:src/KMemory.cpp ****     }
- 313              		.loc 1 21 20 is_stmt 0 discriminator 2
- 314 01d0 93963700 		slli	a3,a5,3
- 315 01d4 17070000 		ld	a4,.LANCHOR0+8
- 315      03370700 
- 316 01dc 3307D700 		add	a4,a4,a3
-  21:src/KMemory.cpp ****     }
- 317              		.loc 1 21 22 discriminator 2
- 318 01e0 23300700 		sd	zero,0(a4)
-  20:src/KMemory.cpp ****         bitVector[i] = 0;   //ni jedan blok nije zauzet, svi bitovi su 0
- 319              		.loc 1 20 5 is_stmt 1 discriminator 2
- 320 01e4 93871700 		addi	a5,a5,1
- 321              	.LVL46:
- 322 01e8 6FF0DFFD 		j	.L21
- 323              	.L20:
- 324              	.LBE15:
-GAS LISTING /tmp/cci2wY0e.s 			page 10
+ 287 01a8 83B70700 		ld	a5,0(a5)
+  15:src/KMemory.cpp ****     numOfBlocks = sizeInBytes / MEM_BLOCK_SIZE;
+ 288              		.loc 1 15 49
+ 289 01ac 17070000 		la	a4,HEAP_START_ADDR
+ 289      03370700 
+ 290 01b4 03360700 		ld	a2,0(a4)
+  15:src/KMemory.cpp ****     numOfBlocks = sizeInBytes / MEM_BLOCK_SIZE;
+ 291              		.loc 1 15 47
+ 292 01b8 B387C740 		sub	a5,a5,a2
+ 293              	.LVL45:
+  16:src/KMemory.cpp ****     sizeOfBitVectorInUint64 = numOfBlocks / (sizeof(uint64) * 8);
+ 294              		.loc 1 16 5 is_stmt 1
+  17:src/KMemory.cpp ****     numOfBlocks = sizeOfBitVectorInUint64 * sizeof(uint64) * 8; //da se zaokruzi broj postojecih bl
+ 295              		.loc 1 17 5
+  17:src/KMemory.cpp ****     numOfBlocks = sizeOfBitVectorInUint64 * sizeof(uint64) * 8; //da se zaokruzi broj postojecih bl
+ 296              		.loc 1 17 43 is_stmt 0
+ 297 01bc 93D7C700 		srli	a5,a5,12
+ 298              	.LVL46:
+  17:src/KMemory.cpp ****     numOfBlocks = sizeOfBitVectorInUint64 * sizeof(uint64) * 8; //da se zaokruzi broj postojecih bl
+ 299              		.loc 1 17 29
+ 300 01c0 17070000 		lla	a4,.LANCHOR0
+ 300      13070700 
+ 301 01c8 2334F700 		sd	a5,8(a4)
+  18:src/KMemory.cpp ****     uint64 blocksForBitVector = (sizeOfBitVectorInUint64 * sizeof(uint64) + MEM_BLOCK_SIZE - 1) / M
+ 302              		.loc 1 18 5 is_stmt 1
+  18:src/KMemory.cpp ****     uint64 blocksForBitVector = (sizeOfBitVectorInUint64 * sizeof(uint64) + MEM_BLOCK_SIZE - 1) / M
+ 303              		.loc 1 18 60 is_stmt 0
+ 304 01cc 93966700 		slli	a3,a5,6
+  18:src/KMemory.cpp ****     uint64 blocksForBitVector = (sizeOfBitVectorInUint64 * sizeof(uint64) + MEM_BLOCK_SIZE - 1) / M
+ 305              		.loc 1 18 17
+ 306 01d0 2330D702 		sd	a3,32(a4)
+  19:src/KMemory.cpp ****     bitVector = (uint64*)HEAP_START_ADDR;
+ 307              		.loc 1 19 5 is_stmt 1
+  19:src/KMemory.cpp ****     bitVector = (uint64*)HEAP_START_ADDR;
+ 308              		.loc 1 19 75 is_stmt 0
+ 309 01d4 13858700 		addi	a0,a5,8
+ 310 01d8 13153500 		slli	a0,a0,3
+  19:src/KMemory.cpp ****     bitVector = (uint64*)HEAP_START_ADDR;
+ 311              		.loc 1 19 92
+ 312 01dc 1305F5FF 		addi	a0,a0,-1
+  19:src/KMemory.cpp ****     bitVector = (uint64*)HEAP_START_ADDR;
+ 313              		.loc 1 19 12
+ 314 01e0 13556500 		srli	a0,a0,6
+ 315              	.LVL47:
+  20:src/KMemory.cpp ****     freeBlocksLeft = numOfBlocks;
+ 316              		.loc 1 20 5 is_stmt 1
+  20:src/KMemory.cpp ****     freeBlocksLeft = numOfBlocks;
+ 317              		.loc 1 20 15 is_stmt 0
+ 318 01e4 2338C700 		sd	a2,16(a4)
+  21:src/KMemory.cpp ****     for (uint64 i = 0; i < sizeOfBitVectorInUint64; i++) {
+ 319              		.loc 1 21 5 is_stmt 1
+  21:src/KMemory.cpp ****     for (uint64 i = 0; i < sizeOfBitVectorInUint64; i++) {
+ 320              		.loc 1 21 20 is_stmt 0
+ 321 01e8 2330D700 		sd	a3,0(a4)
+  22:src/KMemory.cpp ****         bitVector[i] = 0;   //ni jedan blok nije zauzet, svi bitovi su 0
+ 322              		.loc 1 22 5 is_stmt 1
+ 323              	.LVL48:
+GAS LISTING /tmp/ccwLviyZ.s 			page 10
 
 
-  25:src/KMemory.cpp **** 
- 325              		.loc 1 25 5
-  25:src/KMemory.cpp **** 
- 326              		.loc 1 25 12 is_stmt 0
- 327 01ec 97000000 		call	_ZN7KMemory7kmallocEm
- 327      E7800000 
- 328              	.LVL47:
-  27:src/KMemory.cpp **** }
- 329              		.loc 1 27 5 is_stmt 1
-  27:src/KMemory.cpp **** }
- 330              		.loc 1 27 17 is_stmt 0
- 331 01f4 93071000 		li	a5,1
- 332 01f8 17070000 		sb	a5,.LANCHOR0+16,a4
- 332      2300F700 
-  28:src/KMemory.cpp **** 
- 333              		.loc 1 28 1
- 334 0200 83308100 		ld	ra,8(sp)
- 335              		.cfi_restore 1
- 336 0204 03340100 		ld	s0,0(sp)
- 337              		.cfi_restore 8
- 338              		.cfi_def_cfa 2, 16
- 339 0208 13010101 		addi	sp,sp,16
- 340              		.cfi_def_cfa_offset 0
- 341 020c 67800000 		jr	ra
- 342              	.L23:
- 343 0210 67800000 		ret
- 344              		.cfi_endproc
- 345              	.LFE1:
- 347              		.align	2
- 348              		.globl	_ZN7KMemory5kfreeEPv
- 350              	_ZN7KMemory5kfreeEPv:
- 351              	.LFB3:
-  83:src/KMemory.cpp **** 
-  84:src/KMemory.cpp **** int KMemory::kfree(void* ptr) {
- 352              		.loc 1 84 31 is_stmt 1
- 353              		.cfi_startproc
- 354              	.LVL48:
- 355 0214 130101FF 		addi	sp,sp,-16
- 356              		.cfi_def_cfa_offset 16
- 357 0218 23348100 		sd	s0,8(sp)
- 358              		.cfi_offset 8, -8
- 359 021c 13040101 		addi	s0,sp,16
- 360              		.cfi_def_cfa 8, 0
-  85:src/KMemory.cpp ****     if (!ptr) return 0;
- 361              		.loc 1 85 5
- 362 0220 63000508 		beqz	a0,.L30
-  86:src/KMemory.cpp ****     ptr = (char*)ptr - 2 * sizeof(uint64);
- 363              		.loc 1 86 5
- 364              		.loc 1 86 9 is_stmt 0
- 365 0224 930705FF 		addi	a5,a0,-16
- 366              	.LVL49:
-  87:src/KMemory.cpp ****     if (((char*)ptr - (char*)HEAP_START_ADDR) % MEM_BLOCK_SIZE > 0) return -1;
- 367              		.loc 1 87 5 is_stmt 1
- 368              		.loc 1 87 23 is_stmt 0
- 369 0228 17070000 		la	a4,HEAP_START_ADDR
- 369      03370700 
- 370 0230 03370700 		ld	a4,0(a4)
-GAS LISTING /tmp/cci2wY0e.s 			page 11
+ 324              	.LBB15:
+  22:src/KMemory.cpp ****         bitVector[i] = 0;   //ni jedan blok nije zauzet, svi bitovi su 0
+ 325              		.loc 1 22 17 is_stmt 0
+ 326 01ec 93070000 		li	a5,0
+ 327              	.LVL49:
+ 328              	.L22:
+  22:src/KMemory.cpp ****         bitVector[i] = 0;   //ni jedan blok nije zauzet, svi bitovi su 0
+ 329              		.loc 1 22 26 is_stmt 1 discriminator 3
+ 330 01f0 17070000 		ld	a4,.LANCHOR0+8
+ 330      03370700 
+ 331 01f8 63F0E702 		bleu	a4,a5,.L21
+  23:src/KMemory.cpp ****     }
+ 332              		.loc 1 23 9 discriminator 2
+  23:src/KMemory.cpp ****     }
+ 333              		.loc 1 23 20 is_stmt 0 discriminator 2
+ 334 01fc 93963700 		slli	a3,a5,3
+ 335 0200 17070000 		ld	a4,.LANCHOR0+16
+ 335      03370700 
+ 336 0208 3307D700 		add	a4,a4,a3
+  23:src/KMemory.cpp ****     }
+ 337              		.loc 1 23 22 discriminator 2
+ 338 020c 23300700 		sd	zero,0(a4)
+  22:src/KMemory.cpp ****         bitVector[i] = 0;   //ni jedan blok nije zauzet, svi bitovi su 0
+ 339              		.loc 1 22 5 is_stmt 1 discriminator 2
+ 340 0210 93871700 		addi	a5,a5,1
+ 341              	.LVL50:
+ 342 0214 6FF0DFFD 		j	.L22
+ 343              	.L21:
+ 344              	.LBE15:
+  27:src/KMemory.cpp **** 
+ 345              		.loc 1 27 5
+  27:src/KMemory.cpp **** 
+ 346              		.loc 1 27 12 is_stmt 0
+ 347 0218 97000000 		call	_ZN7KMemory7kmallocEm
+ 347      E7800000 
+ 348              	.LVL51:
+  29:src/KMemory.cpp **** }
+ 349              		.loc 1 29 5 is_stmt 1
+  29:src/KMemory.cpp **** }
+ 350              		.loc 1 29 17 is_stmt 0
+ 351 0220 93071000 		li	a5,1
+ 352 0224 17070000 		sb	a5,.LANCHOR0+24,a4
+ 352      2300F700 
+  30:src/KMemory.cpp **** 
+ 353              		.loc 1 30 1
+ 354 022c 83308100 		ld	ra,8(sp)
+ 355              		.cfi_restore 1
+ 356 0230 03340100 		ld	s0,0(sp)
+ 357              		.cfi_restore 8
+ 358              		.cfi_def_cfa 2, 16
+ 359 0234 13010101 		addi	sp,sp,16
+ 360              		.cfi_def_cfa_offset 0
+ 361 0238 67800000 		jr	ra
+ 362              	.L24:
+ 363 023c 67800000 		ret
+ 364              		.cfi_endproc
+ 365              	.LFE1:
+GAS LISTING /tmp/ccwLviyZ.s 			page 11
 
 
- 371              		.loc 1 87 21
- 372 0234 B387E740 		sub	a5,a5,a4
- 373              		.loc 1 87 47
- 374 0238 13F7F703 		andi	a4,a5,63
- 375              		.loc 1 87 5
- 376 023c 63160706 		bnez	a4,.L31
-  88:src/KMemory.cpp ****     uint64 blocksToFree = *(uint64*)ptr;
- 377              		.loc 1 88 5 is_stmt 1
- 378              		.loc 1 88 12 is_stmt 0
- 379 0240 833505FF 		ld	a1,-16(a0)
- 380              	.LVL50:
-  89:src/KMemory.cpp ****     uint64 blockNum = ((char*)ptr - (char*)HEAP_START_ADDR) / MEM_BLOCK_SIZE;
- 381              		.loc 1 89 5 is_stmt 1
- 382              		.loc 1 89 12 is_stmt 0
- 383 0244 13D66700 		srli	a2,a5,6
- 384              	.LVL51:
-  90:src/KMemory.cpp ****     uint64 currentElem = blockNum / 64;
- 385              		.loc 1 90 5 is_stmt 1
- 386              		.loc 1 90 12 is_stmt 0
- 387 0248 13D5C700 		srli	a0,a5,12
- 388              	.LVL52:
-  91:src/KMemory.cpp ****     uint64 currentBit = 63 - blockNum % 64;
- 389              		.loc 1 91 5 is_stmt 1
- 390              		.loc 1 91 28 is_stmt 0
- 391 024c 1346F6FF 		not	a2,a2
- 392              	.LVL53:
- 393              		.loc 1 91 12
- 394 0250 1376F603 		andi	a2,a2,63
- 395              	.LVL54:
- 396 0254 6F008000 		j	.L28
- 397              	.LVL55:
- 398              	.L29:
-  92:src/KMemory.cpp ****     while (blocksToFree > 0) {
-  93:src/KMemory.cpp ****         bitVector[currentElem] &= ~maskBit(currentBit);
-  94:src/KMemory.cpp ****         blocksToFree--;
-  95:src/KMemory.cpp ****         if (currentBit-- == 0) {
-  96:src/KMemory.cpp ****             currentBit = 63;
- 399              		.loc 1 96 24
- 400 0258 13860700 		mv	a2,a5
- 401              	.L28:
- 402              	.LVL56:
-  92:src/KMemory.cpp ****     while (blocksToFree > 0) {
- 403              		.loc 1 92 5 is_stmt 1
-  92:src/KMemory.cpp ****     while (blocksToFree > 0) {
- 404              		.loc 1 92 25
- 405 025c 638A0504 		beqz	a1,.L32
-  93:src/KMemory.cpp ****         blocksToFree--;
- 406              		.loc 1 93 9
- 407              	.LVL57:
- 408              	.LBB16:
- 409              	.LBB17:
- 410              		.loc 2 32 9
- 411              		.loc 2 32 29 is_stmt 0
- 412 0260 93071000 		li	a5,1
- 413 0264 B397C700 		sll	a5,a5,a2
- 414              	.LVL58:
- 415              	.LBE17:
-GAS LISTING /tmp/cci2wY0e.s 			page 12
+ 367              		.align	2
+ 368              		.globl	_ZN7KMemory5kfreeEPv
+ 370              	_ZN7KMemory5kfreeEPv:
+ 371              	.LFB3:
+  86:src/KMemory.cpp **** 
+  87:src/KMemory.cpp **** int KMemory::kfree(void* ptr) {
+ 372              		.loc 1 87 31 is_stmt 1
+ 373              		.cfi_startproc
+ 374              	.LVL52:
+ 375 0240 130101FF 		addi	sp,sp,-16
+ 376              		.cfi_def_cfa_offset 16
+ 377 0244 23348100 		sd	s0,8(sp)
+ 378              		.cfi_offset 8, -8
+ 379 0248 13040101 		addi	s0,sp,16
+ 380              		.cfi_def_cfa 8, 0
+  88:src/KMemory.cpp ****     if (!ptr) return 0;
+ 381              		.loc 1 88 5
+ 382 024c 630A0508 		beqz	a0,.L31
+  89:src/KMemory.cpp ****     ptr = (char*)ptr - 2 * sizeof(uint64);
+ 383              		.loc 1 89 5
+ 384              		.loc 1 89 9 is_stmt 0
+ 385 0250 930705FF 		addi	a5,a0,-16
+ 386              	.LVL53:
+  90:src/KMemory.cpp ****     if (((char*)ptr - (char*)HEAP_START_ADDR) % MEM_BLOCK_SIZE > 0) return -1;
+ 387              		.loc 1 90 5 is_stmt 1
+ 388              		.loc 1 90 23 is_stmt 0
+ 389 0254 17070000 		la	a4,HEAP_START_ADDR
+ 389      03370700 
+ 390 025c 03370700 		ld	a4,0(a4)
+ 391              		.loc 1 90 21
+ 392 0260 B387E740 		sub	a5,a5,a4
+ 393              		.loc 1 90 47
+ 394 0264 13F7F703 		andi	a4,a5,63
+ 395              		.loc 1 90 5
+ 396 0268 63100708 		bnez	a4,.L32
+  91:src/KMemory.cpp ****     uint64 blocksToFree = *(uint64*)ptr;
+ 397              		.loc 1 91 5 is_stmt 1
+ 398              		.loc 1 91 12 is_stmt 0
+ 399 026c 833505FF 		ld	a1,-16(a0)
+ 400              	.LVL54:
+  92:src/KMemory.cpp ****     freeBlocksLeft += blocksToFree;
+ 401              		.loc 1 92 5 is_stmt 1
+ 402              		.loc 1 92 20 is_stmt 0
+ 403 0270 97060000 		lla	a3,.LANCHOR0
+ 403      93860600 
+ 404 0278 03B70600 		ld	a4,0(a3)
+ 405 027c 3307B700 		add	a4,a4,a1
+ 406 0280 23B0E600 		sd	a4,0(a3)
+  93:src/KMemory.cpp ****     uint64 blockNum = ((char*)ptr - (char*)HEAP_START_ADDR) / MEM_BLOCK_SIZE;
+ 407              		.loc 1 93 5 is_stmt 1
+ 408              		.loc 1 93 12 is_stmt 0
+ 409 0284 13D66700 		srli	a2,a5,6
+ 410              	.LVL55:
+  94:src/KMemory.cpp ****     uint64 currentElem = blockNum / 64;
+ 411              		.loc 1 94 5 is_stmt 1
+ 412              		.loc 1 94 12 is_stmt 0
+ 413 0288 13D5C700 		srli	a0,a5,12
+GAS LISTING /tmp/ccwLviyZ.s 			page 12
 
 
- 416              	.LBE16:
-  93:src/KMemory.cpp ****         blocksToFree--;
- 417              		.loc 1 93 35
- 418 0268 93C7F7FF 		not	a5,a5
-  93:src/KMemory.cpp ****         blocksToFree--;
- 419              		.loc 1 93 32
- 420 026c 13173500 		slli	a4,a0,3
- 421 0270 97060000 		ld	a3,.LANCHOR0+8
- 421      83B60600 
- 422 0278 3387E600 		add	a4,a3,a4
- 423 027c 83360700 		ld	a3,0(a4)
- 424 0280 B3F7F600 		and	a5,a3,a5
- 425 0284 2330F700 		sd	a5,0(a4)
-  94:src/KMemory.cpp ****         if (currentBit-- == 0) {
- 426              		.loc 1 94 9 is_stmt 1
-  94:src/KMemory.cpp ****         if (currentBit-- == 0) {
- 427              		.loc 1 94 21 is_stmt 0
- 428 0288 9385F5FF 		addi	a1,a1,-1
- 429              	.LVL59:
-  95:src/KMemory.cpp ****             currentBit = 63;
- 430              		.loc 1 95 9 is_stmt 1
-  95:src/KMemory.cpp ****             currentBit = 63;
- 431              		.loc 1 95 23 is_stmt 0
- 432 028c 9307F6FF 		addi	a5,a2,-1
- 433              	.LVL60:
-  95:src/KMemory.cpp ****             currentBit = 63;
- 434              		.loc 1 95 9
- 435 0290 E31406FC 		bnez	a2,.L29
- 436              		.loc 1 96 13 is_stmt 1
- 437              	.LVL61:
-  97:src/KMemory.cpp ****             currentElem++;
- 438              		.loc 1 97 13
- 439              		.loc 1 97 24 is_stmt 0
- 440 0294 13051500 		addi	a0,a0,1
- 441              	.LVL62:
-  96:src/KMemory.cpp ****             currentElem++;
- 442              		.loc 1 96 24
- 443 0298 9307F003 		li	a5,63
- 444 029c 6FF0DFFB 		j	.L29
- 445              	.LVL63:
- 446              	.L30:
-  85:src/KMemory.cpp ****     ptr = (char*)ptr - 2 * sizeof(uint64);
- 447              		.loc 1 85 22
- 448 02a0 13050000 		li	a0,0
- 449              	.LVL64:
- 450 02a4 6F000001 		j	.L27
- 451              	.LVL65:
- 452              	.L31:
-  87:src/KMemory.cpp ****     uint64 blocksToFree = *(uint64*)ptr;
- 453              		.loc 1 87 77
- 454 02a8 1305F0FF 		li	a0,-1
- 455 02ac 6F008000 		j	.L27
- 456              	.LVL66:
- 457              	.L32:
-  98:src/KMemory.cpp ****         }
-  99:src/KMemory.cpp ****     }
- 100:src/KMemory.cpp ****     return 0;
-GAS LISTING /tmp/cci2wY0e.s 			page 13
+ 414              	.LVL56:
+  95:src/KMemory.cpp ****     uint64 currentBit = 63 - blockNum % 64;
+ 415              		.loc 1 95 5 is_stmt 1
+ 416              		.loc 1 95 28 is_stmt 0
+ 417 028c 1346F6FF 		not	a2,a2
+ 418              	.LVL57:
+ 419              		.loc 1 95 12
+ 420 0290 1376F603 		andi	a2,a2,63
+ 421              	.LVL58:
+ 422 0294 6F008000 		j	.L29
+ 423              	.LVL59:
+ 424              	.L30:
+  96:src/KMemory.cpp ****     while (blocksToFree > 0) {
+  97:src/KMemory.cpp ****         bitVector[currentElem] &= ~maskBit(currentBit);
+  98:src/KMemory.cpp ****         blocksToFree--;
+  99:src/KMemory.cpp ****         if (currentBit-- == 0) {
+ 100:src/KMemory.cpp ****             currentBit = 63;
+ 425              		.loc 1 100 24
+ 426 0298 13860700 		mv	a2,a5
+ 427              	.L29:
+ 428              	.LVL60:
+  96:src/KMemory.cpp ****     while (blocksToFree > 0) {
+ 429              		.loc 1 96 5 is_stmt 1
+  96:src/KMemory.cpp ****     while (blocksToFree > 0) {
+ 430              		.loc 1 96 25
+ 431 029c 638A0504 		beqz	a1,.L33
+  97:src/KMemory.cpp ****         blocksToFree--;
+ 432              		.loc 1 97 9
+ 433              	.LVL61:
+ 434              	.LBB16:
+ 435              	.LBB17:
+ 436              		.loc 2 34 9
+ 437              		.loc 2 34 29 is_stmt 0
+ 438 02a0 93071000 		li	a5,1
+ 439 02a4 B397C700 		sll	a5,a5,a2
+ 440              	.LVL62:
+ 441              	.LBE17:
+ 442              	.LBE16:
+  97:src/KMemory.cpp ****         blocksToFree--;
+ 443              		.loc 1 97 35
+ 444 02a8 93C7F7FF 		not	a5,a5
+  97:src/KMemory.cpp ****         blocksToFree--;
+ 445              		.loc 1 97 32
+ 446 02ac 13173500 		slli	a4,a0,3
+ 447 02b0 97060000 		ld	a3,.LANCHOR0+16
+ 447      83B60600 
+ 448 02b8 3387E600 		add	a4,a3,a4
+ 449 02bc 83360700 		ld	a3,0(a4)
+ 450 02c0 B3F7F600 		and	a5,a3,a5
+ 451 02c4 2330F700 		sd	a5,0(a4)
+  98:src/KMemory.cpp ****         if (currentBit-- == 0) {
+ 452              		.loc 1 98 9 is_stmt 1
+  98:src/KMemory.cpp ****         if (currentBit-- == 0) {
+ 453              		.loc 1 98 21 is_stmt 0
+ 454 02c8 9385F5FF 		addi	a1,a1,-1
+ 455              	.LVL63:
+  99:src/KMemory.cpp ****             currentBit = 63;
+GAS LISTING /tmp/ccwLviyZ.s 			page 13
 
 
- 458              		.loc 1 100 12
- 459 02b0 13050000 		li	a0,0
- 460              	.LVL67:
- 461              	.L27:
- 101:src/KMemory.cpp **** }
- 462              		.loc 1 101 1
- 463 02b4 03348100 		ld	s0,8(sp)
- 464              		.cfi_restore 8
- 465              		.cfi_def_cfa 2, 16
- 466 02b8 13010101 		addi	sp,sp,16
- 467              		.cfi_def_cfa_offset 0
- 468 02bc 67800000 		jr	ra
- 469              		.cfi_endproc
- 470              	.LFE3:
- 472              		.globl	_ZN7KMemory9bitVectorE
- 473              		.globl	_ZN7KMemory23sizeOfBitVectorInUint64E
- 474              		.globl	_ZN7KMemory11numOfBlocksE
- 475              		.globl	_ZN7KMemory11initializedE
- 476              		.bss
- 477              		.align	3
- 478              		.set	.LANCHOR0,. + 0
- 481              	_ZN7KMemory23sizeOfBitVectorInUint64E:
- 482 0000 00000000 		.zero	8
- 482      00000000 
- 485              	_ZN7KMemory9bitVectorE:
- 486 0008 00000000 		.zero	8
- 486      00000000 
- 489              	_ZN7KMemory11initializedE:
- 490 0010 00       		.zero	1
- 491 0011 00000000 		.zero	7
- 491      000000
- 494              	_ZN7KMemory11numOfBlocksE:
- 495 0018 00000000 		.zero	8
- 495      00000000 
- 496              		.text
- 497              	.Letext0:
- 498              		.file 3 "src/../h/../lib/hw.h"
-GAS LISTING /tmp/cci2wY0e.s 			page 14
+ 456              		.loc 1 99 9 is_stmt 1
+  99:src/KMemory.cpp ****             currentBit = 63;
+ 457              		.loc 1 99 23 is_stmt 0
+ 458 02cc 9307F6FF 		addi	a5,a2,-1
+ 459              	.LVL64:
+  99:src/KMemory.cpp ****             currentBit = 63;
+ 460              		.loc 1 99 9
+ 461 02d0 E31406FC 		bnez	a2,.L30
+ 462              		.loc 1 100 13 is_stmt 1
+ 463              	.LVL65:
+ 101:src/KMemory.cpp ****             currentElem++;
+ 464              		.loc 1 101 13
+ 465              		.loc 1 101 24 is_stmt 0
+ 466 02d4 13051500 		addi	a0,a0,1
+ 467              	.LVL66:
+ 100:src/KMemory.cpp ****             currentElem++;
+ 468              		.loc 1 100 24
+ 469 02d8 9307F003 		li	a5,63
+ 470 02dc 6FF0DFFB 		j	.L30
+ 471              	.LVL67:
+ 472              	.L31:
+  88:src/KMemory.cpp ****     ptr = (char*)ptr - 2 * sizeof(uint64);
+ 473              		.loc 1 88 22
+ 474 02e0 13050000 		li	a0,0
+ 475              	.LVL68:
+ 476 02e4 6F000001 		j	.L28
+ 477              	.LVL69:
+ 478              	.L32:
+  90:src/KMemory.cpp ****     uint64 blocksToFree = *(uint64*)ptr;
+ 479              		.loc 1 90 77
+ 480 02e8 1305F0FF 		li	a0,-1
+ 481 02ec 6F008000 		j	.L28
+ 482              	.LVL70:
+ 483              	.L33:
+ 102:src/KMemory.cpp ****         }
+ 103:src/KMemory.cpp ****     }
+ 104:src/KMemory.cpp ****     return 0;
+ 484              		.loc 1 104 12
+ 485 02f0 13050000 		li	a0,0
+ 486              	.LVL71:
+ 487              	.L28:
+ 105:src/KMemory.cpp **** }
+ 488              		.loc 1 105 1
+ 489 02f4 03348100 		ld	s0,8(sp)
+ 490              		.cfi_restore 8
+ 491              		.cfi_def_cfa 2, 16
+ 492 02f8 13010101 		addi	sp,sp,16
+ 493              		.cfi_def_cfa_offset 0
+ 494 02fc 67800000 		jr	ra
+ 495              		.cfi_endproc
+ 496              	.LFE3:
+ 498              		.globl	_ZN7KMemory14freeBlocksLeftE
+ 499              		.globl	_ZN7KMemory9bitVectorE
+ 500              		.globl	_ZN7KMemory23sizeOfBitVectorInUint64E
+ 501              		.globl	_ZN7KMemory11numOfBlocksE
+ 502              		.globl	_ZN7KMemory11initializedE
+ 503              		.bss
+GAS LISTING /tmp/ccwLviyZ.s 			page 14
+
+
+ 504              		.align	3
+ 505              		.set	.LANCHOR0,. + 0
+ 508              	_ZN7KMemory14freeBlocksLeftE:
+ 509 0000 00000000 		.zero	8
+ 509      00000000 
+ 512              	_ZN7KMemory23sizeOfBitVectorInUint64E:
+ 513 0008 00000000 		.zero	8
+ 513      00000000 
+ 516              	_ZN7KMemory9bitVectorE:
+ 517 0010 00000000 		.zero	8
+ 517      00000000 
+ 520              	_ZN7KMemory11initializedE:
+ 521 0018 00       		.zero	1
+ 522 0019 00000000 		.zero	7
+ 522      000000
+ 525              	_ZN7KMemory11numOfBlocksE:
+ 526 0020 00000000 		.zero	8
+ 526      00000000 
+ 527              		.text
+ 528              	.Letext0:
+ 529              		.file 3 "src/../h/../lib/hw.h"
+GAS LISTING /tmp/ccwLviyZ.s 			page 15
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 KMemory.cpp
-     /tmp/cci2wY0e.s:9      .text:0000000000000000 _ZN7KMemory7kmallocEm
-     /tmp/cci2wY0e.s:13     .text:0000000000000000 .L0 
-     /tmp/cci2wY0e.s:15     .text:0000000000000000 .L0 
-     /tmp/cci2wY0e.s:16     .text:0000000000000004 .L0 
-     /tmp/cci2wY0e.s:18     .text:0000000000000008 .L0 
-     /tmp/cci2wY0e.s:20     .text:000000000000000c .L0 
-     /tmp/cci2wY0e.s:22     .text:000000000000000c .L0 
-     /tmp/cci2wY0e.s:24     .text:0000000000000010 .L0 
-     /tmp/cci2wY0e.s:26     .text:0000000000000014 .L0 
-     /tmp/cci2wY0e.s:28     .text:0000000000000018 .L0 
-     /tmp/cci2wY0e.s:30     .text:000000000000001c .L0 
-     /tmp/cci2wY0e.s:32     .text:0000000000000020 .L0 
-     /tmp/cci2wY0e.s:34     .text:0000000000000024 .L0 
-     /tmp/cci2wY0e.s:40     .text:000000000000002c .L0 
-     /tmp/cci2wY0e.s:45     .text:0000000000000030 .L0 
-     /tmp/cci2wY0e.s:46     .text:0000000000000030 .L0 
-     /tmp/cci2wY0e.s:50     .text:000000000000003c .L0 
-     /tmp/cci2wY0e.s:54     .text:0000000000000044 .L0 
-     /tmp/cci2wY0e.s:55     .text:0000000000000044 .L0 
-     /tmp/cci2wY0e.s:64     .text:0000000000000058 .L0 
-     /tmp/cci2wY0e.s:65     .text:0000000000000058 .L0 
-     /tmp/cci2wY0e.s:71     .text:0000000000000060 .L0 
-     /tmp/cci2wY0e.s:74     .text:0000000000000064 .L0 
-     /tmp/cci2wY0e.s:76     .text:0000000000000068 .L0 
-     /tmp/cci2wY0e.s:78     .text:000000000000006c .L0 
-     /tmp/cci2wY0e.s:79     .text:000000000000006c .L0 
-     /tmp/cci2wY0e.s:85     .text:0000000000000074 .L0 
-     /tmp/cci2wY0e.s:90     .text:0000000000000088 .L0 
-     /tmp/cci2wY0e.s:93     .text:0000000000000090 .L0 
-     /tmp/cci2wY0e.s:94     .text:0000000000000090 .L0 
-     /tmp/cci2wY0e.s:97     .text:0000000000000094 .L0 
-     /tmp/cci2wY0e.s:101    .text:0000000000000098 .L0 
-     /tmp/cci2wY0e.s:104    .text:000000000000009c .L0 
-     /tmp/cci2wY0e.s:108    .text:00000000000000a0 .L0 
-     /tmp/cci2wY0e.s:110    .text:00000000000000a4 .L0 
-     /tmp/cci2wY0e.s:111    .text:00000000000000a4 .L0 
-     /tmp/cci2wY0e.s:114    .text:00000000000000a8 .L0 
-     /tmp/cci2wY0e.s:117    .text:00000000000000ac .L0 
-     /tmp/cci2wY0e.s:118    .text:00000000000000ac .L0 
-     /tmp/cci2wY0e.s:119    .text:00000000000000ac .L0 
-     /tmp/cci2wY0e.s:122    .text:00000000000000b0 .L0 
-     /tmp/cci2wY0e.s:127    .text:00000000000000b8 .L0 
-     /tmp/cci2wY0e.s:130    .text:00000000000000bc .L0 
-     /tmp/cci2wY0e.s:133    .text:00000000000000c0 .L0 
-     /tmp/cci2wY0e.s:136    .text:00000000000000c4 .L0 
-     /tmp/cci2wY0e.s:143    .text:00000000000000cc .L0 
-     /tmp/cci2wY0e.s:145    .text:00000000000000d0 .L0 
-     /tmp/cci2wY0e.s:146    .text:00000000000000d0 .L0 
-     /tmp/cci2wY0e.s:149    .text:00000000000000d4 .L0 
-     /tmp/cci2wY0e.s:151    .text:00000000000000d8 .L0 
-     /tmp/cci2wY0e.s:154    .text:00000000000000dc .L0 
-     /tmp/cci2wY0e.s:155    .text:00000000000000dc .L0 
-     /tmp/cci2wY0e.s:159    .text:00000000000000e8 .L0 
-     /tmp/cci2wY0e.s:162    .text:00000000000000ec .L0 
-     /tmp/cci2wY0e.s:165    .text:00000000000000f0 .L0 
-GAS LISTING /tmp/cci2wY0e.s 			page 15
+     /tmp/ccwLviyZ.s:9      .text:0000000000000000 _ZN7KMemory7kmallocEm
+     /tmp/ccwLviyZ.s:13     .text:0000000000000000 .L0 
+     /tmp/ccwLviyZ.s:15     .text:0000000000000000 .L0 
+     /tmp/ccwLviyZ.s:16     .text:0000000000000004 .L0 
+     /tmp/ccwLviyZ.s:18     .text:0000000000000008 .L0 
+     /tmp/ccwLviyZ.s:20     .text:000000000000000c .L0 
+     /tmp/ccwLviyZ.s:22     .text:000000000000000c .L0 
+     /tmp/ccwLviyZ.s:24     .text:0000000000000010 .L0 
+     /tmp/ccwLviyZ.s:26     .text:0000000000000018 .L0 
+     /tmp/ccwLviyZ.s:28     .text:000000000000001c .L0 
+     /tmp/ccwLviyZ.s:30     .text:0000000000000020 .L0 
+     /tmp/ccwLviyZ.s:32     .text:0000000000000024 .L0 
+     /tmp/ccwLviyZ.s:34     .text:0000000000000028 .L0 
+     /tmp/ccwLviyZ.s:36     .text:000000000000002c .L0 
+     /tmp/ccwLviyZ.s:38     .text:0000000000000030 .L0 
+     /tmp/ccwLviyZ.s:44     .text:0000000000000038 .L0 
+     /tmp/ccwLviyZ.s:49     .text:000000000000003c .L0 
+     /tmp/ccwLviyZ.s:50     .text:000000000000003c .L0 
+     /tmp/ccwLviyZ.s:54     .text:0000000000000048 .L0 
+     /tmp/ccwLviyZ.s:58     .text:0000000000000050 .L0 
+     /tmp/ccwLviyZ.s:59     .text:0000000000000050 .L0 
+     /tmp/ccwLviyZ.s:68     .text:0000000000000064 .L0 
+     /tmp/ccwLviyZ.s:69     .text:0000000000000064 .L0 
+     /tmp/ccwLviyZ.s:75     .text:000000000000006c .L0 
+     /tmp/ccwLviyZ.s:78     .text:0000000000000070 .L0 
+     /tmp/ccwLviyZ.s:80     .text:0000000000000074 .L0 
+     /tmp/ccwLviyZ.s:82     .text:0000000000000078 .L0 
+     /tmp/ccwLviyZ.s:83     .text:0000000000000078 .L0 
+     /tmp/ccwLviyZ.s:89     .text:0000000000000080 .L0 
+     /tmp/ccwLviyZ.s:94     .text:0000000000000094 .L0 
+     /tmp/ccwLviyZ.s:97     .text:000000000000009c .L0 
+     /tmp/ccwLviyZ.s:98     .text:000000000000009c .L0 
+     /tmp/ccwLviyZ.s:101    .text:00000000000000a0 .L0 
+     /tmp/ccwLviyZ.s:105    .text:00000000000000a4 .L0 
+     /tmp/ccwLviyZ.s:108    .text:00000000000000a8 .L0 
+     /tmp/ccwLviyZ.s:112    .text:00000000000000ac .L0 
+     /tmp/ccwLviyZ.s:114    .text:00000000000000b0 .L0 
+     /tmp/ccwLviyZ.s:115    .text:00000000000000b0 .L0 
+     /tmp/ccwLviyZ.s:118    .text:00000000000000b4 .L0 
+     /tmp/ccwLviyZ.s:121    .text:00000000000000b8 .L0 
+     /tmp/ccwLviyZ.s:122    .text:00000000000000b8 .L0 
+     /tmp/ccwLviyZ.s:123    .text:00000000000000b8 .L0 
+     /tmp/ccwLviyZ.s:126    .text:00000000000000bc .L0 
+     /tmp/ccwLviyZ.s:131    .text:00000000000000c4 .L0 
+     /tmp/ccwLviyZ.s:134    .text:00000000000000c8 .L0 
+     /tmp/ccwLviyZ.s:137    .text:00000000000000cc .L0 
+     /tmp/ccwLviyZ.s:140    .text:00000000000000d0 .L0 
+     /tmp/ccwLviyZ.s:147    .text:00000000000000d8 .L0 
+     /tmp/ccwLviyZ.s:149    .text:00000000000000dc .L0 
+     /tmp/ccwLviyZ.s:150    .text:00000000000000dc .L0 
+     /tmp/ccwLviyZ.s:153    .text:00000000000000e0 .L0 
+     /tmp/ccwLviyZ.s:155    .text:00000000000000e4 .L0 
+     /tmp/ccwLviyZ.s:158    .text:00000000000000e8 .L0 
+     /tmp/ccwLviyZ.s:159    .text:00000000000000e8 .L0 
+     /tmp/ccwLviyZ.s:163    .text:00000000000000f4 .L0 
+GAS LISTING /tmp/ccwLviyZ.s 			page 16
 
 
-     /tmp/cci2wY0e.s:166    .text:00000000000000f0 .L0 
-     /tmp/cci2wY0e.s:169    .text:00000000000000f4 .L0 
-     /tmp/cci2wY0e.s:170    .text:00000000000000f4 .L0 
-     /tmp/cci2wY0e.s:174    .text:00000000000000f8 .L0 
-     /tmp/cci2wY0e.s:178    .text:00000000000000fc .L0 
-     /tmp/cci2wY0e.s:179    .text:00000000000000fc .L0 
-     /tmp/cci2wY0e.s:184    .text:0000000000000100 .L0 
-     /tmp/cci2wY0e.s:185    .text:0000000000000100 .L0 
-     /tmp/cci2wY0e.s:186    .text:0000000000000100 .L0 
-     /tmp/cci2wY0e.s:192    .text:0000000000000108 .L0 
-     /tmp/cci2wY0e.s:199    .text:0000000000000124 .L0 
-     /tmp/cci2wY0e.s:200    .text:0000000000000124 .L0 
-     /tmp/cci2wY0e.s:203    .text:0000000000000128 .L0 
-     /tmp/cci2wY0e.s:204    .text:0000000000000128 .L0 
-     /tmp/cci2wY0e.s:207    .text:000000000000012c .L0 
-     /tmp/cci2wY0e.s:210    .text:0000000000000130 .L0 
-     /tmp/cci2wY0e.s:211    .text:0000000000000130 .L0 
-     /tmp/cci2wY0e.s:212    .text:0000000000000130 .L0 
-     /tmp/cci2wY0e.s:215    .text:0000000000000134 .L0 
-     /tmp/cci2wY0e.s:220    .text:000000000000013c .L0 
-     /tmp/cci2wY0e.s:221    .text:000000000000013c .L0 
-     /tmp/cci2wY0e.s:225    .text:0000000000000140 .L0 
-     /tmp/cci2wY0e.s:226    .text:0000000000000144 .L0 
-     /tmp/cci2wY0e.s:227    .text:0000000000000144 .L0 
-     /tmp/cci2wY0e.s:228    .text:0000000000000144 .L0 
-     /tmp/cci2wY0e.s:230    .text:0000000000000148 .L0 
-     /tmp/cci2wY0e.s:234    .text:000000000000014c .L0 
-     /tmp/cci2wY0e.s:236    .text:000000000000014c .L0 
-     /tmp/cci2wY0e.s:242    .text:0000000000000154 .L0 
-     /tmp/cci2wY0e.s:245    .text:000000000000015c .L0 
-     /tmp/cci2wY0e.s:251    .text:000000000000015c _ZN7KMemory16initializeMemoryEv
-     /tmp/cci2wY0e.s:254    .text:000000000000015c .L0 
-     /tmp/cci2wY0e.s:255    .text:000000000000015c .L0 
-     /tmp/cci2wY0e.s:256    .text:000000000000015c .L0 
-     /tmp/cci2wY0e.s:259    .text:0000000000000168 .L0 
-     /tmp/cci2wY0e.s:260    .text:000000000000016c .L0 
-     /tmp/cci2wY0e.s:263    .text:0000000000000174 .L0 
-     /tmp/cci2wY0e.s:264    .text:0000000000000174 .L0 
-     /tmp/cci2wY0e.s:266    .text:0000000000000178 .L0 
-     /tmp/cci2wY0e.s:268    .text:0000000000000178 .L0 
-     /tmp/cci2wY0e.s:269    .text:0000000000000178 .L0 
-     /tmp/cci2wY0e.s:272    .text:0000000000000184 .L0 
-     /tmp/cci2wY0e.s:275    .text:0000000000000190 .L0 
-     /tmp/cci2wY0e.s:278    .text:0000000000000194 .L0 
-     /tmp/cci2wY0e.s:279    .text:0000000000000194 .L0 
-     /tmp/cci2wY0e.s:280    .text:0000000000000194 .L0 
-     /tmp/cci2wY0e.s:283    .text:0000000000000198 .L0 
-     /tmp/cci2wY0e.s:286    .text:00000000000001a4 .L0 
-     /tmp/cci2wY0e.s:287    .text:00000000000001a4 .L0 
-     /tmp/cci2wY0e.s:289    .text:00000000000001a8 .L0 
-     /tmp/cci2wY0e.s:291    .text:00000000000001ac .L0 
-     /tmp/cci2wY0e.s:292    .text:00000000000001ac .L0 
-     /tmp/cci2wY0e.s:295    .text:00000000000001b4 .L0 
-     /tmp/cci2wY0e.s:297    .text:00000000000001b8 .L0 
-     /tmp/cci2wY0e.s:300    .text:00000000000001bc .L0 
-     /tmp/cci2wY0e.s:301    .text:00000000000001bc .L0 
-     /tmp/cci2wY0e.s:305    .text:00000000000001c0 .L0 
-GAS LISTING /tmp/cci2wY0e.s 			page 16
+     /tmp/ccwLviyZ.s:166    .text:00000000000000f8 .L0 
+     /tmp/ccwLviyZ.s:169    .text:00000000000000fc .L0 
+     /tmp/ccwLviyZ.s:170    .text:00000000000000fc .L0 
+     /tmp/ccwLviyZ.s:173    .text:0000000000000100 .L0 
+     /tmp/ccwLviyZ.s:174    .text:0000000000000100 .L0 
+     /tmp/ccwLviyZ.s:178    .text:0000000000000104 .L0 
+     /tmp/ccwLviyZ.s:182    .text:0000000000000108 .L0 
+     /tmp/ccwLviyZ.s:183    .text:0000000000000108 .L0 
+     /tmp/ccwLviyZ.s:188    .text:000000000000010c .L0 
+     /tmp/ccwLviyZ.s:189    .text:000000000000010c .L0 
+     /tmp/ccwLviyZ.s:190    .text:000000000000010c .L0 
+     /tmp/ccwLviyZ.s:196    .text:0000000000000114 .L0 
+     /tmp/ccwLviyZ.s:203    .text:0000000000000130 .L0 
+     /tmp/ccwLviyZ.s:204    .text:0000000000000130 .L0 
+     /tmp/ccwLviyZ.s:207    .text:0000000000000134 .L0 
+     /tmp/ccwLviyZ.s:208    .text:0000000000000134 .L0 
+     /tmp/ccwLviyZ.s:211    .text:0000000000000138 .L0 
+     /tmp/ccwLviyZ.s:214    .text:000000000000013c .L0 
+     /tmp/ccwLviyZ.s:215    .text:000000000000013c .L0 
+     /tmp/ccwLviyZ.s:216    .text:000000000000013c .L0 
+     /tmp/ccwLviyZ.s:219    .text:0000000000000140 .L0 
+     /tmp/ccwLviyZ.s:224    .text:0000000000000148 .L0 
+     /tmp/ccwLviyZ.s:225    .text:0000000000000148 .L0 
+     /tmp/ccwLviyZ.s:232    .text:000000000000015c .L0 
+     /tmp/ccwLviyZ.s:233    .text:000000000000015c .L0 
+     /tmp/ccwLviyZ.s:237    .text:0000000000000160 .L0 
+     /tmp/ccwLviyZ.s:238    .text:0000000000000164 .L0 
+     /tmp/ccwLviyZ.s:239    .text:0000000000000164 .L0 
+     /tmp/ccwLviyZ.s:240    .text:0000000000000164 .L0 
+     /tmp/ccwLviyZ.s:242    .text:0000000000000168 .L0 
+     /tmp/ccwLviyZ.s:246    .text:000000000000016c .L0 
+     /tmp/ccwLviyZ.s:248    .text:000000000000016c .L0 
+     /tmp/ccwLviyZ.s:259    .text:000000000000017c .L0 
+     /tmp/ccwLviyZ.s:262    .text:0000000000000184 .L0 
+     /tmp/ccwLviyZ.s:268    .text:0000000000000184 _ZN7KMemory16initializeMemoryEv
+     /tmp/ccwLviyZ.s:271    .text:0000000000000184 .L0 
+     /tmp/ccwLviyZ.s:272    .text:0000000000000184 .L0 
+     /tmp/ccwLviyZ.s:273    .text:0000000000000184 .L0 
+     /tmp/ccwLviyZ.s:276    .text:0000000000000190 .L0 
+     /tmp/ccwLviyZ.s:277    .text:0000000000000194 .L0 
+     /tmp/ccwLviyZ.s:280    .text:000000000000019c .L0 
+     /tmp/ccwLviyZ.s:281    .text:000000000000019c .L0 
+     /tmp/ccwLviyZ.s:283    .text:00000000000001a0 .L0 
+     /tmp/ccwLviyZ.s:285    .text:00000000000001a0 .L0 
+     /tmp/ccwLviyZ.s:286    .text:00000000000001a0 .L0 
+     /tmp/ccwLviyZ.s:289    .text:00000000000001ac .L0 
+     /tmp/ccwLviyZ.s:292    .text:00000000000001b8 .L0 
+     /tmp/ccwLviyZ.s:295    .text:00000000000001bc .L0 
+     /tmp/ccwLviyZ.s:296    .text:00000000000001bc .L0 
+     /tmp/ccwLviyZ.s:297    .text:00000000000001bc .L0 
+     /tmp/ccwLviyZ.s:300    .text:00000000000001c0 .L0 
+     /tmp/ccwLviyZ.s:303    .text:00000000000001cc .L0 
+     /tmp/ccwLviyZ.s:304    .text:00000000000001cc .L0 
+     /tmp/ccwLviyZ.s:306    .text:00000000000001d0 .L0 
+     /tmp/ccwLviyZ.s:308    .text:00000000000001d4 .L0 
+     /tmp/ccwLviyZ.s:309    .text:00000000000001d4 .L0 
+     /tmp/ccwLviyZ.s:312    .text:00000000000001dc .L0 
+GAS LISTING /tmp/ccwLviyZ.s 			page 17
 
 
-     /tmp/cci2wY0e.s:306    .text:00000000000001c0 .L0 
-     /tmp/cci2wY0e.s:310    .text:00000000000001c4 .L0 
-     /tmp/cci2wY0e.s:313    .text:00000000000001d0 .L0 
-     /tmp/cci2wY0e.s:314    .text:00000000000001d0 .L0 
-     /tmp/cci2wY0e.s:318    .text:00000000000001e0 .L0 
-     /tmp/cci2wY0e.s:320    .text:00000000000001e4 .L0 
-     /tmp/cci2wY0e.s:326    .text:00000000000001ec .L0 
-     /tmp/cci2wY0e.s:327    .text:00000000000001ec .L0 
-     /tmp/cci2wY0e.s:330    .text:00000000000001f4 .L0 
-     /tmp/cci2wY0e.s:331    .text:00000000000001f4 .L0 
-     /tmp/cci2wY0e.s:334    .text:0000000000000200 .L0 
-     /tmp/cci2wY0e.s:335    .text:0000000000000204 .L0 
-     /tmp/cci2wY0e.s:337    .text:0000000000000208 .L0 
-     /tmp/cci2wY0e.s:338    .text:0000000000000208 .L0 
-     /tmp/cci2wY0e.s:340    .text:000000000000020c .L0 
-     /tmp/cci2wY0e.s:344    .text:0000000000000214 .L0 
-     /tmp/cci2wY0e.s:350    .text:0000000000000214 _ZN7KMemory5kfreeEPv
-     /tmp/cci2wY0e.s:353    .text:0000000000000214 .L0 
-     /tmp/cci2wY0e.s:355    .text:0000000000000214 .L0 
-     /tmp/cci2wY0e.s:356    .text:0000000000000218 .L0 
-     /tmp/cci2wY0e.s:358    .text:000000000000021c .L0 
-     /tmp/cci2wY0e.s:360    .text:0000000000000220 .L0 
-     /tmp/cci2wY0e.s:362    .text:0000000000000220 .L0 
-     /tmp/cci2wY0e.s:364    .text:0000000000000224 .L0 
-     /tmp/cci2wY0e.s:365    .text:0000000000000224 .L0 
-     /tmp/cci2wY0e.s:368    .text:0000000000000228 .L0 
-     /tmp/cci2wY0e.s:369    .text:0000000000000228 .L0 
-     /tmp/cci2wY0e.s:372    .text:0000000000000234 .L0 
-     /tmp/cci2wY0e.s:374    .text:0000000000000238 .L0 
-     /tmp/cci2wY0e.s:376    .text:000000000000023c .L0 
-     /tmp/cci2wY0e.s:378    .text:0000000000000240 .L0 
-     /tmp/cci2wY0e.s:379    .text:0000000000000240 .L0 
-     /tmp/cci2wY0e.s:382    .text:0000000000000244 .L0 
-     /tmp/cci2wY0e.s:383    .text:0000000000000244 .L0 
-     /tmp/cci2wY0e.s:386    .text:0000000000000248 .L0 
-     /tmp/cci2wY0e.s:387    .text:0000000000000248 .L0 
-     /tmp/cci2wY0e.s:390    .text:000000000000024c .L0 
-     /tmp/cci2wY0e.s:391    .text:000000000000024c .L0 
-     /tmp/cci2wY0e.s:394    .text:0000000000000250 .L0 
-     /tmp/cci2wY0e.s:400    .text:0000000000000258 .L0 
-     /tmp/cci2wY0e.s:404    .text:000000000000025c .L0 
-     /tmp/cci2wY0e.s:405    .text:000000000000025c .L0 
-     /tmp/cci2wY0e.s:410    .text:0000000000000260 .L0 
-     /tmp/cci2wY0e.s:411    .text:0000000000000260 .L0 
-     /tmp/cci2wY0e.s:412    .text:0000000000000260 .L0 
-     /tmp/cci2wY0e.s:418    .text:0000000000000268 .L0 
-     /tmp/cci2wY0e.s:420    .text:000000000000026c .L0 
-     /tmp/cci2wY0e.s:427    .text:0000000000000288 .L0 
-     /tmp/cci2wY0e.s:428    .text:0000000000000288 .L0 
-     /tmp/cci2wY0e.s:431    .text:000000000000028c .L0 
-     /tmp/cci2wY0e.s:432    .text:000000000000028c .L0 
-     /tmp/cci2wY0e.s:435    .text:0000000000000290 .L0 
-     /tmp/cci2wY0e.s:438    .text:0000000000000294 .L0 
-     /tmp/cci2wY0e.s:439    .text:0000000000000294 .L0 
-     /tmp/cci2wY0e.s:440    .text:0000000000000294 .L0 
-     /tmp/cci2wY0e.s:443    .text:0000000000000298 .L0 
-     /tmp/cci2wY0e.s:448    .text:00000000000002a0 .L0 
-GAS LISTING /tmp/cci2wY0e.s 			page 17
+     /tmp/ccwLviyZ.s:314    .text:00000000000001e0 .L0 
+     /tmp/ccwLviyZ.s:317    .text:00000000000001e4 .L0 
+     /tmp/ccwLviyZ.s:318    .text:00000000000001e4 .L0 
+     /tmp/ccwLviyZ.s:320    .text:00000000000001e8 .L0 
+     /tmp/ccwLviyZ.s:321    .text:00000000000001e8 .L0 
+     /tmp/ccwLviyZ.s:325    .text:00000000000001ec .L0 
+     /tmp/ccwLviyZ.s:326    .text:00000000000001ec .L0 
+     /tmp/ccwLviyZ.s:330    .text:00000000000001f0 .L0 
+     /tmp/ccwLviyZ.s:333    .text:00000000000001fc .L0 
+     /tmp/ccwLviyZ.s:334    .text:00000000000001fc .L0 
+     /tmp/ccwLviyZ.s:338    .text:000000000000020c .L0 
+     /tmp/ccwLviyZ.s:340    .text:0000000000000210 .L0 
+     /tmp/ccwLviyZ.s:346    .text:0000000000000218 .L0 
+     /tmp/ccwLviyZ.s:347    .text:0000000000000218 .L0 
+     /tmp/ccwLviyZ.s:350    .text:0000000000000220 .L0 
+     /tmp/ccwLviyZ.s:351    .text:0000000000000220 .L0 
+     /tmp/ccwLviyZ.s:354    .text:000000000000022c .L0 
+     /tmp/ccwLviyZ.s:355    .text:0000000000000230 .L0 
+     /tmp/ccwLviyZ.s:357    .text:0000000000000234 .L0 
+     /tmp/ccwLviyZ.s:358    .text:0000000000000234 .L0 
+     /tmp/ccwLviyZ.s:360    .text:0000000000000238 .L0 
+     /tmp/ccwLviyZ.s:364    .text:0000000000000240 .L0 
+     /tmp/ccwLviyZ.s:370    .text:0000000000000240 _ZN7KMemory5kfreeEPv
+     /tmp/ccwLviyZ.s:373    .text:0000000000000240 .L0 
+     /tmp/ccwLviyZ.s:375    .text:0000000000000240 .L0 
+     /tmp/ccwLviyZ.s:376    .text:0000000000000244 .L0 
+     /tmp/ccwLviyZ.s:378    .text:0000000000000248 .L0 
+     /tmp/ccwLviyZ.s:380    .text:000000000000024c .L0 
+     /tmp/ccwLviyZ.s:382    .text:000000000000024c .L0 
+     /tmp/ccwLviyZ.s:384    .text:0000000000000250 .L0 
+     /tmp/ccwLviyZ.s:385    .text:0000000000000250 .L0 
+     /tmp/ccwLviyZ.s:388    .text:0000000000000254 .L0 
+     /tmp/ccwLviyZ.s:389    .text:0000000000000254 .L0 
+     /tmp/ccwLviyZ.s:392    .text:0000000000000260 .L0 
+     /tmp/ccwLviyZ.s:394    .text:0000000000000264 .L0 
+     /tmp/ccwLviyZ.s:396    .text:0000000000000268 .L0 
+     /tmp/ccwLviyZ.s:398    .text:000000000000026c .L0 
+     /tmp/ccwLviyZ.s:399    .text:000000000000026c .L0 
+     /tmp/ccwLviyZ.s:402    .text:0000000000000270 .L0 
+     /tmp/ccwLviyZ.s:403    .text:0000000000000270 .L0 
+     /tmp/ccwLviyZ.s:408    .text:0000000000000284 .L0 
+     /tmp/ccwLviyZ.s:409    .text:0000000000000284 .L0 
+     /tmp/ccwLviyZ.s:412    .text:0000000000000288 .L0 
+     /tmp/ccwLviyZ.s:413    .text:0000000000000288 .L0 
+     /tmp/ccwLviyZ.s:416    .text:000000000000028c .L0 
+     /tmp/ccwLviyZ.s:417    .text:000000000000028c .L0 
+     /tmp/ccwLviyZ.s:420    .text:0000000000000290 .L0 
+     /tmp/ccwLviyZ.s:426    .text:0000000000000298 .L0 
+     /tmp/ccwLviyZ.s:430    .text:000000000000029c .L0 
+     /tmp/ccwLviyZ.s:431    .text:000000000000029c .L0 
+     /tmp/ccwLviyZ.s:436    .text:00000000000002a0 .L0 
+     /tmp/ccwLviyZ.s:437    .text:00000000000002a0 .L0 
+     /tmp/ccwLviyZ.s:438    .text:00000000000002a0 .L0 
+     /tmp/ccwLviyZ.s:444    .text:00000000000002a8 .L0 
+     /tmp/ccwLviyZ.s:446    .text:00000000000002ac .L0 
+     /tmp/ccwLviyZ.s:453    .text:00000000000002c8 .L0 
+     /tmp/ccwLviyZ.s:454    .text:00000000000002c8 .L0 
+GAS LISTING /tmp/ccwLviyZ.s 			page 18
 
 
-     /tmp/cci2wY0e.s:454    .text:00000000000002a8 .L0 
-     /tmp/cci2wY0e.s:459    .text:00000000000002b0 .L0 
-     /tmp/cci2wY0e.s:463    .text:00000000000002b4 .L0 
-     /tmp/cci2wY0e.s:464    .text:00000000000002b8 .L0 
-     /tmp/cci2wY0e.s:465    .text:00000000000002b8 .L0 
-     /tmp/cci2wY0e.s:467    .text:00000000000002bc .L0 
-     /tmp/cci2wY0e.s:469    .text:00000000000002c0 .L0 
-     /tmp/cci2wY0e.s:485    .bss:0000000000000008 _ZN7KMemory9bitVectorE
-     /tmp/cci2wY0e.s:481    .bss:0000000000000000 _ZN7KMemory23sizeOfBitVectorInUint64E
-     /tmp/cci2wY0e.s:494    .bss:0000000000000018 _ZN7KMemory11numOfBlocksE
-     /tmp/cci2wY0e.s:489    .bss:0000000000000010 _ZN7KMemory11initializedE
-     /tmp/cci2wY0e.s:478    .bss:0000000000000000 .LANCHOR0
-     /tmp/cci2wY0e.s:499    .text:00000000000002c0 .L0 
-     /tmp/cci2wY0e.s:46     .text:0000000000000030 .L0 
-     /tmp/cci2wY0e.s:56     .text:0000000000000048 .L0 
-     /tmp/cci2wY0e.s:86     .text:0000000000000078 .L0 
-     /tmp/cci2wY0e.s:155    .text:00000000000000dc .L0 
-     /tmp/cci2wY0e.s:193    .text:000000000000010c .L0 
-     /tmp/cci2wY0e.s:256    .text:000000000000015c .L0 
-     /tmp/cci2wY0e.s:269    .text:0000000000000178 .L0 
-     /tmp/cci2wY0e.s:272    .text:0000000000000184 .L0 
-     /tmp/cci2wY0e.s:283    .text:0000000000000198 .L0 
-     /tmp/cci2wY0e.s:310    .text:00000000000001c4 .L0 
-     /tmp/cci2wY0e.s:315    .text:00000000000001d4 .L0 
-     /tmp/cci2wY0e.s:332    .text:00000000000001f8 .L0 
-     /tmp/cci2wY0e.s:369    .text:0000000000000228 .L0 
-     /tmp/cci2wY0e.s:421    .text:0000000000000270 .L0 
-     /tmp/cci2wY0e.s:233    .text:000000000000014c .L11
-     /tmp/cci2wY0e.s:42     .text:0000000000000030 .L3
-     /tmp/cci2wY0e.s:140    .text:00000000000000cc .L4
-     /tmp/cci2wY0e.s:83     .text:0000000000000074 .L17
-     /tmp/cci2wY0e.s:99     .text:0000000000000098 .L12
-     /tmp/cci2wY0e.s:125    .text:00000000000000b8 .L13
-     /tmp/cci2wY0e.s:106    .text:00000000000000a0 .L7
-     /tmp/cci2wY0e.s:52     .text:0000000000000044 .L5
-     /tmp/cci2wY0e.s:37     .text:000000000000002c .L14
-     /tmp/cci2wY0e.s:240    .text:0000000000000154 .L15
-     /tmp/cci2wY0e.s:175    .text:00000000000000fc .L8
-     /tmp/cci2wY0e.s:218    .text:000000000000013c .L9
-     /tmp/cci2wY0e.s:172    .text:00000000000000f8 .L10
-     /tmp/cci2wY0e.s:223    .text:0000000000000140 .L1
-     /tmp/cci2wY0e.s:342    .text:0000000000000210 .L23
-     /tmp/cci2wY0e.s:323    .text:00000000000001ec .L20
-     /tmp/cci2wY0e.s:308    .text:00000000000001c4 .L21
-     /tmp/cci2wY0e.s:446    .text:00000000000002a0 .L30
-     /tmp/cci2wY0e.s:452    .text:00000000000002a8 .L31
-     /tmp/cci2wY0e.s:401    .text:000000000000025c .L28
-     /tmp/cci2wY0e.s:457    .text:00000000000002b0 .L32
-     /tmp/cci2wY0e.s:398    .text:0000000000000258 .L29
-     /tmp/cci2wY0e.s:461    .text:00000000000002b4 .L27
-     /tmp/cci2wY0e.s:959    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
-     /tmp/cci2wY0e.s:1914   .debug_str:0000000000000195 .LASF42
-     /tmp/cci2wY0e.s:1862   .debug_str:000000000000002b .LASF43
-     /tmp/cci2wY0e.s:1944   .debug_str:0000000000000361 .LASF44
-     /tmp/cci2wY0e.s:5      .text:0000000000000000 .Ltext0
-     /tmp/cci2wY0e.s:497    .text:00000000000002c0 .Letext0
-     /tmp/cci2wY0e.s:1854   .debug_line:0000000000000000 .Ldebug_line0
-GAS LISTING /tmp/cci2wY0e.s 			page 18
+     /tmp/ccwLviyZ.s:457    .text:00000000000002cc .L0 
+     /tmp/ccwLviyZ.s:458    .text:00000000000002cc .L0 
+     /tmp/ccwLviyZ.s:461    .text:00000000000002d0 .L0 
+     /tmp/ccwLviyZ.s:464    .text:00000000000002d4 .L0 
+     /tmp/ccwLviyZ.s:465    .text:00000000000002d4 .L0 
+     /tmp/ccwLviyZ.s:466    .text:00000000000002d4 .L0 
+     /tmp/ccwLviyZ.s:469    .text:00000000000002d8 .L0 
+     /tmp/ccwLviyZ.s:474    .text:00000000000002e0 .L0 
+     /tmp/ccwLviyZ.s:480    .text:00000000000002e8 .L0 
+     /tmp/ccwLviyZ.s:485    .text:00000000000002f0 .L0 
+     /tmp/ccwLviyZ.s:489    .text:00000000000002f4 .L0 
+     /tmp/ccwLviyZ.s:490    .text:00000000000002f8 .L0 
+     /tmp/ccwLviyZ.s:491    .text:00000000000002f8 .L0 
+     /tmp/ccwLviyZ.s:493    .text:00000000000002fc .L0 
+     /tmp/ccwLviyZ.s:495    .text:0000000000000300 .L0 
+     /tmp/ccwLviyZ.s:508    .bss:0000000000000000 _ZN7KMemory14freeBlocksLeftE
+     /tmp/ccwLviyZ.s:516    .bss:0000000000000010 _ZN7KMemory9bitVectorE
+     /tmp/ccwLviyZ.s:512    .bss:0000000000000008 _ZN7KMemory23sizeOfBitVectorInUint64E
+     /tmp/ccwLviyZ.s:525    .bss:0000000000000020 _ZN7KMemory11numOfBlocksE
+     /tmp/ccwLviyZ.s:520    .bss:0000000000000018 _ZN7KMemory11initializedE
+     /tmp/ccwLviyZ.s:505    .bss:0000000000000000 .LANCHOR0
+     /tmp/ccwLviyZ.s:530    .text:0000000000000300 .L0 
+     /tmp/ccwLviyZ.s:24     .text:0000000000000010 .L0 
+     /tmp/ccwLviyZ.s:50     .text:000000000000003c .L0 
+     /tmp/ccwLviyZ.s:60     .text:0000000000000054 .L0 
+     /tmp/ccwLviyZ.s:90     .text:0000000000000084 .L0 
+     /tmp/ccwLviyZ.s:159    .text:00000000000000e8 .L0 
+     /tmp/ccwLviyZ.s:197    .text:0000000000000118 .L0 
+     /tmp/ccwLviyZ.s:225    .text:0000000000000148 .L0 
+     /tmp/ccwLviyZ.s:273    .text:0000000000000184 .L0 
+     /tmp/ccwLviyZ.s:286    .text:00000000000001a0 .L0 
+     /tmp/ccwLviyZ.s:289    .text:00000000000001ac .L0 
+     /tmp/ccwLviyZ.s:300    .text:00000000000001c0 .L0 
+     /tmp/ccwLviyZ.s:330    .text:00000000000001f0 .L0 
+     /tmp/ccwLviyZ.s:335    .text:0000000000000200 .L0 
+     /tmp/ccwLviyZ.s:352    .text:0000000000000224 .L0 
+     /tmp/ccwLviyZ.s:389    .text:0000000000000254 .L0 
+     /tmp/ccwLviyZ.s:403    .text:0000000000000270 .L0 
+     /tmp/ccwLviyZ.s:447    .text:00000000000002b0 .L0 
+     /tmp/ccwLviyZ.s:245    .text:000000000000016c .L11
+     /tmp/ccwLviyZ.s:252    .text:0000000000000174 .L12
+     /tmp/ccwLviyZ.s:46     .text:000000000000003c .L3
+     /tmp/ccwLviyZ.s:144    .text:00000000000000d8 .L4
+     /tmp/ccwLviyZ.s:87     .text:0000000000000080 .L18
+     /tmp/ccwLviyZ.s:103    .text:00000000000000a4 .L13
+     /tmp/ccwLviyZ.s:129    .text:00000000000000c4 .L14
+     /tmp/ccwLviyZ.s:110    .text:00000000000000ac .L7
+     /tmp/ccwLviyZ.s:56     .text:0000000000000050 .L5
+     /tmp/ccwLviyZ.s:41     .text:0000000000000038 .L15
+     /tmp/ccwLviyZ.s:257    .text:000000000000017c .L16
+     /tmp/ccwLviyZ.s:179    .text:0000000000000108 .L8
+     /tmp/ccwLviyZ.s:222    .text:0000000000000148 .L9
+     /tmp/ccwLviyZ.s:176    .text:0000000000000104 .L10
+     /tmp/ccwLviyZ.s:235    .text:0000000000000160 .L1
+     /tmp/ccwLviyZ.s:362    .text:000000000000023c .L24
+     /tmp/ccwLviyZ.s:343    .text:0000000000000218 .L21
+     /tmp/ccwLviyZ.s:328    .text:00000000000001f0 .L22
+GAS LISTING /tmp/ccwLviyZ.s 			page 19
 
 
-     /tmp/cci2wY0e.s:1922   .debug_str:000000000000027e .LASF0
-     /tmp/cci2wY0e.s:1906   .debug_str:0000000000000166 .LASF1
-     /tmp/cci2wY0e.s:1898   .debug_str:000000000000012d .LASF2
-     /tmp/cci2wY0e.s:1876   .debug_str:0000000000000099 .LASF4
-     /tmp/cci2wY0e.s:1904   .debug_str:0000000000000154 .LASF3
-     /tmp/cci2wY0e.s:1860   .debug_str:0000000000000024 .LASF5
-     /tmp/cci2wY0e.s:1858   .debug_str:0000000000000011 .LASF6
-     /tmp/cci2wY0e.s:1888   .debug_str:00000000000000dc .LASF7
-     /tmp/cci2wY0e.s:1930   .debug_str:00000000000002c1 .LASF8
-     /tmp/cci2wY0e.s:1874   .debug_str:000000000000008b .LASF9
-     /tmp/cci2wY0e.s:1956   .debug_str:00000000000003b8 .LASF10
-     /tmp/cci2wY0e.s:1894   .debug_str:0000000000000111 .LASF11
-     /tmp/cci2wY0e.s:1952   .debug_str:00000000000003a3 .LASF12
-     /tmp/cci2wY0e.s:1938   .debug_str:000000000000030b .LASF13
-     /tmp/cci2wY0e.s:1908   .debug_str:0000000000000179 .LASF14
-     /tmp/cci2wY0e.s:1882   .debug_str:00000000000000bb .LASF15
-     /tmp/cci2wY0e.s:1934   .debug_str:00000000000002db .LASF16
-     /tmp/cci2wY0e.s:1920   .debug_str:0000000000000276 .LASF45
-     /tmp/cci2wY0e.s:1856   .debug_str:0000000000000000 .LASF46
-     /tmp/cci2wY0e.s:1942   .debug_str:0000000000000341 .LASF47
-     /tmp/cci2wY0e.s:1910   .debug_str:0000000000000185 .LASF17
-     /tmp/cci2wY0e.s:1916   .debug_str:0000000000000259 .LASF19
-     /tmp/cci2wY0e.s:1884   .debug_str:00000000000000d1 .LASF18
-     /tmp/cci2wY0e.s:1928   .debug_str:00000000000002ac .LASF20
-     /tmp/cci2wY0e.s:1902   .debug_str:0000000000000148 .LASF21
-     /tmp/cci2wY0e.s:1950   .debug_str:0000000000000397 .LASF22
-     /tmp/cci2wY0e.s:1868   .debug_str:000000000000005e .LASF23
-     /tmp/cci2wY0e.s:1932   .debug_str:00000000000002d1 .LASF24
-     /tmp/cci2wY0e.s:1912   .debug_str:000000000000018d .LASF48
-     /tmp/cci2wY0e.s:1880   .debug_str:00000000000000a5 .LASF49
-     /tmp/cci2wY0e.s:1878   .debug_str:00000000000000a0 .LASF25
-     /tmp/cci2wY0e.s:1866   .debug_str:0000000000000044 .LASF26
-     /tmp/cci2wY0e.s:1936   .debug_str:00000000000002f1 .LASF27
-     /tmp/cci2wY0e.s:1940   .debug_str:000000000000031b .LASF28
-     /tmp/cci2wY0e.s:1890   .debug_str:00000000000000ef .LASF29
-     /tmp/cci2wY0e.s:351    .text:0000000000000214 .LFB3
-     /tmp/cci2wY0e.s:470    .text:00000000000002c0 .LFE3
-     /tmp/cci2wY0e.s:1443   .debug_loc:0000000000000000 .LLST15
-     /tmp/cci2wY0e.s:1896   .debug_str:0000000000000120 .LASF30
-     /tmp/cci2wY0e.s:1461   .debug_loc:000000000000004c .LLST16
-     /tmp/cci2wY0e.s:1864   .debug_str:000000000000003b .LASF31
-     /tmp/cci2wY0e.s:1472   .debug_loc:0000000000000082 .LLST17
-     /tmp/cci2wY0e.s:1948   .debug_str:000000000000038b .LASF32
-     /tmp/cci2wY0e.s:1494   .debug_loc:00000000000000d2 .LLST18
-     /tmp/cci2wY0e.s:1872   .debug_str:0000000000000080 .LASF33
-     /tmp/cci2wY0e.s:1505   .debug_loc:0000000000000108 .LLST19
-     /tmp/cci2wY0e.s:408    .text:0000000000000260 .LBB16
-     /tmp/cci2wY0e.s:416    .text:0000000000000268 .LBE16
-     /tmp/cci2wY0e.s:1530   .debug_loc:0000000000000179 .LLST20
-     /tmp/cci2wY0e.s:10     .text:0000000000000000 .LFB2
-     /tmp/cci2wY0e.s:246    .text:000000000000015c .LFE2
-     /tmp/cci2wY0e.s:1954   .debug_str:00000000000003b3 .LASF34
-     /tmp/cci2wY0e.s:1537   .debug_loc:000000000000019c .LLST0
-     /tmp/cci2wY0e.s:1573   .debug_loc:0000000000000227 .LLST1
-     /tmp/cci2wY0e.s:1588   .debug_loc:0000000000000270 .LLST2
-     /tmp/cci2wY0e.s:1924   .debug_str:000000000000028b .LASF35
-     /tmp/cci2wY0e.s:1639   .debug_loc:0000000000000355 .LLST3
-GAS LISTING /tmp/cci2wY0e.s 			page 19
+     /tmp/ccwLviyZ.s:472    .text:00000000000002e0 .L31
+     /tmp/ccwLviyZ.s:478    .text:00000000000002e8 .L32
+     /tmp/ccwLviyZ.s:427    .text:000000000000029c .L29
+     /tmp/ccwLviyZ.s:483    .text:00000000000002f0 .L33
+     /tmp/ccwLviyZ.s:424    .text:0000000000000298 .L30
+     /tmp/ccwLviyZ.s:487    .text:00000000000002f4 .L28
+     /tmp/ccwLviyZ.s:1006   .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/ccwLviyZ.s:1951   .debug_str:0000000000000195 .LASF44
+     /tmp/ccwLviyZ.s:1899   .debug_str:000000000000002b .LASF45
+     /tmp/ccwLviyZ.s:1983   .debug_str:0000000000000370 .LASF46
+     /tmp/ccwLviyZ.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccwLviyZ.s:528    .text:0000000000000300 .Letext0
+     /tmp/ccwLviyZ.s:1891   .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccwLviyZ.s:1959   .debug_str:000000000000027e .LASF0
+     /tmp/ccwLviyZ.s:1943   .debug_str:0000000000000166 .LASF1
+     /tmp/ccwLviyZ.s:1935   .debug_str:000000000000012d .LASF2
+     /tmp/ccwLviyZ.s:1913   .debug_str:0000000000000099 .LASF4
+     /tmp/ccwLviyZ.s:1941   .debug_str:0000000000000154 .LASF3
+     /tmp/ccwLviyZ.s:1897   .debug_str:0000000000000024 .LASF5
+     /tmp/ccwLviyZ.s:1895   .debug_str:0000000000000011 .LASF6
+     /tmp/ccwLviyZ.s:1925   .debug_str:00000000000000dc .LASF7
+     /tmp/ccwLviyZ.s:1967   .debug_str:00000000000002c1 .LASF8
+     /tmp/ccwLviyZ.s:1911   .debug_str:000000000000008b .LASF9
+     /tmp/ccwLviyZ.s:1997   .debug_str:00000000000003e4 .LASF10
+     /tmp/ccwLviyZ.s:1931   .debug_str:0000000000000111 .LASF11
+     /tmp/ccwLviyZ.s:1993   .debug_str:00000000000003cf .LASF12
+     /tmp/ccwLviyZ.s:1975   .debug_str:000000000000030b .LASF13
+     /tmp/ccwLviyZ.s:1945   .debug_str:0000000000000179 .LASF14
+     /tmp/ccwLviyZ.s:1919   .debug_str:00000000000000bb .LASF15
+     /tmp/ccwLviyZ.s:1971   .debug_str:00000000000002db .LASF16
+     /tmp/ccwLviyZ.s:1957   .debug_str:0000000000000276 .LASF47
+     /tmp/ccwLviyZ.s:1893   .debug_str:0000000000000000 .LASF48
+     /tmp/ccwLviyZ.s:1981   .debug_str:0000000000000350 .LASF49
+     /tmp/ccwLviyZ.s:1947   .debug_str:0000000000000185 .LASF17
+     /tmp/ccwLviyZ.s:1953   .debug_str:0000000000000259 .LASF19
+     /tmp/ccwLviyZ.s:1921   .debug_str:00000000000000d1 .LASF18
+     /tmp/ccwLviyZ.s:1965   .debug_str:00000000000002ac .LASF20
+     /tmp/ccwLviyZ.s:1939   .debug_str:0000000000000148 .LASF21
+     /tmp/ccwLviyZ.s:1991   .debug_str:00000000000003c3 .LASF22
+     /tmp/ccwLviyZ.s:1905   .debug_str:000000000000005e .LASF23
+     /tmp/ccwLviyZ.s:1969   .debug_str:00000000000002d1 .LASF24
+     /tmp/ccwLviyZ.s:1977   .debug_str:000000000000031b .LASF25
+     /tmp/ccwLviyZ.s:1949   .debug_str:000000000000018d .LASF50
+     /tmp/ccwLviyZ.s:1917   .debug_str:00000000000000a5 .LASF51
+     /tmp/ccwLviyZ.s:1915   .debug_str:00000000000000a0 .LASF26
+     /tmp/ccwLviyZ.s:1903   .debug_str:0000000000000044 .LASF27
+     /tmp/ccwLviyZ.s:1973   .debug_str:00000000000002f1 .LASF28
+     /tmp/ccwLviyZ.s:1979   .debug_str:000000000000032a .LASF29
+     /tmp/ccwLviyZ.s:1927   .debug_str:00000000000000ef .LASF30
+     /tmp/ccwLviyZ.s:1987   .debug_str:000000000000039a .LASF31
+     /tmp/ccwLviyZ.s:371    .text:0000000000000240 .LFB3
+     /tmp/ccwLviyZ.s:496    .text:0000000000000300 .LFE3
+     /tmp/ccwLviyZ.s:1469   .debug_loc:0000000000000000 .LLST15
+     /tmp/ccwLviyZ.s:1933   .debug_str:0000000000000120 .LASF32
+     /tmp/ccwLviyZ.s:1487   .debug_loc:000000000000004c .LLST16
+     /tmp/ccwLviyZ.s:1901   .debug_str:000000000000003b .LASF33
+     /tmp/ccwLviyZ.s:1498   .debug_loc:0000000000000082 .LLST17
+GAS LISTING /tmp/ccwLviyZ.s 			page 20
 
 
-     /tmp/cci2wY0e.s:1900   .debug_str:000000000000013b .LASF36
-     /tmp/cci2wY0e.s:1654   .debug_loc:000000000000039e .LLST4
-     /tmp/cci2wY0e.s:1892   .debug_str:0000000000000106 .LASF37
-     /tmp/cci2wY0e.s:1669   .debug_loc:00000000000003e7 .LLST5
-     /tmp/cci2wY0e.s:1870   .debug_str:0000000000000076 .LASF38
-     /tmp/cci2wY0e.s:1684   .debug_loc:0000000000000430 .LLST6
-     /tmp/cci2wY0e.s:1703   .debug_loc:000000000000048c .LLST7
-     /tmp/cci2wY0e.s:1886   .debug_str:00000000000000d7 .LASF39
-     /tmp/cci2wY0e.s:1723   .debug_loc:00000000000004cb .LLST8
-     /tmp/cci2wY0e.s:1846   .debug_ranges:0000000000000000 .Ldebug_ranges0
-     /tmp/cci2wY0e.s:1730   .debug_loc:00000000000004ee .LLST9
-     /tmp/cci2wY0e.s:60     .text:0000000000000058 .LBB10
-     /tmp/cci2wY0e.s:69     .text:0000000000000060 .LBE10
-     /tmp/cci2wY0e.s:1793   .debug_loc:00000000000005a9 .LLST10
-     /tmp/cci2wY0e.s:182    .text:0000000000000100 .LBB13
-     /tmp/cci2wY0e.s:190    .text:0000000000000108 .LBE13
-     /tmp/cci2wY0e.s:1800   .debug_loc:00000000000005cc .LLST11
-     /tmp/cci2wY0e.s:252    .text:000000000000015c .LFB1
-     /tmp/cci2wY0e.s:345    .text:0000000000000214 .LFE1
-     /tmp/cci2wY0e.s:1946   .debug_str:000000000000037f .LASF40
-     /tmp/cci2wY0e.s:1807   .debug_loc:00000000000005ef .LLST12
-     /tmp/cci2wY0e.s:1926   .debug_str:0000000000000299 .LASF41
-     /tmp/cci2wY0e.s:1814   .debug_loc:0000000000000612 .LLST13
-     /tmp/cci2wY0e.s:304    .text:00000000000001c0 .LBB15
-     /tmp/cci2wY0e.s:324    .text:00000000000001ec .LBE15
-     /tmp/cci2wY0e.s:1821   .debug_loc:0000000000000635 .LLST14
-     /tmp/cci2wY0e.s:328    .text:00000000000001f4 .LVL47
-     /tmp/cci2wY0e.s:1918   .debug_str:000000000000026f .LASF50
-     /tmp/cci2wY0e.s:354    .text:0000000000000214 .LVL48
-     /tmp/cci2wY0e.s:366    .text:0000000000000228 .LVL49
-     /tmp/cci2wY0e.s:445    .text:00000000000002a0 .LVL63
-     /tmp/cci2wY0e.s:449    .text:00000000000002a4 .LVL64
-     /tmp/cci2wY0e.s:451    .text:00000000000002a8 .LVL65
-     /tmp/cci2wY0e.s:380    .text:0000000000000244 .LVL50
-     /tmp/cci2wY0e.s:456    .text:00000000000002b0 .LVL66
-     /tmp/cci2wY0e.s:460    .text:00000000000002b4 .LVL67
-     /tmp/cci2wY0e.s:384    .text:0000000000000248 .LVL51
-     /tmp/cci2wY0e.s:392    .text:0000000000000250 .LVL53
-     /tmp/cci2wY0e.s:395    .text:0000000000000254 .LVL54
-     /tmp/cci2wY0e.s:397    .text:0000000000000258 .LVL55
-     /tmp/cci2wY0e.s:388    .text:000000000000024c .LVL52
-     /tmp/cci2wY0e.s:402    .text:000000000000025c .LVL56
-     /tmp/cci2wY0e.s:433    .text:0000000000000290 .LVL60
-     /tmp/cci2wY0e.s:437    .text:0000000000000294 .LVL61
-     /tmp/cci2wY0e.s:407    .text:0000000000000260 .LVL57
-     /tmp/cci2wY0e.s:414    .text:0000000000000268 .LVL58
-     /tmp/cci2wY0e.s:14     .text:0000000000000000 .LVL0
-     /tmp/cci2wY0e.s:222    .text:0000000000000140 .LVL36
-     /tmp/cci2wY0e.s:232    .text:000000000000014c .LVL37
-     /tmp/cci2wY0e.s:237    .text:0000000000000150 .LVL38
-     /tmp/cci2wY0e.s:239    .text:0000000000000154 .LVL39
-     /tmp/cci2wY0e.s:243    .text:0000000000000158 .LVL40
-     /tmp/cci2wY0e.s:36     .text:000000000000002c .LVL1
-     /tmp/cci2wY0e.s:157    .text:00000000000000e8 .LVL23
-     /tmp/cci2wY0e.s:168    .text:00000000000000f4 .LVL26
-     /tmp/cci2wY0e.s:41     .text:0000000000000030 .LVL2
-     /tmp/cci2wY0e.s:112    .text:00000000000000a8 .LVL12
-GAS LISTING /tmp/cci2wY0e.s 			page 20
+     /tmp/ccwLviyZ.s:1989   .debug_str:00000000000003b7 .LASF34
+     /tmp/ccwLviyZ.s:1520   .debug_loc:00000000000000d2 .LLST18
+     /tmp/ccwLviyZ.s:1909   .debug_str:0000000000000080 .LASF35
+     /tmp/ccwLviyZ.s:1531   .debug_loc:0000000000000108 .LLST19
+     /tmp/ccwLviyZ.s:434    .text:00000000000002a0 .LBB16
+     /tmp/ccwLviyZ.s:442    .text:00000000000002a8 .LBE16
+     /tmp/ccwLviyZ.s:1556   .debug_loc:0000000000000179 .LLST20
+     /tmp/ccwLviyZ.s:10     .text:0000000000000000 .LFB2
+     /tmp/ccwLviyZ.s:263    .text:0000000000000184 .LFE2
+     /tmp/ccwLviyZ.s:1995   .debug_str:00000000000003df .LASF36
+     /tmp/ccwLviyZ.s:1563   .debug_loc:000000000000019c .LLST0
+     /tmp/ccwLviyZ.s:1610   .debug_loc:0000000000000250 .LLST1
+     /tmp/ccwLviyZ.s:1625   .debug_loc:0000000000000299 .LLST2
+     /tmp/ccwLviyZ.s:1961   .debug_str:000000000000028b .LASF37
+     /tmp/ccwLviyZ.s:1676   .debug_loc:000000000000037e .LLST3
+     /tmp/ccwLviyZ.s:1937   .debug_str:000000000000013b .LASF38
+     /tmp/ccwLviyZ.s:1691   .debug_loc:00000000000003c7 .LLST4
+     /tmp/ccwLviyZ.s:1929   .debug_str:0000000000000106 .LASF39
+     /tmp/ccwLviyZ.s:1706   .debug_loc:0000000000000410 .LLST5
+     /tmp/ccwLviyZ.s:1907   .debug_str:0000000000000076 .LASF40
+     /tmp/ccwLviyZ.s:1721   .debug_loc:0000000000000459 .LLST6
+     /tmp/ccwLviyZ.s:1740   .debug_loc:00000000000004b5 .LLST7
+     /tmp/ccwLviyZ.s:1923   .debug_str:00000000000000d7 .LASF41
+     /tmp/ccwLviyZ.s:1760   .debug_loc:00000000000004f4 .LLST8
+     /tmp/ccwLviyZ.s:1883   .debug_ranges:0000000000000000 .Ldebug_ranges0
+     /tmp/ccwLviyZ.s:1767   .debug_loc:0000000000000517 .LLST9
+     /tmp/ccwLviyZ.s:64     .text:0000000000000064 .LBB10
+     /tmp/ccwLviyZ.s:73     .text:000000000000006c .LBE10
+     /tmp/ccwLviyZ.s:1830   .debug_loc:00000000000005d2 .LLST10
+     /tmp/ccwLviyZ.s:186    .text:000000000000010c .LBB13
+     /tmp/ccwLviyZ.s:194    .text:0000000000000114 .LBE13
+     /tmp/ccwLviyZ.s:1837   .debug_loc:00000000000005f5 .LLST11
+     /tmp/ccwLviyZ.s:269    .text:0000000000000184 .LFB1
+     /tmp/ccwLviyZ.s:365    .text:0000000000000240 .LFE1
+     /tmp/ccwLviyZ.s:1985   .debug_str:000000000000038e .LASF42
+     /tmp/ccwLviyZ.s:1844   .debug_loc:0000000000000618 .LLST12
+     /tmp/ccwLviyZ.s:1963   .debug_str:0000000000000299 .LASF43
+     /tmp/ccwLviyZ.s:1851   .debug_loc:000000000000063b .LLST13
+     /tmp/ccwLviyZ.s:324    .text:00000000000001ec .LBB15
+     /tmp/ccwLviyZ.s:344    .text:0000000000000218 .LBE15
+     /tmp/ccwLviyZ.s:1858   .debug_loc:000000000000065e .LLST14
+     /tmp/ccwLviyZ.s:348    .text:0000000000000220 .LVL51
+     /tmp/ccwLviyZ.s:1955   .debug_str:000000000000026f .LASF52
+     /tmp/ccwLviyZ.s:374    .text:0000000000000240 .LVL52
+     /tmp/ccwLviyZ.s:386    .text:0000000000000254 .LVL53
+     /tmp/ccwLviyZ.s:471    .text:00000000000002e0 .LVL67
+     /tmp/ccwLviyZ.s:475    .text:00000000000002e4 .LVL68
+     /tmp/ccwLviyZ.s:477    .text:00000000000002e8 .LVL69
+     /tmp/ccwLviyZ.s:400    .text:0000000000000270 .LVL54
+     /tmp/ccwLviyZ.s:482    .text:00000000000002f0 .LVL70
+     /tmp/ccwLviyZ.s:486    .text:00000000000002f4 .LVL71
+     /tmp/ccwLviyZ.s:410    .text:0000000000000288 .LVL55
+     /tmp/ccwLviyZ.s:418    .text:0000000000000290 .LVL57
+     /tmp/ccwLviyZ.s:421    .text:0000000000000294 .LVL58
+     /tmp/ccwLviyZ.s:423    .text:0000000000000298 .LVL59
+     /tmp/ccwLviyZ.s:414    .text:000000000000028c .LVL56
+     /tmp/ccwLviyZ.s:428    .text:000000000000029c .LVL60
+GAS LISTING /tmp/ccwLviyZ.s 			page 21
 
 
-     /tmp/cci2wY0e.s:116    .text:00000000000000ac .LVL13
-     /tmp/cci2wY0e.s:124    .text:00000000000000b8 .LVL15
-     /tmp/cci2wY0e.s:147    .text:00000000000000d4 .LVL21
-     /tmp/cci2wY0e.s:171    .text:00000000000000f8 .LVL27
-     /tmp/cci2wY0e.s:176    .text:00000000000000fc .LVL28
-     /tmp/cci2wY0e.s:205    .text:000000000000012c .LVL32
-     /tmp/cci2wY0e.s:209    .text:0000000000000130 .LVL33
-     /tmp/cci2wY0e.s:217    .text:000000000000013c .LVL35
-     /tmp/cci2wY0e.s:131    .text:00000000000000c0 .LVL17
-     /tmp/cci2wY0e.s:139    .text:00000000000000cc .LVL20
-     /tmp/cci2wY0e.s:128    .text:00000000000000bc .LVL16
-     /tmp/cci2wY0e.s:137    .text:00000000000000c8 .LVL19
-     /tmp/cci2wY0e.s:102    .text:000000000000009c .LVL10
-     /tmp/cci2wY0e.s:105    .text:00000000000000a0 .LVL11
-     /tmp/cci2wY0e.s:134    .text:00000000000000c4 .LVL18
-     /tmp/cci2wY0e.s:152    .text:00000000000000dc .LVL22
-     /tmp/cci2wY0e.s:160    .text:00000000000000ec .LVL24
-     /tmp/cci2wY0e.s:163    .text:00000000000000f0 .LVL25
-     /tmp/cci2wY0e.s:72     .text:0000000000000064 .LVL5
-     /tmp/cci2wY0e.s:82     .text:0000000000000074 .LVL7
-     /tmp/cci2wY0e.s:98     .text:0000000000000098 .LVL9
-     /tmp/cci2wY0e.s:120    .text:00000000000000b0 .LVL14
-     /tmp/cci2wY0e.s:59     .text:0000000000000058 .LVL3
-     /tmp/cci2wY0e.s:67     .text:0000000000000060 .LVL4
-     /tmp/cci2wY0e.s:181    .text:0000000000000100 .LVL29
-     /tmp/cci2wY0e.s:188    .text:0000000000000108 .LVL30
-     /tmp/cci2wY0e.s:276    .text:0000000000000194 .LVL41
-     /tmp/cci2wY0e.s:281    .text:0000000000000198 .LVL42
-     /tmp/cci2wY0e.s:298    .text:00000000000001bc .LVL43
-     /tmp/cci2wY0e.s:303    .text:00000000000001c0 .LVL44
-     /tmp/cci2wY0e.s:307    .text:00000000000001c4 .LVL45
-     /tmp/cci2wY0e.s:500    .debug_info:0000000000000000 .Ldebug_info0
-     /tmp/cci2wY0e.s:38     .text:000000000000002c .LBB9
-     /tmp/cci2wY0e.s:43     .text:0000000000000030 .LBE9
-     /tmp/cci2wY0e.s:48     .text:000000000000003c .LBB12
-     /tmp/cci2wY0e.s:141    .text:00000000000000cc .LBE12
+     /tmp/ccwLviyZ.s:459    .text:00000000000002d0 .LVL64
+     /tmp/ccwLviyZ.s:463    .text:00000000000002d4 .LVL65
+     /tmp/ccwLviyZ.s:433    .text:00000000000002a0 .LVL61
+     /tmp/ccwLviyZ.s:440    .text:00000000000002a8 .LVL62
+     /tmp/ccwLviyZ.s:14     .text:0000000000000000 .LVL0
+     /tmp/ccwLviyZ.s:229    .text:0000000000000158 .LVL37
+     /tmp/ccwLviyZ.s:244    .text:000000000000016c .LVL39
+     /tmp/ccwLviyZ.s:249    .text:0000000000000170 .LVL40
+     /tmp/ccwLviyZ.s:251    .text:0000000000000174 .LVL41
+     /tmp/ccwLviyZ.s:254    .text:0000000000000178 .LVL42
+     /tmp/ccwLviyZ.s:256    .text:000000000000017c .LVL43
+     /tmp/ccwLviyZ.s:260    .text:0000000000000180 .LVL44
+     /tmp/ccwLviyZ.s:40     .text:0000000000000038 .LVL1
+     /tmp/ccwLviyZ.s:161    .text:00000000000000f4 .LVL23
+     /tmp/ccwLviyZ.s:172    .text:0000000000000100 .LVL26
+     /tmp/ccwLviyZ.s:234    .text:0000000000000160 .LVL38
+     /tmp/ccwLviyZ.s:45     .text:000000000000003c .LVL2
+     /tmp/ccwLviyZ.s:116    .text:00000000000000b4 .LVL12
+     /tmp/ccwLviyZ.s:120    .text:00000000000000b8 .LVL13
+     /tmp/ccwLviyZ.s:128    .text:00000000000000c4 .LVL15
+     /tmp/ccwLviyZ.s:151    .text:00000000000000e0 .LVL21
+     /tmp/ccwLviyZ.s:175    .text:0000000000000104 .LVL27
+     /tmp/ccwLviyZ.s:180    .text:0000000000000108 .LVL28
+     /tmp/ccwLviyZ.s:209    .text:0000000000000138 .LVL32
+     /tmp/ccwLviyZ.s:213    .text:000000000000013c .LVL33
+     /tmp/ccwLviyZ.s:221    .text:0000000000000148 .LVL35
+     /tmp/ccwLviyZ.s:135    .text:00000000000000cc .LVL17
+     /tmp/ccwLviyZ.s:143    .text:00000000000000d8 .LVL20
+     /tmp/ccwLviyZ.s:132    .text:00000000000000c8 .LVL16
+     /tmp/ccwLviyZ.s:141    .text:00000000000000d4 .LVL19
+     /tmp/ccwLviyZ.s:226    .text:0000000000000150 .LVL36
+     /tmp/ccwLviyZ.s:106    .text:00000000000000a8 .LVL10
+     /tmp/ccwLviyZ.s:109    .text:00000000000000ac .LVL11
+     /tmp/ccwLviyZ.s:138    .text:00000000000000d0 .LVL18
+     /tmp/ccwLviyZ.s:156    .text:00000000000000e8 .LVL22
+     /tmp/ccwLviyZ.s:164    .text:00000000000000f8 .LVL24
+     /tmp/ccwLviyZ.s:167    .text:00000000000000fc .LVL25
+     /tmp/ccwLviyZ.s:76     .text:0000000000000070 .LVL5
+     /tmp/ccwLviyZ.s:86     .text:0000000000000080 .LVL7
+     /tmp/ccwLviyZ.s:102    .text:00000000000000a4 .LVL9
+     /tmp/ccwLviyZ.s:124    .text:00000000000000bc .LVL14
+     /tmp/ccwLviyZ.s:63     .text:0000000000000064 .LVL3
+     /tmp/ccwLviyZ.s:71     .text:000000000000006c .LVL4
+     /tmp/ccwLviyZ.s:185    .text:000000000000010c .LVL29
+     /tmp/ccwLviyZ.s:192    .text:0000000000000114 .LVL30
+     /tmp/ccwLviyZ.s:293    .text:00000000000001bc .LVL45
+     /tmp/ccwLviyZ.s:298    .text:00000000000001c0 .LVL46
+     /tmp/ccwLviyZ.s:315    .text:00000000000001e4 .LVL47
+     /tmp/ccwLviyZ.s:323    .text:00000000000001ec .LVL48
+     /tmp/ccwLviyZ.s:327    .text:00000000000001f0 .LVL49
+     /tmp/ccwLviyZ.s:531    .debug_info:0000000000000000 .Ldebug_info0
+     /tmp/ccwLviyZ.s:42     .text:0000000000000038 .LBB9
+     /tmp/ccwLviyZ.s:47     .text:000000000000003c .LBE9
+     /tmp/ccwLviyZ.s:52     .text:0000000000000048 .LBB12
+     /tmp/ccwLviyZ.s:145    .text:00000000000000d8 .LBE12
 
 UNDEFINED SYMBOLS
+GAS LISTING /tmp/ccwLviyZ.s 			page 22
+
+
 HEAP_START_ADDR
 HEAP_END_ADDR

@@ -27,6 +27,8 @@ private:
     //adresa pocetka bit vektora (HEAP_START_ADDR)
     static uint64* bitVector;
 
+    static uint64 freeBlocksLeft;
+
     //maska sa 1 na mestu bitPos i ostalim nulama (bitPos=0..63)
     inline static uint64 maskBit(uint64 bitPos) {
         return (uint64)1 << bitPos;

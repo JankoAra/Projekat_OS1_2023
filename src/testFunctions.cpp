@@ -64,17 +64,19 @@ void testMemory() {
     MemoryAllocator::kfree(pokazivaci[0]);
 
 }
-class idlethr:public Thread{
+
+class idlethr : public Thread {
 public:
-    void run() override{
+    void run() override {
         thread_dispatch();
     }
 };
+void emptyFunction(void*){}
 void nit1f(void*) {
-//    while (true) {
-//        Thread* i = new idlethr();
-//        if(!i)break;
-//    }
+    while (true) {
+        thread_t handle;
+        thread_create(&handle, emptyFunction, nullptr);
+    }
 
     printString("\nGotova nit 1\n");
 }
@@ -91,7 +93,6 @@ public:
 void nit2f(void* arg2) {
     PeriodicThread* pt = new per(10);
     pt->start();
-    Riscv::ms_sstatus(Riscv::SSTATUS_SPIE);
     time_sleep(15);
     pt->terminate();
     printString("\nGotova nit 2\n");
@@ -109,7 +110,9 @@ void nit3f(void*) {
     printString("\nGotova nit3\n");
 }
 
-int main2() {
+
+
+int main() {
 //postavi adresu prekidne rutine u stvec
     __asm__ volatile("csrw stvec, %[handler]": :[handler] "r"(&interruptHandler));
 
@@ -143,7 +146,7 @@ int main2() {
     thread_t nit3 = nullptr;
     thread_t idleNit = nullptr;
     thread_t kernelConsumerThread = nullptr;
-    thread_create(&glavnaNit, nullptr, nullptr);
+    thread_create(&glavnaNit, (TCB::Body)main, nullptr);
     TCB::setRunning(glavnaNit);
     thread_create(&idleNit, idle, nullptr);
     thread_create(&kernelConsumerThread, kernelConsumerFunction, nullptr);

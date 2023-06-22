@@ -2,18 +2,13 @@
 // Created by os on 5/22/23.
 //
 
-#include "../lib/console.h"
 #include "../lib/hw.h"
-#include "../visak/MemoryAllocator.hpp"
-#include "../h/helper.hpp"
 #include "../h/Riscv.hpp"
-#include "../h/syscall_c.hpp"
-#include "../h/TCB.hpp"
-#include "../h/Scheduler.hpp"
+#include "../h/KMemory.hpp"
 #include "../h/KSem.hpp"
 #include "../h/KConsole.hpp"
-#include "../h/KMemory.hpp"
-#include "../test/printing.hpp"
+#include "../h/TCB.hpp"
+#include "../h/Scheduler.hpp"
 
 int main();
 
@@ -26,15 +21,16 @@ extern "C" void interruptRoutine() {
     __asm__ volatile("csrr %[stat], sstatus":[stat] "=r"(sstatus): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 
     //argumenti preneti sistemskom pozivu
-    uint64 a0, a1, a2, a3, a4, a5, a6, a7;
+    uint64 a0, a1, a2, a3, a4;
+    //uint64 a5, a6, a7;
     __asm__ volatile("mv %[ax], a0":[ax] "=r"(a0): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
     __asm__ volatile("mv %[ax], a1":[ax] "=r"(a1): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
     __asm__ volatile("mv %[ax], a2":[ax] "=r"(a2): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
     __asm__ volatile("mv %[ax], a3":[ax] "=r"(a3): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
     __asm__ volatile("mv %[ax], a4":[ax] "=r"(a4): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    __asm__ volatile("mv %[ax], a5":[ax] "=r"(a5): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    __asm__ volatile("mv %[ax], a6":[ax] "=r"(a6): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    __asm__ volatile("mv %[ax], a7":[ax] "=r"(a7): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+//    __asm__ volatile("mv %[ax], a5":[ax] "=r"(a5): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+//    __asm__ volatile("mv %[ax], a6":[ax] "=r"(a6): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+//    __asm__ volatile("mv %[ax], a7":[ax] "=r"(a7): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 
     if (scause == 0x9 || scause == 0x8) {
         //prekid zbog poziva ecall
@@ -186,7 +182,6 @@ extern "C" void interruptRoutine() {
             if (*KConsole::sr & CONSOLE_RX_STATUS_BIT) {
                 KConsole::placeInInput(*KConsole::dr);
             }
-            //printString("\nobradjen prekid konzole\n");
         } else {
             printString("Neki drugi prekid\n");
         }
@@ -210,7 +205,7 @@ extern "C" void interruptRoutine() {
         kPrintInt(scause);
         printString("\nsepc: ");
         kPrintInt(sepc);
-//        Riscv::mc_sstatus(Riscv::SSTATUS_SPIE);
-//        Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
+        __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc));
+        __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus));
     }
 }
