@@ -2,7 +2,7 @@
 // Created by os on 5/12/23.
 //
 
-#include "../h/MemoryAllocator.hpp"
+#include "MemoryAllocator.hpp"
 #include "../h/helper.hpp"
 #include "../h/Riscv.hpp"
 #include "../test/printing.hpp"

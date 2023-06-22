@@ -16,6 +16,7 @@ void Scheduler::put(TCB* tcb) {
         tail->nextInScheduler = tcb;
         tail = tcb;
     }
+    tcb->setStatus(TCB::ACTIVE);
 }
 
 TCB* Scheduler::get() {

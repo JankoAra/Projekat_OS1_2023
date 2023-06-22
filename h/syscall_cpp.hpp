@@ -25,72 +25,80 @@ typedef KSem* sem_t;
 
 class Thread {
 public:
-	Thread(void (* body)(void*), void* arg);
+    //konstruktor koji pravi nit koja izvrsava zadatu funkciju sa zadatim argumentima, ne pokrece nit
+    Thread(void (* body)(void*), void* arg);
 
-	virtual ~Thread();
+    virtual ~Thread();
 
-	int start();
+    //stavlja nit u Scheduler
+    int start();
 
-	void join();
+    //pozivajuca (running) nit se suspenduje dok se nit ciji se metod poziva(this) ne zavrsi
+    void join();
 
-	static void dispatch();
+    //sinhrona promena konteksta
+    static void dispatch();
 
-	static int sleep(time_t);
+    //uspavljuje tekucu nit na zadati period
+    static int sleep(time_t);
 
 protected:
-	Thread();
+    //konstruktor koji pravi nit koja izvrsava run metodu, ne stavlja je u Scheduler
+    Thread();
 
-	virtual void run() {}
+    //funkcija koju nit izvrsava, samo ako je nit napravljena podrazumevanim konstruktorom
+    virtual void run() {}
 
 private:
-	thread_t myHandle;
+    //pokazivac na TCB strukturu kernela
+    thread_t myHandle;
 
-	void (* body)(void*);
+    void (* body)(void*);
 
-	void* arg;
+    void* arg;
 
-	static void wrapper(void* thread);
+    static void wrapper(void* thread);
 };
 
 
 class Semaphore {
 public:
 
-	Semaphore(unsigned init = 1);
+    Semaphore(unsigned init = 1);
 
-	virtual ~Semaphore();
+    virtual ~Semaphore();
 
-	int wait();
+    int wait();
 
-	int signal();
+    int signal();
 
 private:
-	sem_t myHandle;
+    sem_t myHandle;
 
 };
 
 
 class PeriodicThread : public Thread {
 public:
-	void terminate();
+    void terminate();
 
 protected:
-	PeriodicThread(time_t period);
+    PeriodicThread(time_t period);
 
-	virtual void periodicActivation() {}
+    virtual void periodicActivation() {}
+
+    virtual void run() override;
 
 private:
-	time_t period;
-
-	static void periodicWrapper(void* pThread);
+    time_t period;
 };
 
 
 class Console {
 public:
-	static char getc();
+    static char getc();
 
-	static void putc(char);
+    static void putc(char);
 };
 
 #endif

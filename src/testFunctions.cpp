@@ -1,7 +1,7 @@
 //
 // Created by os on 5/29/23.
 //
-#include "../h/MemoryAllocator.hpp"
+#include "../visak/MemoryAllocator.hpp"
 #include "../h/helper.hpp"
 //#include "../lib/console.h"
 #include "../lib/hw.h"
@@ -9,7 +9,7 @@
 #include "../h/Riscv.hpp"
 #include "../h/syscall_c.hpp"
 #include "../h/syscall_cpp.hpp"
-#include "../h/List.hpp"
+#include "../visak/List.hpp"
 //#include "../h/MemoryAllocator.hpp"
 #include "../h/TCB.hpp"
 #include "../h/ThreadQueue.hpp"

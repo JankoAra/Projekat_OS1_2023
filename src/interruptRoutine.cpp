@@ -4,7 +4,7 @@
 
 #include "../lib/console.h"
 #include "../lib/hw.h"
-#include "../h/MemoryAllocator.hpp"
+#include "../visak/MemoryAllocator.hpp"
 #include "../h/helper.hpp"
 #include "../h/Riscv.hpp"
 #include "../h/syscall_c.hpp"
@@ -42,14 +42,12 @@ extern "C" void interruptRoutine() {
             case 0x01:
                 //mem_alloc
                 //a1 = broj blokova koje treba alocirati
-                //MemoryAllocator::kmalloc((size_t)a1 * MEM_BLOCK_SIZE);
                 KMemory::kmalloc((size_t)a1);
                 __asm__ volatile("sd a0, 80(s0)");
                 break;
             case 0x02:
                 //mem_free
                 //a1 = pokazivac na memoriju koju dealociramo, dobijen sa mem_alloc
-                //MemoryAllocator::kfree((void*)a1);
                 KMemory::kfree((void*)a1);
                 __asm__ volatile("sd a0, 80(s0)");
                 break;
@@ -60,11 +58,10 @@ extern "C" void interruptRoutine() {
                 //a3 = argumenti funkcije koju nit treba da izvrsava
                 //a4 = poslednja lokacija alociranog steka(najniza adresa)
                 *((thread_t*)a1) = TCB::createThread((TCB::Body)a2, (void*)a3, (uint64*)a4);
-                if ((TCB::Body)a2 != nullptr) {
-                    Scheduler::put(*((thread_t*)a1));
-                    (*((thread_t*)a1))->setStatus(TCB::ACTIVE);
-                }
                 if (*((thread_t*)a1) != nullptr) {
+                    if ((TCB::Body)a2 != nullptr) {
+                        Scheduler::put(*((thread_t*)a1));
+                    }
                     __asm__ volatile("li a0, 0");
                 } else {
                     __asm__ volatile("li a0, -1");
@@ -73,21 +70,21 @@ extern "C" void interruptRoutine() {
                 break;
             case 0x12:
                 //thread_exit
-                //TCB::running->setFinished(true);
-                TCB::running->setStatus(TCB::FINISHED);
+                TCB::getRunning()->setStatus(TCB::FINISHED);
                 TCB::releaseJoined();
-                TCB::yield();
+                __asm__ volatile("li a0, 0");
+                __asm__ volatile("sd a0, 80(s0)");
+                TCB::dispatch();
                 break;
             case 0x13:
                 //thread_dispatch
-                TCB::yield();
-                //TCB::dispatch();
+                TCB::dispatch();
                 break;
             case 0x14:
                 //thread_join
                 //a1 = rucka niti na koju tekuca nit treba da ceka
                 TCB::threadJoin((thread_t)a1);
-                TCB::yield();
+                TCB::dispatch();
                 break;
             case 0x21:
                 //sem_open
@@ -128,8 +125,8 @@ extern "C" void interruptRoutine() {
                 }
                 __asm__ volatile("sd a0, 80(s0)");
                 if ((time_t)a1 > 0) {
-                    Scheduler::putToSleep(TCB::running, (time_t)a1);
-                    TCB::yield();
+                    Scheduler::putToSleep(TCB::getRunning(), (time_t)a1);
+                    TCB::dispatch();
                 }
                 break;
             case 0x41:
@@ -201,10 +198,10 @@ extern "C" void interruptRoutine() {
         //prekid od tajmera
         //printString("\nPrekid od tajmera\n");
         Scheduler::wake();
-        TCB::runningTimeSlice++;
-        if (TCB::runningTimeSlice >= TCB::running->getTimeSlice()) {
+        TCB::getRunningTimeSlice()++;
+        if (TCB::getRunningTimeSlice() >= TCB::getRunning()->getTimeSlice()) {
             //printString("\nMenjam kontekst\n");
-            TCB::yield();
+            TCB::dispatch();
             //TCB::dispatch();
             //TCB::runningTimeSlice = 0;
         }
@@ -220,44 +217,3 @@ extern "C" void interruptRoutine() {
         kPrintInt(sepc);
     }
 }
-
-//stara verzija
-//extern "C" void interruptRoutine() {
-//	uint64 scause = Riscv::r_scause();
-//
-//	static uint64 timerCount = 0;
-//	if (scause == (0x01UL << 63 | 0x01)) {
-//		//prekid od tajmera
-//		timerCount++;
-//		if (timerCount >= 20) {
-//			println("tajmer");
-//			timerCount = 0;
-//		}
-//		Riscv::mc_sip(Riscv::SIP_SSIP); //ocisti softverski zahtev za prekid (tajmer)
-//	} else if (scause == 0x09) {
-//		println("ecall iz sistema");
-//		uint64 sepc = Riscv::r_sepc();
-//		printString("Vrednost sepc pre promene: ");
-//		printInteger(sepc);
-//		println("");
-//		Riscv::w_sepc(Riscv::r_sepc() + 4);
-//		sepc = Riscv::r_sepc();
-//		printString("\nVrednost sepc posle promene: ");
-//		printInteger(sepc);
-//		println("");
-//	}
-////    else if(scause == (0x01UL<<63 | 0x09)){
-////        //spoljasnji hardverski prekid
-////        println("Spoljasnji hardverski prekid");
-////        Riscv::mc_sip(Riscv::SIP_SEIP);
-////    }
-//	printInteger(Riscv::r_sip());
-//	println("");
-//	console_handler();
-//	Riscv::mc_sip(Riscv::SIP_SEIP);
-////    else{
-////        Test::println(text);
-////        __asm__ volatile ("csrc sip, 0x02");
-////    }
-//
-//}

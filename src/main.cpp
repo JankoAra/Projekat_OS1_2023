@@ -3,7 +3,6 @@
 #include "../h/Riscv.hpp"
 #include "../h/syscall_c.hpp"
 #include "../h/syscall_cpp.hpp"
-//#include "../h/MemoryAllocator.hpp"
 #include "../h/TCB.hpp"
 #include "../h/ThreadQueue.hpp"
 //#include "../h/KSem.hpp"
@@ -32,13 +31,11 @@ void kernelConsumerFunction(void*) {
 }
 
 int main() {
-    //postavi adresu prekidne rutine u stvec
+    //postavljanje adrese prekidne rutine u stvec
     __asm__ volatile("csrw stvec, %[handler]": :[handler] "r"(&interruptHandler));
 
-    KMemory::initializeMemory();
-
     //inicijalizacija alokatora memorije
-    //MemoryAllocator::initMemoryAllocator();
+    KMemory::initializeMemory();
 
     //inicijalizacija komunikacije sa konzolom
     KConsole::initKConsole();
@@ -49,8 +46,8 @@ int main() {
     thread_t idleHandle;
     thread_t consoleOutputHandle;
     thread_create(&mainHandle, nullptr, nullptr);
-    TCB::running = mainHandle;
-    TCB::running->setStatus(TCB::ACTIVE);
+    TCB::setRunning(mainHandle);
+    mainHandle->setStatus(TCB::ACTIVE);
     thread_create(&userHandle, (TCB::Body) userMain, nullptr);
     thread_create(&consoleOutputHandle, kernelConsumerFunction, nullptr);
     thread_create(&idleHandle, idle, nullptr);
@@ -61,8 +58,6 @@ int main() {
     //cekanje da se userMain zavrsi
     thread_join(userHandle);
 
-    //printString("\nSad cu da izadjem\n");
-
     //flush output bafera za konzolu
     while (KConsole::outputHead != KConsole::outputTail) {}
 
@@ -70,6 +65,4 @@ int main() {
     Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
 
     return 0;
-
-
 }

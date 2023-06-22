@@ -10,13 +10,7 @@
 class Riscv {
 public:
 
-	static void popSppSpie();
-
-	//stavljanje registara x3-x31 na stek
-	static void pushRegisters();    //implementacija u asm
-
-	//skidanje registara x3-x31 sa steka
-	static void popRegisters();     //implementacija u asm
+	static void returnFromInterrupt();
 
 	//read scause
 	static uint64 r_scause();

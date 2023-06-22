@@ -5,7 +5,7 @@
 #ifndef PROJEKAT2023_THREADQUEUE_HPP
 #define PROJEKAT2023_THREADQUEUE_HPP
 
-#include "../h/MemoryAllocator.hpp"
+#include "../visak/MemoryAllocator.hpp"
 #include "../h/syscall_c.hpp"
 
 class TCB;

@@ -41,9 +41,9 @@ int KSem::signal() {
 
 void KSem::block() {
 	//TCB::running->setBlocked(true);
-    TCB::running->setStatus(TCB::BLOCKED);
-	blocked.putLast(TCB::running);
-	TCB::yield();
+    TCB::getRunning()->setStatus(TCB::BLOCKED);
+	blocked.putLast(TCB::getRunning());
+	TCB::dispatch();
 }
 
 void KSem::unblock() {

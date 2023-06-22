@@ -17,13 +17,17 @@ public:
 
 private:
     static bool initialized;
+
+    //broj celih blokova od MEM_BLOCK_SIZE bajta, ujedno i broj bitova u bit vektoru
     static uint64 numOfBlocks;
-    static uint64 blocksForBitVector;
-    static uint64 freeBlocksLeft;
-    static uint64 firstFreeBlock;
+
+    //broj uint64 potrebnih da se smesti ceo bit vektor
     static uint64 sizeOfBitVectorInUint64;
+
+    //adresa pocetka bit vektora (HEAP_START_ADDR)
     static uint64* bitVector;
 
+    //maska sa 1 na mestu bitPos i ostalim nulama (bitPos=0..63)
     inline static uint64 maskBit(uint64 bitPos) {
         return (uint64)1 << bitPos;
     }

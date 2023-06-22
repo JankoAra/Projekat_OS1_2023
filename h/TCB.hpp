@@ -26,40 +26,46 @@ public:
 
     static void start(TCB* newTcb);
 
-//    bool isFinished() { return finished; }
-//
-//    void setFinished(bool finish) { this->finished = finish; }
-//
-//    bool isBlocked() { return blocked; }
-//
-//    void setBlocked(bool block) { this->blocked = block; }
-
     uint64 getTimeSlice() { return timeSlice; }
 
     void setTimeSlice(uint64 value) { timeSlice = value; }
 
-    Body getBody(){return threadFunction;}
+    Body getBody() { return threadFunction; }
 
     //static void threadSleep(time_t sleepTime);
+
+    static TCB* getRunning() { return running; }
+
+    static void setRunning(TCB* newRunning) { running = newRunning; }
+
+    static uint64 &getRunningTimeSlice() { return runningTimeSlice; }
 
     static void threadJoin(TCB* handle);
 
     static void releaseJoined();
 
-    static void yield();
-
     static void dispatch();
 
     static void wrapper();
 
-    static TCB* running;
-    static uint64 runningTimeSlice;
 
     static void* operator new(size_t size);
 
     static void operator delete(void* ptr);
 
 private:
+    TCB(Body function, void* args, uint64* stack) : threadFunction(function), stack(stack), args(args),
+                                                    timeSlice(DEFAULT_TIME_SLICE), nextInScheduler(nullptr),
+                                                    timeToSleep(0),
+                                                    nextSleeping(nullptr), status(CREATED) {
+        //formiranje pocetnog konteksta;
+        //specijalni uslovi za main funkciju kojoj se pocetni kontekst automatski formira
+        uint64 startRa = threadFunction != nullptr ? (uint64)&wrapper : 0;
+        uint64 startSp = stack != nullptr ? (uint64)((char*)stack + DEFAULT_STACK_SIZE) : 0;
+        this->context.ra = startRa;
+        this->context.sp = startSp;
+    }
+
     //kontekst procesora za datu nit
     struct Context {
         uint64 ra;
@@ -69,27 +75,14 @@ private:
     uint64* stack;            //najniza adresa steka; stek raste ka nizim adresama, pokazuje na poslednju zauzetu
     void* args;                //argumenti poziva funkcije
     uint64 timeSlice;        //vremenski odsecak dodeljen datoj niti
-    // bool finished;            //da li je nit zavrsila izvrsavanje funkcije
-    //bool blocked;            //da li je nit blokirana
-    // bool needToJoin;        //da li je nit pozvala join i ceka da se neka druga zavrsi
     TCB* nextInScheduler;    // pokazivac na sledecu nit u Scheduler-u
     time_t timeToSleep;        //vreme na koje je uspavana nit
     TCB* nextSleeping;        //sledeca nit u listi za spavanje u Scheduler-u
     ThreadQueue waitingToJoin;    //red niti koje su pozvale join nad ovom niti
     ThreadStatus status;    //status niti
 
-
-    TCB(Body function, void* args, uint64* stack) : threadFunction(function), stack(stack), args(args),
-                                                    timeSlice(DEFAULT_TIME_SLICE), nextInScheduler(nullptr),
-                                                    timeToSleep(0),
-                                                    nextSleeping(nullptr), status(CREATED) {
-        //formiranje pocetnog konteksta; specijalni uslovi za main funkciju kojoj se pocetni kontekst automatski formira
-        uint64 startRa = threadFunction != nullptr ? (uint64)&wrapper : 0;
-        uint64 startSp = stack != nullptr ? (uint64)((char*)stack + DEFAULT_STACK_SIZE) : 0;
-        this->context.ra = startRa;
-        this->context.sp = startSp;
-    }
-
+    static TCB* running;
+    static uint64 runningTimeSlice;
 
     static void contextSwitch(Context* oldContext, Context* newContext);    //implementacija u asm
 
