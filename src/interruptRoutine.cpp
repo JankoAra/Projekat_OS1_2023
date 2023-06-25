@@ -157,18 +157,13 @@ extern "C" void interruptRoutine() {
                     Scheduler::put((thread_t)a1);
                 }
                 break;
-            case 0x91:
-                //printInteger
-                //a1 = integer za ispis
-                kPrintInt(a1);
-                break;
             default:
                 printString("\nNepostojeci op code: ");
-                kPrintInt(a0);
+                printInt(a0);
                 printString("\nscause: ");
-                kPrintInt(scause);
+                printInt(scause);
                 printString("\nsepc: ");
-                kPrintInt(sepc);
+                printInt(sepc);
                 break;
         }
         //sepc pokazuje na ecall instrukciju, treba preci na sledecu instrukciju
@@ -179,8 +174,9 @@ extern "C" void interruptRoutine() {
         //spoljasnji hardverski prekid (od konzole)
         uint64 irq = plic_claim();
         if (irq == CONSOLE_IRQ) {
-            if (*KConsole::sr & CONSOLE_RX_STATUS_BIT) {
-                KConsole::placeInInput(*KConsole::dr);
+            if (KConsole::getSRvalue() & CONSOLE_RX_STATUS_BIT) {
+                //upisuje karakter sa ulaza(otkucani) u ulazni bafer KConsole
+                KConsole::placeInInput(KConsole::getDRvalue());
             }
         } else {
             printString("Neki drugi prekid\n");
@@ -202,9 +198,9 @@ extern "C" void interruptRoutine() {
     } else {
         printString("\nGreska u prekidnoj rutini\n");
         printString("scause: ");
-        kPrintInt(scause);
+        printInt(scause);
         printString("\nsepc: ");
-        kPrintInt(sepc);
+        printInt(sepc);
         __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc));
         __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus));
     }

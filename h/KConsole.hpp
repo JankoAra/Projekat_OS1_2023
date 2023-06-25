@@ -4,59 +4,81 @@
 
 #ifndef PROJEKAT2023_KCONSOLE_HPP
 #define PROJEKAT2023_KCONSOLE_HPP
+
 #include "../lib/hw.h"
 #include "../h/syscall_c.hpp"
 #include "../test/printing.hpp"
-#include "../h/helper.hpp"
+#include "../visak/helper.hpp"
 
 class KConsole {
 public:
-	static void kputc(char c);
-	static char kgetc();
-	KConsole(){
-		printString("CONSOLE_RX = ");
-		printInteger(CONSOLE_RX_DATA);
-		printString("\n");
-		printString("CONSOLE_TX = ");
-		printInteger(CONSOLE_TX_DATA);
-		printString("\n");
-		printString("CONSOLE_STATUS = ");
-		printInteger(CONSOLE_STATUS);
-		printString("\n");
-		printString("*CONSOLE_RX = ");
-		printInteger(*((uint8*)CONSOLE_RX_DATA));
-		printString("\n");
-		printString("*CONSOLE_STATUS = ");
-		printInteger(*((uint8*)CONSOLE_STATUS));
-		printString("\n");
-	}
+    //stavlja karakter u izlazni bafer konzole
+    static void kputc(char c);
 
-	static void initKConsole();
+    //uzima karakter iz ulaznog bafera konzole
+    static char kgetc();
 
-	static void printConsoleState();
+    static void initKConsole();
 
-	static char getFromOutput();
+    //vraca karakter iz izlaznog bafera; ako je bafer prazan, blokira se dok se ne napuni
+    static char getFromOutput();
 
-	static void placeInInput(char c);
+    //stavlja karakter u ulazni bafer; ako je bafer pun, ignorise se
+    static void placeInInput(char c);
+
+    static uint8 getSRvalue() { return *sr; }
+
+    static uint8 getDRvalue() { return *dr; }
+
+    static void setDRvalue(char c) { *dr = c; }
+
+    static sem_t getOutputBufferHasSpace() { return outputBufferHasSpace; }
+
+    static int getOutputHead() { return outputHead; }
+
+    static int getOutputTail() { return outputTail; }
 
 
+private:
+    KConsole() {}
 
-//private:
-	static sem_t inputBufferHasSpace;
-	static sem_t outputBufferHasSpace;
-	static sem_t charsToOutput;
-	static sem_t charsToInput;
-	static char* dr;
-	static uint8* sr;
-	static bool initialized;
-	static constexpr int capacity = 50;
-	static char inputBuffer[capacity];
-	static char outputBuffer[capacity];
-	static int inputHead;
-	static int inputTail;
-	static int outputHead;
-	static int outputTail;
-	static int inputBufferSize;
+    //broj preostalih mesta u ulaznom baferu
+    static sem_t inputBufferHasSpace;
+
+    //broj preostalih mesta u izlaznom baferu
+    static sem_t outputBufferHasSpace;
+
+    //broj zauzetih mesta u ulaznom baferu
+    static sem_t charsToInput;
+
+    //broj zauzetih mesta u izlaznom baferu
+    static sem_t charsToOutput;
+
+    //adresa registra podataka konzole
+    static char* dr;
+
+    //adresa statusnog registra konzole
+    static uint8* sr;
+
+    static bool initialized;
+
+    //velicina internih bafera
+    static constexpr int capacity = 100;
+
+    //bafer u koji se smestaju upisani otkucani karakteri
+    static char inputBuffer[capacity];
+
+    //bafer u koji se smestaju karakteri koji treba da se ispisu na konzoli
+    static char outputBuffer[capacity];
+
+    //indeksi u kruznim baferima
+    static int inputHead;
+    static int inputTail;
+    static int outputHead;
+    static int outputTail;
+
+    //broj zauzetih mesta u ulaznom baferu
+    static int inputBufferSize;
 };
 
 

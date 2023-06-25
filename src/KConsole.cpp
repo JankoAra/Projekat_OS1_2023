@@ -30,21 +30,6 @@ void KConsole::initKConsole() {
 	initialized = true;
 }
 
-void KConsole::printConsoleState() {
-	printString("CONSOLE_RX = ");
-	printInteger((uint64)dr);
-	printString("\n");
-	printString("CONSOLE_STATUS = ");
-	printInteger((uint64)sr);
-	printString("\n");
-	printString("*CONSOLE_RX = ");
-	printInteger(*dr);
-	printString("\n");
-	printString("*CONSOLE_STATUS = ");
-	printInteger(*sr);
-	printString("\n");
-}
-
 char KConsole::getFromOutput() {
 	sem_wait(charsToOutput);
 	char c = outputBuffer[outputHead];

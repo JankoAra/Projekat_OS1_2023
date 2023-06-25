@@ -7,8 +7,8 @@
 
 //void println(char const* string);
 
-void printInteger(uint64 integer);
+//void printInteger(uint64 integer);
 
-void kPrintInt(uint64 integer);
+//void kPrintInt(uint64 integer);
 
 #endif

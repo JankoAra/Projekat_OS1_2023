@@ -3,7 +3,7 @@
 //
 
 #include "MemoryAllocator.hpp"
-#include "../h/helper.hpp"
+#include "helper.hpp"
 #include "../h/Riscv.hpp"
 #include "../test/printing.hpp"
 

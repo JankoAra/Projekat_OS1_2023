@@ -14,16 +14,17 @@ void idle(void*) {
     while (1) { thread_dispatch(); }
 }
 
+//salje na izlaz karakter iz izlaznog bafera KConsole
 void kernelConsumerFunction(void*) {
     while (1) {
         char c = KConsole::getFromOutput();
-        while (!(*KConsole::sr & CONSOLE_TX_STATUS_BIT)) {}
-        *KConsole::dr = c;
-        sem_signal(KConsole::outputBufferHasSpace);
+        while (!(KConsole::getSRvalue() & CONSOLE_TX_STATUS_BIT)) {}
+        KConsole::setDRvalue(c);
+        sem_signal(KConsole::getOutputBufferHasSpace());
     }
 }
 
-int main2() {
+int main() {
     //postavljanje adrese prekidne rutine u stvec
     __asm__ volatile("csrw stvec, %[handler]": :[handler] "r"(&interruptHandler));
 
@@ -52,7 +53,7 @@ int main2() {
     thread_join(userHandle);
 
     //flush output bafera za konzolu
-    while (KConsole::outputHead != KConsole::outputTail) {}
+    while (KConsole::getOutputHead() != KConsole::getOutputTail()) {}
 
     //maskiranje svih prekida
     Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
