@@ -121,7 +121,7 @@ int main2() {
     printString("\nGotove user niti\n");
 
     printString("\nSad cu da izadjem\n");
-    while (KConsole::getOutputHead() != KConsole::getOutputTail()) {}
+    KConsole::flush();
 //	//zabrani prekide
     Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
 

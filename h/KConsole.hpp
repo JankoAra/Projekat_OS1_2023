@@ -12,19 +12,25 @@
 
 class KConsole {
 public:
+    static void initKConsole();
+
     //stavlja karakter u izlazni bafer konzole
     static void kputc(char c);
 
     //uzima karakter iz ulaznog bafera konzole
     static char kgetc();
 
-    static void initKConsole();
-
     //vraca karakter iz izlaznog bafera; ako je bafer prazan, blokira se dok se ne napuni
     static char getFromOutput();
 
     //stavlja karakter u ulazni bafer; ako je bafer pun, ignorise se
     static void placeInInput(char c);
+
+    //ispis svih preostalih karaktera u izlaznom baferu
+    static void flush(){
+        __asm__ volatile("li a0, 0x43");
+        __asm__ volatile("ecall");
+    }
 
     static uint8 getSRvalue() { return *sr; }
 

@@ -53,7 +53,7 @@ int main() {
     thread_join(userHandle);
 
     //flush output bafera za konzolu
-    while (KConsole::getOutputHead() != KConsole::getOutputTail()) {}
+    KConsole::flush();
 
     //maskiranje svih prekida
     Riscv::mc_sstatus(Riscv::SSTATUS_SIE);

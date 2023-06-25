@@ -136,6 +136,15 @@ extern "C" void interruptRoutine() {
                 //a1 = karakter koji se upisuje u bafer za ispis na konzolu
                 KConsole::kputc((char)a1);
                 break;
+            case 0x43:
+                //flush izlaznog bafera konzole
+                while (KConsole::getOutputHead() != KConsole::getOutputTail()) {
+                    char c = KConsole::getFromOutput();
+                    while (!(KConsole::getSRvalue() & CONSOLE_TX_STATUS_BIT)) {}
+                    KConsole::setDRvalue(c);
+                    sem_signal(KConsole::getOutputBufferHasSpace());
+                }
+                break;
             case 0x80:
                 //alloc thread
                 //a1 = pokazivac na rucku u koju upisujemo identifikator niti(adresa u memoriji)
