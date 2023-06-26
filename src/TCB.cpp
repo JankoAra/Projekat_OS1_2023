@@ -26,6 +26,10 @@ void TCB::dispatch() {
     TCB* old = TCB::running;
     if (old->status == ACTIVE) {
         Scheduler::put(old);
+    } else if (old->status == FINISHED) {
+        //brisanje steka niti ako je zavrsena, objekat TCB ostaje zbog moguceg join-a
+        delete old->stack;
+        old->stack = nullptr;
     }
     TCB::running = Scheduler::get();
     TCB::runningTimeSlice = 0;
@@ -72,12 +76,4 @@ void TCB::releaseJoined() {
         Scheduler::put(tcb);
     }
 }
-
-void TCB::start(TCB* newTcb) {
-    //startovanje niti(stavljanje u Scheduler); main nit je vec aktivna, ne stavlja se u Scheduler
-    if (newTcb->threadFunction != (TCB::Body)main) {
-        Scheduler::put(newTcb);
-    }
-}
-
 

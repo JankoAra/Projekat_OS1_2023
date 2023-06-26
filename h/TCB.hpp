@@ -9,6 +9,7 @@
 #include "../h/ThreadQueue.hpp"
 
 int main();
+
 class TCB {
 public:
     friend class Scheduler;
@@ -19,17 +20,13 @@ public:
         CREATED, ACTIVE, BLOCKED, JOINING, SLEEPING, FINISHED
     };
 
+    static TCB* createThread(Body function, void* args, uint64* stack);
+
     void setStatus(ThreadStatus stat) { this->status = stat; }
 
     ThreadStatus getStatus() { return this->status; }
 
-    static TCB* createThread(Body function, void* args, uint64* stack);
-
-    static void start(TCB* newTcb);
-
     uint64 getTimeSlice() { return timeSlice; }
-
-    void setTimeSlice(uint64 value) { timeSlice = value; }
 
     Body getBody() { return threadFunction; }
 
@@ -46,7 +43,6 @@ public:
     static void dispatch();
 
     static void wrapper();
-
 
     static void* operator new(size_t size);
 
@@ -65,7 +61,7 @@ private:
         this->context.sp = startSp;
     }
 
-    //kontekst procesora za datu nit
+    //kontekst procesora za datu nit, ostali registri se cuvaju na steku
     struct Context {
         uint64 ra;
         uint64 sp;
@@ -80,12 +76,10 @@ private:
     ThreadQueue waitingToJoin;    //red niti koje su pozvale join nad ovom niti
     ThreadStatus status;    //status niti
 
-    static TCB* running;
-    static uint64 runningTimeSlice;
+    static TCB* running;    //pokazivac na tekucu nit
+    static uint64 runningTimeSlice; //proteklo vreme od poslednje promene konteksta
 
     static void contextSwitch(Context* oldContext, Context* newContext);    //implementacija u asm
-
-
 };
 
 

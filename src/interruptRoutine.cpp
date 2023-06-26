@@ -10,6 +10,8 @@
 #include "../h/TCB.hpp"
 #include "../h/Scheduler.hpp"
 
+#include "../test/printing.hpp"
+
 int main();
 
 #pragma GCC optimize("O0")
@@ -187,8 +189,6 @@ extern "C" void interruptRoutine() {
                 //upisuje karakter sa ulaza(otkucani) u ulazni bafer KConsole
                 KConsole::placeInInput(KConsole::getDRvalue());
             }
-        } else {
-            printString("Neki drugi prekid\n");
         }
         plic_complete(irq);
         __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc));

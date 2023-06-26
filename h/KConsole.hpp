@@ -6,9 +6,10 @@
 #define PROJEKAT2023_KCONSOLE_HPP
 
 #include "../lib/hw.h"
-#include "../h/syscall_c.hpp"
-#include "../test/printing.hpp"
-#include "../visak/helper.hpp"
+
+class KSem;
+
+typedef KSem* sem_t;
 
 class KConsole {
 public:
@@ -27,7 +28,7 @@ public:
     static void placeInInput(char c);
 
     //ispis svih preostalih karaktera u izlaznom baferu
-    static void flush(){
+    static void flush() {
         __asm__ volatile("li a0, 0x43");
         __asm__ volatile("ecall");
     }
@@ -69,7 +70,7 @@ private:
     static bool initialized;
 
     //velicina internih bafera
-    static constexpr int capacity = 100;
+    static constexpr int capacity = 50;
 
     //bafer u koji se smestaju upisani otkucani karakteri
     static char inputBuffer[capacity];

@@ -19,7 +19,6 @@ KSem* KSem::initSem(uint val) {
 }
 
 int KSem::wait() {
-	if (!working) return -3;
 	if (--val < 0) {
 		block();
 		return -1;
@@ -28,7 +27,6 @@ int KSem::wait() {
 }
 
 int KSem::signal() {
-	if (!working) return -3;
 	if (val++ < 0) {
 		unblock();
 	}
@@ -47,7 +45,6 @@ void KSem::unblock() {
 }
 
 int KSem::closeSem(sem_t handle) {
-	handle->working = false;
 	while (!handle->blocked.isEmpty()) {
 		TCB* tcb = handle->blocked.getFirst();
 		Scheduler::put(tcb);

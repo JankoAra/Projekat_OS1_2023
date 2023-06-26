@@ -29,7 +29,7 @@ protected:
 	void unblock();
 
 private:
-	KSem(uint val) : val(val), working(true) {}
+	KSem(uint val) : val(val) {}
 
 	KSem(const KSem&) = delete;
 
@@ -37,11 +37,6 @@ private:
 
 	int val;
 	ThreadQueue blocked;
-
-	//da li je semafor ugasen ili ne
-	bool working;
-
-
 };
 
 

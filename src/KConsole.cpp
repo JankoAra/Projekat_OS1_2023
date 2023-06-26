@@ -3,6 +3,7 @@
 //
 
 #include "../h/KConsole.hpp"
+#include "../h/syscall_c.hpp"
 
 bool KConsole::initialized = false;
 sem_t KConsole::inputBufferHasSpace = nullptr;

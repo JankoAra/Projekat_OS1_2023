@@ -61,7 +61,7 @@ Thread::~Thread() {
 }
 
 int Thread::start() {
-    if (myHandle == nullptr) return -1;
+    if (myHandle == nullptr || myHandle->getStatus() != TCB::CREATED) return -1;
     __asm__ volatile("mv a1, %[handle]": :[handle] "r"(myHandle):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
     __asm__ volatile("li a0, 0x81");
 

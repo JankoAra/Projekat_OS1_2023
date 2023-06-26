@@ -11,25 +11,23 @@ typedef unsigned long time_t;
 
 class Scheduler {
 private:
-	static TCB* head, * tail;
-	static TCB* sleepingHead;
+    static TCB* head, * tail;
+    static TCB* sleepingHead;
 
-	Scheduler() {}
+    Scheduler() {}
 
 public:
     //stavljanje na kraj reda aktivnih niti
-	static void put(TCB* tcb);
+    static void put(TCB* tcb);
 
     //uzimanje sa pocetka reda aktivnih niti
-	static TCB* get();
-
-	static TCB* getSleepingHead() { return sleepingHead; }
+    static TCB* get();
 
     //stavljanje u red uspavanih niti
-	static void putToSleep(TCB* tcb, time_t sleepTime);
+    static void putToSleep(TCB* tcb, time_t sleepTime);
 
     //azuriranje vrednosti u redu uspavanih niti, budjenje niti po potrebi
-	static void wake();
+    static void wake();
 };
 
 
