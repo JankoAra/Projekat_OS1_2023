@@ -70,7 +70,7 @@ private:
     static bool initialized;
 
     //velicina internih bafera
-    static constexpr int capacity = 50;
+    static constexpr int capacity = 80;
 
     //bafer u koji se smestaju upisani otkucani karakteri
     static char inputBuffer[capacity];
