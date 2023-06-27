@@ -31,6 +31,7 @@ extern "C" void interruptHandler();
 void userMain();
 
 void user(void*);
+void user2(void*);
 int main() {
     //postavljanje adrese prekidne rutine u stvec
     __asm__ volatile("csrw stvec, %[handler]": :[handler] "r"(&interruptHandler));
@@ -46,7 +47,7 @@ int main() {
     Thread* idleHandle = new IdleThread();
     Thread* consoleOutputHandle = new KernelConsumer();
     //Thread* userThr = new Thread((TCB::Body)userMain, nullptr);
-    Thread* userThr = new Thread(user, nullptr);
+    Thread* userThr = new Thread(user2, nullptr);
     thread_create(&mainHandle, (TCB::Body)main, nullptr);
     TCB::setRunning(mainHandle);
     mainHandle->setStatus(TCB::ACTIVE);
