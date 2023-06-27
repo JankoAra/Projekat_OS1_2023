@@ -30,7 +30,11 @@ public:
 
     Body getBody() { return threadFunction; }
 
-    ThreadQueue* getListOfJoiningThreads(){return &waitingToJoin;}
+    ThreadQueue* getListOfJoiningThreads() { return &waitingToJoin; }
+
+    void setMySemaphore(KSem* sem) { mySemaphore = sem; }
+
+    void setJoiningWithTCB(TCB* tcb) { joiningWithTCB = tcb; }
 
     static TCB* getRunning() { return running; }
 

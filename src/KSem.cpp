@@ -35,19 +35,20 @@ int KSem::signal() {
 
 void KSem::block() {
     TCB::getRunning()->setStatus(TCB::BLOCKED);
+    TCB::getRunning()->setMySemaphore(this);
 	blocked.putLast(TCB::getRunning());
 	TCB::dispatch();
 }
 
 void KSem::unblock() {
 	TCB* tcb = blocked.getFirst();
+    tcb->setMySemaphore(nullptr);
 	Scheduler::put(tcb);
 }
 
 int KSem::closeSem(sem_t handle) {
 	while (!handle->blocked.isEmpty()) {
-		TCB* tcb = handle->blocked.getFirst();
-		Scheduler::put(tcb);
+		handle->unblock();
 	}
 	return 0;
 }

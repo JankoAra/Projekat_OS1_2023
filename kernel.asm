@@ -6,13 +6,13 @@ Disassembly of section .text:
 
 0000000080000000 <_entry>:
     80000000:	0000d117          	auipc	sp,0xd
-    80000004:	07013103          	ld	sp,112(sp) # 8000d070 <_GLOBAL_OFFSET_TABLE_+0x58>
+    80000004:	0a013103          	ld	sp,160(sp) # 8000d0a0 <_GLOBAL_OFFSET_TABLE_+0x58>
     80000008:	00001537          	lui	a0,0x1
     8000000c:	f14025f3          	csrr	a1,mhartid
     80000010:	00158593          	addi	a1,a1,1
     80000014:	02b50533          	mul	a0,a0,a1
     80000018:	00a10133          	add	sp,sp,a0
-    8000001c:	34d070ef          	jal	ra,80007b68 <start>
+    8000001c:	351070ef          	jal	ra,80007b6c <start>
 
 0000000080000020 <spin>:
     80000020:	0000006f          	j	80000020 <spin>
@@ -63,7 +63,7 @@ interruptHandler:
     80001080:	0ff13c23          	sd	t6,248(sp)
 
     call interruptRoutine
-    80001084:	6dc010ef          	jal	ra,80002760 <interruptRoutine>
+    80001084:	6d0010ef          	jal	ra,80002754 <interruptRoutine>
 
     #ucitavanje svih registara iz running niti (moze biti druga nit od one koja je sacuvana pre call)
     .irp index, 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
@@ -477,7 +477,7 @@ int thread_create(thread_t* handle, void (* start_routine)(void*), void* arg) {
     uint64* stack = nullptr;
     if (start_routine != (TCB::Body)main) {
     8000142c:	0000c797          	auipc	a5,0xc
-    80001430:	c5c7b783          	ld	a5,-932(a5) # 8000d088 <_GLOBAL_OFFSET_TABLE_+0x70>
+    80001430:	c8c7b783          	ld	a5,-884(a5) # 8000d0b8 <_GLOBAL_OFFSET_TABLE_+0x70>
     80001434:	04f58a63          	beq	a1,a5,80001488 <_Z13thread_createPP3TCBPFvPvES2_+0x84>
         stack = (uint64*)mem_alloc(DEFAULT_STACK_SIZE);
     80001438:	00001537          	lui	a0,0x1
@@ -797,7 +797,7 @@ int thread_alloc(thread_t* handle, TCB::Body function, void* arg) {
     uint64* stack = nullptr;
     if (function != (TCB::Body)main) {
     80001678:	0000c797          	auipc	a5,0xc
-    8000167c:	a107b783          	ld	a5,-1520(a5) # 8000d088 <_GLOBAL_OFFSET_TABLE_+0x70>
+    8000167c:	a407b783          	ld	a5,-1472(a5) # 8000d0b8 <_GLOBAL_OFFSET_TABLE_+0x70>
     80001680:	04f58a63          	beq	a1,a5,800016d4 <_Z12thread_allocPP3TCBPFvPvES2_+0x84>
         stack = (uint64*)mem_alloc(DEFAULT_STACK_SIZE);
     80001684:	00001537          	lui	a0,0x1
@@ -873,7 +873,7 @@ char KConsole::outputBuffer[];
 void KConsole::initKConsole() {
 	if (initialized) return;
     8000170c:	0000c797          	auipc	a5,0xc
-    80001710:	a047c783          	lbu	a5,-1532(a5) # 8000d110 <_ZN8KConsole11initializedE>
+    80001710:	a347c783          	lbu	a5,-1484(a5) # 8000d140 <_ZN8KConsole11initializedE>
     80001714:	00078463          	beqz	a5,8000171c <_ZN8KConsole12initKConsoleEv+0x10>
     80001718:	00008067          	ret
 void KConsole::initKConsole() {
@@ -884,38 +884,38 @@ void KConsole::initKConsole() {
     8000172c:	02010413          	addi	s0,sp,32
 	dr = (char*)CONSOLE_RX_DATA;
     80001730:	0000c497          	auipc	s1,0xc
-    80001734:	9e048493          	addi	s1,s1,-1568 # 8000d110 <_ZN8KConsole11initializedE>
+    80001734:	a1048493          	addi	s1,s1,-1520 # 8000d140 <_ZN8KConsole11initializedE>
     80001738:	0000c797          	auipc	a5,0xc
-    8000173c:	8f07b783          	ld	a5,-1808(a5) # 8000d028 <_GLOBAL_OFFSET_TABLE_+0x10>
+    8000173c:	9207b783          	ld	a5,-1760(a5) # 8000d058 <_GLOBAL_OFFSET_TABLE_+0x10>
     80001740:	0007b783          	ld	a5,0(a5)
     80001744:	00f4b423          	sd	a5,8(s1)
 	sr = (uint8*)CONSOLE_STATUS;
     80001748:	0000c797          	auipc	a5,0xc
-    8000174c:	8f07b783          	ld	a5,-1808(a5) # 8000d038 <_GLOBAL_OFFSET_TABLE_+0x20>
+    8000174c:	9207b783          	ld	a5,-1760(a5) # 8000d068 <_GLOBAL_OFFSET_TABLE_+0x20>
     80001750:	0007b783          	ld	a5,0(a5)
     80001754:	00f4b823          	sd	a5,16(s1)
 	sem_open(&inputBufferHasSpace, capacity);
     80001758:	03200593          	li	a1,50
     8000175c:	0000c517          	auipc	a0,0xc
-    80001760:	9cc50513          	addi	a0,a0,-1588 # 8000d128 <_ZN8KConsole19inputBufferHasSpaceE>
+    80001760:	9fc50513          	addi	a0,a0,-1540 # 8000d158 <_ZN8KConsole19inputBufferHasSpaceE>
     80001764:	00000097          	auipc	ra,0x0
     80001768:	dd4080e7          	jalr	-556(ra) # 80001538 <_Z8sem_openPP4KSemj>
 	sem_open(&outputBufferHasSpace, capacity);
     8000176c:	03200593          	li	a1,50
     80001770:	0000c517          	auipc	a0,0xc
-    80001774:	9c050513          	addi	a0,a0,-1600 # 8000d130 <_ZN8KConsole20outputBufferHasSpaceE>
+    80001774:	9f050513          	addi	a0,a0,-1552 # 8000d160 <_ZN8KConsole20outputBufferHasSpaceE>
     80001778:	00000097          	auipc	ra,0x0
     8000177c:	dc0080e7          	jalr	-576(ra) # 80001538 <_Z8sem_openPP4KSemj>
 	sem_open(&charsToInput, 0);
     80001780:	00000593          	li	a1,0
     80001784:	0000c517          	auipc	a0,0xc
-    80001788:	9b450513          	addi	a0,a0,-1612 # 8000d138 <_ZN8KConsole12charsToInputE>
+    80001788:	9e450513          	addi	a0,a0,-1564 # 8000d168 <_ZN8KConsole12charsToInputE>
     8000178c:	00000097          	auipc	ra,0x0
     80001790:	dac080e7          	jalr	-596(ra) # 80001538 <_Z8sem_openPP4KSemj>
 	sem_open(&charsToOutput, 0);
     80001794:	00000593          	li	a1,0
     80001798:	0000c517          	auipc	a0,0xc
-    8000179c:	9a850513          	addi	a0,a0,-1624 # 8000d140 <_ZN8KConsole13charsToOutputE>
+    8000179c:	9d850513          	addi	a0,a0,-1576 # 8000d170 <_ZN8KConsole13charsToOutputE>
     800017a0:	00000097          	auipc	ra,0x0
     800017a4:	d98080e7          	jalr	-616(ra) # 80001538 <_Z8sem_openPP4KSemj>
 	initialized = true;
@@ -938,7 +938,7 @@ char KConsole::getFromOutput() {
     800017d4:	02010413          	addi	s0,sp,32
 	sem_wait(charsToOutput);
     800017d8:	0000c497          	auipc	s1,0xc
-    800017dc:	93848493          	addi	s1,s1,-1736 # 8000d110 <_ZN8KConsole11initializedE>
+    800017dc:	96848493          	addi	s1,s1,-1688 # 8000d140 <_ZN8KConsole11initializedE>
     800017e0:	0304b503          	ld	a0,48(s1)
     800017e4:	00000097          	auipc	ra,0x0
     800017e8:	dbc080e7          	jalr	-580(ra) # 800015a0 <_Z8sem_waitP4KSem>
@@ -964,7 +964,7 @@ char KConsole::getFromOutput() {
 void KConsole::placeInInput(char c) {
 	if (inputBufferSize == capacity) return;
     8000181c:	0000c717          	auipc	a4,0xc
-    80001820:	96872703          	lw	a4,-1688(a4) # 8000d184 <_ZN8KConsole15inputBufferSizeE>
+    80001820:	99872703          	lw	a4,-1640(a4) # 8000d1b4 <_ZN8KConsole15inputBufferSizeE>
     80001824:	03200793          	li	a5,50
     80001828:	04f70e63          	beq	a4,a5,80001884 <_ZN8KConsole12placeInInputEc+0x68>
 void KConsole::placeInInput(char c) {
@@ -974,7 +974,7 @@ void KConsole::placeInInput(char c) {
     80001838:	01010413          	addi	s0,sp,16
 	inputBuffer[inputTail] = c;
     8000183c:	0000c697          	auipc	a3,0xc
-    80001840:	8d468693          	addi	a3,a3,-1836 # 8000d110 <_ZN8KConsole11initializedE>
+    80001840:	90468693          	addi	a3,a3,-1788 # 8000d140 <_ZN8KConsole11initializedE>
     80001844:	0786a783          	lw	a5,120(a3)
     80001848:	00f68633          	add	a2,a3,a5
     8000184c:	08a60023          	sb	a0,128(a2)
@@ -1009,7 +1009,7 @@ void KConsole::kputc(char c) {
     800018a0:	00050913          	mv	s2,a0
 	sem_wait(outputBufferHasSpace);
     800018a4:	0000c497          	auipc	s1,0xc
-    800018a8:	86c48493          	addi	s1,s1,-1940 # 8000d110 <_ZN8KConsole11initializedE>
+    800018a8:	89c48493          	addi	s1,s1,-1892 # 8000d140 <_ZN8KConsole11initializedE>
     800018ac:	0204b503          	ld	a0,32(s1)
     800018b0:	00000097          	auipc	ra,0x0
     800018b4:	cf0080e7          	jalr	-784(ra) # 800015a0 <_Z8sem_waitP4KSem>
@@ -1044,7 +1044,7 @@ char KConsole::kgetc() {
     80001908:	02010413          	addi	s0,sp,32
 	sem_wait(charsToInput);
     8000190c:	0000c497          	auipc	s1,0xc
-    80001910:	80448493          	addi	s1,s1,-2044 # 8000d110 <_ZN8KConsole11initializedE>
+    80001910:	83448493          	addi	s1,s1,-1996 # 8000d140 <_ZN8KConsole11initializedE>
     80001914:	0284b503          	ld	a0,40(s1)
     80001918:	00000097          	auipc	ra,0x0
     8000191c:	c88080e7          	jalr	-888(ra) # 800015a0 <_Z8sem_waitP4KSem>
@@ -1070,9 +1070,9 @@ char KConsole::kgetc() {
     80001958:	00008067          	ret
 
 000000008000195c <_Z2f1Pv>:
-#include "../test/printing.hpp"
 
-sem_t s12,s23,s31;
+Semaphore* s12,*s23,*s31;
+Thread* nit1, *nit2, *nit3;
 
 
 void f1(void* end) {
@@ -1080,3038 +1080,3029 @@ void f1(void* end) {
     80001960:	00113c23          	sd	ra,24(sp)
     80001964:	00813823          	sd	s0,16(sp)
     80001968:	00913423          	sd	s1,8(sp)
-    8000196c:	01213023          	sd	s2,0(sp)
-    80001970:	02010413          	addi	s0,sp,32
-    80001974:	00050913          	mv	s2,a0
-    int i = 0;
-    80001978:	00000493          	li	s1,0
-    8000197c:	0140006f          	j	80001990 <_Z2f1Pv+0x34>
-    while (*(int*)end == 0) {
-        sem_wait(s31);
-        printString("nit 1\n");
-        if (++i == 4) *(int*)end = 1;
-        sem_signal(s12);
-    80001980:	0000c517          	auipc	a0,0xc
-    80001984:	85853503          	ld	a0,-1960(a0) # 8000d1d8 <s12>
+    8000196c:	02010413          	addi	s0,sp,32
+    s31->wait();
+    80001970:	0000c497          	auipc	s1,0xc
+    80001974:	89048493          	addi	s1,s1,-1904 # 8000d200 <s31>
+    80001978:	0004b503          	ld	a0,0(s1)
+    8000197c:	00002097          	auipc	ra,0x2
+    80001980:	b2c080e7          	jalr	-1236(ra) # 800034a8 <_ZN9Semaphore4waitEv>
+    time_sleep(10);
+    80001984:	00a00513          	li	a0,10
     80001988:	00000097          	auipc	ra,0x0
-    8000198c:	c48080e7          	jalr	-952(ra) # 800015d0 <_Z10sem_signalP4KSem>
-    while (*(int*)end == 0) {
-    80001990:	00092783          	lw	a5,0(s2)
-    80001994:	02079e63          	bnez	a5,800019d0 <_Z2f1Pv+0x74>
-        sem_wait(s31);
-    80001998:	0000c517          	auipc	a0,0xc
-    8000199c:	83853503          	ld	a0,-1992(a0) # 8000d1d0 <s31>
-    800019a0:	00000097          	auipc	ra,0x0
-    800019a4:	c00080e7          	jalr	-1024(ra) # 800015a0 <_Z8sem_waitP4KSem>
-        printString("nit 1\n");
-    800019a8:	00008517          	auipc	a0,0x8
-    800019ac:	68050513          	addi	a0,a0,1664 # 8000a028 <CONSOLE_STATUS+0x18>
-    800019b0:	00005097          	auipc	ra,0x5
-    800019b4:	9c8080e7          	jalr	-1592(ra) # 80006378 <_Z11printStringPKc>
-        if (++i == 4) *(int*)end = 1;
-    800019b8:	0014849b          	addiw	s1,s1,1
-    800019bc:	00400793          	li	a5,4
-    800019c0:	fcf490e3          	bne	s1,a5,80001980 <_Z2f1Pv+0x24>
-    800019c4:	00100793          	li	a5,1
-    800019c8:	00f92023          	sw	a5,0(s2)
-    800019cc:	fb5ff06f          	j	80001980 <_Z2f1Pv+0x24>
-    }
+    8000198c:	b80080e7          	jalr	-1152(ra) # 80001508 <_Z10time_sleepm>
+    delete nit2;
+    80001990:	0084b503          	ld	a0,8(s1)
+    80001994:	00050863          	beqz	a0,800019a4 <_Z2f1Pv+0x48>
+    80001998:	00053783          	ld	a5,0(a0)
+    8000199c:	0087b783          	ld	a5,8(a5)
+    800019a0:	000780e7          	jalr	a5
+    s31->wait();
+    800019a4:	0000c517          	auipc	a0,0xc
+    800019a8:	85c53503          	ld	a0,-1956(a0) # 8000d200 <s31>
+    800019ac:	00002097          	auipc	ra,0x2
+    800019b0:	afc080e7          	jalr	-1284(ra) # 800034a8 <_ZN9Semaphore4waitEv>
+
 
     printString("\nGotova nit 1\n");
-    800019d0:	00008517          	auipc	a0,0x8
-    800019d4:	65050513          	addi	a0,a0,1616 # 8000a020 <CONSOLE_STATUS+0x10>
-    800019d8:	00005097          	auipc	ra,0x5
-    800019dc:	9a0080e7          	jalr	-1632(ra) # 80006378 <_Z11printStringPKc>
+    800019b4:	00008517          	auipc	a0,0x8
+    800019b8:	66c50513          	addi	a0,a0,1644 # 8000a020 <CONSOLE_STATUS+0x10>
+    800019bc:	00005097          	auipc	ra,0x5
+    800019c0:	9c0080e7          	jalr	-1600(ra) # 8000637c <_Z11printStringPKc>
 }
-    800019e0:	01813083          	ld	ra,24(sp)
-    800019e4:	01013403          	ld	s0,16(sp)
-    800019e8:	00813483          	ld	s1,8(sp)
-    800019ec:	00013903          	ld	s2,0(sp)
-    800019f0:	02010113          	addi	sp,sp,32
-    800019f4:	00008067          	ret
+    800019c4:	01813083          	ld	ra,24(sp)
+    800019c8:	01013403          	ld	s0,16(sp)
+    800019cc:	00813483          	ld	s1,8(sp)
+    800019d0:	02010113          	addi	sp,sp,32
+    800019d4:	00008067          	ret
 
-00000000800019f8 <_Z2f2Pv>:
+00000000800019d8 <_Z2f2Pv>:
 
 
 void f2(void* end ) {
-    800019f8:	fe010113          	addi	sp,sp,-32
-    800019fc:	00113c23          	sd	ra,24(sp)
-    80001a00:	00813823          	sd	s0,16(sp)
-    80001a04:	00913423          	sd	s1,8(sp)
-    80001a08:	01213023          	sd	s2,0(sp)
-    80001a0c:	02010413          	addi	s0,sp,32
-    80001a10:	00050913          	mv	s2,a0
-    while (*(int*)end == 0) {
-    80001a14:	00092783          	lw	a5,0(s2)
-    80001a18:	02079c63          	bnez	a5,80001a50 <_Z2f2Pv+0x58>
-        sem_wait(s12);
-    80001a1c:	0000b497          	auipc	s1,0xb
-    80001a20:	7b448493          	addi	s1,s1,1972 # 8000d1d0 <s31>
-    80001a24:	0084b503          	ld	a0,8(s1)
-    80001a28:	00000097          	auipc	ra,0x0
-    80001a2c:	b78080e7          	jalr	-1160(ra) # 800015a0 <_Z8sem_waitP4KSem>
-        printString("nit 2\n");
-    80001a30:	00008517          	auipc	a0,0x8
-    80001a34:	60850513          	addi	a0,a0,1544 # 8000a038 <CONSOLE_STATUS+0x28>
-    80001a38:	00005097          	auipc	ra,0x5
-    80001a3c:	940080e7          	jalr	-1728(ra) # 80006378 <_Z11printStringPKc>
-        sem_signal(s23);
-    80001a40:	0104b503          	ld	a0,16(s1)
-    80001a44:	00000097          	auipc	ra,0x0
-    80001a48:	b8c080e7          	jalr	-1140(ra) # 800015d0 <_Z10sem_signalP4KSem>
-    while (*(int*)end == 0) {
-    80001a4c:	fc9ff06f          	j	80001a14 <_Z2f2Pv+0x1c>
-    }
+    800019d8:	ff010113          	addi	sp,sp,-16
+    800019dc:	00113423          	sd	ra,8(sp)
+    800019e0:	00813023          	sd	s0,0(sp)
+    800019e4:	01010413          	addi	s0,sp,16
+    time_sleep(5);
+    800019e8:	00500513          	li	a0,5
+    800019ec:	00000097          	auipc	ra,0x0
+    800019f0:	b1c080e7          	jalr	-1252(ra) # 80001508 <_Z10time_sleepm>
+    s31->wait();
+    800019f4:	0000c517          	auipc	a0,0xc
+    800019f8:	80c53503          	ld	a0,-2036(a0) # 8000d200 <s31>
+    800019fc:	00002097          	auipc	ra,0x2
+    80001a00:	aac080e7          	jalr	-1364(ra) # 800034a8 <_ZN9Semaphore4waitEv>
 
 
     printString("\nGotova nit 2\n");
-    80001a50:	00008517          	auipc	a0,0x8
-    80001a54:	5e050513          	addi	a0,a0,1504 # 8000a030 <CONSOLE_STATUS+0x20>
-    80001a58:	00005097          	auipc	ra,0x5
-    80001a5c:	920080e7          	jalr	-1760(ra) # 80006378 <_Z11printStringPKc>
+    80001a04:	00008517          	auipc	a0,0x8
+    80001a08:	62c50513          	addi	a0,a0,1580 # 8000a030 <CONSOLE_STATUS+0x20>
+    80001a0c:	00005097          	auipc	ra,0x5
+    80001a10:	970080e7          	jalr	-1680(ra) # 8000637c <_Z11printStringPKc>
 }
-    80001a60:	01813083          	ld	ra,24(sp)
-    80001a64:	01013403          	ld	s0,16(sp)
-    80001a68:	00813483          	ld	s1,8(sp)
-    80001a6c:	00013903          	ld	s2,0(sp)
-    80001a70:	02010113          	addi	sp,sp,32
-    80001a74:	00008067          	ret
+    80001a14:	00813083          	ld	ra,8(sp)
+    80001a18:	00013403          	ld	s0,0(sp)
+    80001a1c:	01010113          	addi	sp,sp,16
+    80001a20:	00008067          	ret
 
-0000000080001a78 <_Z2f3Pv>:
+0000000080001a24 <_Z2f3Pv>:
 
 
 void f3(void* end) {
-    80001a78:	fe010113          	addi	sp,sp,-32
-    80001a7c:	00113c23          	sd	ra,24(sp)
-    80001a80:	00813823          	sd	s0,16(sp)
-    80001a84:	00913423          	sd	s1,8(sp)
-    80001a88:	01213023          	sd	s2,0(sp)
-    80001a8c:	02010413          	addi	s0,sp,32
-    80001a90:	00050913          	mv	s2,a0
-    while (*(int*)end == 0) {
-    80001a94:	00092783          	lw	a5,0(s2)
-    80001a98:	02079c63          	bnez	a5,80001ad0 <_Z2f3Pv+0x58>
-        sem_wait(s23);
-    80001a9c:	0000b497          	auipc	s1,0xb
-    80001aa0:	73448493          	addi	s1,s1,1844 # 8000d1d0 <s31>
-    80001aa4:	0104b503          	ld	a0,16(s1)
-    80001aa8:	00000097          	auipc	ra,0x0
-    80001aac:	af8080e7          	jalr	-1288(ra) # 800015a0 <_Z8sem_waitP4KSem>
-        printString("nit 3\n");
-    80001ab0:	00008517          	auipc	a0,0x8
-    80001ab4:	59050513          	addi	a0,a0,1424 # 8000a040 <CONSOLE_STATUS+0x30>
-    80001ab8:	00005097          	auipc	ra,0x5
-    80001abc:	8c0080e7          	jalr	-1856(ra) # 80006378 <_Z11printStringPKc>
-        sem_signal(s31);
-    80001ac0:	0004b503          	ld	a0,0(s1)
-    80001ac4:	00000097          	auipc	ra,0x0
-    80001ac8:	b0c080e7          	jalr	-1268(ra) # 800015d0 <_Z10sem_signalP4KSem>
-    while (*(int*)end == 0) {
-    80001acc:	fc9ff06f          	j	80001a94 <_Z2f3Pv+0x1c>
-    }
+    80001a24:	ff010113          	addi	sp,sp,-16
+    80001a28:	00113423          	sd	ra,8(sp)
+    80001a2c:	00813023          	sd	s0,0(sp)
+    80001a30:	01010413          	addi	s0,sp,16
+    time_sleep(30);
+    80001a34:	01e00513          	li	a0,30
+    80001a38:	00000097          	auipc	ra,0x0
+    80001a3c:	ad0080e7          	jalr	-1328(ra) # 80001508 <_Z10time_sleepm>
+    s31->signal();
+    80001a40:	0000b517          	auipc	a0,0xb
+    80001a44:	7c053503          	ld	a0,1984(a0) # 8000d200 <s31>
+    80001a48:	00002097          	auipc	ra,0x2
+    80001a4c:	a8c080e7          	jalr	-1396(ra) # 800034d4 <_ZN9Semaphore6signalEv>
 
     printString("\nGotova nit3\n");
-    80001ad0:	00008517          	auipc	a0,0x8
-    80001ad4:	57850513          	addi	a0,a0,1400 # 8000a048 <CONSOLE_STATUS+0x38>
-    80001ad8:	00005097          	auipc	ra,0x5
-    80001adc:	8a0080e7          	jalr	-1888(ra) # 80006378 <_Z11printStringPKc>
+    80001a50:	00008517          	auipc	a0,0x8
+    80001a54:	5f050513          	addi	a0,a0,1520 # 8000a040 <CONSOLE_STATUS+0x30>
+    80001a58:	00005097          	auipc	ra,0x5
+    80001a5c:	924080e7          	jalr	-1756(ra) # 8000637c <_Z11printStringPKc>
 }
-    80001ae0:	01813083          	ld	ra,24(sp)
-    80001ae4:	01013403          	ld	s0,16(sp)
-    80001ae8:	00813483          	ld	s1,8(sp)
-    80001aec:	00013903          	ld	s2,0(sp)
-    80001af0:	02010113          	addi	sp,sp,32
-    80001af4:	00008067          	ret
+    80001a60:	00813083          	ld	ra,8(sp)
+    80001a64:	00013403          	ld	s0,0(sp)
+    80001a68:	01010113          	addi	sp,sp,16
+    80001a6c:	00008067          	ret
 
-0000000080001af8 <_Z4userPv>:
-        printInt(period);
+0000000080001a70 <_Z4userPv>:
+        printString("Tajmer: ");
+        printInt(counter++);
         printString("\n");
-        if(--counter==0)terminate();
     }
 };
 void user(void*) {
-    80001af8:	fc010113          	addi	sp,sp,-64
-    80001afc:	02113c23          	sd	ra,56(sp)
-    80001b00:	02813823          	sd	s0,48(sp)
-    80001b04:	02913423          	sd	s1,40(sp)
-    80001b08:	03213023          	sd	s2,32(sp)
-    80001b0c:	01313c23          	sd	s3,24(sp)
-    80001b10:	01413823          	sd	s4,16(sp)
-    80001b14:	04010413          	addi	s0,sp,64
+    80001a70:	fc010113          	addi	sp,sp,-64
+    80001a74:	02113c23          	sd	ra,56(sp)
+    80001a78:	02813823          	sd	s0,48(sp)
+    80001a7c:	02913423          	sd	s1,40(sp)
+    80001a80:	03213023          	sd	s2,32(sp)
+    80001a84:	01313c23          	sd	s3,24(sp)
+    80001a88:	04010413          	addi	s0,sp,64
     int end = 0;
-    80001b18:	fc042623          	sw	zero,-52(s0)
-    Thread* nit1 = new Thread(f1, &end);
-    80001b1c:	02000513          	li	a0,32
-    80001b20:	00001097          	auipc	ra,0x1
-    80001b24:	5f0080e7          	jalr	1520(ra) # 80003110 <_Znwm>
-    80001b28:	00050a13          	mv	s4,a0
-    80001b2c:	fcc40613          	addi	a2,s0,-52
-    80001b30:	00000597          	auipc	a1,0x0
-    80001b34:	e2c58593          	addi	a1,a1,-468 # 8000195c <_Z2f1Pv>
-    80001b38:	00001097          	auipc	ra,0x1
-    80001b3c:	6f8080e7          	jalr	1784(ra) # 80003230 <_ZN6ThreadC1EPFvPvES0_>
-    Thread* nit2 = new Thread(f2, &end);
-    80001b40:	02000513          	li	a0,32
+    80001a8c:	fc042623          	sw	zero,-52(s0)
+    nit1 = new Thread(f1, &end);
+    80001a90:	02000513          	li	a0,32
+    80001a94:	00001097          	auipc	ra,0x1
+    80001a98:	670080e7          	jalr	1648(ra) # 80003104 <_Znwm>
+    80001a9c:	00050493          	mv	s1,a0
+    80001aa0:	fcc40613          	addi	a2,s0,-52
+    80001aa4:	00000597          	auipc	a1,0x0
+    80001aa8:	eb858593          	addi	a1,a1,-328 # 8000195c <_Z2f1Pv>
+    80001aac:	00001097          	auipc	ra,0x1
+    80001ab0:	778080e7          	jalr	1912(ra) # 80003224 <_ZN6ThreadC1EPFvPvES0_>
+    80001ab4:	0000b797          	auipc	a5,0xb
+    80001ab8:	7497be23          	sd	s1,1884(a5) # 8000d210 <nit1>
+    nit2 = new Thread(f2, &end);
+    80001abc:	02000513          	li	a0,32
+    80001ac0:	00001097          	auipc	ra,0x1
+    80001ac4:	644080e7          	jalr	1604(ra) # 80003104 <_Znwm>
+    80001ac8:	00050493          	mv	s1,a0
+    80001acc:	fcc40613          	addi	a2,s0,-52
+    80001ad0:	00000597          	auipc	a1,0x0
+    80001ad4:	f0858593          	addi	a1,a1,-248 # 800019d8 <_Z2f2Pv>
+    80001ad8:	00001097          	auipc	ra,0x1
+    80001adc:	74c080e7          	jalr	1868(ra) # 80003224 <_ZN6ThreadC1EPFvPvES0_>
+    80001ae0:	0000b797          	auipc	a5,0xb
+    80001ae4:	7297b423          	sd	s1,1832(a5) # 8000d208 <nit2>
+    nit3 = new Thread(f3, &end);
+    80001ae8:	02000513          	li	a0,32
+    80001aec:	00001097          	auipc	ra,0x1
+    80001af0:	618080e7          	jalr	1560(ra) # 80003104 <_Znwm>
+    80001af4:	00050493          	mv	s1,a0
+    80001af8:	fcc40613          	addi	a2,s0,-52
+    80001afc:	00000597          	auipc	a1,0x0
+    80001b00:	f2858593          	addi	a1,a1,-216 # 80001a24 <_Z2f3Pv>
+    80001b04:	00001097          	auipc	ra,0x1
+    80001b08:	720080e7          	jalr	1824(ra) # 80003224 <_ZN6ThreadC1EPFvPvES0_>
+    80001b0c:	0000b797          	auipc	a5,0xb
+    80001b10:	7097b623          	sd	s1,1804(a5) # 8000d218 <nit3>
+    PeriodicThread* per = new timer();
+    80001b14:	03000513          	li	a0,48
+    80001b18:	00001097          	auipc	ra,0x1
+    80001b1c:	5ec080e7          	jalr	1516(ra) # 80003104 <_Znwm>
+    80001b20:	00050913          	mv	s2,a0
+    explicit timer(): PeriodicThread(1){}
+    80001b24:	00100593          	li	a1,1
+    80001b28:	00002097          	auipc	ra,0x2
+    80001b2c:	9f8080e7          	jalr	-1544(ra) # 80003520 <_ZN14PeriodicThreadC1Em>
+    80001b30:	0000b797          	auipc	a5,0xb
+    80001b34:	28078793          	addi	a5,a5,640 # 8000cdb0 <_ZTV5timer+0x10>
+    80001b38:	00f93023          	sd	a5,0(s2)
+    80001b3c:	02092423          	sw	zero,40(s2)
+    s12 = new Semaphore(0);
+    80001b40:	01000513          	li	a0,16
     80001b44:	00001097          	auipc	ra,0x1
-    80001b48:	5cc080e7          	jalr	1484(ra) # 80003110 <_Znwm>
-    80001b4c:	00050993          	mv	s3,a0
-    80001b50:	fcc40613          	addi	a2,s0,-52
-    80001b54:	00000597          	auipc	a1,0x0
-    80001b58:	ea458593          	addi	a1,a1,-348 # 800019f8 <_Z2f2Pv>
-    80001b5c:	00001097          	auipc	ra,0x1
-    80001b60:	6d4080e7          	jalr	1748(ra) # 80003230 <_ZN6ThreadC1EPFvPvES0_>
-    Thread* nit3 = new Thread(f3, &end);
-    80001b64:	02000513          	li	a0,32
+    80001b48:	5c0080e7          	jalr	1472(ra) # 80003104 <_Znwm>
+    80001b4c:	00050493          	mv	s1,a0
+    80001b50:	00000593          	li	a1,0
+    80001b54:	00002097          	auipc	ra,0x2
+    80001b58:	91c080e7          	jalr	-1764(ra) # 80003470 <_ZN9SemaphoreC1Ej>
+    80001b5c:	0000b797          	auipc	a5,0xb
+    80001b60:	6c97b223          	sd	s1,1732(a5) # 8000d220 <s12>
+    s23 = new Semaphore(0);
+    80001b64:	01000513          	li	a0,16
     80001b68:	00001097          	auipc	ra,0x1
-    80001b6c:	5a8080e7          	jalr	1448(ra) # 80003110 <_Znwm>
-    80001b70:	00050913          	mv	s2,a0
-    80001b74:	fcc40613          	addi	a2,s0,-52
-    80001b78:	00000597          	auipc	a1,0x0
-    80001b7c:	f0058593          	addi	a1,a1,-256 # 80001a78 <_Z2f3Pv>
-    80001b80:	00001097          	auipc	ra,0x1
-    80001b84:	6b0080e7          	jalr	1712(ra) # 80003230 <_ZN6ThreadC1EPFvPvES0_>
-    PeriodicThread* per = new pt(10);
-    80001b88:	03800513          	li	a0,56
+    80001b6c:	59c080e7          	jalr	1436(ra) # 80003104 <_Znwm>
+    80001b70:	00050493          	mv	s1,a0
+    80001b74:	00000593          	li	a1,0
+    80001b78:	00002097          	auipc	ra,0x2
+    80001b7c:	8f8080e7          	jalr	-1800(ra) # 80003470 <_ZN9SemaphoreC1Ej>
+    80001b80:	0000b797          	auipc	a5,0xb
+    80001b84:	6a97b423          	sd	s1,1704(a5) # 8000d228 <s23>
+    s31 = new Semaphore(1);
+    80001b88:	01000513          	li	a0,16
     80001b8c:	00001097          	auipc	ra,0x1
-    80001b90:	584080e7          	jalr	1412(ra) # 80003110 <_Znwm>
-    80001b94:	00050493          	mv	s1,a0
-    pt(time_t p): PeriodicThread(p),period(p){}
-    80001b98:	00a00593          	li	a1,10
+    80001b90:	578080e7          	jalr	1400(ra) # 80003104 <_Znwm>
+    80001b94:	00050993          	mv	s3,a0
+    80001b98:	00100593          	li	a1,1
     80001b9c:	00002097          	auipc	ra,0x2
-    80001ba0:	988080e7          	jalr	-1656(ra) # 80003524 <_ZN14PeriodicThreadC1Em>
-    80001ba4:	0000b797          	auipc	a5,0xb
-    80001ba8:	1dc78793          	addi	a5,a5,476 # 8000cd80 <_ZTV2pt+0x10>
-    80001bac:	00f4b023          	sd	a5,0(s1)
-    80001bb0:	00a00793          	li	a5,10
-    80001bb4:	02f4b423          	sd	a5,40(s1)
-    80001bb8:	00500793          	li	a5,5
-    80001bbc:	02f4a823          	sw	a5,48(s1)
-    sem_open(&s12, 0);
-    80001bc0:	00000593          	li	a1,0
-    80001bc4:	0000b517          	auipc	a0,0xb
-    80001bc8:	61450513          	addi	a0,a0,1556 # 8000d1d8 <s12>
-    80001bcc:	00000097          	auipc	ra,0x0
-    80001bd0:	96c080e7          	jalr	-1684(ra) # 80001538 <_Z8sem_openPP4KSemj>
-    sem_open(&s23, 1);
-    80001bd4:	00100593          	li	a1,1
-    80001bd8:	0000b517          	auipc	a0,0xb
-    80001bdc:	60850513          	addi	a0,a0,1544 # 8000d1e0 <s23>
-    80001be0:	00000097          	auipc	ra,0x0
-    80001be4:	958080e7          	jalr	-1704(ra) # 80001538 <_Z8sem_openPP4KSemj>
-    sem_open(&s31, 0);
-    80001be8:	00000593          	li	a1,0
-    80001bec:	0000b517          	auipc	a0,0xb
-    80001bf0:	5e450513          	addi	a0,a0,1508 # 8000d1d0 <s31>
-    80001bf4:	00000097          	auipc	ra,0x0
-    80001bf8:	944080e7          	jalr	-1724(ra) # 80001538 <_Z8sem_openPP4KSemj>
+    80001ba0:	8d4080e7          	jalr	-1836(ra) # 80003470 <_ZN9SemaphoreC1Ej>
+    80001ba4:	0000b497          	auipc	s1,0xb
+    80001ba8:	65c48493          	addi	s1,s1,1628 # 8000d200 <s31>
+    80001bac:	0134b023          	sd	s3,0(s1)
     nit1->start();
-    80001bfc:	000a0513          	mv	a0,s4
-    80001c00:	00001097          	auipc	ra,0x1
-    80001c04:	6c8080e7          	jalr	1736(ra) # 800032c8 <_ZN6Thread5startEv>
-    nit2->start();
-    80001c08:	00098513          	mv	a0,s3
-    80001c0c:	00001097          	auipc	ra,0x1
-    80001c10:	6bc080e7          	jalr	1724(ra) # 800032c8 <_ZN6Thread5startEv>
+    80001bb0:	0104b503          	ld	a0,16(s1)
+    80001bb4:	00001097          	auipc	ra,0x1
+    80001bb8:	708080e7          	jalr	1800(ra) # 800032bc <_ZN6Thread5startEv>
     nit3->start();
-    80001c14:	00090513          	mv	a0,s2
-    80001c18:	00001097          	auipc	ra,0x1
-    80001c1c:	6b0080e7          	jalr	1712(ra) # 800032c8 <_ZN6Thread5startEv>
+    80001bbc:	0184b503          	ld	a0,24(s1)
+    80001bc0:	00001097          	auipc	ra,0x1
+    80001bc4:	6fc080e7          	jalr	1788(ra) # 800032bc <_ZN6Thread5startEv>
+    nit2->start();
+    80001bc8:	0084b503          	ld	a0,8(s1)
+    80001bcc:	00001097          	auipc	ra,0x1
+    80001bd0:	6f0080e7          	jalr	1776(ra) # 800032bc <_ZN6Thread5startEv>
     per->start();
-    80001c20:	00048513          	mv	a0,s1
-    80001c24:	00001097          	auipc	ra,0x1
-    80001c28:	6a4080e7          	jalr	1700(ra) # 800032c8 <_ZN6Thread5startEv>
+    80001bd4:	00090513          	mv	a0,s2
+    80001bd8:	00001097          	auipc	ra,0x1
+    80001bdc:	6e4080e7          	jalr	1764(ra) # 800032bc <_ZN6Thread5startEv>
 
+    time_sleep(50);
+    80001be0:	03200513          	li	a0,50
+    80001be4:	00000097          	auipc	ra,0x0
+    80001be8:	924080e7          	jalr	-1756(ra) # 80001508 <_Z10time_sleepm>
     nit1->join();
-    80001c2c:	000a0513          	mv	a0,s4
-    80001c30:	00001097          	auipc	ra,0x1
-    80001c34:	6e0080e7          	jalr	1760(ra) # 80003310 <_ZN6Thread4joinEv>
+    80001bec:	0104b503          	ld	a0,16(s1)
+    80001bf0:	00001097          	auipc	ra,0x1
+    80001bf4:	714080e7          	jalr	1812(ra) # 80003304 <_ZN6Thread4joinEv>
     nit2->join();
-    80001c38:	00098513          	mv	a0,s3
-    80001c3c:	00001097          	auipc	ra,0x1
-    80001c40:	6d4080e7          	jalr	1748(ra) # 80003310 <_ZN6Thread4joinEv>
+    80001bf8:	0084b503          	ld	a0,8(s1)
+    80001bfc:	00001097          	auipc	ra,0x1
+    80001c00:	708080e7          	jalr	1800(ra) # 80003304 <_ZN6Thread4joinEv>
     nit3->join();
-    80001c44:	00090513          	mv	a0,s2
-    80001c48:	00001097          	auipc	ra,0x1
-    80001c4c:	6c8080e7          	jalr	1736(ra) # 80003310 <_ZN6Thread4joinEv>
-    per->terminate();
-    80001c50:	00048513          	mv	a0,s1
-    80001c54:	00002097          	auipc	ra,0x2
-    80001c58:	8b0080e7          	jalr	-1872(ra) # 80003504 <_ZN14PeriodicThread9terminateEv>
+    80001c04:	0184b503          	ld	a0,24(s1)
+    80001c08:	00001097          	auipc	ra,0x1
+    80001c0c:	6fc080e7          	jalr	1788(ra) # 80003304 <_ZN6Thread4joinEv>
 
-    per->join();
-    80001c5c:	00048513          	mv	a0,s1
-    80001c60:	00001097          	auipc	ra,0x1
-    80001c64:	6b0080e7          	jalr	1712(ra) # 80003310 <_ZN6Thread4joinEv>
+
     printString("\nGotove user niti\n");
-    80001c68:	00008517          	auipc	a0,0x8
-    80001c6c:	3f050513          	addi	a0,a0,1008 # 8000a058 <CONSOLE_STATUS+0x48>
-    80001c70:	00004097          	auipc	ra,0x4
-    80001c74:	708080e7          	jalr	1800(ra) # 80006378 <_Z11printStringPKc>
+    80001c10:	00008517          	auipc	a0,0x8
+    80001c14:	44050513          	addi	a0,a0,1088 # 8000a050 <CONSOLE_STATUS+0x40>
+    80001c18:	00004097          	auipc	ra,0x4
+    80001c1c:	764080e7          	jalr	1892(ra) # 8000637c <_Z11printStringPKc>
 
     printString("\nSad cu da izadjem iz usera\n");
-    80001c78:	00008517          	auipc	a0,0x8
-    80001c7c:	3f850513          	addi	a0,a0,1016 # 8000a070 <CONSOLE_STATUS+0x60>
-    80001c80:	00004097          	auipc	ra,0x4
-    80001c84:	6f8080e7          	jalr	1784(ra) # 80006378 <_Z11printStringPKc>
-    80001c88:	03813083          	ld	ra,56(sp)
-    80001c8c:	03013403          	ld	s0,48(sp)
-    80001c90:	02813483          	ld	s1,40(sp)
-    80001c94:	02013903          	ld	s2,32(sp)
-    80001c98:	01813983          	ld	s3,24(sp)
-    80001c9c:	01013a03          	ld	s4,16(sp)
-    80001ca0:	04010113          	addi	sp,sp,64
-    80001ca4:	00008067          	ret
-    80001ca8:	00050493          	mv	s1,a0
-    Thread* nit1 = new Thread(f1, &end);
-    80001cac:	000a0513          	mv	a0,s4
-    80001cb0:	00001097          	auipc	ra,0x1
-    80001cb4:	4b0080e7          	jalr	1200(ra) # 80003160 <_ZdlPv>
-    80001cb8:	00048513          	mv	a0,s1
-    80001cbc:	0000c097          	auipc	ra,0xc
-    80001cc0:	6ac080e7          	jalr	1708(ra) # 8000e368 <_Unwind_Resume>
-    80001cc4:	00050493          	mv	s1,a0
-    Thread* nit2 = new Thread(f2, &end);
-    80001cc8:	00098513          	mv	a0,s3
-    80001ccc:	00001097          	auipc	ra,0x1
-    80001cd0:	494080e7          	jalr	1172(ra) # 80003160 <_ZdlPv>
-    80001cd4:	00048513          	mv	a0,s1
-    80001cd8:	0000c097          	auipc	ra,0xc
-    80001cdc:	690080e7          	jalr	1680(ra) # 8000e368 <_Unwind_Resume>
-    80001ce0:	00050493          	mv	s1,a0
-    Thread* nit3 = new Thread(f3, &end);
+    80001c20:	00008517          	auipc	a0,0x8
+    80001c24:	44850513          	addi	a0,a0,1096 # 8000a068 <CONSOLE_STATUS+0x58>
+    80001c28:	00004097          	auipc	ra,0x4
+    80001c2c:	754080e7          	jalr	1876(ra) # 8000637c <_Z11printStringPKc>
+    time_sleep(10);
+    80001c30:	00a00513          	li	a0,10
+    80001c34:	00000097          	auipc	ra,0x0
+    80001c38:	8d4080e7          	jalr	-1836(ra) # 80001508 <_Z10time_sleepm>
+    per->terminate();
+    80001c3c:	00090513          	mv	a0,s2
+    80001c40:	00002097          	auipc	ra,0x2
+    80001c44:	8c0080e7          	jalr	-1856(ra) # 80003500 <_ZN14PeriodicThread9terminateEv>
+    80001c48:	03813083          	ld	ra,56(sp)
+    80001c4c:	03013403          	ld	s0,48(sp)
+    80001c50:	02813483          	ld	s1,40(sp)
+    80001c54:	02013903          	ld	s2,32(sp)
+    80001c58:	01813983          	ld	s3,24(sp)
+    80001c5c:	04010113          	addi	sp,sp,64
+    80001c60:	00008067          	ret
+    80001c64:	00050913          	mv	s2,a0
+    nit1 = new Thread(f1, &end);
+    80001c68:	00048513          	mv	a0,s1
+    80001c6c:	00001097          	auipc	ra,0x1
+    80001c70:	4e8080e7          	jalr	1256(ra) # 80003154 <_ZdlPv>
+    80001c74:	00090513          	mv	a0,s2
+    80001c78:	0000c097          	auipc	ra,0xc
+    80001c7c:	740080e7          	jalr	1856(ra) # 8000e3b8 <_Unwind_Resume>
+    80001c80:	00050913          	mv	s2,a0
+    nit2 = new Thread(f2, &end);
+    80001c84:	00048513          	mv	a0,s1
+    80001c88:	00001097          	auipc	ra,0x1
+    80001c8c:	4cc080e7          	jalr	1228(ra) # 80003154 <_ZdlPv>
+    80001c90:	00090513          	mv	a0,s2
+    80001c94:	0000c097          	auipc	ra,0xc
+    80001c98:	724080e7          	jalr	1828(ra) # 8000e3b8 <_Unwind_Resume>
+    80001c9c:	00050913          	mv	s2,a0
+    nit3 = new Thread(f3, &end);
+    80001ca0:	00048513          	mv	a0,s1
+    80001ca4:	00001097          	auipc	ra,0x1
+    80001ca8:	4b0080e7          	jalr	1200(ra) # 80003154 <_ZdlPv>
+    80001cac:	00090513          	mv	a0,s2
+    80001cb0:	0000c097          	auipc	ra,0xc
+    80001cb4:	708080e7          	jalr	1800(ra) # 8000e3b8 <_Unwind_Resume>
+    80001cb8:	00050493          	mv	s1,a0
+    PeriodicThread* per = new timer();
+    80001cbc:	00090513          	mv	a0,s2
+    80001cc0:	00001097          	auipc	ra,0x1
+    80001cc4:	494080e7          	jalr	1172(ra) # 80003154 <_ZdlPv>
+    80001cc8:	00048513          	mv	a0,s1
+    80001ccc:	0000c097          	auipc	ra,0xc
+    80001cd0:	6ec080e7          	jalr	1772(ra) # 8000e3b8 <_Unwind_Resume>
+    80001cd4:	00050913          	mv	s2,a0
+    s12 = new Semaphore(0);
+    80001cd8:	00048513          	mv	a0,s1
+    80001cdc:	00001097          	auipc	ra,0x1
+    80001ce0:	478080e7          	jalr	1144(ra) # 80003154 <_ZdlPv>
     80001ce4:	00090513          	mv	a0,s2
-    80001ce8:	00001097          	auipc	ra,0x1
-    80001cec:	478080e7          	jalr	1144(ra) # 80003160 <_ZdlPv>
-    80001cf0:	00048513          	mv	a0,s1
-    80001cf4:	0000c097          	auipc	ra,0xc
-    80001cf8:	674080e7          	jalr	1652(ra) # 8000e368 <_Unwind_Resume>
-    80001cfc:	00050913          	mv	s2,a0
-    PeriodicThread* per = new pt(10);
-    80001d00:	00048513          	mv	a0,s1
-    80001d04:	00001097          	auipc	ra,0x1
-    80001d08:	45c080e7          	jalr	1116(ra) # 80003160 <_ZdlPv>
-    80001d0c:	00090513          	mv	a0,s2
-    80001d10:	0000c097          	auipc	ra,0xc
-    80001d14:	658080e7          	jalr	1624(ra) # 8000e368 <_Unwind_Resume>
+    80001ce8:	0000c097          	auipc	ra,0xc
+    80001cec:	6d0080e7          	jalr	1744(ra) # 8000e3b8 <_Unwind_Resume>
+    80001cf0:	00050913          	mv	s2,a0
+    s23 = new Semaphore(0);
+    80001cf4:	00048513          	mv	a0,s1
+    80001cf8:	00001097          	auipc	ra,0x1
+    80001cfc:	45c080e7          	jalr	1116(ra) # 80003154 <_ZdlPv>
+    80001d00:	00090513          	mv	a0,s2
+    80001d04:	0000c097          	auipc	ra,0xc
+    80001d08:	6b4080e7          	jalr	1716(ra) # 8000e3b8 <_Unwind_Resume>
+    80001d0c:	00050493          	mv	s1,a0
+    s31 = new Semaphore(1);
+    80001d10:	00098513          	mv	a0,s3
+    80001d14:	00001097          	auipc	ra,0x1
+    80001d18:	440080e7          	jalr	1088(ra) # 80003154 <_ZdlPv>
+    80001d1c:	00048513          	mv	a0,s1
+    80001d20:	0000c097          	auipc	ra,0xc
+    80001d24:	698080e7          	jalr	1688(ra) # 8000e3b8 <_Unwind_Resume>
 
-0000000080001d18 <_ZN2pt18periodicActivationEv>:
+0000000080001d28 <_ZN5timer18periodicActivationEv>:
     void periodicActivation() override{
-    80001d18:	fe010113          	addi	sp,sp,-32
-    80001d1c:	00113c23          	sd	ra,24(sp)
-    80001d20:	00813823          	sd	s0,16(sp)
-    80001d24:	00913423          	sd	s1,8(sp)
-    80001d28:	02010413          	addi	s0,sp,32
-    80001d2c:	00050493          	mv	s1,a0
-        printString("Janko ");
-    80001d30:	00008517          	auipc	a0,0x8
-    80001d34:	36050513          	addi	a0,a0,864 # 8000a090 <CONSOLE_STATUS+0x80>
-    80001d38:	00004097          	auipc	ra,0x4
-    80001d3c:	640080e7          	jalr	1600(ra) # 80006378 <_Z11printStringPKc>
-        printInt(period);
-    80001d40:	00000613          	li	a2,0
-    80001d44:	00a00593          	li	a1,10
-    80001d48:	0284a503          	lw	a0,40(s1)
-    80001d4c:	00004097          	auipc	ra,0x4
-    80001d50:	7dc080e7          	jalr	2012(ra) # 80006528 <_Z8printIntiii>
+    80001d28:	fe010113          	addi	sp,sp,-32
+    80001d2c:	00113c23          	sd	ra,24(sp)
+    80001d30:	00813823          	sd	s0,16(sp)
+    80001d34:	00913423          	sd	s1,8(sp)
+    80001d38:	02010413          	addi	s0,sp,32
+    80001d3c:	00050493          	mv	s1,a0
+        printString("Tajmer: ");
+    80001d40:	00008517          	auipc	a0,0x8
+    80001d44:	34850513          	addi	a0,a0,840 # 8000a088 <CONSOLE_STATUS+0x78>
+    80001d48:	00004097          	auipc	ra,0x4
+    80001d4c:	634080e7          	jalr	1588(ra) # 8000637c <_Z11printStringPKc>
+        printInt(counter++);
+    80001d50:	0284a503          	lw	a0,40(s1)
+    80001d54:	0015079b          	addiw	a5,a0,1
+    80001d58:	02f4a423          	sw	a5,40(s1)
+    80001d5c:	00000613          	li	a2,0
+    80001d60:	00a00593          	li	a1,10
+    80001d64:	00004097          	auipc	ra,0x4
+    80001d68:	7c8080e7          	jalr	1992(ra) # 8000652c <_Z8printIntiii>
         printString("\n");
-    80001d54:	00009517          	auipc	a0,0x9
-    80001d58:	90c50513          	addi	a0,a0,-1780 # 8000a660 <CONSOLE_STATUS+0x650>
-    80001d5c:	00004097          	auipc	ra,0x4
-    80001d60:	61c080e7          	jalr	1564(ra) # 80006378 <_Z11printStringPKc>
-        if(--counter==0)terminate();
-    80001d64:	0304a783          	lw	a5,48(s1)
-    80001d68:	fff7879b          	addiw	a5,a5,-1
-    80001d6c:	0007871b          	sext.w	a4,a5
-    80001d70:	02f4a823          	sw	a5,48(s1)
-    80001d74:	00070c63          	beqz	a4,80001d8c <_ZN2pt18periodicActivationEv+0x74>
+    80001d6c:	00009517          	auipc	a0,0x9
+    80001d70:	8f450513          	addi	a0,a0,-1804 # 8000a660 <CONSOLE_STATUS+0x650>
+    80001d74:	00004097          	auipc	ra,0x4
+    80001d78:	608080e7          	jalr	1544(ra) # 8000637c <_Z11printStringPKc>
     }
-    80001d78:	01813083          	ld	ra,24(sp)
-    80001d7c:	01013403          	ld	s0,16(sp)
-    80001d80:	00813483          	ld	s1,8(sp)
-    80001d84:	02010113          	addi	sp,sp,32
-    80001d88:	00008067          	ret
-        if(--counter==0)terminate();
-    80001d8c:	00048513          	mv	a0,s1
-    80001d90:	00001097          	auipc	ra,0x1
-    80001d94:	774080e7          	jalr	1908(ra) # 80003504 <_ZN14PeriodicThread9terminateEv>
-    }
-    80001d98:	fe1ff06f          	j	80001d78 <_ZN2pt18periodicActivationEv+0x60>
+    80001d7c:	01813083          	ld	ra,24(sp)
+    80001d80:	01013403          	ld	s0,16(sp)
+    80001d84:	00813483          	ld	s1,8(sp)
+    80001d88:	02010113          	addi	sp,sp,32
+    80001d8c:	00008067          	ret
 
-0000000080001d9c <_ZN2ptD1Ev>:
-class pt:public PeriodicThread{
-    80001d9c:	ff010113          	addi	sp,sp,-16
-    80001da0:	00113423          	sd	ra,8(sp)
-    80001da4:	00813023          	sd	s0,0(sp)
-    80001da8:	01010413          	addi	s0,sp,16
+0000000080001d90 <_ZN5timerD1Ev>:
+class timer:public PeriodicThread{
+    80001d90:	ff010113          	addi	sp,sp,-16
+    80001d94:	00113423          	sd	ra,8(sp)
+    80001d98:	00813023          	sd	s0,0(sp)
+    80001d9c:	01010413          	addi	s0,sp,16
 private:
     sem_t myHandle;
 };
 
 
 class PeriodicThread : public Thread {
-    80001dac:	0000b797          	auipc	a5,0xb
-    80001db0:	2a47b783          	ld	a5,676(a5) # 8000d050 <_GLOBAL_OFFSET_TABLE_+0x38>
-    80001db4:	01078793          	addi	a5,a5,16
-    80001db8:	00f53023          	sd	a5,0(a0)
-    80001dbc:	00001097          	auipc	ra,0x1
-    80001dc0:	274080e7          	jalr	628(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80001dc4:	00813083          	ld	ra,8(sp)
-    80001dc8:	00013403          	ld	s0,0(sp)
-    80001dcc:	01010113          	addi	sp,sp,16
-    80001dd0:	00008067          	ret
+    80001da0:	0000b797          	auipc	a5,0xb
+    80001da4:	2e07b783          	ld	a5,736(a5) # 8000d080 <_GLOBAL_OFFSET_TABLE_+0x38>
+    80001da8:	01078793          	addi	a5,a5,16
+    80001dac:	00f53023          	sd	a5,0(a0)
+    80001db0:	00001097          	auipc	ra,0x1
+    80001db4:	274080e7          	jalr	628(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80001db8:	00813083          	ld	ra,8(sp)
+    80001dbc:	00013403          	ld	s0,0(sp)
+    80001dc0:	01010113          	addi	sp,sp,16
+    80001dc4:	00008067          	ret
 
-0000000080001dd4 <_ZN2ptD0Ev>:
-    80001dd4:	fe010113          	addi	sp,sp,-32
-    80001dd8:	00113c23          	sd	ra,24(sp)
-    80001ddc:	00813823          	sd	s0,16(sp)
-    80001de0:	00913423          	sd	s1,8(sp)
-    80001de4:	02010413          	addi	s0,sp,32
-    80001de8:	00050493          	mv	s1,a0
-    80001dec:	0000b797          	auipc	a5,0xb
-    80001df0:	2647b783          	ld	a5,612(a5) # 8000d050 <_GLOBAL_OFFSET_TABLE_+0x38>
-    80001df4:	01078793          	addi	a5,a5,16
-    80001df8:	00f53023          	sd	a5,0(a0)
+0000000080001dc8 <_ZN5timerD0Ev>:
+    80001dc8:	fe010113          	addi	sp,sp,-32
+    80001dcc:	00113c23          	sd	ra,24(sp)
+    80001dd0:	00813823          	sd	s0,16(sp)
+    80001dd4:	00913423          	sd	s1,8(sp)
+    80001dd8:	02010413          	addi	s0,sp,32
+    80001ddc:	00050493          	mv	s1,a0
+    80001de0:	0000b797          	auipc	a5,0xb
+    80001de4:	2a07b783          	ld	a5,672(a5) # 8000d080 <_GLOBAL_OFFSET_TABLE_+0x38>
+    80001de8:	01078793          	addi	a5,a5,16
+    80001dec:	00f53023          	sd	a5,0(a0)
+    80001df0:	00001097          	auipc	ra,0x1
+    80001df4:	234080e7          	jalr	564(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80001df8:	00048513          	mv	a0,s1
     80001dfc:	00001097          	auipc	ra,0x1
-    80001e00:	234080e7          	jalr	564(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80001e04:	00048513          	mv	a0,s1
-    80001e08:	00001097          	auipc	ra,0x1
-    80001e0c:	358080e7          	jalr	856(ra) # 80003160 <_ZdlPv>
-    80001e10:	01813083          	ld	ra,24(sp)
-    80001e14:	01013403          	ld	s0,16(sp)
-    80001e18:	00813483          	ld	s1,8(sp)
-    80001e1c:	02010113          	addi	sp,sp,32
-    80001e20:	00008067          	ret
+    80001e00:	358080e7          	jalr	856(ra) # 80003154 <_ZdlPv>
+    80001e04:	01813083          	ld	ra,24(sp)
+    80001e08:	01013403          	ld	s0,16(sp)
+    80001e0c:	00813483          	ld	s1,8(sp)
+    80001e10:	02010113          	addi	sp,sp,32
+    80001e14:	00008067          	ret
 
-0000000080001e24 <_ZN9Scheduler3putEP3TCB>:
+0000000080001e18 <_ZN9Scheduler3putEP3TCB>:
 
 TCB* Scheduler::head = nullptr;
 TCB* Scheduler::tail = nullptr;
 TCB* Scheduler::sleepingHead = nullptr;
 
 void Scheduler::put(TCB* tcb) {
-    80001e24:	ff010113          	addi	sp,sp,-16
-    80001e28:	00813423          	sd	s0,8(sp)
-    80001e2c:	01010413          	addi	s0,sp,16
+    80001e18:	ff010113          	addi	sp,sp,-16
+    80001e1c:	00813423          	sd	s0,8(sp)
+    80001e20:	01010413          	addi	s0,sp,16
     if (tail == nullptr) {
-    80001e30:	0000b797          	auipc	a5,0xb
-    80001e34:	3b87b783          	ld	a5,952(a5) # 8000d1e8 <_ZN9Scheduler4tailE>
-    80001e38:	02078263          	beqz	a5,80001e5c <_ZN9Scheduler3putEP3TCB+0x38>
+    80001e24:	0000b797          	auipc	a5,0xb
+    80001e28:	40c7b783          	ld	a5,1036(a5) # 8000d230 <_ZN9Scheduler4tailE>
+    80001e2c:	02078263          	beqz	a5,80001e50 <_ZN9Scheduler3putEP3TCB+0x38>
         head = tail = tcb;
     } else {
         tail->nextInScheduler = tcb;
-    80001e3c:	02a7b823          	sd	a0,48(a5)
+    80001e30:	02a7b823          	sd	a0,48(a5)
         tail = tcb;
-    80001e40:	0000b797          	auipc	a5,0xb
-    80001e44:	3aa7b423          	sd	a0,936(a5) # 8000d1e8 <_ZN9Scheduler4tailE>
+    80001e34:	0000b797          	auipc	a5,0xb
+    80001e38:	3ea7be23          	sd	a0,1020(a5) # 8000d230 <_ZN9Scheduler4tailE>
         CREATED, ACTIVE, BLOCKED, JOINING, SLEEPING, FINISHED
     };
 
     static TCB* createThread(Body function, void* args, uint64* stack);
 
     void setStatus(ThreadStatus stat) { this->status = stat; }
-    80001e48:	00100793          	li	a5,1
-    80001e4c:	04f52c23          	sw	a5,88(a0)
+    80001e3c:	00100793          	li	a5,1
+    80001e40:	04f52c23          	sw	a5,88(a0)
     }
     tcb->setStatus(TCB::ACTIVE);
 }
-    80001e50:	00813403          	ld	s0,8(sp)
-    80001e54:	01010113          	addi	sp,sp,16
-    80001e58:	00008067          	ret
+    80001e44:	00813403          	ld	s0,8(sp)
+    80001e48:	01010113          	addi	sp,sp,16
+    80001e4c:	00008067          	ret
         head = tail = tcb;
-    80001e5c:	0000b797          	auipc	a5,0xb
-    80001e60:	38c78793          	addi	a5,a5,908 # 8000d1e8 <_ZN9Scheduler4tailE>
-    80001e64:	00a7b023          	sd	a0,0(a5)
-    80001e68:	00a7b423          	sd	a0,8(a5)
-    80001e6c:	fddff06f          	j	80001e48 <_ZN9Scheduler3putEP3TCB+0x24>
+    80001e50:	0000b797          	auipc	a5,0xb
+    80001e54:	3e078793          	addi	a5,a5,992 # 8000d230 <_ZN9Scheduler4tailE>
+    80001e58:	00a7b023          	sd	a0,0(a5)
+    80001e5c:	00a7b423          	sd	a0,8(a5)
+    80001e60:	fddff06f          	j	80001e3c <_ZN9Scheduler3putEP3TCB+0x24>
 
-0000000080001e70 <_ZN9Scheduler3getEv>:
+0000000080001e64 <_ZN9Scheduler3getEv>:
 
 TCB* Scheduler::get() {
-    80001e70:	ff010113          	addi	sp,sp,-16
-    80001e74:	00813423          	sd	s0,8(sp)
-    80001e78:	01010413          	addi	s0,sp,16
+    80001e64:	ff010113          	addi	sp,sp,-16
+    80001e68:	00813423          	sd	s0,8(sp)
+    80001e6c:	01010413          	addi	s0,sp,16
     TCB* firstThread = head;
-    80001e7c:	0000b717          	auipc	a4,0xb
-    80001e80:	36c70713          	addi	a4,a4,876 # 8000d1e8 <_ZN9Scheduler4tailE>
-    80001e84:	00873503          	ld	a0,8(a4)
+    80001e70:	0000b717          	auipc	a4,0xb
+    80001e74:	3c070713          	addi	a4,a4,960 # 8000d230 <_ZN9Scheduler4tailE>
+    80001e78:	00873503          	ld	a0,8(a4)
     head = head->nextInScheduler;
-    80001e88:	03053783          	ld	a5,48(a0)
-    80001e8c:	00f73423          	sd	a5,8(a4)
+    80001e7c:	03053783          	ld	a5,48(a0)
+    80001e80:	00f73423          	sd	a5,8(a4)
     if (head == nullptr) {
-    80001e90:	00078a63          	beqz	a5,80001ea4 <_ZN9Scheduler3getEv+0x34>
+    80001e84:	00078a63          	beqz	a5,80001e98 <_ZN9Scheduler3getEv+0x34>
         tail = head = nullptr;
     }
     firstThread->nextInScheduler = nullptr;
-    80001e94:	02053823          	sd	zero,48(a0)
+    80001e88:	02053823          	sd	zero,48(a0)
     return firstThread;
 }
-    80001e98:	00813403          	ld	s0,8(sp)
-    80001e9c:	01010113          	addi	sp,sp,16
-    80001ea0:	00008067          	ret
+    80001e8c:	00813403          	ld	s0,8(sp)
+    80001e90:	01010113          	addi	sp,sp,16
+    80001e94:	00008067          	ret
         tail = head = nullptr;
-    80001ea4:	00073423          	sd	zero,8(a4)
-    80001ea8:	00073023          	sd	zero,0(a4)
-    80001eac:	fe9ff06f          	j	80001e94 <_ZN9Scheduler3getEv+0x24>
+    80001e98:	00073423          	sd	zero,8(a4)
+    80001e9c:	00073023          	sd	zero,0(a4)
+    80001ea0:	fe9ff06f          	j	80001e88 <_ZN9Scheduler3getEv+0x24>
 
-0000000080001eb0 <_ZN9Scheduler10putToSleepEP3TCBm>:
+0000000080001ea4 <_ZN9Scheduler10putToSleepEP3TCBm>:
 
 void Scheduler::putToSleep(TCB* tcb, time_t sleepTime) {
-    80001eb0:	ff010113          	addi	sp,sp,-16
-    80001eb4:	00813423          	sd	s0,8(sp)
-    80001eb8:	01010413          	addi	s0,sp,16
+    80001ea4:	ff010113          	addi	sp,sp,-16
+    80001ea8:	00813423          	sd	s0,8(sp)
+    80001eac:	01010413          	addi	s0,sp,16
     tcb->status = TCB::SLEEPING;
-    80001ebc:	00400793          	li	a5,4
-    80001ec0:	04f52c23          	sw	a5,88(a0)
+    80001eb0:	00400793          	li	a5,4
+    80001eb4:	04f52c23          	sw	a5,88(a0)
     if (sleepingHead == nullptr) {
-    80001ec4:	0000b817          	auipc	a6,0xb
-    80001ec8:	33483803          	ld	a6,820(a6) # 8000d1f8 <_ZN9Scheduler12sleepingHeadE>
-    80001ecc:	02080863          	beqz	a6,80001efc <_ZN9Scheduler10putToSleepEP3TCBm+0x4c>
+    80001eb8:	0000b817          	auipc	a6,0xb
+    80001ebc:	38883803          	ld	a6,904(a6) # 8000d240 <_ZN9Scheduler12sleepingHeadE>
+    80001ec0:	02080863          	beqz	a6,80001ef0 <_ZN9Scheduler10putToSleepEP3TCBm+0x4c>
         tcb->timeToSleep = sleepTime;
         return;
     }
     TCB* prevSleeping = nullptr;
     time_t accumulated = 0;
     TCB* current = sleepingHead;
-    80001ed0:	00080793          	mv	a5,a6
+    80001ec4:	00080793          	mv	a5,a6
     time_t accumulated = 0;
-    80001ed4:	00000693          	li	a3,0
+    80001ec8:	00000693          	li	a3,0
     TCB* prevSleeping = nullptr;
-    80001ed8:	00000613          	li	a2,0
+    80001ecc:	00000613          	li	a2,0
     for (; current && accumulated + current->timeToSleep < sleepTime; current = current->nextSleeping) {
-    80001edc:	02078863          	beqz	a5,80001f0c <_ZN9Scheduler10putToSleepEP3TCBm+0x5c>
-    80001ee0:	0387b703          	ld	a4,56(a5)
-    80001ee4:	00d70733          	add	a4,a4,a3
-    80001ee8:	02b77263          	bgeu	a4,a1,80001f0c <_ZN9Scheduler10putToSleepEP3TCBm+0x5c>
+    80001ed0:	02078863          	beqz	a5,80001f00 <_ZN9Scheduler10putToSleepEP3TCBm+0x5c>
+    80001ed4:	0387b703          	ld	a4,56(a5)
+    80001ed8:	00d70733          	add	a4,a4,a3
+    80001edc:	02b77263          	bgeu	a4,a1,80001f00 <_ZN9Scheduler10putToSleepEP3TCBm+0x5c>
         accumulated += current->timeToSleep;
-    80001eec:	00070693          	mv	a3,a4
+    80001ee0:	00070693          	mv	a3,a4
         prevSleeping = current;
-    80001ef0:	00078613          	mv	a2,a5
+    80001ee4:	00078613          	mv	a2,a5
     for (; current && accumulated + current->timeToSleep < sleepTime; current = current->nextSleeping) {
-    80001ef4:	0407b783          	ld	a5,64(a5)
-    80001ef8:	fe5ff06f          	j	80001edc <_ZN9Scheduler10putToSleepEP3TCBm+0x2c>
+    80001ee8:	0407b783          	ld	a5,64(a5)
+    80001eec:	fe5ff06f          	j	80001ed0 <_ZN9Scheduler10putToSleepEP3TCBm+0x2c>
         sleepingHead = tcb;
-    80001efc:	0000b797          	auipc	a5,0xb
-    80001f00:	2ea7be23          	sd	a0,764(a5) # 8000d1f8 <_ZN9Scheduler12sleepingHeadE>
+    80001ef0:	0000b797          	auipc	a5,0xb
+    80001ef4:	34a7b823          	sd	a0,848(a5) # 8000d240 <_ZN9Scheduler12sleepingHeadE>
         tcb->timeToSleep = sleepTime;
-    80001f04:	02b53c23          	sd	a1,56(a0)
+    80001ef8:	02b53c23          	sd	a1,56(a0)
         return;
-    80001f08:	02c0006f          	j	80001f34 <_ZN9Scheduler10putToSleepEP3TCBm+0x84>
+    80001efc:	02c0006f          	j	80001f28 <_ZN9Scheduler10putToSleepEP3TCBm+0x84>
     }
     if (!prevSleeping) {
-    80001f0c:	02060a63          	beqz	a2,80001f40 <_ZN9Scheduler10putToSleepEP3TCBm+0x90>
+    80001f00:	02060a63          	beqz	a2,80001f34 <_ZN9Scheduler10putToSleepEP3TCBm+0x90>
         sleepingHead = tcb;
         tcb->timeToSleep = sleepTime;
         tcb->nextSleeping->timeToSleep -= sleepTime;
         return;
     }
     tcb->nextSleeping = current;
-    80001f10:	04f53023          	sd	a5,64(a0)
+    80001f04:	04f53023          	sd	a5,64(a0)
     prevSleeping->nextSleeping = tcb;
-    80001f14:	04a63023          	sd	a0,64(a2)
+    80001f08:	04a63023          	sd	a0,64(a2)
     tcb->timeToSleep = sleepTime - accumulated;
-    80001f18:	40d58733          	sub	a4,a1,a3
-    80001f1c:	02e53c23          	sd	a4,56(a0)
+    80001f0c:	40d58733          	sub	a4,a1,a3
+    80001f10:	02e53c23          	sd	a4,56(a0)
     if (current) current->timeToSleep -= sleepTime - accumulated;
-    80001f20:	00078a63          	beqz	a5,80001f34 <_ZN9Scheduler10putToSleepEP3TCBm+0x84>
-    80001f24:	40b686b3          	sub	a3,a3,a1
-    80001f28:	0387b703          	ld	a4,56(a5)
-    80001f2c:	00d706b3          	add	a3,a4,a3
-    80001f30:	02d7bc23          	sd	a3,56(a5)
+    80001f14:	00078a63          	beqz	a5,80001f28 <_ZN9Scheduler10putToSleepEP3TCBm+0x84>
+    80001f18:	40b686b3          	sub	a3,a3,a1
+    80001f1c:	0387b703          	ld	a4,56(a5)
+    80001f20:	00d706b3          	add	a3,a4,a3
+    80001f24:	02d7bc23          	sd	a3,56(a5)
 }
-    80001f34:	00813403          	ld	s0,8(sp)
-    80001f38:	01010113          	addi	sp,sp,16
-    80001f3c:	00008067          	ret
+    80001f28:	00813403          	ld	s0,8(sp)
+    80001f2c:	01010113          	addi	sp,sp,16
+    80001f30:	00008067          	ret
         tcb->nextSleeping = sleepingHead;
-    80001f40:	05053023          	sd	a6,64(a0)
+    80001f34:	05053023          	sd	a6,64(a0)
         sleepingHead = tcb;
-    80001f44:	0000b797          	auipc	a5,0xb
-    80001f48:	2aa7ba23          	sd	a0,692(a5) # 8000d1f8 <_ZN9Scheduler12sleepingHeadE>
+    80001f38:	0000b797          	auipc	a5,0xb
+    80001f3c:	30a7b423          	sd	a0,776(a5) # 8000d240 <_ZN9Scheduler12sleepingHeadE>
         tcb->timeToSleep = sleepTime;
-    80001f4c:	02b53c23          	sd	a1,56(a0)
+    80001f40:	02b53c23          	sd	a1,56(a0)
         tcb->nextSleeping->timeToSleep -= sleepTime;
-    80001f50:	03883683          	ld	a3,56(a6)
-    80001f54:	40b686b3          	sub	a3,a3,a1
-    80001f58:	02d83c23          	sd	a3,56(a6)
+    80001f44:	03883683          	ld	a3,56(a6)
+    80001f48:	40b686b3          	sub	a3,a3,a1
+    80001f4c:	02d83c23          	sd	a3,56(a6)
         return;
-    80001f5c:	fd9ff06f          	j	80001f34 <_ZN9Scheduler10putToSleepEP3TCBm+0x84>
+    80001f50:	fd9ff06f          	j	80001f28 <_ZN9Scheduler10putToSleepEP3TCBm+0x84>
 
-0000000080001f60 <_ZN9Scheduler4wakeEv>:
+0000000080001f54 <_ZN9Scheduler4wakeEv>:
 
 void Scheduler::wake() {
     if (!sleepingHead) return;
-    80001f60:	0000b797          	auipc	a5,0xb
-    80001f64:	2987b783          	ld	a5,664(a5) # 8000d1f8 <_ZN9Scheduler12sleepingHeadE>
-    80001f68:	06078a63          	beqz	a5,80001fdc <_ZN9Scheduler4wakeEv+0x7c>
+    80001f54:	0000b797          	auipc	a5,0xb
+    80001f58:	2ec7b783          	ld	a5,748(a5) # 8000d240 <_ZN9Scheduler12sleepingHeadE>
+    80001f5c:	06078a63          	beqz	a5,80001fd0 <_ZN9Scheduler4wakeEv+0x7c>
     sleepingHead->timeToSleep--;
-    80001f6c:	0387b703          	ld	a4,56(a5)
-    80001f70:	fff70713          	addi	a4,a4,-1
-    80001f74:	02e7bc23          	sd	a4,56(a5)
+    80001f60:	0387b703          	ld	a4,56(a5)
+    80001f64:	fff70713          	addi	a4,a4,-1
+    80001f68:	02e7bc23          	sd	a4,56(a5)
     while (sleepingHead && sleepingHead->timeToSleep == 0) {
-    80001f78:	0000b517          	auipc	a0,0xb
-    80001f7c:	28053503          	ld	a0,640(a0) # 8000d1f8 <_ZN9Scheduler12sleepingHeadE>
-    80001f80:	04050e63          	beqz	a0,80001fdc <_ZN9Scheduler4wakeEv+0x7c>
-    80001f84:	03853783          	ld	a5,56(a0)
-    80001f88:	04079a63          	bnez	a5,80001fdc <_ZN9Scheduler4wakeEv+0x7c>
+    80001f6c:	0000b517          	auipc	a0,0xb
+    80001f70:	2d453503          	ld	a0,724(a0) # 8000d240 <_ZN9Scheduler12sleepingHeadE>
+    80001f74:	04050e63          	beqz	a0,80001fd0 <_ZN9Scheduler4wakeEv+0x7c>
+    80001f78:	03853783          	ld	a5,56(a0)
+    80001f7c:	04079a63          	bnez	a5,80001fd0 <_ZN9Scheduler4wakeEv+0x7c>
 void Scheduler::wake() {
-    80001f8c:	ff010113          	addi	sp,sp,-16
-    80001f90:	00113423          	sd	ra,8(sp)
-    80001f94:	00813023          	sd	s0,0(sp)
-    80001f98:	01010413          	addi	s0,sp,16
-    80001f9c:	00c0006f          	j	80001fa8 <_ZN9Scheduler4wakeEv+0x48>
+    80001f80:	ff010113          	addi	sp,sp,-16
+    80001f84:	00113423          	sd	ra,8(sp)
+    80001f88:	00813023          	sd	s0,0(sp)
+    80001f8c:	01010413          	addi	s0,sp,16
+    80001f90:	00c0006f          	j	80001f9c <_ZN9Scheduler4wakeEv+0x48>
     while (sleepingHead && sleepingHead->timeToSleep == 0) {
-    80001fa0:	03853783          	ld	a5,56(a0)
-    80001fa4:	02079463          	bnez	a5,80001fcc <_ZN9Scheduler4wakeEv+0x6c>
+    80001f94:	03853783          	ld	a5,56(a0)
+    80001f98:	02079463          	bnez	a5,80001fc0 <_ZN9Scheduler4wakeEv+0x6c>
         TCB* thread = sleepingHead;
         sleepingHead = sleepingHead->nextSleeping;
-    80001fa8:	04053783          	ld	a5,64(a0)
-    80001fac:	0000b717          	auipc	a4,0xb
-    80001fb0:	24f73623          	sd	a5,588(a4) # 8000d1f8 <_ZN9Scheduler12sleepingHeadE>
+    80001f9c:	04053783          	ld	a5,64(a0)
+    80001fa0:	0000b717          	auipc	a4,0xb
+    80001fa4:	2af73023          	sd	a5,672(a4) # 8000d240 <_ZN9Scheduler12sleepingHeadE>
         thread->nextSleeping = nullptr;
-    80001fb4:	04053023          	sd	zero,64(a0)
+    80001fa8:	04053023          	sd	zero,64(a0)
         Scheduler::put(thread);
-    80001fb8:	00000097          	auipc	ra,0x0
-    80001fbc:	e6c080e7          	jalr	-404(ra) # 80001e24 <_ZN9Scheduler3putEP3TCB>
+    80001fac:	00000097          	auipc	ra,0x0
+    80001fb0:	e6c080e7          	jalr	-404(ra) # 80001e18 <_ZN9Scheduler3putEP3TCB>
     while (sleepingHead && sleepingHead->timeToSleep == 0) {
-    80001fc0:	0000b517          	auipc	a0,0xb
-    80001fc4:	23853503          	ld	a0,568(a0) # 8000d1f8 <_ZN9Scheduler12sleepingHeadE>
-    80001fc8:	fc051ce3          	bnez	a0,80001fa0 <_ZN9Scheduler4wakeEv+0x40>
+    80001fb4:	0000b517          	auipc	a0,0xb
+    80001fb8:	28c53503          	ld	a0,652(a0) # 8000d240 <_ZN9Scheduler12sleepingHeadE>
+    80001fbc:	fc051ce3          	bnez	a0,80001f94 <_ZN9Scheduler4wakeEv+0x40>
     }
 }
-    80001fcc:	00813083          	ld	ra,8(sp)
-    80001fd0:	00013403          	ld	s0,0(sp)
-    80001fd4:	01010113          	addi	sp,sp,16
-    80001fd8:	00008067          	ret
-    80001fdc:	00008067          	ret
+    80001fc0:	00813083          	ld	ra,8(sp)
+    80001fc4:	00013403          	ld	s0,0(sp)
+    80001fc8:	01010113          	addi	sp,sp,16
+    80001fcc:	00008067          	ret
+    80001fd0:	00008067          	ret
 
-0000000080001fe0 <_ZN7KMemory7kmallocEm>:
+0000000080001fd4 <_ZN7KMemory7kmallocEm>:
     kmalloc(blocksForBitVector);
 
     initialized = true;
 }
 
 void* KMemory::kmalloc(size_t size) {
-    80001fe0:	ff010113          	addi	sp,sp,-16
-    80001fe4:	00813423          	sd	s0,8(sp)
-    80001fe8:	01010413          	addi	s0,sp,16
+    80001fd4:	ff010113          	addi	sp,sp,-16
+    80001fd8:	00813423          	sd	s0,8(sp)
+    80001fdc:	01010413          	addi	s0,sp,16
     if (size <= 0 || freeBlocksLeft < size) return nullptr;
-    80001fec:	16050063          	beqz	a0,8000214c <_ZN7KMemory7kmallocEm+0x16c>
-    80001ff0:	0000b797          	auipc	a5,0xb
-    80001ff4:	2107b783          	ld	a5,528(a5) # 8000d200 <_ZN7KMemory14freeBlocksLeftE>
-    80001ff8:	14a7ee63          	bltu	a5,a0,80002154 <_ZN7KMemory7kmallocEm+0x174>
+    80001fe0:	16050063          	beqz	a0,80002140 <_ZN7KMemory7kmallocEm+0x16c>
+    80001fe4:	0000b797          	auipc	a5,0xb
+    80001fe8:	2647b783          	ld	a5,612(a5) # 8000d248 <_ZN7KMemory14freeBlocksLeftE>
+    80001fec:	14a7ee63          	bltu	a5,a0,80002148 <_ZN7KMemory7kmallocEm+0x174>
     uint64 currentElem = 0;
     uint64 currentBit = 63;
     uint64 firstZeroElem = 0;
     uint64 firstZeroBit = 63;
     uint64 zerosFound = 0;
     bool zeroFound = false;
-    80001ffc:	00000313          	li	t1,0
+    80001ff0:	00000313          	li	t1,0
     uint64 zerosFound = 0;
-    80002000:	00000713          	li	a4,0
+    80001ff4:	00000713          	li	a4,0
     uint64 firstZeroBit = 63;
-    80002004:	03f00813          	li	a6,63
+    80001ff8:	03f00813          	li	a6,63
     uint64 firstZeroElem = 0;
-    80002008:	00000893          	li	a7,0
+    80001ffc:	00000893          	li	a7,0
     uint64 currentBit = 63;
-    8000200c:	03f00793          	li	a5,63
+    80002000:	03f00793          	li	a5,63
     uint64 currentElem = 0;
-    80002010:	00000593          	li	a1,0
-    80002014:	0080006f          	j	8000201c <_ZN7KMemory7kmallocEm+0x3c>
+    80002004:	00000593          	li	a1,0
+    80002008:	0080006f          	j	80002010 <_ZN7KMemory7kmallocEm+0x3c>
             firstZeroElem = currentElem;
         } else {
             zerosFound++;
         }
         if (zerosFound == size) break;
         if (currentBit-- == 0) {
-    80002018:	00068793          	mv	a5,a3
+    8000200c:	00068793          	mv	a5,a3
     while (currentElem < sizeOfBitVectorInUint64) {
-    8000201c:	0000b697          	auipc	a3,0xb
-    80002020:	1ec6b683          	ld	a3,492(a3) # 8000d208 <_ZN7KMemory23sizeOfBitVectorInUint64E>
-    80002024:	08d5fa63          	bgeu	a1,a3,800020b8 <_ZN7KMemory7kmallocEm+0xd8>
+    80002010:	0000b697          	auipc	a3,0xb
+    80002014:	2406b683          	ld	a3,576(a3) # 8000d250 <_ZN7KMemory23sizeOfBitVectorInUint64E>
+    80002018:	08d5fa63          	bgeu	a1,a3,800020ac <_ZN7KMemory7kmallocEm+0xd8>
         if (currentBit == 63 && bitVector[currentElem] == 0xffffffffffffffff) {
-    80002028:	03f00693          	li	a3,63
-    8000202c:	02d78a63          	beq	a5,a3,80002060 <_ZN7KMemory7kmallocEm+0x80>
+    8000201c:	03f00693          	li	a3,63
+    80002020:	02d78a63          	beq	a5,a3,80002054 <_ZN7KMemory7kmallocEm+0x80>
         uint64 bit = bitVector[currentElem] & maskBit(currentBit);
-    80002030:	00359693          	slli	a3,a1,0x3
-    80002034:	0000b617          	auipc	a2,0xb
-    80002038:	1dc63603          	ld	a2,476(a2) # 8000d210 <_ZN7KMemory9bitVectorE>
-    8000203c:	00d606b3          	add	a3,a2,a3
-    80002040:	0006b683          	ld	a3,0(a3)
+    80002024:	00359693          	slli	a3,a1,0x3
+    80002028:	0000b617          	auipc	a2,0xb
+    8000202c:	23063603          	ld	a2,560(a2) # 8000d258 <_ZN7KMemory9bitVectorE>
+    80002030:	00d606b3          	add	a3,a2,a3
+    80002034:	0006b683          	ld	a3,0(a3)
 
     static uint64 freeBlocksLeft;
 
     //maska sa 1 na mestu bitPos i ostalim nulama (bitPos=0..63)
     inline static uint64 maskBit(uint64 bitPos) {
         return (uint64)1 << bitPos;
-    80002044:	00100613          	li	a2,1
-    80002048:	00f61633          	sll	a2,a2,a5
-    8000204c:	00c6f6b3          	and	a3,a3,a2
+    80002038:	00100613          	li	a2,1
+    8000203c:	00f61633          	sll	a2,a2,a5
+    80002040:	00c6f6b3          	and	a3,a3,a2
         if (bit > 0) {
-    80002050:	02069a63          	bnez	a3,80002084 <_ZN7KMemory7kmallocEm+0xa4>
+    80002044:	02069a63          	bnez	a3,80002078 <_ZN7KMemory7kmallocEm+0xa4>
         } else if (!zeroFound) {
-    80002054:	04030863          	beqz	t1,800020a4 <_ZN7KMemory7kmallocEm+0xc4>
+    80002048:	04030863          	beqz	t1,80002098 <_ZN7KMemory7kmallocEm+0xc4>
             zerosFound++;
-    80002058:	00170713          	addi	a4,a4,1
-    8000205c:	0300006f          	j	8000208c <_ZN7KMemory7kmallocEm+0xac>
+    8000204c:	00170713          	addi	a4,a4,1
+    80002050:	0300006f          	j	80002080 <_ZN7KMemory7kmallocEm+0xac>
         if (currentBit == 63 && bitVector[currentElem] == 0xffffffffffffffff) {
-    80002060:	00359693          	slli	a3,a1,0x3
-    80002064:	0000b617          	auipc	a2,0xb
-    80002068:	1ac63603          	ld	a2,428(a2) # 8000d210 <_ZN7KMemory9bitVectorE>
-    8000206c:	00d606b3          	add	a3,a2,a3
-    80002070:	0006b603          	ld	a2,0(a3)
-    80002074:	fff00693          	li	a3,-1
-    80002078:	fad61ce3          	bne	a2,a3,80002030 <_ZN7KMemory7kmallocEm+0x50>
+    80002054:	00359693          	slli	a3,a1,0x3
+    80002058:	0000b617          	auipc	a2,0xb
+    8000205c:	20063603          	ld	a2,512(a2) # 8000d258 <_ZN7KMemory9bitVectorE>
+    80002060:	00d606b3          	add	a3,a2,a3
+    80002064:	0006b603          	ld	a2,0(a3)
+    80002068:	fff00693          	li	a3,-1
+    8000206c:	fad61ce3          	bne	a2,a3,80002024 <_ZN7KMemory7kmallocEm+0x50>
             currentElem++;
-    8000207c:	00158593          	addi	a1,a1,1
+    80002070:	00158593          	addi	a1,a1,1
             continue;
-    80002080:	f9dff06f          	j	8000201c <_ZN7KMemory7kmallocEm+0x3c>
+    80002074:	f9dff06f          	j	80002010 <_ZN7KMemory7kmallocEm+0x3c>
             zeroFound = false;
-    80002084:	00000313          	li	t1,0
+    80002078:	00000313          	li	t1,0
             zerosFound = 0;
-    80002088:	00000713          	li	a4,0
+    8000207c:	00000713          	li	a4,0
         if (zerosFound == size) break;
-    8000208c:	02a70663          	beq	a4,a0,800020b8 <_ZN7KMemory7kmallocEm+0xd8>
+    80002080:	02a70663          	beq	a4,a0,800020ac <_ZN7KMemory7kmallocEm+0xd8>
         if (currentBit-- == 0) {
-    80002090:	fff78693          	addi	a3,a5,-1
-    80002094:	f80792e3          	bnez	a5,80002018 <_ZN7KMemory7kmallocEm+0x38>
+    80002084:	fff78693          	addi	a3,a5,-1
+    80002088:	f80792e3          	bnez	a5,8000200c <_ZN7KMemory7kmallocEm+0x38>
             currentBit = 63;
             currentElem++;
-    80002098:	00158593          	addi	a1,a1,1
+    8000208c:	00158593          	addi	a1,a1,1
             currentBit = 63;
-    8000209c:	03f00793          	li	a5,63
-    800020a0:	f7dff06f          	j	8000201c <_ZN7KMemory7kmallocEm+0x3c>
+    80002090:	03f00793          	li	a5,63
+    80002094:	f7dff06f          	j	80002010 <_ZN7KMemory7kmallocEm+0x3c>
             firstZeroBit = currentBit;
-    800020a4:	00078813          	mv	a6,a5
+    80002098:	00078813          	mv	a6,a5
             firstZeroElem = currentElem;
-    800020a8:	00058893          	mv	a7,a1
+    8000209c:	00058893          	mv	a7,a1
             zeroFound = true;
-    800020ac:	00100313          	li	t1,1
+    800020a0:	00100313          	li	t1,1
             zerosFound = 1;
-    800020b0:	00100713          	li	a4,1
-    800020b4:	fd9ff06f          	j	8000208c <_ZN7KMemory7kmallocEm+0xac>
+    800020a4:	00100713          	li	a4,1
+    800020a8:	fd9ff06f          	j	80002080 <_ZN7KMemory7kmallocEm+0xac>
         }
     }
     if (zerosFound != size) return nullptr;
-    800020b8:	0aa71263          	bne	a4,a0,8000215c <_ZN7KMemory7kmallocEm+0x17c>
+    800020ac:	0aa71263          	bne	a4,a0,80002150 <_ZN7KMemory7kmallocEm+0x17c>
 
     //alociranje blokova
     uint64 blockNum = firstZeroElem * 64 + (63 - firstZeroBit);
-    800020bc:	00689793          	slli	a5,a7,0x6
-    800020c0:	410787b3          	sub	a5,a5,a6
-    800020c4:	03f78793          	addi	a5,a5,63
+    800020b0:	00689793          	slli	a5,a7,0x6
+    800020b4:	410787b3          	sub	a5,a5,a6
+    800020b8:	03f78793          	addi	a5,a5,63
     void* addr = (char*)HEAP_START_ADDR + blockNum * MEM_BLOCK_SIZE;
-    800020c8:	0000b697          	auipc	a3,0xb
-    800020cc:	f806b683          	ld	a3,-128(a3) # 8000d048 <_GLOBAL_OFFSET_TABLE_+0x30>
-    800020d0:	0006b583          	ld	a1,0(a3)
-    800020d4:	00679793          	slli	a5,a5,0x6
-    800020d8:	00f585b3          	add	a1,a1,a5
+    800020bc:	0000b697          	auipc	a3,0xb
+    800020c0:	fbc6b683          	ld	a3,-68(a3) # 8000d078 <_GLOBAL_OFFSET_TABLE_+0x30>
+    800020c4:	0006b583          	ld	a1,0(a3)
+    800020c8:	00679793          	slli	a5,a5,0x6
+    800020cc:	00f585b3          	add	a1,a1,a5
     *(uint64*)addr = size;  //da znamo koliko blokova je alocirano zaredom
-    800020dc:	00a5b023          	sd	a0,0(a1)
+    800020d0:	00a5b023          	sd	a0,0(a1)
 
     //upisivanje 1 u bit vektor
     currentElem = firstZeroElem;
     currentBit = firstZeroBit;
-    800020e0:	0080006f          	j	800020e8 <_ZN7KMemory7kmallocEm+0x108>
+    800020d4:	0080006f          	j	800020dc <_ZN7KMemory7kmallocEm+0x108>
     while (zerosFound > 0) {
         bitVector[currentElem] |= maskBit(currentBit);
         zerosFound--;
         if (currentBit-- == 0) {
             currentBit = 63;
-    800020e4:	00078813          	mv	a6,a5
+    800020d8:	00078813          	mv	a6,a5
     while (zerosFound > 0) {
-    800020e8:	04070063          	beqz	a4,80002128 <_ZN7KMemory7kmallocEm+0x148>
-    800020ec:	00100693          	li	a3,1
-    800020f0:	01069633          	sll	a2,a3,a6
+    800020dc:	04070063          	beqz	a4,8000211c <_ZN7KMemory7kmallocEm+0x148>
+    800020e0:	00100693          	li	a3,1
+    800020e4:	01069633          	sll	a2,a3,a6
         bitVector[currentElem] |= maskBit(currentBit);
-    800020f4:	00389793          	slli	a5,a7,0x3
-    800020f8:	0000b697          	auipc	a3,0xb
-    800020fc:	1186b683          	ld	a3,280(a3) # 8000d210 <_ZN7KMemory9bitVectorE>
-    80002100:	00f687b3          	add	a5,a3,a5
-    80002104:	0007b683          	ld	a3,0(a5)
-    80002108:	00c6e6b3          	or	a3,a3,a2
-    8000210c:	00d7b023          	sd	a3,0(a5)
+    800020e8:	00389793          	slli	a5,a7,0x3
+    800020ec:	0000b697          	auipc	a3,0xb
+    800020f0:	16c6b683          	ld	a3,364(a3) # 8000d258 <_ZN7KMemory9bitVectorE>
+    800020f4:	00f687b3          	add	a5,a3,a5
+    800020f8:	0007b683          	ld	a3,0(a5)
+    800020fc:	00c6e6b3          	or	a3,a3,a2
+    80002100:	00d7b023          	sd	a3,0(a5)
         zerosFound--;
-    80002110:	fff70713          	addi	a4,a4,-1
+    80002104:	fff70713          	addi	a4,a4,-1
         if (currentBit-- == 0) {
-    80002114:	fff80793          	addi	a5,a6,-1
-    80002118:	fc0816e3          	bnez	a6,800020e4 <_ZN7KMemory7kmallocEm+0x104>
+    80002108:	fff80793          	addi	a5,a6,-1
+    8000210c:	fc0816e3          	bnez	a6,800020d8 <_ZN7KMemory7kmallocEm+0x104>
             currentElem++;
-    8000211c:	00188893          	addi	a7,a7,1
+    80002110:	00188893          	addi	a7,a7,1
             currentBit = 63;
-    80002120:	03f00793          	li	a5,63
-    80002124:	fc1ff06f          	j	800020e4 <_ZN7KMemory7kmallocEm+0x104>
+    80002114:	03f00793          	li	a5,63
+    80002118:	fc1ff06f          	j	800020d8 <_ZN7KMemory7kmallocEm+0x104>
         }
     }
     freeBlocksLeft -= size;
-    80002128:	0000b717          	auipc	a4,0xb
-    8000212c:	0d870713          	addi	a4,a4,216 # 8000d200 <_ZN7KMemory14freeBlocksLeftE>
-    80002130:	00073783          	ld	a5,0(a4)
-    80002134:	40a78533          	sub	a0,a5,a0
-    80002138:	00a73023          	sd	a0,0(a4)
+    8000211c:	0000b717          	auipc	a4,0xb
+    80002120:	12c70713          	addi	a4,a4,300 # 8000d248 <_ZN7KMemory14freeBlocksLeftE>
+    80002124:	00073783          	ld	a5,0(a4)
+    80002128:	40a78533          	sub	a0,a5,a0
+    8000212c:	00a73023          	sd	a0,0(a4)
     return (char*)addr + 2 * sizeof(uint64);    //offset 2 da bi bilo zaokruzeno na 16 zbog steka
-    8000213c:	01058513          	addi	a0,a1,16
+    80002130:	01058513          	addi	a0,a1,16
 }
-    80002140:	00813403          	ld	s0,8(sp)
-    80002144:	01010113          	addi	sp,sp,16
-    80002148:	00008067          	ret
+    80002134:	00813403          	ld	s0,8(sp)
+    80002138:	01010113          	addi	sp,sp,16
+    8000213c:	00008067          	ret
     if (size <= 0 || freeBlocksLeft < size) return nullptr;
-    8000214c:	00000513          	li	a0,0
-    80002150:	ff1ff06f          	j	80002140 <_ZN7KMemory7kmallocEm+0x160>
-    80002154:	00000513          	li	a0,0
-    80002158:	fe9ff06f          	j	80002140 <_ZN7KMemory7kmallocEm+0x160>
+    80002140:	00000513          	li	a0,0
+    80002144:	ff1ff06f          	j	80002134 <_ZN7KMemory7kmallocEm+0x160>
+    80002148:	00000513          	li	a0,0
+    8000214c:	fe9ff06f          	j	80002134 <_ZN7KMemory7kmallocEm+0x160>
     if (zerosFound != size) return nullptr;
-    8000215c:	00000513          	li	a0,0
-    80002160:	fe1ff06f          	j	80002140 <_ZN7KMemory7kmallocEm+0x160>
+    80002150:	00000513          	li	a0,0
+    80002154:	fe1ff06f          	j	80002134 <_ZN7KMemory7kmallocEm+0x160>
 
-0000000080002164 <_ZN7KMemory16initializeMemoryEv>:
+0000000080002158 <_ZN7KMemory16initializeMemoryEv>:
     if (initialized) return;
-    80002164:	0000b797          	auipc	a5,0xb
-    80002168:	0b47c783          	lbu	a5,180(a5) # 8000d218 <_ZN7KMemory11initializedE>
-    8000216c:	0a079863          	bnez	a5,8000221c <_ZN7KMemory16initializeMemoryEv+0xb8>
+    80002158:	0000b797          	auipc	a5,0xb
+    8000215c:	1087c783          	lbu	a5,264(a5) # 8000d260 <_ZN7KMemory11initializedE>
+    80002160:	0a079863          	bnez	a5,80002210 <_ZN7KMemory16initializeMemoryEv+0xb8>
 void KMemory::initializeMemory() {
-    80002170:	ff010113          	addi	sp,sp,-16
-    80002174:	00113423          	sd	ra,8(sp)
-    80002178:	00813023          	sd	s0,0(sp)
-    8000217c:	01010413          	addi	s0,sp,16
+    80002164:	ff010113          	addi	sp,sp,-16
+    80002168:	00113423          	sd	ra,8(sp)
+    8000216c:	00813023          	sd	s0,0(sp)
+    80002170:	01010413          	addi	s0,sp,16
     uint64 sizeInBytes = (char*)HEAP_END_ADDR - (char*)HEAP_START_ADDR;
-    80002180:	0000b797          	auipc	a5,0xb
-    80002184:	f207b783          	ld	a5,-224(a5) # 8000d0a0 <_GLOBAL_OFFSET_TABLE_+0x88>
-    80002188:	0007b783          	ld	a5,0(a5)
-    8000218c:	0000b717          	auipc	a4,0xb
-    80002190:	ebc73703          	ld	a4,-324(a4) # 8000d048 <_GLOBAL_OFFSET_TABLE_+0x30>
-    80002194:	00073603          	ld	a2,0(a4)
-    80002198:	40c787b3          	sub	a5,a5,a2
+    80002174:	0000b797          	auipc	a5,0xb
+    80002178:	f5c7b783          	ld	a5,-164(a5) # 8000d0d0 <_GLOBAL_OFFSET_TABLE_+0x88>
+    8000217c:	0007b783          	ld	a5,0(a5)
+    80002180:	0000b717          	auipc	a4,0xb
+    80002184:	ef873703          	ld	a4,-264(a4) # 8000d078 <_GLOBAL_OFFSET_TABLE_+0x30>
+    80002188:	00073603          	ld	a2,0(a4)
+    8000218c:	40c787b3          	sub	a5,a5,a2
     sizeOfBitVectorInUint64 = numOfBlocks / (sizeof(uint64) * 8);
-    8000219c:	00c7d793          	srli	a5,a5,0xc
-    800021a0:	0000b717          	auipc	a4,0xb
-    800021a4:	06070713          	addi	a4,a4,96 # 8000d200 <_ZN7KMemory14freeBlocksLeftE>
-    800021a8:	00f73423          	sd	a5,8(a4)
+    80002190:	00c7d793          	srli	a5,a5,0xc
+    80002194:	0000b717          	auipc	a4,0xb
+    80002198:	0b470713          	addi	a4,a4,180 # 8000d248 <_ZN7KMemory14freeBlocksLeftE>
+    8000219c:	00f73423          	sd	a5,8(a4)
     numOfBlocks = sizeOfBitVectorInUint64 * sizeof(uint64) * 8; //da se zaokruzi broj postojecih blokova na umnozak 64
-    800021ac:	00679693          	slli	a3,a5,0x6
-    800021b0:	02d73023          	sd	a3,32(a4)
+    800021a0:	00679693          	slli	a3,a5,0x6
+    800021a4:	02d73023          	sd	a3,32(a4)
     uint64 blocksForBitVector = (sizeOfBitVectorInUint64 * sizeof(uint64) + MEM_BLOCK_SIZE - 1) / MEM_BLOCK_SIZE;
-    800021b4:	00878513          	addi	a0,a5,8
-    800021b8:	00351513          	slli	a0,a0,0x3
-    800021bc:	fff50513          	addi	a0,a0,-1
-    800021c0:	00655513          	srli	a0,a0,0x6
+    800021a8:	00878513          	addi	a0,a5,8
+    800021ac:	00351513          	slli	a0,a0,0x3
+    800021b0:	fff50513          	addi	a0,a0,-1
+    800021b4:	00655513          	srli	a0,a0,0x6
     bitVector = (uint64*)HEAP_START_ADDR;
-    800021c4:	00c73823          	sd	a2,16(a4)
+    800021b8:	00c73823          	sd	a2,16(a4)
     freeBlocksLeft = numOfBlocks;
-    800021c8:	00d73023          	sd	a3,0(a4)
+    800021bc:	00d73023          	sd	a3,0(a4)
     for (uint64 i = 0; i < sizeOfBitVectorInUint64; i++) {
-    800021cc:	00000793          	li	a5,0
-    800021d0:	0000b717          	auipc	a4,0xb
-    800021d4:	03873703          	ld	a4,56(a4) # 8000d208 <_ZN7KMemory23sizeOfBitVectorInUint64E>
-    800021d8:	02e7f063          	bgeu	a5,a4,800021f8 <_ZN7KMemory16initializeMemoryEv+0x94>
+    800021c0:	00000793          	li	a5,0
+    800021c4:	0000b717          	auipc	a4,0xb
+    800021c8:	08c73703          	ld	a4,140(a4) # 8000d250 <_ZN7KMemory23sizeOfBitVectorInUint64E>
+    800021cc:	02e7f063          	bgeu	a5,a4,800021ec <_ZN7KMemory16initializeMemoryEv+0x94>
         bitVector[i] = 0;   //ni jedan blok nije zauzet, svi bitovi su 0
-    800021dc:	00379693          	slli	a3,a5,0x3
-    800021e0:	0000b717          	auipc	a4,0xb
-    800021e4:	03073703          	ld	a4,48(a4) # 8000d210 <_ZN7KMemory9bitVectorE>
-    800021e8:	00d70733          	add	a4,a4,a3
-    800021ec:	00073023          	sd	zero,0(a4)
+    800021d0:	00379693          	slli	a3,a5,0x3
+    800021d4:	0000b717          	auipc	a4,0xb
+    800021d8:	08473703          	ld	a4,132(a4) # 8000d258 <_ZN7KMemory9bitVectorE>
+    800021dc:	00d70733          	add	a4,a4,a3
+    800021e0:	00073023          	sd	zero,0(a4)
     for (uint64 i = 0; i < sizeOfBitVectorInUint64; i++) {
-    800021f0:	00178793          	addi	a5,a5,1
-    800021f4:	fddff06f          	j	800021d0 <_ZN7KMemory16initializeMemoryEv+0x6c>
+    800021e4:	00178793          	addi	a5,a5,1
+    800021e8:	fddff06f          	j	800021c4 <_ZN7KMemory16initializeMemoryEv+0x6c>
     kmalloc(blocksForBitVector);
-    800021f8:	00000097          	auipc	ra,0x0
-    800021fc:	de8080e7          	jalr	-536(ra) # 80001fe0 <_ZN7KMemory7kmallocEm>
+    800021ec:	00000097          	auipc	ra,0x0
+    800021f0:	de8080e7          	jalr	-536(ra) # 80001fd4 <_ZN7KMemory7kmallocEm>
     initialized = true;
-    80002200:	00100793          	li	a5,1
-    80002204:	0000b717          	auipc	a4,0xb
-    80002208:	00f70a23          	sb	a5,20(a4) # 8000d218 <_ZN7KMemory11initializedE>
+    800021f4:	00100793          	li	a5,1
+    800021f8:	0000b717          	auipc	a4,0xb
+    800021fc:	06f70423          	sb	a5,104(a4) # 8000d260 <_ZN7KMemory11initializedE>
 }
-    8000220c:	00813083          	ld	ra,8(sp)
-    80002210:	00013403          	ld	s0,0(sp)
-    80002214:	01010113          	addi	sp,sp,16
-    80002218:	00008067          	ret
-    8000221c:	00008067          	ret
+    80002200:	00813083          	ld	ra,8(sp)
+    80002204:	00013403          	ld	s0,0(sp)
+    80002208:	01010113          	addi	sp,sp,16
+    8000220c:	00008067          	ret
+    80002210:	00008067          	ret
 
-0000000080002220 <_ZN7KMemory5kfreeEPv>:
+0000000080002214 <_ZN7KMemory5kfreeEPv>:
 
 int KMemory::kfree(void* ptr) {
-    80002220:	ff010113          	addi	sp,sp,-16
-    80002224:	00813423          	sd	s0,8(sp)
-    80002228:	01010413          	addi	s0,sp,16
+    80002214:	ff010113          	addi	sp,sp,-16
+    80002218:	00813423          	sd	s0,8(sp)
+    8000221c:	01010413          	addi	s0,sp,16
     if (!ptr) return 0;
-    8000222c:	08050a63          	beqz	a0,800022c0 <_ZN7KMemory5kfreeEPv+0xa0>
+    80002220:	08050a63          	beqz	a0,800022b4 <_ZN7KMemory5kfreeEPv+0xa0>
     ptr = (char*)ptr - 2 * sizeof(uint64);
-    80002230:	ff050793          	addi	a5,a0,-16
+    80002224:	ff050793          	addi	a5,a0,-16
     if (((char*)ptr - (char*)HEAP_START_ADDR) % MEM_BLOCK_SIZE > 0) return -1;
-    80002234:	0000b717          	auipc	a4,0xb
-    80002238:	e1473703          	ld	a4,-492(a4) # 8000d048 <_GLOBAL_OFFSET_TABLE_+0x30>
-    8000223c:	00073703          	ld	a4,0(a4)
-    80002240:	40e787b3          	sub	a5,a5,a4
-    80002244:	03f7f713          	andi	a4,a5,63
-    80002248:	08071063          	bnez	a4,800022c8 <_ZN7KMemory5kfreeEPv+0xa8>
+    80002228:	0000b717          	auipc	a4,0xb
+    8000222c:	e5073703          	ld	a4,-432(a4) # 8000d078 <_GLOBAL_OFFSET_TABLE_+0x30>
+    80002230:	00073703          	ld	a4,0(a4)
+    80002234:	40e787b3          	sub	a5,a5,a4
+    80002238:	03f7f713          	andi	a4,a5,63
+    8000223c:	08071063          	bnez	a4,800022bc <_ZN7KMemory5kfreeEPv+0xa8>
     uint64 blocksToFree = *(uint64*)ptr;
-    8000224c:	ff053583          	ld	a1,-16(a0)
+    80002240:	ff053583          	ld	a1,-16(a0)
     freeBlocksLeft += blocksToFree;
-    80002250:	0000b697          	auipc	a3,0xb
-    80002254:	fb068693          	addi	a3,a3,-80 # 8000d200 <_ZN7KMemory14freeBlocksLeftE>
-    80002258:	0006b703          	ld	a4,0(a3)
-    8000225c:	00b70733          	add	a4,a4,a1
-    80002260:	00e6b023          	sd	a4,0(a3)
+    80002244:	0000b697          	auipc	a3,0xb
+    80002248:	00468693          	addi	a3,a3,4 # 8000d248 <_ZN7KMemory14freeBlocksLeftE>
+    8000224c:	0006b703          	ld	a4,0(a3)
+    80002250:	00b70733          	add	a4,a4,a1
+    80002254:	00e6b023          	sd	a4,0(a3)
     uint64 blockNum = ((char*)ptr - (char*)HEAP_START_ADDR) / MEM_BLOCK_SIZE;
-    80002264:	0067d613          	srli	a2,a5,0x6
+    80002258:	0067d613          	srli	a2,a5,0x6
     uint64 currentElem = blockNum / 64;
-    80002268:	00c7d513          	srli	a0,a5,0xc
+    8000225c:	00c7d513          	srli	a0,a5,0xc
     uint64 currentBit = 63 - blockNum % 64;
-    8000226c:	fff64613          	not	a2,a2
-    80002270:	03f67613          	andi	a2,a2,63
-    80002274:	0080006f          	j	8000227c <_ZN7KMemory5kfreeEPv+0x5c>
+    80002260:	fff64613          	not	a2,a2
+    80002264:	03f67613          	andi	a2,a2,63
+    80002268:	0080006f          	j	80002270 <_ZN7KMemory5kfreeEPv+0x5c>
     while (blocksToFree > 0) {
         bitVector[currentElem] &= ~maskBit(currentBit);
         blocksToFree--;
         if (currentBit-- == 0) {
             currentBit = 63;
-    80002278:	00078613          	mv	a2,a5
+    8000226c:	00078613          	mv	a2,a5
     while (blocksToFree > 0) {
-    8000227c:	04058a63          	beqz	a1,800022d0 <_ZN7KMemory5kfreeEPv+0xb0>
-    80002280:	00100793          	li	a5,1
-    80002284:	00c797b3          	sll	a5,a5,a2
+    80002270:	04058a63          	beqz	a1,800022c4 <_ZN7KMemory5kfreeEPv+0xb0>
+    80002274:	00100793          	li	a5,1
+    80002278:	00c797b3          	sll	a5,a5,a2
         bitVector[currentElem] &= ~maskBit(currentBit);
-    80002288:	fff7c793          	not	a5,a5
-    8000228c:	00351713          	slli	a4,a0,0x3
-    80002290:	0000b697          	auipc	a3,0xb
-    80002294:	f806b683          	ld	a3,-128(a3) # 8000d210 <_ZN7KMemory9bitVectorE>
-    80002298:	00e68733          	add	a4,a3,a4
-    8000229c:	00073683          	ld	a3,0(a4)
-    800022a0:	00f6f7b3          	and	a5,a3,a5
-    800022a4:	00f73023          	sd	a5,0(a4)
+    8000227c:	fff7c793          	not	a5,a5
+    80002280:	00351713          	slli	a4,a0,0x3
+    80002284:	0000b697          	auipc	a3,0xb
+    80002288:	fd46b683          	ld	a3,-44(a3) # 8000d258 <_ZN7KMemory9bitVectorE>
+    8000228c:	00e68733          	add	a4,a3,a4
+    80002290:	00073683          	ld	a3,0(a4)
+    80002294:	00f6f7b3          	and	a5,a3,a5
+    80002298:	00f73023          	sd	a5,0(a4)
         blocksToFree--;
-    800022a8:	fff58593          	addi	a1,a1,-1
+    8000229c:	fff58593          	addi	a1,a1,-1
         if (currentBit-- == 0) {
-    800022ac:	fff60793          	addi	a5,a2,-1
-    800022b0:	fc0614e3          	bnez	a2,80002278 <_ZN7KMemory5kfreeEPv+0x58>
+    800022a0:	fff60793          	addi	a5,a2,-1
+    800022a4:	fc0614e3          	bnez	a2,8000226c <_ZN7KMemory5kfreeEPv+0x58>
             currentElem++;
-    800022b4:	00150513          	addi	a0,a0,1
+    800022a8:	00150513          	addi	a0,a0,1
             currentBit = 63;
-    800022b8:	03f00793          	li	a5,63
-    800022bc:	fbdff06f          	j	80002278 <_ZN7KMemory5kfreeEPv+0x58>
+    800022ac:	03f00793          	li	a5,63
+    800022b0:	fbdff06f          	j	8000226c <_ZN7KMemory5kfreeEPv+0x58>
     if (!ptr) return 0;
-    800022c0:	00000513          	li	a0,0
-    800022c4:	0100006f          	j	800022d4 <_ZN7KMemory5kfreeEPv+0xb4>
+    800022b4:	00000513          	li	a0,0
+    800022b8:	0100006f          	j	800022c8 <_ZN7KMemory5kfreeEPv+0xb4>
     if (((char*)ptr - (char*)HEAP_START_ADDR) % MEM_BLOCK_SIZE > 0) return -1;
-    800022c8:	fff00513          	li	a0,-1
-    800022cc:	0080006f          	j	800022d4 <_ZN7KMemory5kfreeEPv+0xb4>
+    800022bc:	fff00513          	li	a0,-1
+    800022c0:	0080006f          	j	800022c8 <_ZN7KMemory5kfreeEPv+0xb4>
         }
     }
     return 0;
-    800022d0:	00000513          	li	a0,0
+    800022c4:	00000513          	li	a0,0
 }
-    800022d4:	00813403          	ld	s0,8(sp)
-    800022d8:	01010113          	addi	sp,sp,16
-    800022dc:	00008067          	ret
+    800022c8:	00813403          	ld	s0,8(sp)
+    800022cc:	01010113          	addi	sp,sp,16
+    800022d0:	00008067          	ret
 
-00000000800022e0 <main>:
+00000000800022d4 <main>:
 extern "C" void interruptHandler();
 
 void userMain();
 
 void user(void*);
 int main() {
-    800022e0:	fc010113          	addi	sp,sp,-64
-    800022e4:	02113c23          	sd	ra,56(sp)
-    800022e8:	02813823          	sd	s0,48(sp)
-    800022ec:	02913423          	sd	s1,40(sp)
-    800022f0:	03213023          	sd	s2,32(sp)
-    800022f4:	01313c23          	sd	s3,24(sp)
-    800022f8:	04010413          	addi	s0,sp,64
+    800022d4:	fc010113          	addi	sp,sp,-64
+    800022d8:	02113c23          	sd	ra,56(sp)
+    800022dc:	02813823          	sd	s0,48(sp)
+    800022e0:	02913423          	sd	s1,40(sp)
+    800022e4:	03213023          	sd	s2,32(sp)
+    800022e8:	01313c23          	sd	s3,24(sp)
+    800022ec:	04010413          	addi	s0,sp,64
     //postavljanje adrese prekidne rutine u stvec
     __asm__ volatile("csrw stvec, %[handler]": :[handler] "r"(&interruptHandler));
-    800022fc:	0000b797          	auipc	a5,0xb
-    80002300:	dac7b783          	ld	a5,-596(a5) # 8000d0a8 <_GLOBAL_OFFSET_TABLE_+0x90>
-    80002304:	10579073          	csrw	stvec,a5
+    800022f0:	0000b797          	auipc	a5,0xb
+    800022f4:	de87b783          	ld	a5,-536(a5) # 8000d0d8 <_GLOBAL_OFFSET_TABLE_+0x90>
+    800022f8:	10579073          	csrw	stvec,a5
 
     //inicijalizacija alokatora memorije
     KMemory::initializeMemory();
-    80002308:	00000097          	auipc	ra,0x0
-    8000230c:	e5c080e7          	jalr	-420(ra) # 80002164 <_ZN7KMemory16initializeMemoryEv>
+    800022fc:	00000097          	auipc	ra,0x0
+    80002300:	e5c080e7          	jalr	-420(ra) # 80002158 <_ZN7KMemory16initializeMemoryEv>
 
     //inicijalizacija komunikacije sa konzolom
     KConsole::initKConsole();
-    80002310:	fffff097          	auipc	ra,0xfffff
-    80002314:	3fc080e7          	jalr	1020(ra) # 8000170c <_ZN8KConsole12initKConsoleEv>
+    80002304:	fffff097          	auipc	ra,0xfffff
+    80002308:	408080e7          	jalr	1032(ra) # 8000170c <_ZN8KConsole12initKConsoleEv>
 
     //pravljenje niti
     thread_t mainHandle;
     Thread* idleHandle = new IdleThread();
-    80002318:	02000513          	li	a0,32
-    8000231c:	00001097          	auipc	ra,0x1
-    80002320:	df4080e7          	jalr	-524(ra) # 80003110 <_Znwm>
-    80002324:	00050913          	mv	s2,a0
-    80002328:	00053023          	sd	zero,0(a0)
-    8000232c:	00053423          	sd	zero,8(a0)
-    80002330:	00053823          	sd	zero,16(a0)
-    80002334:	00053c23          	sd	zero,24(a0)
+    8000230c:	02000513          	li	a0,32
+    80002310:	00001097          	auipc	ra,0x1
+    80002314:	df4080e7          	jalr	-524(ra) # 80003104 <_Znwm>
+    80002318:	00050913          	mv	s2,a0
+    8000231c:	00053023          	sd	zero,0(a0)
+    80002320:	00053423          	sd	zero,8(a0)
+    80002324:	00053823          	sd	zero,16(a0)
+    80002328:	00053c23          	sd	zero,24(a0)
 class IdleThread : public Thread {
-    80002338:	00001097          	auipc	ra,0x1
-    8000233c:	0c0080e7          	jalr	192(ra) # 800033f8 <_ZN6ThreadC1Ev>
-    80002340:	0000b797          	auipc	a5,0xb
-    80002344:	a7878793          	addi	a5,a5,-1416 # 8000cdb8 <_ZTV10IdleThread+0x10>
-    80002348:	00f93023          	sd	a5,0(s2)
+    8000232c:	00001097          	auipc	ra,0x1
+    80002330:	0c8080e7          	jalr	200(ra) # 800033f4 <_ZN6ThreadC1Ev>
+    80002334:	0000b797          	auipc	a5,0xb
+    80002338:	ab478793          	addi	a5,a5,-1356 # 8000cde8 <_ZTV10IdleThread+0x10>
+    8000233c:	00f93023          	sd	a5,0(s2)
     Thread* consoleOutputHandle = new KernelConsumer();
-    8000234c:	02000513          	li	a0,32
-    80002350:	00001097          	auipc	ra,0x1
-    80002354:	dc0080e7          	jalr	-576(ra) # 80003110 <_Znwm>
-    80002358:	00050493          	mv	s1,a0
-    8000235c:	00053023          	sd	zero,0(a0)
-    80002360:	00053423          	sd	zero,8(a0)
-    80002364:	00053823          	sd	zero,16(a0)
-    80002368:	00053c23          	sd	zero,24(a0)
+    80002340:	02000513          	li	a0,32
+    80002344:	00001097          	auipc	ra,0x1
+    80002348:	dc0080e7          	jalr	-576(ra) # 80003104 <_Znwm>
+    8000234c:	00050493          	mv	s1,a0
+    80002350:	00053023          	sd	zero,0(a0)
+    80002354:	00053423          	sd	zero,8(a0)
+    80002358:	00053823          	sd	zero,16(a0)
+    8000235c:	00053c23          	sd	zero,24(a0)
 class KernelConsumer : public Thread {
-    8000236c:	00001097          	auipc	ra,0x1
-    80002370:	08c080e7          	jalr	140(ra) # 800033f8 <_ZN6ThreadC1Ev>
-    80002374:	0000b797          	auipc	a5,0xb
-    80002378:	a6c78793          	addi	a5,a5,-1428 # 8000cde0 <_ZTV14KernelConsumer+0x10>
-    8000237c:	00f4b023          	sd	a5,0(s1)
+    80002360:	00001097          	auipc	ra,0x1
+    80002364:	094080e7          	jalr	148(ra) # 800033f4 <_ZN6ThreadC1Ev>
+    80002368:	0000b797          	auipc	a5,0xb
+    8000236c:	aa878793          	addi	a5,a5,-1368 # 8000ce10 <_ZTV14KernelConsumer+0x10>
+    80002370:	00f4b023          	sd	a5,0(s1)
     //Thread* userThr = new Thread((TCB::Body)userMain, nullptr);
     Thread* userThr = new Thread(user, nullptr);
-    80002380:	02000513          	li	a0,32
-    80002384:	00001097          	auipc	ra,0x1
-    80002388:	d8c080e7          	jalr	-628(ra) # 80003110 <_Znwm>
-    8000238c:	00050993          	mv	s3,a0
-    80002390:	00000613          	li	a2,0
-    80002394:	0000b597          	auipc	a1,0xb
-    80002398:	cec5b583          	ld	a1,-788(a1) # 8000d080 <_GLOBAL_OFFSET_TABLE_+0x68>
-    8000239c:	00001097          	auipc	ra,0x1
-    800023a0:	e94080e7          	jalr	-364(ra) # 80003230 <_ZN6ThreadC1EPFvPvES0_>
-    800023a4:	0580006f          	j	800023fc <main+0x11c>
-    800023a8:	00050493          	mv	s1,a0
+    80002374:	02000513          	li	a0,32
+    80002378:	00001097          	auipc	ra,0x1
+    8000237c:	d8c080e7          	jalr	-628(ra) # 80003104 <_Znwm>
+    80002380:	00050993          	mv	s3,a0
+    80002384:	00000613          	li	a2,0
+    80002388:	0000b597          	auipc	a1,0xb
+    8000238c:	d285b583          	ld	a1,-728(a1) # 8000d0b0 <_GLOBAL_OFFSET_TABLE_+0x68>
+    80002390:	00001097          	auipc	ra,0x1
+    80002394:	e94080e7          	jalr	-364(ra) # 80003224 <_ZN6ThreadC1EPFvPvES0_>
+    80002398:	0580006f          	j	800023f0 <main+0x11c>
+    8000239c:	00050493          	mv	s1,a0
     Thread* idleHandle = new IdleThread();
-    800023ac:	00090513          	mv	a0,s2
-    800023b0:	00001097          	auipc	ra,0x1
-    800023b4:	db0080e7          	jalr	-592(ra) # 80003160 <_ZdlPv>
-    800023b8:	00048513          	mv	a0,s1
-    800023bc:	0000c097          	auipc	ra,0xc
-    800023c0:	fac080e7          	jalr	-84(ra) # 8000e368 <_Unwind_Resume>
-    800023c4:	00050913          	mv	s2,a0
+    800023a0:	00090513          	mv	a0,s2
+    800023a4:	00001097          	auipc	ra,0x1
+    800023a8:	db0080e7          	jalr	-592(ra) # 80003154 <_ZdlPv>
+    800023ac:	00048513          	mv	a0,s1
+    800023b0:	0000c097          	auipc	ra,0xc
+    800023b4:	008080e7          	jalr	8(ra) # 8000e3b8 <_Unwind_Resume>
+    800023b8:	00050913          	mv	s2,a0
     Thread* consoleOutputHandle = new KernelConsumer();
-    800023c8:	00048513          	mv	a0,s1
-    800023cc:	00001097          	auipc	ra,0x1
-    800023d0:	d94080e7          	jalr	-620(ra) # 80003160 <_ZdlPv>
-    800023d4:	00090513          	mv	a0,s2
-    800023d8:	0000c097          	auipc	ra,0xc
-    800023dc:	f90080e7          	jalr	-112(ra) # 8000e368 <_Unwind_Resume>
-    800023e0:	00050493          	mv	s1,a0
+    800023bc:	00048513          	mv	a0,s1
+    800023c0:	00001097          	auipc	ra,0x1
+    800023c4:	d94080e7          	jalr	-620(ra) # 80003154 <_ZdlPv>
+    800023c8:	00090513          	mv	a0,s2
+    800023cc:	0000c097          	auipc	ra,0xc
+    800023d0:	fec080e7          	jalr	-20(ra) # 8000e3b8 <_Unwind_Resume>
+    800023d4:	00050493          	mv	s1,a0
     Thread* userThr = new Thread(user, nullptr);
-    800023e4:	00098513          	mv	a0,s3
-    800023e8:	00001097          	auipc	ra,0x1
-    800023ec:	d78080e7          	jalr	-648(ra) # 80003160 <_ZdlPv>
-    800023f0:	00048513          	mv	a0,s1
-    800023f4:	0000c097          	auipc	ra,0xc
-    800023f8:	f74080e7          	jalr	-140(ra) # 8000e368 <_Unwind_Resume>
+    800023d8:	00098513          	mv	a0,s3
+    800023dc:	00001097          	auipc	ra,0x1
+    800023e0:	d78080e7          	jalr	-648(ra) # 80003154 <_ZdlPv>
+    800023e4:	00048513          	mv	a0,s1
+    800023e8:	0000c097          	auipc	ra,0xc
+    800023ec:	fd0080e7          	jalr	-48(ra) # 8000e3b8 <_Unwind_Resume>
     thread_create(&mainHandle, (TCB::Body)main, nullptr);
-    800023fc:	00000613          	li	a2,0
-    80002400:	00000597          	auipc	a1,0x0
-    80002404:	ee058593          	addi	a1,a1,-288 # 800022e0 <main>
-    80002408:	fc840513          	addi	a0,s0,-56
-    8000240c:	fffff097          	auipc	ra,0xfffff
-    80002410:	ff8080e7          	jalr	-8(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    800023f0:	00000613          	li	a2,0
+    800023f4:	00000597          	auipc	a1,0x0
+    800023f8:	ee058593          	addi	a1,a1,-288 # 800022d4 <main>
+    800023fc:	fc840513          	addi	a0,s0,-56
+    80002400:	fffff097          	auipc	ra,0xfffff
+    80002404:	004080e7          	jalr	4(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     TCB::setRunning(mainHandle);
-    80002414:	fc843783          	ld	a5,-56(s0)
+    80002408:	fc843783          	ld	a5,-56(s0)
 
-    ThreadQueue* getListOfJoiningThreads(){return &waitingToJoin;}
+    ThreadQueue* getListOfJoiningThreads() { return &waitingToJoin; }
 
-    static TCB* getRunning() { return running; }
+    void setMySemaphore(KSem* sem) { mySemaphore = sem; }
 
-    static void setRunning(TCB* newRunning) { running = newRunning; }
-    80002418:	0000b717          	auipc	a4,0xb
-    8000241c:	c8073703          	ld	a4,-896(a4) # 8000d098 <_GLOBAL_OFFSET_TABLE_+0x80>
-    80002420:	00f73023          	sd	a5,0(a4)
+    void setJoiningWithTCB(TCB* tcb) { joiningWithTCB = tcb; }
+    8000240c:	0000b717          	auipc	a4,0xb
+    80002410:	cbc73703          	ld	a4,-836(a4) # 8000d0c8 <_GLOBAL_OFFSET_TABLE_+0x80>
+    80002414:	00f73023          	sd	a5,0(a4)
     void setStatus(ThreadStatus stat) { this->status = stat; }
-    80002424:	00100713          	li	a4,1
-    80002428:	04e7ac23          	sw	a4,88(a5)
+    80002418:	00100713          	li	a4,1
+    8000241c:	04e7ac23          	sw	a4,88(a5)
     mainHandle->setStatus(TCB::ACTIVE);
     idleHandle->start();
-    8000242c:	00090513          	mv	a0,s2
-    80002430:	00001097          	auipc	ra,0x1
-    80002434:	e98080e7          	jalr	-360(ra) # 800032c8 <_ZN6Thread5startEv>
+    80002420:	00090513          	mv	a0,s2
+    80002424:	00001097          	auipc	ra,0x1
+    80002428:	e98080e7          	jalr	-360(ra) # 800032bc <_ZN6Thread5startEv>
     consoleOutputHandle->start();
-    80002438:	00048513          	mv	a0,s1
-    8000243c:	00001097          	auipc	ra,0x1
-    80002440:	e8c080e7          	jalr	-372(ra) # 800032c8 <_ZN6Thread5startEv>
+    8000242c:	00048513          	mv	a0,s1
+    80002430:	00001097          	auipc	ra,0x1
+    80002434:	e8c080e7          	jalr	-372(ra) # 800032bc <_ZN6Thread5startEv>
     userThr->start();
-    80002444:	00098513          	mv	a0,s3
-    80002448:	00001097          	auipc	ra,0x1
-    8000244c:	e80080e7          	jalr	-384(ra) # 800032c8 <_ZN6Thread5startEv>
+    80002438:	00098513          	mv	a0,s3
+    8000243c:	00001097          	auipc	ra,0x1
+    80002440:	e80080e7          	jalr	-384(ra) # 800032bc <_ZN6Thread5startEv>
 inline void Riscv::w_sip(uint64 sip) {
 	__asm__ volatile("csrw sip, %[sip]": :[sip] "r"(sip));
 }
 
 inline void Riscv::ms_sstatus(uint64 mask) {
 	__asm__ volatile("csrs sstatus, %[mask]": :[mask] "r"(mask));
-    80002450:	00200493          	li	s1,2
-    80002454:	1004a073          	csrs	sstatus,s1
+    80002444:	00200493          	li	s1,2
+    80002448:	1004a073          	csrs	sstatus,s1
 
     //omogucavanje prekida
     Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
 
     //cekanje da se userMain zavrsi
     userThr->join();
-    80002458:	00098513          	mv	a0,s3
-    8000245c:	00001097          	auipc	ra,0x1
-    80002460:	eb4080e7          	jalr	-332(ra) # 80003310 <_ZN6Thread4joinEv>
+    8000244c:	00098513          	mv	a0,s3
+    80002450:	00001097          	auipc	ra,0x1
+    80002454:	eb4080e7          	jalr	-332(ra) # 80003304 <_ZN6Thread4joinEv>
     //stavlja karakter u ulazni bafer; ako je bafer pun, ignorise se
     static void placeInInput(char c);
 
     //ispis svih preostalih karaktera u izlaznom baferu
     static void flush() {
         __asm__ volatile("li a0, 0x43");
-    80002464:	04300513          	li	a0,67
+    80002458:	04300513          	li	a0,67
         __asm__ volatile("ecall");
-    80002468:	00000073          	ecall
+    8000245c:	00000073          	ecall
 }
 
 inline void Riscv::mc_sstatus(uint64 mask) {
 	__asm__ volatile("csrc sstatus, %[mask]": :[mask] "r"(mask));
-    8000246c:	1004b073          	csrc	sstatus,s1
+    80002460:	1004b073          	csrc	sstatus,s1
 
     //maskiranje svih prekida
     Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
 
     return 0;
-    80002470:	00000513          	li	a0,0
-    80002474:	03813083          	ld	ra,56(sp)
-    80002478:	03013403          	ld	s0,48(sp)
-    8000247c:	02813483          	ld	s1,40(sp)
-    80002480:	02013903          	ld	s2,32(sp)
-    80002484:	01813983          	ld	s3,24(sp)
-    80002488:	04010113          	addi	sp,sp,64
-    8000248c:	00008067          	ret
+    80002464:	00000513          	li	a0,0
+    80002468:	03813083          	ld	ra,56(sp)
+    8000246c:	03013403          	ld	s0,48(sp)
+    80002470:	02813483          	ld	s1,40(sp)
+    80002474:	02013903          	ld	s2,32(sp)
+    80002478:	01813983          	ld	s3,24(sp)
+    8000247c:	04010113          	addi	sp,sp,64
+    80002480:	00008067          	ret
 
-0000000080002490 <_ZN10IdleThread3runEv>:
+0000000080002484 <_ZN10IdleThread3runEv>:
     void run() override {
-    80002490:	ff010113          	addi	sp,sp,-16
-    80002494:	00113423          	sd	ra,8(sp)
-    80002498:	00813023          	sd	s0,0(sp)
-    8000249c:	01010413          	addi	s0,sp,16
+    80002484:	ff010113          	addi	sp,sp,-16
+    80002488:	00113423          	sd	ra,8(sp)
+    8000248c:	00813023          	sd	s0,0(sp)
+    80002490:	01010413          	addi	s0,sp,16
         while (1) { thread_dispatch(); }
-    800024a0:	fffff097          	auipc	ra,0xfffff
-    800024a4:	020080e7          	jalr	32(ra) # 800014c0 <_Z15thread_dispatchv>
-    800024a8:	ff9ff06f          	j	800024a0 <_ZN10IdleThread3runEv+0x10>
+    80002494:	fffff097          	auipc	ra,0xfffff
+    80002498:	02c080e7          	jalr	44(ra) # 800014c0 <_Z15thread_dispatchv>
+    8000249c:	ff9ff06f          	j	80002494 <_ZN10IdleThread3runEv+0x10>
 
-00000000800024ac <_ZN10IdleThreadD1Ev>:
+00000000800024a0 <_ZN10IdleThreadD1Ev>:
 class IdleThread : public Thread {
-    800024ac:	ff010113          	addi	sp,sp,-16
-    800024b0:	00113423          	sd	ra,8(sp)
-    800024b4:	00813023          	sd	s0,0(sp)
-    800024b8:	01010413          	addi	s0,sp,16
-    800024bc:	0000b797          	auipc	a5,0xb
-    800024c0:	8fc78793          	addi	a5,a5,-1796 # 8000cdb8 <_ZTV10IdleThread+0x10>
-    800024c4:	00f53023          	sd	a5,0(a0)
-    800024c8:	00001097          	auipc	ra,0x1
-    800024cc:	b68080e7          	jalr	-1176(ra) # 80003030 <_ZN6ThreadD1Ev>
-    800024d0:	00813083          	ld	ra,8(sp)
-    800024d4:	00013403          	ld	s0,0(sp)
-    800024d8:	01010113          	addi	sp,sp,16
-    800024dc:	00008067          	ret
+    800024a0:	ff010113          	addi	sp,sp,-16
+    800024a4:	00113423          	sd	ra,8(sp)
+    800024a8:	00813023          	sd	s0,0(sp)
+    800024ac:	01010413          	addi	s0,sp,16
+    800024b0:	0000b797          	auipc	a5,0xb
+    800024b4:	93878793          	addi	a5,a5,-1736 # 8000cde8 <_ZTV10IdleThread+0x10>
+    800024b8:	00f53023          	sd	a5,0(a0)
+    800024bc:	00001097          	auipc	ra,0x1
+    800024c0:	b68080e7          	jalr	-1176(ra) # 80003024 <_ZN6ThreadD1Ev>
+    800024c4:	00813083          	ld	ra,8(sp)
+    800024c8:	00013403          	ld	s0,0(sp)
+    800024cc:	01010113          	addi	sp,sp,16
+    800024d0:	00008067          	ret
 
-00000000800024e0 <_ZN10IdleThreadD0Ev>:
-    800024e0:	fe010113          	addi	sp,sp,-32
-    800024e4:	00113c23          	sd	ra,24(sp)
-    800024e8:	00813823          	sd	s0,16(sp)
-    800024ec:	00913423          	sd	s1,8(sp)
-    800024f0:	02010413          	addi	s0,sp,32
-    800024f4:	00050493          	mv	s1,a0
-    800024f8:	0000b797          	auipc	a5,0xb
-    800024fc:	8c078793          	addi	a5,a5,-1856 # 8000cdb8 <_ZTV10IdleThread+0x10>
-    80002500:	00f53023          	sd	a5,0(a0)
+00000000800024d4 <_ZN10IdleThreadD0Ev>:
+    800024d4:	fe010113          	addi	sp,sp,-32
+    800024d8:	00113c23          	sd	ra,24(sp)
+    800024dc:	00813823          	sd	s0,16(sp)
+    800024e0:	00913423          	sd	s1,8(sp)
+    800024e4:	02010413          	addi	s0,sp,32
+    800024e8:	00050493          	mv	s1,a0
+    800024ec:	0000b797          	auipc	a5,0xb
+    800024f0:	8fc78793          	addi	a5,a5,-1796 # 8000cde8 <_ZTV10IdleThread+0x10>
+    800024f4:	00f53023          	sd	a5,0(a0)
+    800024f8:	00001097          	auipc	ra,0x1
+    800024fc:	b2c080e7          	jalr	-1236(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80002500:	00048513          	mv	a0,s1
     80002504:	00001097          	auipc	ra,0x1
-    80002508:	b2c080e7          	jalr	-1236(ra) # 80003030 <_ZN6ThreadD1Ev>
-    8000250c:	00048513          	mv	a0,s1
-    80002510:	00001097          	auipc	ra,0x1
-    80002514:	c50080e7          	jalr	-944(ra) # 80003160 <_ZdlPv>
-    80002518:	01813083          	ld	ra,24(sp)
-    8000251c:	01013403          	ld	s0,16(sp)
-    80002520:	00813483          	ld	s1,8(sp)
-    80002524:	02010113          	addi	sp,sp,32
-    80002528:	00008067          	ret
+    80002508:	c50080e7          	jalr	-944(ra) # 80003154 <_ZdlPv>
+    8000250c:	01813083          	ld	ra,24(sp)
+    80002510:	01013403          	ld	s0,16(sp)
+    80002514:	00813483          	ld	s1,8(sp)
+    80002518:	02010113          	addi	sp,sp,32
+    8000251c:	00008067          	ret
 
-000000008000252c <_ZN14KernelConsumerD1Ev>:
+0000000080002520 <_ZN14KernelConsumerD1Ev>:
 class KernelConsumer : public Thread {
-    8000252c:	ff010113          	addi	sp,sp,-16
-    80002530:	00113423          	sd	ra,8(sp)
-    80002534:	00813023          	sd	s0,0(sp)
-    80002538:	01010413          	addi	s0,sp,16
-    8000253c:	0000b797          	auipc	a5,0xb
-    80002540:	8a478793          	addi	a5,a5,-1884 # 8000cde0 <_ZTV14KernelConsumer+0x10>
-    80002544:	00f53023          	sd	a5,0(a0)
-    80002548:	00001097          	auipc	ra,0x1
-    8000254c:	ae8080e7          	jalr	-1304(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80002550:	00813083          	ld	ra,8(sp)
-    80002554:	00013403          	ld	s0,0(sp)
-    80002558:	01010113          	addi	sp,sp,16
-    8000255c:	00008067          	ret
+    80002520:	ff010113          	addi	sp,sp,-16
+    80002524:	00113423          	sd	ra,8(sp)
+    80002528:	00813023          	sd	s0,0(sp)
+    8000252c:	01010413          	addi	s0,sp,16
+    80002530:	0000b797          	auipc	a5,0xb
+    80002534:	8e078793          	addi	a5,a5,-1824 # 8000ce10 <_ZTV14KernelConsumer+0x10>
+    80002538:	00f53023          	sd	a5,0(a0)
+    8000253c:	00001097          	auipc	ra,0x1
+    80002540:	ae8080e7          	jalr	-1304(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80002544:	00813083          	ld	ra,8(sp)
+    80002548:	00013403          	ld	s0,0(sp)
+    8000254c:	01010113          	addi	sp,sp,16
+    80002550:	00008067          	ret
 
-0000000080002560 <_ZN14KernelConsumerD0Ev>:
-    80002560:	fe010113          	addi	sp,sp,-32
-    80002564:	00113c23          	sd	ra,24(sp)
-    80002568:	00813823          	sd	s0,16(sp)
-    8000256c:	00913423          	sd	s1,8(sp)
-    80002570:	02010413          	addi	s0,sp,32
-    80002574:	00050493          	mv	s1,a0
-    80002578:	0000b797          	auipc	a5,0xb
-    8000257c:	86878793          	addi	a5,a5,-1944 # 8000cde0 <_ZTV14KernelConsumer+0x10>
-    80002580:	00f53023          	sd	a5,0(a0)
+0000000080002554 <_ZN14KernelConsumerD0Ev>:
+    80002554:	fe010113          	addi	sp,sp,-32
+    80002558:	00113c23          	sd	ra,24(sp)
+    8000255c:	00813823          	sd	s0,16(sp)
+    80002560:	00913423          	sd	s1,8(sp)
+    80002564:	02010413          	addi	s0,sp,32
+    80002568:	00050493          	mv	s1,a0
+    8000256c:	0000b797          	auipc	a5,0xb
+    80002570:	8a478793          	addi	a5,a5,-1884 # 8000ce10 <_ZTV14KernelConsumer+0x10>
+    80002574:	00f53023          	sd	a5,0(a0)
+    80002578:	00001097          	auipc	ra,0x1
+    8000257c:	aac080e7          	jalr	-1364(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80002580:	00048513          	mv	a0,s1
     80002584:	00001097          	auipc	ra,0x1
-    80002588:	aac080e7          	jalr	-1364(ra) # 80003030 <_ZN6ThreadD1Ev>
-    8000258c:	00048513          	mv	a0,s1
-    80002590:	00001097          	auipc	ra,0x1
-    80002594:	bd0080e7          	jalr	-1072(ra) # 80003160 <_ZdlPv>
-    80002598:	01813083          	ld	ra,24(sp)
-    8000259c:	01013403          	ld	s0,16(sp)
-    800025a0:	00813483          	ld	s1,8(sp)
-    800025a4:	02010113          	addi	sp,sp,32
-    800025a8:	00008067          	ret
+    80002588:	bd0080e7          	jalr	-1072(ra) # 80003154 <_ZdlPv>
+    8000258c:	01813083          	ld	ra,24(sp)
+    80002590:	01013403          	ld	s0,16(sp)
+    80002594:	00813483          	ld	s1,8(sp)
+    80002598:	02010113          	addi	sp,sp,32
+    8000259c:	00008067          	ret
 
-00000000800025ac <_ZN14KernelConsumer3runEv>:
+00000000800025a0 <_ZN14KernelConsumer3runEv>:
     void run() override {
-    800025ac:	ff010113          	addi	sp,sp,-16
-    800025b0:	00113423          	sd	ra,8(sp)
-    800025b4:	00813023          	sd	s0,0(sp)
-    800025b8:	01010413          	addi	s0,sp,16
-    800025bc:	0280006f          	j	800025e4 <_ZN14KernelConsumer3runEv+0x38>
+    800025a0:	ff010113          	addi	sp,sp,-16
+    800025a4:	00113423          	sd	ra,8(sp)
+    800025a8:	00813023          	sd	s0,0(sp)
+    800025ac:	01010413          	addi	s0,sp,16
+    800025b0:	0280006f          	j	800025d8 <_ZN14KernelConsumer3runEv+0x38>
 
     static uint8 getSRvalue() { return *sr; }
 
     static uint8 getDRvalue() { return *dr; }
 
     static void setDRvalue(char c) { *dr = c; }
-    800025c0:	0000b797          	auipc	a5,0xb
-    800025c4:	ab87b783          	ld	a5,-1352(a5) # 8000d078 <_GLOBAL_OFFSET_TABLE_+0x60>
-    800025c8:	0007b783          	ld	a5,0(a5)
-    800025cc:	00a78023          	sb	a0,0(a5)
+    800025b4:	0000b797          	auipc	a5,0xb
+    800025b8:	af47b783          	ld	a5,-1292(a5) # 8000d0a8 <_GLOBAL_OFFSET_TABLE_+0x60>
+    800025bc:	0007b783          	ld	a5,0(a5)
+    800025c0:	00a78023          	sb	a0,0(a5)
             sem_signal(KConsole::getOutputBufferHasSpace());
-    800025d0:	0000b797          	auipc	a5,0xb
-    800025d4:	ac07b783          	ld	a5,-1344(a5) # 8000d090 <_GLOBAL_OFFSET_TABLE_+0x78>
-    800025d8:	0007b503          	ld	a0,0(a5)
-    800025dc:	fffff097          	auipc	ra,0xfffff
-    800025e0:	ff4080e7          	jalr	-12(ra) # 800015d0 <_Z10sem_signalP4KSem>
+    800025c4:	0000b797          	auipc	a5,0xb
+    800025c8:	afc7b783          	ld	a5,-1284(a5) # 8000d0c0 <_GLOBAL_OFFSET_TABLE_+0x78>
+    800025cc:	0007b503          	ld	a0,0(a5)
+    800025d0:	fffff097          	auipc	ra,0xfffff
+    800025d4:	000080e7          	jalr	ra # 800015d0 <_Z10sem_signalP4KSem>
             char c = KConsole::getFromOutput();
-    800025e4:	fffff097          	auipc	ra,0xfffff
-    800025e8:	1e0080e7          	jalr	480(ra) # 800017c4 <_ZN8KConsole13getFromOutputEv>
+    800025d8:	fffff097          	auipc	ra,0xfffff
+    800025dc:	1ec080e7          	jalr	492(ra) # 800017c4 <_ZN8KConsole13getFromOutputEv>
     static uint8 getSRvalue() { return *sr; }
-    800025ec:	0000b797          	auipc	a5,0xb
-    800025f0:	adc7b783          	ld	a5,-1316(a5) # 8000d0c8 <_GLOBAL_OFFSET_TABLE_+0xb0>
-    800025f4:	0007b783          	ld	a5,0(a5)
-    800025f8:	0007c783          	lbu	a5,0(a5)
+    800025e0:	0000b797          	auipc	a5,0xb
+    800025e4:	b187b783          	ld	a5,-1256(a5) # 8000d0f8 <_GLOBAL_OFFSET_TABLE_+0xb0>
+    800025e8:	0007b783          	ld	a5,0(a5)
+    800025ec:	0007c783          	lbu	a5,0(a5)
             while (!(KConsole::getSRvalue() & CONSOLE_TX_STATUS_BIT)) {}
-    800025fc:	0207f793          	andi	a5,a5,32
-    80002600:	fe0786e3          	beqz	a5,800025ec <_ZN14KernelConsumer3runEv+0x40>
-    80002604:	fbdff06f          	j	800025c0 <_ZN14KernelConsumer3runEv+0x14>
+    800025f0:	0207f793          	andi	a5,a5,32
+    800025f4:	fe0786e3          	beqz	a5,800025e0 <_ZN14KernelConsumer3runEv+0x40>
+    800025f8:	fbdff06f          	j	800025b4 <_ZN14KernelConsumer3runEv+0x14>
 
-0000000080002608 <_Z4idlePv>:
+00000000800025fc <_Z4idlePv>:
 
 extern "C" void interruptHandler();
 
 void userMain();
 
 void idle(void*) {
-    80002608:	ff010113          	addi	sp,sp,-16
-    8000260c:	00113423          	sd	ra,8(sp)
-    80002610:	00813023          	sd	s0,0(sp)
-    80002614:	01010413          	addi	s0,sp,16
+    800025fc:	ff010113          	addi	sp,sp,-16
+    80002600:	00113423          	sd	ra,8(sp)
+    80002604:	00813023          	sd	s0,0(sp)
+    80002608:	01010413          	addi	s0,sp,16
     while (1) { thread_dispatch(); }
-    80002618:	fffff097          	auipc	ra,0xfffff
-    8000261c:	ea8080e7          	jalr	-344(ra) # 800014c0 <_Z15thread_dispatchv>
-    80002620:	ff9ff06f          	j	80002618 <_Z4idlePv+0x10>
+    8000260c:	fffff097          	auipc	ra,0xfffff
+    80002610:	eb4080e7          	jalr	-332(ra) # 800014c0 <_Z15thread_dispatchv>
+    80002614:	ff9ff06f          	j	8000260c <_Z4idlePv+0x10>
 
-0000000080002624 <_Z22kernelConsumerFunctionPv>:
+0000000080002618 <_Z22kernelConsumerFunctionPv>:
 }
 
 //salje na izlaz karakter iz izlaznog bafera KConsole
 void kernelConsumerFunction(void*) {
-    80002624:	ff010113          	addi	sp,sp,-16
-    80002628:	00113423          	sd	ra,8(sp)
-    8000262c:	00813023          	sd	s0,0(sp)
-    80002630:	01010413          	addi	s0,sp,16
-    80002634:	0280006f          	j	8000265c <_Z22kernelConsumerFunctionPv+0x38>
+    80002618:	ff010113          	addi	sp,sp,-16
+    8000261c:	00113423          	sd	ra,8(sp)
+    80002620:	00813023          	sd	s0,0(sp)
+    80002624:	01010413          	addi	s0,sp,16
+    80002628:	0280006f          	j	80002650 <_Z22kernelConsumerFunctionPv+0x38>
     static void setDRvalue(char c) { *dr = c; }
-    80002638:	0000b797          	auipc	a5,0xb
-    8000263c:	a407b783          	ld	a5,-1472(a5) # 8000d078 <_GLOBAL_OFFSET_TABLE_+0x60>
-    80002640:	0007b783          	ld	a5,0(a5)
-    80002644:	00a78023          	sb	a0,0(a5)
+    8000262c:	0000b797          	auipc	a5,0xb
+    80002630:	a7c7b783          	ld	a5,-1412(a5) # 8000d0a8 <_GLOBAL_OFFSET_TABLE_+0x60>
+    80002634:	0007b783          	ld	a5,0(a5)
+    80002638:	00a78023          	sb	a0,0(a5)
     while (1) {
         char c = KConsole::getFromOutput();
         while (!(KConsole::getSRvalue() & CONSOLE_TX_STATUS_BIT)) {}
         KConsole::setDRvalue(c);
         sem_signal(KConsole::getOutputBufferHasSpace());
-    80002648:	0000b797          	auipc	a5,0xb
-    8000264c:	a487b783          	ld	a5,-1464(a5) # 8000d090 <_GLOBAL_OFFSET_TABLE_+0x78>
-    80002650:	0007b503          	ld	a0,0(a5)
-    80002654:	fffff097          	auipc	ra,0xfffff
-    80002658:	f7c080e7          	jalr	-132(ra) # 800015d0 <_Z10sem_signalP4KSem>
+    8000263c:	0000b797          	auipc	a5,0xb
+    80002640:	a847b783          	ld	a5,-1404(a5) # 8000d0c0 <_GLOBAL_OFFSET_TABLE_+0x78>
+    80002644:	0007b503          	ld	a0,0(a5)
+    80002648:	fffff097          	auipc	ra,0xfffff
+    8000264c:	f88080e7          	jalr	-120(ra) # 800015d0 <_Z10sem_signalP4KSem>
         char c = KConsole::getFromOutput();
-    8000265c:	fffff097          	auipc	ra,0xfffff
-    80002660:	168080e7          	jalr	360(ra) # 800017c4 <_ZN8KConsole13getFromOutputEv>
+    80002650:	fffff097          	auipc	ra,0xfffff
+    80002654:	174080e7          	jalr	372(ra) # 800017c4 <_ZN8KConsole13getFromOutputEv>
     static uint8 getSRvalue() { return *sr; }
-    80002664:	0000b797          	auipc	a5,0xb
-    80002668:	a647b783          	ld	a5,-1436(a5) # 8000d0c8 <_GLOBAL_OFFSET_TABLE_+0xb0>
-    8000266c:	0007b783          	ld	a5,0(a5)
-    80002670:	0007c783          	lbu	a5,0(a5)
+    80002658:	0000b797          	auipc	a5,0xb
+    8000265c:	aa07b783          	ld	a5,-1376(a5) # 8000d0f8 <_GLOBAL_OFFSET_TABLE_+0xb0>
+    80002660:	0007b783          	ld	a5,0(a5)
+    80002664:	0007c783          	lbu	a5,0(a5)
         while (!(KConsole::getSRvalue() & CONSOLE_TX_STATUS_BIT)) {}
-    80002674:	0207f793          	andi	a5,a5,32
-    80002678:	fe0786e3          	beqz	a5,80002664 <_Z22kernelConsumerFunctionPv+0x40>
-    8000267c:	fbdff06f          	j	80002638 <_Z22kernelConsumerFunctionPv+0x14>
+    80002668:	0207f793          	andi	a5,a5,32
+    8000266c:	fe0786e3          	beqz	a5,80002658 <_Z22kernelConsumerFunctionPv+0x40>
+    80002670:	fbdff06f          	j	8000262c <_Z22kernelConsumerFunctionPv+0x14>
 
-0000000080002680 <_Z5main1v>:
+0000000080002674 <_Z5main1v>:
     }
 }
 
 int main1() {
-    80002680:	fc010113          	addi	sp,sp,-64
-    80002684:	02113c23          	sd	ra,56(sp)
-    80002688:	02813823          	sd	s0,48(sp)
-    8000268c:	02913423          	sd	s1,40(sp)
-    80002690:	04010413          	addi	s0,sp,64
+    80002674:	fc010113          	addi	sp,sp,-64
+    80002678:	02113c23          	sd	ra,56(sp)
+    8000267c:	02813823          	sd	s0,48(sp)
+    80002680:	02913423          	sd	s1,40(sp)
+    80002684:	04010413          	addi	s0,sp,64
     //postavljanje adrese prekidne rutine u stvec
     __asm__ volatile("csrw stvec, %[handler]": :[handler] "r"(&interruptHandler));
-    80002694:	0000b797          	auipc	a5,0xb
-    80002698:	a147b783          	ld	a5,-1516(a5) # 8000d0a8 <_GLOBAL_OFFSET_TABLE_+0x90>
-    8000269c:	10579073          	csrw	stvec,a5
+    80002688:	0000b797          	auipc	a5,0xb
+    8000268c:	a507b783          	ld	a5,-1456(a5) # 8000d0d8 <_GLOBAL_OFFSET_TABLE_+0x90>
+    80002690:	10579073          	csrw	stvec,a5
 
     //inicijalizacija alokatora memorije
     KMemory::initializeMemory();
-    800026a0:	00000097          	auipc	ra,0x0
-    800026a4:	ac4080e7          	jalr	-1340(ra) # 80002164 <_ZN7KMemory16initializeMemoryEv>
+    80002694:	00000097          	auipc	ra,0x0
+    80002698:	ac4080e7          	jalr	-1340(ra) # 80002158 <_ZN7KMemory16initializeMemoryEv>
 
     //inicijalizacija komunikacije sa konzolom
     KConsole::initKConsole();
-    800026a8:	fffff097          	auipc	ra,0xfffff
-    800026ac:	064080e7          	jalr	100(ra) # 8000170c <_ZN8KConsole12initKConsoleEv>
+    8000269c:	fffff097          	auipc	ra,0xfffff
+    800026a0:	070080e7          	jalr	112(ra) # 8000170c <_ZN8KConsole12initKConsoleEv>
     //pravljenje niti
     thread_t mainHandle;
     thread_t userHandle;
     thread_t idleHandle;
     thread_t consoleOutputHandle;
     thread_create(&mainHandle, (TCB::Body)main, nullptr);
-    800026b0:	00000613          	li	a2,0
-    800026b4:	0000b597          	auipc	a1,0xb
-    800026b8:	9d45b583          	ld	a1,-1580(a1) # 8000d088 <_GLOBAL_OFFSET_TABLE_+0x70>
-    800026bc:	fd840513          	addi	a0,s0,-40
-    800026c0:	fffff097          	auipc	ra,0xfffff
-    800026c4:	d44080e7          	jalr	-700(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    800026a4:	00000613          	li	a2,0
+    800026a8:	0000b597          	auipc	a1,0xb
+    800026ac:	a105b583          	ld	a1,-1520(a1) # 8000d0b8 <_GLOBAL_OFFSET_TABLE_+0x70>
+    800026b0:	fd840513          	addi	a0,s0,-40
+    800026b4:	fffff097          	auipc	ra,0xfffff
+    800026b8:	d50080e7          	jalr	-688(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     TCB::setRunning(mainHandle);
-    800026c8:	fd843783          	ld	a5,-40(s0)
-    static void setRunning(TCB* newRunning) { running = newRunning; }
-    800026cc:	0000b717          	auipc	a4,0xb
-    800026d0:	9cc73703          	ld	a4,-1588(a4) # 8000d098 <_GLOBAL_OFFSET_TABLE_+0x80>
-    800026d4:	00f73023          	sd	a5,0(a4)
+    800026bc:	fd843783          	ld	a5,-40(s0)
+    void setJoiningWithTCB(TCB* tcb) { joiningWithTCB = tcb; }
+    800026c0:	0000b717          	auipc	a4,0xb
+    800026c4:	a0873703          	ld	a4,-1528(a4) # 8000d0c8 <_GLOBAL_OFFSET_TABLE_+0x80>
+    800026c8:	00f73023          	sd	a5,0(a4)
     void setStatus(ThreadStatus stat) { this->status = stat; }
-    800026d8:	00100713          	li	a4,1
-    800026dc:	04e7ac23          	sw	a4,88(a5)
+    800026cc:	00100713          	li	a4,1
+    800026d0:	04e7ac23          	sw	a4,88(a5)
     mainHandle->setStatus(TCB::ACTIVE);
     thread_create(&userHandle, (TCB::Body)userMain, nullptr);
-    800026e0:	00000613          	li	a2,0
-    800026e4:	0000b597          	auipc	a1,0xb
-    800026e8:	93c5b583          	ld	a1,-1732(a1) # 8000d020 <_GLOBAL_OFFSET_TABLE_+0x8>
-    800026ec:	fd040513          	addi	a0,s0,-48
-    800026f0:	fffff097          	auipc	ra,0xfffff
-    800026f4:	d14080e7          	jalr	-748(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    800026d4:	00000613          	li	a2,0
+    800026d8:	0000b597          	auipc	a1,0xb
+    800026dc:	9785b583          	ld	a1,-1672(a1) # 8000d050 <_GLOBAL_OFFSET_TABLE_+0x8>
+    800026e0:	fd040513          	addi	a0,s0,-48
+    800026e4:	fffff097          	auipc	ra,0xfffff
+    800026e8:	d20080e7          	jalr	-736(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     thread_create(&consoleOutputHandle, kernelConsumerFunction, nullptr);
-    800026f8:	00000613          	li	a2,0
-    800026fc:	00000597          	auipc	a1,0x0
-    80002700:	f2858593          	addi	a1,a1,-216 # 80002624 <_Z22kernelConsumerFunctionPv>
-    80002704:	fc040513          	addi	a0,s0,-64
-    80002708:	fffff097          	auipc	ra,0xfffff
-    8000270c:	cfc080e7          	jalr	-772(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    800026ec:	00000613          	li	a2,0
+    800026f0:	00000597          	auipc	a1,0x0
+    800026f4:	f2858593          	addi	a1,a1,-216 # 80002618 <_Z22kernelConsumerFunctionPv>
+    800026f8:	fc040513          	addi	a0,s0,-64
+    800026fc:	fffff097          	auipc	ra,0xfffff
+    80002700:	d08080e7          	jalr	-760(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     thread_create(&idleHandle, idle, nullptr);
-    80002710:	00000613          	li	a2,0
-    80002714:	00000597          	auipc	a1,0x0
-    80002718:	ef458593          	addi	a1,a1,-268 # 80002608 <_Z4idlePv>
-    8000271c:	fc840513          	addi	a0,s0,-56
-    80002720:	fffff097          	auipc	ra,0xfffff
-    80002724:	ce4080e7          	jalr	-796(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    80002704:	00000613          	li	a2,0
+    80002708:	00000597          	auipc	a1,0x0
+    8000270c:	ef458593          	addi	a1,a1,-268 # 800025fc <_Z4idlePv>
+    80002710:	fc840513          	addi	a0,s0,-56
+    80002714:	fffff097          	auipc	ra,0xfffff
+    80002718:	cf0080e7          	jalr	-784(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
 	__asm__ volatile("csrs sstatus, %[mask]": :[mask] "r"(mask));
-    80002728:	00200493          	li	s1,2
-    8000272c:	1004a073          	csrs	sstatus,s1
+    8000271c:	00200493          	li	s1,2
+    80002720:	1004a073          	csrs	sstatus,s1
 
     //omogucavanje prekida
     Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
 
     //cekanje da se userMain zavrsi
     thread_join(userHandle);
-    80002730:	fd043503          	ld	a0,-48(s0)
-    80002734:	fffff097          	auipc	ra,0xfffff
-    80002738:	dac080e7          	jalr	-596(ra) # 800014e0 <_Z11thread_joinP3TCB>
+    80002724:	fd043503          	ld	a0,-48(s0)
+    80002728:	fffff097          	auipc	ra,0xfffff
+    8000272c:	db8080e7          	jalr	-584(ra) # 800014e0 <_Z11thread_joinP3TCB>
         __asm__ volatile("li a0, 0x43");
-    8000273c:	04300513          	li	a0,67
+    80002730:	04300513          	li	a0,67
         __asm__ volatile("ecall");
-    80002740:	00000073          	ecall
+    80002734:	00000073          	ecall
 	__asm__ volatile("csrc sstatus, %[mask]": :[mask] "r"(mask));
-    80002744:	1004b073          	csrc	sstatus,s1
+    80002738:	1004b073          	csrc	sstatus,s1
 
     //maskiranje svih prekida
     Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
 
     return 0;
-    80002748:	00000513          	li	a0,0
-    8000274c:	03813083          	ld	ra,56(sp)
-    80002750:	03013403          	ld	s0,48(sp)
-    80002754:	02813483          	ld	s1,40(sp)
-    80002758:	04010113          	addi	sp,sp,64
-    8000275c:	00008067          	ret
+    8000273c:	00000513          	li	a0,0
+    80002740:	03813083          	ld	ra,56(sp)
+    80002744:	03013403          	ld	s0,48(sp)
+    80002748:	02813483          	ld	s1,40(sp)
+    8000274c:	04010113          	addi	sp,sp,64
+    80002750:	00008067          	ret
 
-0000000080002760 <interruptRoutine>:
+0000000080002754 <interruptRoutine>:
 #include "../test/printing.hpp"
 
 int main();
 
 #pragma GCC optimize("O0")
 extern "C" void interruptRoutine() {
-    80002760:	f9010113          	addi	sp,sp,-112
-    80002764:	06113423          	sd	ra,104(sp)
-    80002768:	06813023          	sd	s0,96(sp)
-    8000276c:	04913c23          	sd	s1,88(sp)
-    80002770:	07010413          	addi	s0,sp,112
+    80002754:	f9010113          	addi	sp,sp,-112
+    80002758:	06113423          	sd	ra,104(sp)
+    8000275c:	06813023          	sd	s0,96(sp)
+    80002760:	04913c23          	sd	s1,88(sp)
+    80002764:	07010413          	addi	s0,sp,112
     //bitni sistemski registri
     uint64 scause, sepc, sstatus;
     __asm__ volatile("csrr %[scause], scause":[scause] "=r"(scause): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    80002774:	14202373          	csrr	t1,scause
-    80002778:	fc643c23          	sd	t1,-40(s0)
+    80002768:	14202373          	csrr	t1,scause
+    8000276c:	fc643c23          	sd	t1,-40(s0)
     __asm__ volatile("csrr %[sepc], sepc":[sepc] "=r"(sepc): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    8000277c:	14102373          	csrr	t1,sepc
-    80002780:	fc643823          	sd	t1,-48(s0)
+    80002770:	14102373          	csrr	t1,sepc
+    80002774:	fc643823          	sd	t1,-48(s0)
     __asm__ volatile("csrr %[stat], sstatus":[stat] "=r"(sstatus): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    80002784:	10002373          	csrr	t1,sstatus
-    80002788:	fc643423          	sd	t1,-56(s0)
+    80002778:	10002373          	csrr	t1,sstatus
+    8000277c:	fc643423          	sd	t1,-56(s0)
 
     //argumenti preneti sistemskom pozivu
     uint64 a0, a1, a2, a3, a4;
     //uint64 a5, a6, a7;
     __asm__ volatile("mv %[ax], a0":[ax] "=r"(a0): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    8000278c:	00050313          	mv	t1,a0
-    80002790:	fc643023          	sd	t1,-64(s0)
+    80002780:	00050313          	mv	t1,a0
+    80002784:	fc643023          	sd	t1,-64(s0)
     __asm__ volatile("mv %[ax], a1":[ax] "=r"(a1): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    80002794:	00058313          	mv	t1,a1
-    80002798:	fa643c23          	sd	t1,-72(s0)
+    80002788:	00058313          	mv	t1,a1
+    8000278c:	fa643c23          	sd	t1,-72(s0)
     __asm__ volatile("mv %[ax], a2":[ax] "=r"(a2): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    8000279c:	00060313          	mv	t1,a2
-    800027a0:	fa643823          	sd	t1,-80(s0)
+    80002790:	00060313          	mv	t1,a2
+    80002794:	fa643823          	sd	t1,-80(s0)
     __asm__ volatile("mv %[ax], a3":[ax] "=r"(a3): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    800027a4:	00068313          	mv	t1,a3
-    800027a8:	fa643423          	sd	t1,-88(s0)
+    80002798:	00068313          	mv	t1,a3
+    8000279c:	fa643423          	sd	t1,-88(s0)
     __asm__ volatile("mv %[ax], a4":[ax] "=r"(a4): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    800027ac:	00070313          	mv	t1,a4
-    800027b0:	fa643023          	sd	t1,-96(s0)
+    800027a0:	00070313          	mv	t1,a4
+    800027a4:	fa643023          	sd	t1,-96(s0)
 //    __asm__ volatile("mv %[ax], a5":[ax] "=r"(a5): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 //    __asm__ volatile("mv %[ax], a6":[ax] "=r"(a6): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 //    __asm__ volatile("mv %[ax], a7":[ax] "=r"(a7): : "a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
 
     if (scause == 0x9 || scause == 0x8) {
+    800027a8:	fd843703          	ld	a4,-40(s0)
+    800027ac:	00900793          	li	a5,9
+    800027b0:	00f70863          	beq	a4,a5,800027c0 <interruptRoutine+0x6c>
     800027b4:	fd843703          	ld	a4,-40(s0)
-    800027b8:	00900793          	li	a5,9
-    800027bc:	00f70863          	beq	a4,a5,800027cc <interruptRoutine+0x6c>
-    800027c0:	fd843703          	ld	a4,-40(s0)
-    800027c4:	00800793          	li	a5,8
-    800027c8:	4cf71263          	bne	a4,a5,80002c8c <interruptRoutine+0x52c>
+    800027b8:	00800793          	li	a5,8
+    800027bc:	4cf71263          	bne	a4,a5,80002c80 <interruptRoutine+0x52c>
         //prekid zbog poziva ecall
         switch (a0) {
-    800027cc:	fc043703          	ld	a4,-64(s0)
-    800027d0:	08100793          	li	a5,129
-    800027d4:	3ee7e863          	bltu	a5,a4,80002bc4 <interruptRoutine+0x464>
-    800027d8:	fc043783          	ld	a5,-64(s0)
-    800027dc:	00279713          	slli	a4,a5,0x2
-    800027e0:	00008797          	auipc	a5,0x8
-    800027e4:	91478793          	addi	a5,a5,-1772 # 8000a0f4 <CONSOLE_STATUS+0xe4>
-    800027e8:	00f707b3          	add	a5,a4,a5
-    800027ec:	0007a783          	lw	a5,0(a5)
-    800027f0:	0007871b          	sext.w	a4,a5
-    800027f4:	00008797          	auipc	a5,0x8
-    800027f8:	90078793          	addi	a5,a5,-1792 # 8000a0f4 <CONSOLE_STATUS+0xe4>
-    800027fc:	00f707b3          	add	a5,a4,a5
-    80002800:	00078067          	jr	a5
+    800027c0:	fc043703          	ld	a4,-64(s0)
+    800027c4:	08100793          	li	a5,129
+    800027c8:	3ee7e863          	bltu	a5,a4,80002bb8 <interruptRoutine+0x464>
+    800027cc:	fc043783          	ld	a5,-64(s0)
+    800027d0:	00279713          	slli	a4,a5,0x2
+    800027d4:	00008797          	auipc	a5,0x8
+    800027d8:	92078793          	addi	a5,a5,-1760 # 8000a0f4 <CONSOLE_STATUS+0xe4>
+    800027dc:	00f707b3          	add	a5,a4,a5
+    800027e0:	0007a783          	lw	a5,0(a5)
+    800027e4:	0007871b          	sext.w	a4,a5
+    800027e8:	00008797          	auipc	a5,0x8
+    800027ec:	90c78793          	addi	a5,a5,-1780 # 8000a0f4 <CONSOLE_STATUS+0xe4>
+    800027f0:	00f707b3          	add	a5,a4,a5
+    800027f4:	00078067          	jr	a5
             case 0x01:
                 //mem_alloc
                 //a1 = broj blokova koje treba alocirati
                 KMemory::kmalloc((size_t)a1);
-    80002804:	fb843503          	ld	a0,-72(s0)
-    80002808:	fffff097          	auipc	ra,0xfffff
-    8000280c:	7d8080e7          	jalr	2008(ra) # 80001fe0 <_ZN7KMemory7kmallocEm>
+    800027f8:	fb843503          	ld	a0,-72(s0)
+    800027fc:	fffff097          	auipc	ra,0xfffff
+    80002800:	7d8080e7          	jalr	2008(ra) # 80001fd4 <_ZN7KMemory7kmallocEm>
                 __asm__ volatile("sd a0, 80(s0)");
-    80002810:	04a43823          	sd	a0,80(s0)
+    80002804:	04a43823          	sd	a0,80(s0)
                 break;
-    80002814:	4540006f          	j	80002c68 <interruptRoutine+0x508>
+    80002808:	4540006f          	j	80002c5c <interruptRoutine+0x508>
             case 0x02:
                 //mem_free
                 //a1 = pokazivac na memoriju koju dealociramo, dobijen sa mem_alloc
                 KMemory::kfree((void*)a1);
-    80002818:	fb843783          	ld	a5,-72(s0)
-    8000281c:	00078513          	mv	a0,a5
-    80002820:	00000097          	auipc	ra,0x0
-    80002824:	a00080e7          	jalr	-1536(ra) # 80002220 <_ZN7KMemory5kfreeEPv>
+    8000280c:	fb843783          	ld	a5,-72(s0)
+    80002810:	00078513          	mv	a0,a5
+    80002814:	00000097          	auipc	ra,0x0
+    80002818:	a00080e7          	jalr	-1536(ra) # 80002214 <_ZN7KMemory5kfreeEPv>
                 __asm__ volatile("sd a0, 80(s0)");
-    80002828:	04a43823          	sd	a0,80(s0)
+    8000281c:	04a43823          	sd	a0,80(s0)
                 break;
-    8000282c:	43c0006f          	j	80002c68 <interruptRoutine+0x508>
+    80002820:	43c0006f          	j	80002c5c <interruptRoutine+0x508>
                 //thread_create
                 //a1 = pokazivac na rucku u koju upisujemo identifikator niti(adresa u memoriji)
                 //a2 = pokazivac na funkciju koju nit treba da izvrsava
                 //a3 = argumenti funkcije koju nit treba da izvrsava
                 //a4 = poslednja lokacija alociranog steka(najniza adresa)
                 *((thread_t*)a1) = TCB::createThread((TCB::Body)a2, (void*)a3, (uint64*)a4);
-    80002830:	fb043783          	ld	a5,-80(s0)
-    80002834:	fa843703          	ld	a4,-88(s0)
-    80002838:	fa043683          	ld	a3,-96(s0)
-    8000283c:	fb843483          	ld	s1,-72(s0)
-    80002840:	00068613          	mv	a2,a3
-    80002844:	00070593          	mv	a1,a4
-    80002848:	00078513          	mv	a0,a5
-    8000284c:	00001097          	auipc	ra,0x1
-    80002850:	f68080e7          	jalr	-152(ra) # 800037b4 <_ZN3TCB12createThreadEPFvPvES0_Pm>
-    80002854:	00050793          	mv	a5,a0
-    80002858:	00f4b023          	sd	a5,0(s1)
+    80002824:	fb043783          	ld	a5,-80(s0)
+    80002828:	fa843703          	ld	a4,-88(s0)
+    8000282c:	fa043683          	ld	a3,-96(s0)
+    80002830:	fb843483          	ld	s1,-72(s0)
+    80002834:	00068613          	mv	a2,a3
+    80002838:	00070593          	mv	a1,a4
+    8000283c:	00078513          	mv	a0,a5
+    80002840:	00001097          	auipc	ra,0x1
+    80002844:	f70080e7          	jalr	-144(ra) # 800037b0 <_ZN3TCB12createThreadEPFvPvES0_Pm>
+    80002848:	00050793          	mv	a5,a0
+    8000284c:	00f4b023          	sd	a5,0(s1)
                 if (*((thread_t*)a1) != nullptr) {
-    8000285c:	fb843783          	ld	a5,-72(s0)
-    80002860:	0007b783          	ld	a5,0(a5)
-    80002864:	02078863          	beqz	a5,80002894 <interruptRoutine+0x134>
+    80002850:	fb843783          	ld	a5,-72(s0)
+    80002854:	0007b783          	ld	a5,0(a5)
+    80002858:	02078863          	beqz	a5,80002888 <interruptRoutine+0x134>
                     if ((TCB::Body)a2 != (TCB::Body)main) {
-    80002868:	fb043703          	ld	a4,-80(s0)
-    8000286c:	0000b797          	auipc	a5,0xb
-    80002870:	81c7b783          	ld	a5,-2020(a5) # 8000d088 <_GLOBAL_OFFSET_TABLE_+0x70>
-    80002874:	00f70c63          	beq	a4,a5,8000288c <interruptRoutine+0x12c>
+    8000285c:	fb043703          	ld	a4,-80(s0)
+    80002860:	0000b797          	auipc	a5,0xb
+    80002864:	8587b783          	ld	a5,-1960(a5) # 8000d0b8 <_GLOBAL_OFFSET_TABLE_+0x70>
+    80002868:	00f70c63          	beq	a4,a5,80002880 <interruptRoutine+0x12c>
                         Scheduler::put(*((thread_t*)a1));
-    80002878:	fb843783          	ld	a5,-72(s0)
-    8000287c:	0007b783          	ld	a5,0(a5)
-    80002880:	00078513          	mv	a0,a5
-    80002884:	fffff097          	auipc	ra,0xfffff
-    80002888:	5a0080e7          	jalr	1440(ra) # 80001e24 <_ZN9Scheduler3putEP3TCB>
+    8000286c:	fb843783          	ld	a5,-72(s0)
+    80002870:	0007b783          	ld	a5,0(a5)
+    80002874:	00078513          	mv	a0,a5
+    80002878:	fffff097          	auipc	ra,0xfffff
+    8000287c:	5a0080e7          	jalr	1440(ra) # 80001e18 <_ZN9Scheduler3putEP3TCB>
                     }
                     __asm__ volatile("li a0, 0");
-    8000288c:	00000513          	li	a0,0
-    80002890:	0080006f          	j	80002898 <interruptRoutine+0x138>
+    80002880:	00000513          	li	a0,0
+    80002884:	0080006f          	j	8000288c <interruptRoutine+0x138>
                 } else {
                     __asm__ volatile("li a0, -1");
-    80002894:	fff00513          	li	a0,-1
+    80002888:	fff00513          	li	a0,-1
                 }
                 __asm__ volatile("sd a0, 80(s0)");
-    80002898:	04a43823          	sd	a0,80(s0)
+    8000288c:	04a43823          	sd	a0,80(s0)
                 break;
-    8000289c:	3cc0006f          	j	80002c68 <interruptRoutine+0x508>
+    80002890:	3cc0006f          	j	80002c5c <interruptRoutine+0x508>
             case 0x12:
                 //thread_exit
                 TCB::getRunning()->setStatus(TCB::FINISHED);
-    800028a0:	00000097          	auipc	ra,0x0
-    800028a4:	74c080e7          	jalr	1868(ra) # 80002fec <_ZN3TCB10getRunningEv>
-    800028a8:	00050793          	mv	a5,a0
-    800028ac:	00500593          	li	a1,5
-    800028b0:	00078513          	mv	a0,a5
-    800028b4:	00000097          	auipc	ra,0x0
-    800028b8:	6e4080e7          	jalr	1764(ra) # 80002f98 <_ZN3TCB9setStatusENS_12ThreadStatusE>
+    80002894:	00000097          	auipc	ra,0x0
+    80002898:	74c080e7          	jalr	1868(ra) # 80002fe0 <_ZN3TCB10getRunningEv>
+    8000289c:	00050793          	mv	a5,a0
+    800028a0:	00500593          	li	a1,5
+    800028a4:	00078513          	mv	a0,a5
+    800028a8:	00000097          	auipc	ra,0x0
+    800028ac:	6e4080e7          	jalr	1764(ra) # 80002f8c <_ZN3TCB9setStatusENS_12ThreadStatusE>
                 TCB::releaseJoined(TCB::getRunning());
-    800028bc:	00000097          	auipc	ra,0x0
-    800028c0:	730080e7          	jalr	1840(ra) # 80002fec <_ZN3TCB10getRunningEv>
-    800028c4:	00050793          	mv	a5,a0
-    800028c8:	00078513          	mv	a0,a5
-    800028cc:	00001097          	auipc	ra,0x1
-    800028d0:	01c080e7          	jalr	28(ra) # 800038e8 <_ZN3TCB13releaseJoinedEPS_>
+    800028b0:	00000097          	auipc	ra,0x0
+    800028b4:	730080e7          	jalr	1840(ra) # 80002fe0 <_ZN3TCB10getRunningEv>
+    800028b8:	00050793          	mv	a5,a0
+    800028bc:	00078513          	mv	a0,a5
+    800028c0:	00001097          	auipc	ra,0x1
+    800028c4:	028080e7          	jalr	40(ra) # 800038e8 <_ZN3TCB13releaseJoinedEPS_>
                 __asm__ volatile("li a0, 0");
-    800028d4:	00000513          	li	a0,0
+    800028c8:	00000513          	li	a0,0
                 __asm__ volatile("sd a0, 80(s0)");
-    800028d8:	04a43823          	sd	a0,80(s0)
+    800028cc:	04a43823          	sd	a0,80(s0)
                 TCB::dispatch();
-    800028dc:	00001097          	auipc	ra,0x1
-    800028e0:	ddc080e7          	jalr	-548(ra) # 800036b8 <_ZN3TCB8dispatchEv>
+    800028d0:	00001097          	auipc	ra,0x1
+    800028d4:	de4080e7          	jalr	-540(ra) # 800036b4 <_ZN3TCB8dispatchEv>
                 break;
-    800028e4:	3840006f          	j	80002c68 <interruptRoutine+0x508>
+    800028d8:	3840006f          	j	80002c5c <interruptRoutine+0x508>
             case 0x13:
                 //thread_dispatch
                 TCB::dispatch();
-    800028e8:	00001097          	auipc	ra,0x1
-    800028ec:	dd0080e7          	jalr	-560(ra) # 800036b8 <_ZN3TCB8dispatchEv>
+    800028dc:	00001097          	auipc	ra,0x1
+    800028e0:	dd8080e7          	jalr	-552(ra) # 800036b4 <_ZN3TCB8dispatchEv>
                 break;
-    800028f0:	3780006f          	j	80002c68 <interruptRoutine+0x508>
+    800028e4:	3780006f          	j	80002c5c <interruptRoutine+0x508>
             case 0x14:
                 //thread_join
                 //a1 = rucka niti na koju tekuca nit treba da ceka
                 TCB::threadJoin((thread_t)a1);
-    800028f4:	fb843783          	ld	a5,-72(s0)
-    800028f8:	00078513          	mv	a0,a5
-    800028fc:	00001097          	auipc	ra,0x1
-    80002900:	f9c080e7          	jalr	-100(ra) # 80003898 <_ZN3TCB10threadJoinEPS_>
+    800028e8:	fb843783          	ld	a5,-72(s0)
+    800028ec:	00078513          	mv	a0,a5
+    800028f0:	00001097          	auipc	ra,0x1
+    800028f4:	fa4080e7          	jalr	-92(ra) # 80003894 <_ZN3TCB10threadJoinEPS_>
                 TCB::dispatch();
-    80002904:	00001097          	auipc	ra,0x1
-    80002908:	db4080e7          	jalr	-588(ra) # 800036b8 <_ZN3TCB8dispatchEv>
+    800028f8:	00001097          	auipc	ra,0x1
+    800028fc:	dbc080e7          	jalr	-580(ra) # 800036b4 <_ZN3TCB8dispatchEv>
                 break;
-    8000290c:	35c0006f          	j	80002c68 <interruptRoutine+0x508>
+    80002900:	35c0006f          	j	80002c5c <interruptRoutine+0x508>
             case 0x15:
                 //destruktor klase Thread, brise nit ciji je handle prosledjen
                 //a1 = rucka niti koja se brise
                 if(TCB::getRunning()==(thread_t)a1){
-    80002910:	00000097          	auipc	ra,0x0
-    80002914:	6dc080e7          	jalr	1756(ra) # 80002fec <_ZN3TCB10getRunningEv>
-    80002918:	00050713          	mv	a4,a0
-    8000291c:	fb843783          	ld	a5,-72(s0)
-    80002920:	40f707b3          	sub	a5,a4,a5
-    80002924:	0017b793          	seqz	a5,a5
-    80002928:	0ff7f793          	andi	a5,a5,255
-    8000292c:	04078263          	beqz	a5,80002970 <interruptRoutine+0x210>
+    80002904:	00000097          	auipc	ra,0x0
+    80002908:	6dc080e7          	jalr	1756(ra) # 80002fe0 <_ZN3TCB10getRunningEv>
+    8000290c:	00050713          	mv	a4,a0
+    80002910:	fb843783          	ld	a5,-72(s0)
+    80002914:	40f707b3          	sub	a5,a4,a5
+    80002918:	0017b793          	seqz	a5,a5
+    8000291c:	0ff7f793          	andi	a5,a5,255
+    80002920:	04078263          	beqz	a5,80002964 <interruptRoutine+0x210>
                     TCB::getRunning()->setStatus(TCB::FINISHED);
-    80002930:	00000097          	auipc	ra,0x0
-    80002934:	6bc080e7          	jalr	1724(ra) # 80002fec <_ZN3TCB10getRunningEv>
-    80002938:	00050793          	mv	a5,a0
-    8000293c:	00500593          	li	a1,5
-    80002940:	00078513          	mv	a0,a5
-    80002944:	00000097          	auipc	ra,0x0
-    80002948:	654080e7          	jalr	1620(ra) # 80002f98 <_ZN3TCB9setStatusENS_12ThreadStatusE>
+    80002924:	00000097          	auipc	ra,0x0
+    80002928:	6bc080e7          	jalr	1724(ra) # 80002fe0 <_ZN3TCB10getRunningEv>
+    8000292c:	00050793          	mv	a5,a0
+    80002930:	00500593          	li	a1,5
+    80002934:	00078513          	mv	a0,a5
+    80002938:	00000097          	auipc	ra,0x0
+    8000293c:	654080e7          	jalr	1620(ra) # 80002f8c <_ZN3TCB9setStatusENS_12ThreadStatusE>
                     TCB::releaseJoined(TCB::getRunning());
-    8000294c:	00000097          	auipc	ra,0x0
-    80002950:	6a0080e7          	jalr	1696(ra) # 80002fec <_ZN3TCB10getRunningEv>
-    80002954:	00050793          	mv	a5,a0
-    80002958:	00078513          	mv	a0,a5
-    8000295c:	00001097          	auipc	ra,0x1
-    80002960:	f8c080e7          	jalr	-116(ra) # 800038e8 <_ZN3TCB13releaseJoinedEPS_>
+    80002940:	00000097          	auipc	ra,0x0
+    80002944:	6a0080e7          	jalr	1696(ra) # 80002fe0 <_ZN3TCB10getRunningEv>
+    80002948:	00050793          	mv	a5,a0
+    8000294c:	00078513          	mv	a0,a5
+    80002950:	00001097          	auipc	ra,0x1
+    80002954:	f98080e7          	jalr	-104(ra) # 800038e8 <_ZN3TCB13releaseJoinedEPS_>
                     TCB::dispatch();
-    80002964:	00001097          	auipc	ra,0x1
-    80002968:	d54080e7          	jalr	-684(ra) # 800036b8 <_ZN3TCB8dispatchEv>
+    80002958:	00001097          	auipc	ra,0x1
+    8000295c:	d5c080e7          	jalr	-676(ra) # 800036b4 <_ZN3TCB8dispatchEv>
                 }
                 else{
                     TCB::quitThread((thread_t)a1);
                     TCB::releaseJoined((thread_t)a1);
                 }
                 break;
-    8000296c:	2fc0006f          	j	80002c68 <interruptRoutine+0x508>
+    80002960:	2fc0006f          	j	80002c5c <interruptRoutine+0x508>
                     TCB::quitThread((thread_t)a1);
-    80002970:	fb843783          	ld	a5,-72(s0)
-    80002974:	00078513          	mv	a0,a5
-    80002978:	00001097          	auipc	ra,0x1
-    8000297c:	fbc080e7          	jalr	-68(ra) # 80003934 <_ZN3TCB10quitThreadEPS_>
+    80002964:	fb843783          	ld	a5,-72(s0)
+    80002968:	00078513          	mv	a0,a5
+    8000296c:	00001097          	auipc	ra,0x1
+    80002970:	fcc080e7          	jalr	-52(ra) # 80003938 <_ZN3TCB10quitThreadEPS_>
                     TCB::releaseJoined((thread_t)a1);
-    80002980:	fb843783          	ld	a5,-72(s0)
-    80002984:	00078513          	mv	a0,a5
-    80002988:	00001097          	auipc	ra,0x1
-    8000298c:	f60080e7          	jalr	-160(ra) # 800038e8 <_ZN3TCB13releaseJoinedEPS_>
+    80002974:	fb843783          	ld	a5,-72(s0)
+    80002978:	00078513          	mv	a0,a5
+    8000297c:	00001097          	auipc	ra,0x1
+    80002980:	f6c080e7          	jalr	-148(ra) # 800038e8 <_ZN3TCB13releaseJoinedEPS_>
                 break;
-    80002990:	2d80006f          	j	80002c68 <interruptRoutine+0x508>
+    80002984:	2d80006f          	j	80002c5c <interruptRoutine+0x508>
             case 0x21:
                 //sem_open
                 //a1 = pokazivac na rucku semafora, u koju se upisuje adresa semafora u memoriji
                 *((sem_t*)a1) = KSem::initSem((uint)a2);
-    80002994:	fb043783          	ld	a5,-80(s0)
-    80002998:	0007879b          	sext.w	a5,a5
-    8000299c:	fb843483          	ld	s1,-72(s0)
-    800029a0:	00078513          	mv	a0,a5
-    800029a4:	00001097          	auipc	ra,0x1
-    800029a8:	184080e7          	jalr	388(ra) # 80003b28 <_ZN4KSem7initSemEj>
-    800029ac:	00050793          	mv	a5,a0
-    800029b0:	00f4b023          	sd	a5,0(s1)
+    80002988:	fb043783          	ld	a5,-80(s0)
+    8000298c:	0007879b          	sext.w	a5,a5
+    80002990:	fb843483          	ld	s1,-72(s0)
+    80002994:	00078513          	mv	a0,a5
+    80002998:	00001097          	auipc	ra,0x1
+    8000299c:	194080e7          	jalr	404(ra) # 80003b2c <_ZN4KSem7initSemEj>
+    800029a0:	00050793          	mv	a5,a0
+    800029a4:	00f4b023          	sd	a5,0(s1)
                 if (*((sem_t*)a1) != nullptr) {
-    800029b4:	fb843783          	ld	a5,-72(s0)
-    800029b8:	0007b783          	ld	a5,0(a5)
-    800029bc:	00078663          	beqz	a5,800029c8 <interruptRoutine+0x268>
+    800029a8:	fb843783          	ld	a5,-72(s0)
+    800029ac:	0007b783          	ld	a5,0(a5)
+    800029b0:	00078663          	beqz	a5,800029bc <interruptRoutine+0x268>
                     __asm__ volatile("li a0, 0");
-    800029c0:	00000513          	li	a0,0
-    800029c4:	0080006f          	j	800029cc <interruptRoutine+0x26c>
+    800029b4:	00000513          	li	a0,0
+    800029b8:	0080006f          	j	800029c0 <interruptRoutine+0x26c>
                 } else {
                     __asm__ volatile("li a0, -1");
-    800029c8:	fff00513          	li	a0,-1
+    800029bc:	fff00513          	li	a0,-1
                 }
                 __asm__ volatile("sd a0, 80(s0)");
-    800029cc:	04a43823          	sd	a0,80(s0)
+    800029c0:	04a43823          	sd	a0,80(s0)
                 break;
-    800029d0:	2980006f          	j	80002c68 <interruptRoutine+0x508>
+    800029c4:	2980006f          	j	80002c5c <interruptRoutine+0x508>
             case 0x22:
                 //sem_close
                 //a1 = rucka semafora
                 KSem::closeSem((sem_t)a1);
-    800029d4:	fb843783          	ld	a5,-72(s0)
-    800029d8:	00078513          	mv	a0,a5
-    800029dc:	00001097          	auipc	ra,0x1
-    800029e0:	298080e7          	jalr	664(ra) # 80003c74 <_ZN4KSem8closeSemEPS_>
+    800029c8:	fb843783          	ld	a5,-72(s0)
+    800029cc:	00078513          	mv	a0,a5
+    800029d0:	00001097          	auipc	ra,0x1
+    800029d4:	2b0080e7          	jalr	688(ra) # 80003c80 <_ZN4KSem8closeSemEPS_>
                 __asm__ volatile("sd a0, 80(s0)");
-    800029e4:	04a43823          	sd	a0,80(s0)
+    800029d8:	04a43823          	sd	a0,80(s0)
                 delete (sem_t)a1;
-    800029e8:	fb843483          	ld	s1,-72(s0)
-    800029ec:	26048063          	beqz	s1,80002c4c <interruptRoutine+0x4ec>
+    800029dc:	fb843483          	ld	s1,-72(s0)
+    800029e0:	26048063          	beqz	s1,80002c40 <interruptRoutine+0x4ec>
+    800029e4:	00048513          	mv	a0,s1
+    800029e8:	00000097          	auipc	ra,0x0
+    800029ec:	458080e7          	jalr	1112(ra) # 80002e40 <_ZN4KSemD1Ev>
     800029f0:	00048513          	mv	a0,s1
-    800029f4:	00000097          	auipc	ra,0x0
-    800029f8:	458080e7          	jalr	1112(ra) # 80002e4c <_ZN4KSemD1Ev>
-    800029fc:	00048513          	mv	a0,s1
-    80002a00:	00001097          	auipc	ra,0x1
-    80002a04:	100080e7          	jalr	256(ra) # 80003b00 <_ZN4KSemdlEPv>
+    800029f4:	00001097          	auipc	ra,0x1
+    800029f8:	110080e7          	jalr	272(ra) # 80003b04 <_ZN4KSemdlEPv>
                 break;
-    80002a08:	2440006f          	j	80002c4c <interruptRoutine+0x4ec>
+    800029fc:	2440006f          	j	80002c40 <interruptRoutine+0x4ec>
             case 0x23:
                 //sem_wait
                 //a1 = rucka semafora
                 ((sem_t)a1)->wait();
-    80002a0c:	fb843783          	ld	a5,-72(s0)
-    80002a10:	00078513          	mv	a0,a5
-    80002a14:	00001097          	auipc	ra,0x1
-    80002a18:	1a0080e7          	jalr	416(ra) # 80003bb4 <_ZN4KSem4waitEv>
+    80002a00:	fb843783          	ld	a5,-72(s0)
+    80002a04:	00078513          	mv	a0,a5
+    80002a08:	00001097          	auipc	ra,0x1
+    80002a0c:	1b4080e7          	jalr	436(ra) # 80003bbc <_ZN4KSem4waitEv>
                 __asm__ volatile("sd a0, 80(s0)");
-    80002a1c:	04a43823          	sd	a0,80(s0)
+    80002a10:	04a43823          	sd	a0,80(s0)
                 break;
-    80002a20:	2480006f          	j	80002c68 <interruptRoutine+0x508>
+    80002a14:	2480006f          	j	80002c5c <interruptRoutine+0x508>
             case 0x24:
                 //sem_signal
                 //a1 = rucka semafora
                 ((sem_t)a1)->signal();
-    80002a24:	fb843783          	ld	a5,-72(s0)
-    80002a28:	00078513          	mv	a0,a5
-    80002a2c:	00001097          	auipc	ra,0x1
-    80002a30:	204080e7          	jalr	516(ra) # 80003c30 <_ZN4KSem6signalEv>
+    80002a18:	fb843783          	ld	a5,-72(s0)
+    80002a1c:	00078513          	mv	a0,a5
+    80002a20:	00001097          	auipc	ra,0x1
+    80002a24:	21c080e7          	jalr	540(ra) # 80003c3c <_ZN4KSem6signalEv>
                 __asm__ volatile("sd a0, 80(s0)");
-    80002a34:	04a43823          	sd	a0,80(s0)
+    80002a28:	04a43823          	sd	a0,80(s0)
                 break;
-    80002a38:	2300006f          	j	80002c68 <interruptRoutine+0x508>
+    80002a2c:	2300006f          	j	80002c5c <interruptRoutine+0x508>
             case 0x31:
                 //time_sleep
                 //a1 = broj perioda tajmera na koji se uspavljuje tekuca nit
                 if ((time_t)a1 > 0) {
-    80002a3c:	fb843783          	ld	a5,-72(s0)
-    80002a40:	00078663          	beqz	a5,80002a4c <interruptRoutine+0x2ec>
+    80002a30:	fb843783          	ld	a5,-72(s0)
+    80002a34:	00078663          	beqz	a5,80002a40 <interruptRoutine+0x2ec>
                     __asm__ volatile("li a0, 0");
-    80002a44:	00000513          	li	a0,0
-    80002a48:	0080006f          	j	80002a50 <interruptRoutine+0x2f0>
+    80002a38:	00000513          	li	a0,0
+    80002a3c:	0080006f          	j	80002a44 <interruptRoutine+0x2f0>
                 } else {
                     __asm__ volatile("li a0, -1");
-    80002a4c:	fff00513          	li	a0,-1
+    80002a40:	fff00513          	li	a0,-1
                 }
                 __asm__ volatile("sd a0, 80(s0)");
-    80002a50:	04a43823          	sd	a0,80(s0)
+    80002a44:	04a43823          	sd	a0,80(s0)
                 if ((time_t)a1 > 0) {
-    80002a54:	fb843783          	ld	a5,-72(s0)
-    80002a58:	1e078e63          	beqz	a5,80002c54 <interruptRoutine+0x4f4>
+    80002a48:	fb843783          	ld	a5,-72(s0)
+    80002a4c:	1e078e63          	beqz	a5,80002c48 <interruptRoutine+0x4f4>
                     Scheduler::putToSleep(TCB::getRunning(), (time_t)a1);
-    80002a5c:	00000097          	auipc	ra,0x0
-    80002a60:	590080e7          	jalr	1424(ra) # 80002fec <_ZN3TCB10getRunningEv>
-    80002a64:	00050793          	mv	a5,a0
-    80002a68:	fb843583          	ld	a1,-72(s0)
-    80002a6c:	00078513          	mv	a0,a5
-    80002a70:	fffff097          	auipc	ra,0xfffff
-    80002a74:	440080e7          	jalr	1088(ra) # 80001eb0 <_ZN9Scheduler10putToSleepEP3TCBm>
+    80002a50:	00000097          	auipc	ra,0x0
+    80002a54:	590080e7          	jalr	1424(ra) # 80002fe0 <_ZN3TCB10getRunningEv>
+    80002a58:	00050793          	mv	a5,a0
+    80002a5c:	fb843583          	ld	a1,-72(s0)
+    80002a60:	00078513          	mv	a0,a5
+    80002a64:	fffff097          	auipc	ra,0xfffff
+    80002a68:	440080e7          	jalr	1088(ra) # 80001ea4 <_ZN9Scheduler10putToSleepEP3TCBm>
                     TCB::dispatch();
-    80002a78:	00001097          	auipc	ra,0x1
-    80002a7c:	c40080e7          	jalr	-960(ra) # 800036b8 <_ZN3TCB8dispatchEv>
+    80002a6c:	00001097          	auipc	ra,0x1
+    80002a70:	c48080e7          	jalr	-952(ra) # 800036b4 <_ZN3TCB8dispatchEv>
                 }
                 break;
-    80002a80:	1d40006f          	j	80002c54 <interruptRoutine+0x4f4>
+    80002a74:	1d40006f          	j	80002c48 <interruptRoutine+0x4f4>
             case 0x41:
                 //getc
                 KConsole::kgetc();
-    80002a84:	fffff097          	auipc	ra,0xfffff
-    80002a88:	e74080e7          	jalr	-396(ra) # 800018f8 <_ZN8KConsole5kgetcEv>
+    80002a78:	fffff097          	auipc	ra,0xfffff
+    80002a7c:	e80080e7          	jalr	-384(ra) # 800018f8 <_ZN8KConsole5kgetcEv>
                 __asm__ volatile("sd a0, 80(s0)");
-    80002a8c:	04a43823          	sd	a0,80(s0)
+    80002a80:	04a43823          	sd	a0,80(s0)
                 break;
-    80002a90:	1d80006f          	j	80002c68 <interruptRoutine+0x508>
+    80002a84:	1d80006f          	j	80002c5c <interruptRoutine+0x508>
             case 0x42:
                 //putc
                 //a1 = karakter koji se upisuje u bafer za ispis na konzolu
                 KConsole::kputc((char)a1);
-    80002a94:	fb843783          	ld	a5,-72(s0)
-    80002a98:	0ff7f793          	andi	a5,a5,255
-    80002a9c:	00078513          	mv	a0,a5
-    80002aa0:	fffff097          	auipc	ra,0xfffff
-    80002aa4:	de8080e7          	jalr	-536(ra) # 80001888 <_ZN8KConsole5kputcEc>
+    80002a88:	fb843783          	ld	a5,-72(s0)
+    80002a8c:	0ff7f793          	andi	a5,a5,255
+    80002a90:	00078513          	mv	a0,a5
+    80002a94:	fffff097          	auipc	ra,0xfffff
+    80002a98:	df4080e7          	jalr	-524(ra) # 80001888 <_ZN8KConsole5kputcEc>
                 break;
-    80002aa8:	1c00006f          	j	80002c68 <interruptRoutine+0x508>
+    80002a9c:	1c00006f          	j	80002c5c <interruptRoutine+0x508>
             case 0x43:
                 //flush izlaznog bafera konzole
                 while (KConsole::getOutputHead() != KConsole::getOutputTail()) {
-    80002aac:	00000097          	auipc	ra,0x0
-    80002ab0:	4a4080e7          	jalr	1188(ra) # 80002f50 <_ZN8KConsole13getOutputHeadEv>
-    80002ab4:	00050793          	mv	a5,a0
-    80002ab8:	00078493          	mv	s1,a5
-    80002abc:	00000097          	auipc	ra,0x0
-    80002ac0:	4b8080e7          	jalr	1208(ra) # 80002f74 <_ZN8KConsole13getOutputTailEv>
-    80002ac4:	00050793          	mv	a5,a0
-    80002ac8:	00048713          	mv	a4,s1
-    80002acc:	40f707b3          	sub	a5,a4,a5
-    80002ad0:	00f037b3          	snez	a5,a5
-    80002ad4:	0ff7f793          	andi	a5,a5,255
-    80002ad8:	18078263          	beqz	a5,80002c5c <interruptRoutine+0x4fc>
+    80002aa0:	00000097          	auipc	ra,0x0
+    80002aa4:	4a4080e7          	jalr	1188(ra) # 80002f44 <_ZN8KConsole13getOutputHeadEv>
+    80002aa8:	00050793          	mv	a5,a0
+    80002aac:	00078493          	mv	s1,a5
+    80002ab0:	00000097          	auipc	ra,0x0
+    80002ab4:	4b8080e7          	jalr	1208(ra) # 80002f68 <_ZN8KConsole13getOutputTailEv>
+    80002ab8:	00050793          	mv	a5,a0
+    80002abc:	00048713          	mv	a4,s1
+    80002ac0:	40f707b3          	sub	a5,a4,a5
+    80002ac4:	00f037b3          	snez	a5,a5
+    80002ac8:	0ff7f793          	andi	a5,a5,255
+    80002acc:	18078263          	beqz	a5,80002c50 <interruptRoutine+0x4fc>
                     char c = KConsole::getFromOutput();
-    80002adc:	fffff097          	auipc	ra,0xfffff
-    80002ae0:	ce8080e7          	jalr	-792(ra) # 800017c4 <_ZN8KConsole13getFromOutputEv>
-    80002ae4:	00050793          	mv	a5,a0
-    80002ae8:	f8f40ba3          	sb	a5,-105(s0)
+    80002ad0:	fffff097          	auipc	ra,0xfffff
+    80002ad4:	cf4080e7          	jalr	-780(ra) # 800017c4 <_ZN8KConsole13getFromOutputEv>
+    80002ad8:	00050793          	mv	a5,a0
+    80002adc:	f8f40ba3          	sb	a5,-105(s0)
                     while (!(KConsole::getSRvalue() & CONSOLE_TX_STATUS_BIT)) {}
-    80002aec:	00000097          	auipc	ra,0x0
-    80002af0:	3c8080e7          	jalr	968(ra) # 80002eb4 <_ZN8KConsole10getSRvalueEv>
-    80002af4:	00050793          	mv	a5,a0
-    80002af8:	0207f793          	andi	a5,a5,32
-    80002afc:	0017b793          	seqz	a5,a5
-    80002b00:	0ff7f793          	andi	a5,a5,255
-    80002b04:	00078463          	beqz	a5,80002b0c <interruptRoutine+0x3ac>
-    80002b08:	fe5ff06f          	j	80002aec <interruptRoutine+0x38c>
+    80002ae0:	00000097          	auipc	ra,0x0
+    80002ae4:	3c8080e7          	jalr	968(ra) # 80002ea8 <_ZN8KConsole10getSRvalueEv>
+    80002ae8:	00050793          	mv	a5,a0
+    80002aec:	0207f793          	andi	a5,a5,32
+    80002af0:	0017b793          	seqz	a5,a5
+    80002af4:	0ff7f793          	andi	a5,a5,255
+    80002af8:	00078463          	beqz	a5,80002b00 <interruptRoutine+0x3ac>
+    80002afc:	fe5ff06f          	j	80002ae0 <interruptRoutine+0x38c>
                     KConsole::setDRvalue(c);
-    80002b0c:	f9744783          	lbu	a5,-105(s0)
-    80002b10:	00078513          	mv	a0,a5
-    80002b14:	00000097          	auipc	ra,0x0
-    80002b18:	3f0080e7          	jalr	1008(ra) # 80002f04 <_ZN8KConsole10setDRvalueEc>
+    80002b00:	f9744783          	lbu	a5,-105(s0)
+    80002b04:	00078513          	mv	a0,a5
+    80002b08:	00000097          	auipc	ra,0x0
+    80002b0c:	3f0080e7          	jalr	1008(ra) # 80002ef8 <_ZN8KConsole10setDRvalueEc>
                     sem_signal(KConsole::getOutputBufferHasSpace());
-    80002b1c:	00000097          	auipc	ra,0x0
-    80002b20:	410080e7          	jalr	1040(ra) # 80002f2c <_ZN8KConsole23getOutputBufferHasSpaceEv>
-    80002b24:	00050793          	mv	a5,a0
-    80002b28:	00078513          	mv	a0,a5
-    80002b2c:	fffff097          	auipc	ra,0xfffff
-    80002b30:	aa4080e7          	jalr	-1372(ra) # 800015d0 <_Z10sem_signalP4KSem>
+    80002b10:	00000097          	auipc	ra,0x0
+    80002b14:	410080e7          	jalr	1040(ra) # 80002f20 <_ZN8KConsole23getOutputBufferHasSpaceEv>
+    80002b18:	00050793          	mv	a5,a0
+    80002b1c:	00078513          	mv	a0,a5
+    80002b20:	fffff097          	auipc	ra,0xfffff
+    80002b24:	ab0080e7          	jalr	-1360(ra) # 800015d0 <_Z10sem_signalP4KSem>
                 while (KConsole::getOutputHead() != KConsole::getOutputTail()) {
-    80002b34:	f79ff06f          	j	80002aac <interruptRoutine+0x34c>
+    80002b28:	f79ff06f          	j	80002aa0 <interruptRoutine+0x34c>
                 //alloc thread
                 //a1 = pokazivac na rucku u koju upisujemo identifikator niti(adresa u memoriji)
                 //a2 = pokazivac na funkciju koju nit treba da izvrsava
                 //a3 = argumenti funkcije koju nit treba da izvrsava
                 //a4 = poslednja lokacija alociranog steka(najniza adresa)
                 *((thread_t*)a1) = TCB::createThread((TCB::Body)a2, (void*)a3, (uint64*)a4);
-    80002b38:	fb043783          	ld	a5,-80(s0)
-    80002b3c:	fa843703          	ld	a4,-88(s0)
-    80002b40:	fa043683          	ld	a3,-96(s0)
-    80002b44:	fb843483          	ld	s1,-72(s0)
-    80002b48:	00068613          	mv	a2,a3
-    80002b4c:	00070593          	mv	a1,a4
-    80002b50:	00078513          	mv	a0,a5
-    80002b54:	00001097          	auipc	ra,0x1
-    80002b58:	c60080e7          	jalr	-928(ra) # 800037b4 <_ZN3TCB12createThreadEPFvPvES0_Pm>
-    80002b5c:	00050793          	mv	a5,a0
-    80002b60:	00f4b023          	sd	a5,0(s1)
+    80002b2c:	fb043783          	ld	a5,-80(s0)
+    80002b30:	fa843703          	ld	a4,-88(s0)
+    80002b34:	fa043683          	ld	a3,-96(s0)
+    80002b38:	fb843483          	ld	s1,-72(s0)
+    80002b3c:	00068613          	mv	a2,a3
+    80002b40:	00070593          	mv	a1,a4
+    80002b44:	00078513          	mv	a0,a5
+    80002b48:	00001097          	auipc	ra,0x1
+    80002b4c:	c68080e7          	jalr	-920(ra) # 800037b0 <_ZN3TCB12createThreadEPFvPvES0_Pm>
+    80002b50:	00050793          	mv	a5,a0
+    80002b54:	00f4b023          	sd	a5,0(s1)
                 if (*((thread_t*)a1) != nullptr) {
-    80002b64:	fb843783          	ld	a5,-72(s0)
-    80002b68:	0007b783          	ld	a5,0(a5)
-    80002b6c:	00078663          	beqz	a5,80002b78 <interruptRoutine+0x418>
+    80002b58:	fb843783          	ld	a5,-72(s0)
+    80002b5c:	0007b783          	ld	a5,0(a5)
+    80002b60:	00078663          	beqz	a5,80002b6c <interruptRoutine+0x418>
                     __asm__ volatile("li a0, 0");
-    80002b70:	00000513          	li	a0,0
-    80002b74:	0080006f          	j	80002b7c <interruptRoutine+0x41c>
+    80002b64:	00000513          	li	a0,0
+    80002b68:	0080006f          	j	80002b70 <interruptRoutine+0x41c>
                 } else {
                     __asm__ volatile("li a0, -1");
-    80002b78:	fff00513          	li	a0,-1
+    80002b6c:	fff00513          	li	a0,-1
                 }
                 __asm__ volatile("sd a0, 80(s0)");
-    80002b7c:	04a43823          	sd	a0,80(s0)
+    80002b70:	04a43823          	sd	a0,80(s0)
                 break;
-    80002b80:	0e80006f          	j	80002c68 <interruptRoutine+0x508>
+    80002b74:	0e80006f          	j	80002c5c <interruptRoutine+0x508>
             case 0x81:
                 //start thread
                 //a1 = rucka niti koja se stavlja u scheduler
                 if (((thread_t)a1)->getBody() != (TCB::Body)main) {
-    80002b84:	fb843783          	ld	a5,-72(s0)
-    80002b88:	00078513          	mv	a0,a5
-    80002b8c:	00000097          	auipc	ra,0x0
-    80002b90:	444080e7          	jalr	1092(ra) # 80002fd0 <_ZN3TCB7getBodyEv>
-    80002b94:	00050713          	mv	a4,a0
-    80002b98:	0000a797          	auipc	a5,0xa
-    80002b9c:	4f07b783          	ld	a5,1264(a5) # 8000d088 <_GLOBAL_OFFSET_TABLE_+0x70>
-    80002ba0:	40f707b3          	sub	a5,a4,a5
-    80002ba4:	00f037b3          	snez	a5,a5
-    80002ba8:	0ff7f793          	andi	a5,a5,255
-    80002bac:	0a078c63          	beqz	a5,80002c64 <interruptRoutine+0x504>
+    80002b78:	fb843783          	ld	a5,-72(s0)
+    80002b7c:	00078513          	mv	a0,a5
+    80002b80:	00000097          	auipc	ra,0x0
+    80002b84:	444080e7          	jalr	1092(ra) # 80002fc4 <_ZN3TCB7getBodyEv>
+    80002b88:	00050713          	mv	a4,a0
+    80002b8c:	0000a797          	auipc	a5,0xa
+    80002b90:	52c7b783          	ld	a5,1324(a5) # 8000d0b8 <_GLOBAL_OFFSET_TABLE_+0x70>
+    80002b94:	40f707b3          	sub	a5,a4,a5
+    80002b98:	00f037b3          	snez	a5,a5
+    80002b9c:	0ff7f793          	andi	a5,a5,255
+    80002ba0:	0a078c63          	beqz	a5,80002c58 <interruptRoutine+0x504>
                     Scheduler::put((thread_t)a1);
-    80002bb0:	fb843783          	ld	a5,-72(s0)
-    80002bb4:	00078513          	mv	a0,a5
-    80002bb8:	fffff097          	auipc	ra,0xfffff
-    80002bbc:	26c080e7          	jalr	620(ra) # 80001e24 <_ZN9Scheduler3putEP3TCB>
+    80002ba4:	fb843783          	ld	a5,-72(s0)
+    80002ba8:	00078513          	mv	a0,a5
+    80002bac:	fffff097          	auipc	ra,0xfffff
+    80002bb0:	26c080e7          	jalr	620(ra) # 80001e18 <_ZN9Scheduler3putEP3TCB>
                 }
                 break;
-    80002bc0:	0a40006f          	j	80002c64 <interruptRoutine+0x504>
+    80002bb4:	0a40006f          	j	80002c58 <interruptRoutine+0x504>
             default:
                 printString("\nNepostojeci op code: ");
-    80002bc4:	00007517          	auipc	a0,0x7
-    80002bc8:	4d450513          	addi	a0,a0,1236 # 8000a098 <CONSOLE_STATUS+0x88>
-    80002bcc:	00003097          	auipc	ra,0x3
-    80002bd0:	7ac080e7          	jalr	1964(ra) # 80006378 <_Z11printStringPKc>
+    80002bb8:	00007517          	auipc	a0,0x7
+    80002bbc:	4e050513          	addi	a0,a0,1248 # 8000a098 <CONSOLE_STATUS+0x88>
+    80002bc0:	00003097          	auipc	ra,0x3
+    80002bc4:	7bc080e7          	jalr	1980(ra) # 8000637c <_Z11printStringPKc>
                 printInt(a0);
-    80002bd4:	fc043783          	ld	a5,-64(s0)
-    80002bd8:	0007879b          	sext.w	a5,a5
-    80002bdc:	00000613          	li	a2,0
-    80002be0:	00a00593          	li	a1,10
-    80002be4:	00078513          	mv	a0,a5
-    80002be8:	00004097          	auipc	ra,0x4
-    80002bec:	940080e7          	jalr	-1728(ra) # 80006528 <_Z8printIntiii>
+    80002bc8:	fc043783          	ld	a5,-64(s0)
+    80002bcc:	0007879b          	sext.w	a5,a5
+    80002bd0:	00000613          	li	a2,0
+    80002bd4:	00a00593          	li	a1,10
+    80002bd8:	00078513          	mv	a0,a5
+    80002bdc:	00004097          	auipc	ra,0x4
+    80002be0:	950080e7          	jalr	-1712(ra) # 8000652c <_Z8printIntiii>
                 printString("\nscause: ");
-    80002bf0:	00007517          	auipc	a0,0x7
-    80002bf4:	4c050513          	addi	a0,a0,1216 # 8000a0b0 <CONSOLE_STATUS+0xa0>
-    80002bf8:	00003097          	auipc	ra,0x3
-    80002bfc:	780080e7          	jalr	1920(ra) # 80006378 <_Z11printStringPKc>
+    80002be4:	00007517          	auipc	a0,0x7
+    80002be8:	4cc50513          	addi	a0,a0,1228 # 8000a0b0 <CONSOLE_STATUS+0xa0>
+    80002bec:	00003097          	auipc	ra,0x3
+    80002bf0:	790080e7          	jalr	1936(ra) # 8000637c <_Z11printStringPKc>
                 printInt(scause);
-    80002c00:	fd843783          	ld	a5,-40(s0)
-    80002c04:	0007879b          	sext.w	a5,a5
-    80002c08:	00000613          	li	a2,0
-    80002c0c:	00a00593          	li	a1,10
-    80002c10:	00078513          	mv	a0,a5
-    80002c14:	00004097          	auipc	ra,0x4
-    80002c18:	914080e7          	jalr	-1772(ra) # 80006528 <_Z8printIntiii>
+    80002bf4:	fd843783          	ld	a5,-40(s0)
+    80002bf8:	0007879b          	sext.w	a5,a5
+    80002bfc:	00000613          	li	a2,0
+    80002c00:	00a00593          	li	a1,10
+    80002c04:	00078513          	mv	a0,a5
+    80002c08:	00004097          	auipc	ra,0x4
+    80002c0c:	924080e7          	jalr	-1756(ra) # 8000652c <_Z8printIntiii>
                 printString("\nsepc: ");
-    80002c1c:	00007517          	auipc	a0,0x7
-    80002c20:	4a450513          	addi	a0,a0,1188 # 8000a0c0 <CONSOLE_STATUS+0xb0>
-    80002c24:	00003097          	auipc	ra,0x3
-    80002c28:	754080e7          	jalr	1876(ra) # 80006378 <_Z11printStringPKc>
+    80002c10:	00007517          	auipc	a0,0x7
+    80002c14:	4b050513          	addi	a0,a0,1200 # 8000a0c0 <CONSOLE_STATUS+0xb0>
+    80002c18:	00003097          	auipc	ra,0x3
+    80002c1c:	764080e7          	jalr	1892(ra) # 8000637c <_Z11printStringPKc>
                 printInt(sepc);
-    80002c2c:	fd043783          	ld	a5,-48(s0)
-    80002c30:	0007879b          	sext.w	a5,a5
-    80002c34:	00000613          	li	a2,0
-    80002c38:	00a00593          	li	a1,10
-    80002c3c:	00078513          	mv	a0,a5
-    80002c40:	00004097          	auipc	ra,0x4
-    80002c44:	8e8080e7          	jalr	-1816(ra) # 80006528 <_Z8printIntiii>
+    80002c20:	fd043783          	ld	a5,-48(s0)
+    80002c24:	0007879b          	sext.w	a5,a5
+    80002c28:	00000613          	li	a2,0
+    80002c2c:	00a00593          	li	a1,10
+    80002c30:	00078513          	mv	a0,a5
+    80002c34:	00004097          	auipc	ra,0x4
+    80002c38:	8f8080e7          	jalr	-1800(ra) # 8000652c <_Z8printIntiii>
                 break;
-    80002c48:	0200006f          	j	80002c68 <interruptRoutine+0x508>
+    80002c3c:	0200006f          	j	80002c5c <interruptRoutine+0x508>
                 break;
-    80002c4c:	00000013          	nop
-    80002c50:	0180006f          	j	80002c68 <interruptRoutine+0x508>
+    80002c40:	00000013          	nop
+    80002c44:	0180006f          	j	80002c5c <interruptRoutine+0x508>
                 break;
-    80002c54:	00000013          	nop
-    80002c58:	0100006f          	j	80002c68 <interruptRoutine+0x508>
+    80002c48:	00000013          	nop
+    80002c4c:	0100006f          	j	80002c5c <interruptRoutine+0x508>
                 break;
-    80002c5c:	00000013          	nop
-    80002c60:	0080006f          	j	80002c68 <interruptRoutine+0x508>
+    80002c50:	00000013          	nop
+    80002c54:	0080006f          	j	80002c5c <interruptRoutine+0x508>
                 break;
-    80002c64:	00000013          	nop
+    80002c58:	00000013          	nop
         }
         //sepc pokazuje na ecall instrukciju, treba preci na sledecu instrukciju
         sepc += 4;
-    80002c68:	fd043783          	ld	a5,-48(s0)
-    80002c6c:	00478793          	addi	a5,a5,4
-    80002c70:	fcf43823          	sd	a5,-48(s0)
+    80002c5c:	fd043783          	ld	a5,-48(s0)
+    80002c60:	00478793          	addi	a5,a5,4
+    80002c64:	fcf43823          	sd	a5,-48(s0)
         __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc));
-    80002c74:	fd043783          	ld	a5,-48(s0)
-    80002c78:	14179073          	csrw	sepc,a5
+    80002c68:	fd043783          	ld	a5,-48(s0)
+    80002c6c:	14179073          	csrw	sepc,a5
         __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus));
-    80002c7c:	fc843783          	ld	a5,-56(s0)
-    80002c80:	10079073          	csrw	sstatus,a5
-    80002c84:	00000013          	nop
+    80002c70:	fc843783          	ld	a5,-56(s0)
+    80002c74:	10079073          	csrw	sstatus,a5
+    80002c78:	00000013          	nop
         printString("\nsepc: ");
         printInt(sepc);
         __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc));
         __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus));
     }
-    80002c88:	1ac0006f          	j	80002e34 <interruptRoutine+0x6d4>
+    80002c7c:	1ac0006f          	j	80002e28 <interruptRoutine+0x6d4>
     } else if (scause == 0x8000000000000009) {
-    80002c8c:	fd843703          	ld	a4,-40(s0)
-    80002c90:	fff00793          	li	a5,-1
-    80002c94:	03f79793          	slli	a5,a5,0x3f
-    80002c98:	00978793          	addi	a5,a5,9
-    80002c9c:	08f71463          	bne	a4,a5,80002d24 <interruptRoutine+0x5c4>
+    80002c80:	fd843703          	ld	a4,-40(s0)
+    80002c84:	fff00793          	li	a5,-1
+    80002c88:	03f79793          	slli	a5,a5,0x3f
+    80002c8c:	00978793          	addi	a5,a5,9
+    80002c90:	08f71463          	bne	a4,a5,80002d18 <interruptRoutine+0x5c4>
         uint64 irq = plic_claim();
-    80002ca0:	00005097          	auipc	ra,0x5
-    80002ca4:	724080e7          	jalr	1828(ra) # 800083c4 <plic_claim>
-    80002ca8:	00050793          	mv	a5,a0
-    80002cac:	f8f43c23          	sd	a5,-104(s0)
+    80002c94:	00005097          	auipc	ra,0x5
+    80002c98:	730080e7          	jalr	1840(ra) # 800083c4 <plic_claim>
+    80002c9c:	00050793          	mv	a5,a0
+    80002ca0:	f8f43c23          	sd	a5,-104(s0)
         if (irq == CONSOLE_IRQ) {
-    80002cb0:	f9843703          	ld	a4,-104(s0)
-    80002cb4:	00a00793          	li	a5,10
-    80002cb8:	02f71c63          	bne	a4,a5,80002cf0 <interruptRoutine+0x590>
+    80002ca4:	f9843703          	ld	a4,-104(s0)
+    80002ca8:	00a00793          	li	a5,10
+    80002cac:	02f71c63          	bne	a4,a5,80002ce4 <interruptRoutine+0x590>
             if (KConsole::getSRvalue() & CONSOLE_RX_STATUS_BIT) {
-    80002cbc:	00000097          	auipc	ra,0x0
-    80002cc0:	1f8080e7          	jalr	504(ra) # 80002eb4 <_ZN8KConsole10getSRvalueEv>
-    80002cc4:	00050793          	mv	a5,a0
-    80002cc8:	0017f793          	andi	a5,a5,1
-    80002ccc:	00f037b3          	snez	a5,a5
-    80002cd0:	0ff7f793          	andi	a5,a5,255
-    80002cd4:	00078e63          	beqz	a5,80002cf0 <interruptRoutine+0x590>
+    80002cb0:	00000097          	auipc	ra,0x0
+    80002cb4:	1f8080e7          	jalr	504(ra) # 80002ea8 <_ZN8KConsole10getSRvalueEv>
+    80002cb8:	00050793          	mv	a5,a0
+    80002cbc:	0017f793          	andi	a5,a5,1
+    80002cc0:	00f037b3          	snez	a5,a5
+    80002cc4:	0ff7f793          	andi	a5,a5,255
+    80002cc8:	00078e63          	beqz	a5,80002ce4 <interruptRoutine+0x590>
                 KConsole::placeInInput(KConsole::getDRvalue());
-    80002cd8:	00000097          	auipc	ra,0x0
-    80002cdc:	204080e7          	jalr	516(ra) # 80002edc <_ZN8KConsole10getDRvalueEv>
-    80002ce0:	00050793          	mv	a5,a0
-    80002ce4:	00078513          	mv	a0,a5
-    80002ce8:	fffff097          	auipc	ra,0xfffff
-    80002cec:	b34080e7          	jalr	-1228(ra) # 8000181c <_ZN8KConsole12placeInInputEc>
+    80002ccc:	00000097          	auipc	ra,0x0
+    80002cd0:	204080e7          	jalr	516(ra) # 80002ed0 <_ZN8KConsole10getDRvalueEv>
+    80002cd4:	00050793          	mv	a5,a0
+    80002cd8:	00078513          	mv	a0,a5
+    80002cdc:	fffff097          	auipc	ra,0xfffff
+    80002ce0:	b40080e7          	jalr	-1216(ra) # 8000181c <_ZN8KConsole12placeInInputEc>
         plic_complete(irq);
-    80002cf0:	f9843783          	ld	a5,-104(s0)
-    80002cf4:	0007879b          	sext.w	a5,a5
-    80002cf8:	00078513          	mv	a0,a5
-    80002cfc:	00005097          	auipc	ra,0x5
-    80002d00:	700080e7          	jalr	1792(ra) # 800083fc <plic_complete>
+    80002ce4:	f9843783          	ld	a5,-104(s0)
+    80002ce8:	0007879b          	sext.w	a5,a5
+    80002cec:	00078513          	mv	a0,a5
+    80002cf0:	00005097          	auipc	ra,0x5
+    80002cf4:	70c080e7          	jalr	1804(ra) # 800083fc <plic_complete>
         __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc));
-    80002d04:	fd043783          	ld	a5,-48(s0)
-    80002d08:	14179073          	csrw	sepc,a5
+    80002cf8:	fd043783          	ld	a5,-48(s0)
+    80002cfc:	14179073          	csrw	sepc,a5
         __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus));
-    80002d0c:	fc843783          	ld	a5,-56(s0)
-    80002d10:	10079073          	csrw	sstatus,a5
+    80002d00:	fc843783          	ld	a5,-56(s0)
+    80002d04:	10079073          	csrw	sstatus,a5
         Riscv::mc_sip(Riscv::SIP_SEIP);
-    80002d14:	20000513          	li	a0,512
-    80002d18:	00000097          	auipc	ra,0x0
-    80002d1c:	180080e7          	jalr	384(ra) # 80002e98 <_ZN5Riscv6mc_sipEm>
-    80002d20:	1140006f          	j	80002e34 <interruptRoutine+0x6d4>
+    80002d08:	20000513          	li	a0,512
+    80002d0c:	00000097          	auipc	ra,0x0
+    80002d10:	180080e7          	jalr	384(ra) # 80002e8c <_ZN5Riscv6mc_sipEm>
+    80002d14:	1140006f          	j	80002e28 <interruptRoutine+0x6d4>
     } else if (scause == 0x8000000000000001) {
-    80002d24:	fd843703          	ld	a4,-40(s0)
-    80002d28:	fff00793          	li	a5,-1
-    80002d2c:	03f79793          	slli	a5,a5,0x3f
-    80002d30:	00178793          	addi	a5,a5,1
-    80002d34:	08f71463          	bne	a4,a5,80002dbc <interruptRoutine+0x65c>
+    80002d18:	fd843703          	ld	a4,-40(s0)
+    80002d1c:	fff00793          	li	a5,-1
+    80002d20:	03f79793          	slli	a5,a5,0x3f
+    80002d24:	00178793          	addi	a5,a5,1
+    80002d28:	08f71463          	bne	a4,a5,80002db0 <interruptRoutine+0x65c>
         Scheduler::wake();
-    80002d38:	fffff097          	auipc	ra,0xfffff
-    80002d3c:	228080e7          	jalr	552(ra) # 80001f60 <_ZN9Scheduler4wakeEv>
+    80002d2c:	fffff097          	auipc	ra,0xfffff
+    80002d30:	228080e7          	jalr	552(ra) # 80001f54 <_ZN9Scheduler4wakeEv>
         TCB::getRunningTimeSlice()++;
-    80002d40:	00000097          	auipc	ra,0x0
-    80002d44:	2d0080e7          	jalr	720(ra) # 80003010 <_ZN3TCB19getRunningTimeSliceEv>
-    80002d48:	00050793          	mv	a5,a0
-    80002d4c:	0007b703          	ld	a4,0(a5)
-    80002d50:	00170713          	addi	a4,a4,1
-    80002d54:	00e7b023          	sd	a4,0(a5)
+    80002d34:	00000097          	auipc	ra,0x0
+    80002d38:	2d0080e7          	jalr	720(ra) # 80003004 <_ZN3TCB19getRunningTimeSliceEv>
+    80002d3c:	00050793          	mv	a5,a0
+    80002d40:	0007b703          	ld	a4,0(a5)
+    80002d44:	00170713          	addi	a4,a4,1
+    80002d48:	00e7b023          	sd	a4,0(a5)
         if (TCB::getRunningTimeSlice() >= TCB::getRunning()->getTimeSlice()) {
-    80002d58:	00000097          	auipc	ra,0x0
-    80002d5c:	2b8080e7          	jalr	696(ra) # 80003010 <_ZN3TCB19getRunningTimeSliceEv>
-    80002d60:	00050793          	mv	a5,a0
-    80002d64:	0007b483          	ld	s1,0(a5)
-    80002d68:	00000097          	auipc	ra,0x0
-    80002d6c:	284080e7          	jalr	644(ra) # 80002fec <_ZN3TCB10getRunningEv>
-    80002d70:	00050793          	mv	a5,a0
-    80002d74:	00078513          	mv	a0,a5
-    80002d78:	00000097          	auipc	ra,0x0
-    80002d7c:	23c080e7          	jalr	572(ra) # 80002fb4 <_ZN3TCB12getTimeSliceEv>
-    80002d80:	00050793          	mv	a5,a0
-    80002d84:	00f4b7b3          	sltu	a5,s1,a5
-    80002d88:	0017c793          	xori	a5,a5,1
-    80002d8c:	0ff7f793          	andi	a5,a5,255
-    80002d90:	00078663          	beqz	a5,80002d9c <interruptRoutine+0x63c>
+    80002d4c:	00000097          	auipc	ra,0x0
+    80002d50:	2b8080e7          	jalr	696(ra) # 80003004 <_ZN3TCB19getRunningTimeSliceEv>
+    80002d54:	00050793          	mv	a5,a0
+    80002d58:	0007b483          	ld	s1,0(a5)
+    80002d5c:	00000097          	auipc	ra,0x0
+    80002d60:	284080e7          	jalr	644(ra) # 80002fe0 <_ZN3TCB10getRunningEv>
+    80002d64:	00050793          	mv	a5,a0
+    80002d68:	00078513          	mv	a0,a5
+    80002d6c:	00000097          	auipc	ra,0x0
+    80002d70:	23c080e7          	jalr	572(ra) # 80002fa8 <_ZN3TCB12getTimeSliceEv>
+    80002d74:	00050793          	mv	a5,a0
+    80002d78:	00f4b7b3          	sltu	a5,s1,a5
+    80002d7c:	0017c793          	xori	a5,a5,1
+    80002d80:	0ff7f793          	andi	a5,a5,255
+    80002d84:	00078663          	beqz	a5,80002d90 <interruptRoutine+0x63c>
             TCB::dispatch();
-    80002d94:	00001097          	auipc	ra,0x1
-    80002d98:	924080e7          	jalr	-1756(ra) # 800036b8 <_ZN3TCB8dispatchEv>
+    80002d88:	00001097          	auipc	ra,0x1
+    80002d8c:	92c080e7          	jalr	-1748(ra) # 800036b4 <_ZN3TCB8dispatchEv>
         __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc));
-    80002d9c:	fd043783          	ld	a5,-48(s0)
-    80002da0:	14179073          	csrw	sepc,a5
+    80002d90:	fd043783          	ld	a5,-48(s0)
+    80002d94:	14179073          	csrw	sepc,a5
         __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus));
-    80002da4:	fc843783          	ld	a5,-56(s0)
-    80002da8:	10079073          	csrw	sstatus,a5
+    80002d98:	fc843783          	ld	a5,-56(s0)
+    80002d9c:	10079073          	csrw	sstatus,a5
         Riscv::mc_sip(Riscv::SIP_SSIP);
-    80002dac:	00200513          	li	a0,2
-    80002db0:	00000097          	auipc	ra,0x0
-    80002db4:	0e8080e7          	jalr	232(ra) # 80002e98 <_ZN5Riscv6mc_sipEm>
-    80002db8:	07c0006f          	j	80002e34 <interruptRoutine+0x6d4>
+    80002da0:	00200513          	li	a0,2
+    80002da4:	00000097          	auipc	ra,0x0
+    80002da8:	0e8080e7          	jalr	232(ra) # 80002e8c <_ZN5Riscv6mc_sipEm>
+    80002dac:	07c0006f          	j	80002e28 <interruptRoutine+0x6d4>
         printString("\nGreska u prekidnoj rutini\n");
-    80002dbc:	00007517          	auipc	a0,0x7
-    80002dc0:	30c50513          	addi	a0,a0,780 # 8000a0c8 <CONSOLE_STATUS+0xb8>
-    80002dc4:	00003097          	auipc	ra,0x3
-    80002dc8:	5b4080e7          	jalr	1460(ra) # 80006378 <_Z11printStringPKc>
+    80002db0:	00007517          	auipc	a0,0x7
+    80002db4:	31850513          	addi	a0,a0,792 # 8000a0c8 <CONSOLE_STATUS+0xb8>
+    80002db8:	00003097          	auipc	ra,0x3
+    80002dbc:	5c4080e7          	jalr	1476(ra) # 8000637c <_Z11printStringPKc>
         printString("scause: ");
-    80002dcc:	00007517          	auipc	a0,0x7
-    80002dd0:	31c50513          	addi	a0,a0,796 # 8000a0e8 <CONSOLE_STATUS+0xd8>
-    80002dd4:	00003097          	auipc	ra,0x3
-    80002dd8:	5a4080e7          	jalr	1444(ra) # 80006378 <_Z11printStringPKc>
+    80002dc0:	00007517          	auipc	a0,0x7
+    80002dc4:	32850513          	addi	a0,a0,808 # 8000a0e8 <CONSOLE_STATUS+0xd8>
+    80002dc8:	00003097          	auipc	ra,0x3
+    80002dcc:	5b4080e7          	jalr	1460(ra) # 8000637c <_Z11printStringPKc>
         printInt(scause);
-    80002ddc:	fd843783          	ld	a5,-40(s0)
-    80002de0:	0007879b          	sext.w	a5,a5
-    80002de4:	00000613          	li	a2,0
-    80002de8:	00a00593          	li	a1,10
-    80002dec:	00078513          	mv	a0,a5
-    80002df0:	00003097          	auipc	ra,0x3
-    80002df4:	738080e7          	jalr	1848(ra) # 80006528 <_Z8printIntiii>
+    80002dd0:	fd843783          	ld	a5,-40(s0)
+    80002dd4:	0007879b          	sext.w	a5,a5
+    80002dd8:	00000613          	li	a2,0
+    80002ddc:	00a00593          	li	a1,10
+    80002de0:	00078513          	mv	a0,a5
+    80002de4:	00003097          	auipc	ra,0x3
+    80002de8:	748080e7          	jalr	1864(ra) # 8000652c <_Z8printIntiii>
         printString("\nsepc: ");
-    80002df8:	00007517          	auipc	a0,0x7
-    80002dfc:	2c850513          	addi	a0,a0,712 # 8000a0c0 <CONSOLE_STATUS+0xb0>
-    80002e00:	00003097          	auipc	ra,0x3
-    80002e04:	578080e7          	jalr	1400(ra) # 80006378 <_Z11printStringPKc>
+    80002dec:	00007517          	auipc	a0,0x7
+    80002df0:	2d450513          	addi	a0,a0,724 # 8000a0c0 <CONSOLE_STATUS+0xb0>
+    80002df4:	00003097          	auipc	ra,0x3
+    80002df8:	588080e7          	jalr	1416(ra) # 8000637c <_Z11printStringPKc>
         printInt(sepc);
-    80002e08:	fd043783          	ld	a5,-48(s0)
-    80002e0c:	0007879b          	sext.w	a5,a5
-    80002e10:	00000613          	li	a2,0
-    80002e14:	00a00593          	li	a1,10
-    80002e18:	00078513          	mv	a0,a5
-    80002e1c:	00003097          	auipc	ra,0x3
-    80002e20:	70c080e7          	jalr	1804(ra) # 80006528 <_Z8printIntiii>
+    80002dfc:	fd043783          	ld	a5,-48(s0)
+    80002e00:	0007879b          	sext.w	a5,a5
+    80002e04:	00000613          	li	a2,0
+    80002e08:	00a00593          	li	a1,10
+    80002e0c:	00078513          	mv	a0,a5
+    80002e10:	00003097          	auipc	ra,0x3
+    80002e14:	71c080e7          	jalr	1820(ra) # 8000652c <_Z8printIntiii>
         __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc));
-    80002e24:	fd043783          	ld	a5,-48(s0)
-    80002e28:	14179073          	csrw	sepc,a5
+    80002e18:	fd043783          	ld	a5,-48(s0)
+    80002e1c:	14179073          	csrw	sepc,a5
         __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus));
-    80002e2c:	fc843783          	ld	a5,-56(s0)
-    80002e30:	10079073          	csrw	sstatus,a5
-    80002e34:	00000013          	nop
-    80002e38:	06813083          	ld	ra,104(sp)
-    80002e3c:	06013403          	ld	s0,96(sp)
-    80002e40:	05813483          	ld	s1,88(sp)
-    80002e44:	07010113          	addi	sp,sp,112
-    80002e48:	00008067          	ret
+    80002e20:	fc843783          	ld	a5,-56(s0)
+    80002e24:	10079073          	csrw	sstatus,a5
+    80002e28:	00000013          	nop
+    80002e2c:	06813083          	ld	ra,104(sp)
+    80002e30:	06013403          	ld	s0,96(sp)
+    80002e34:	05813483          	ld	s1,88(sp)
+    80002e38:	07010113          	addi	sp,sp,112
+    80002e3c:	00008067          	ret
 
-0000000080002e4c <_ZN4KSemD1Ev>:
+0000000080002e40 <_ZN4KSemD1Ev>:
 #define PROJEKAT2023_KSEM_HPP
 
 #include "../h/ThreadQueue.hpp"
 
 //klasa napravljena po uzoru na semafor u skolskom jezgru
 class KSem {
-    80002e4c:	fe010113          	addi	sp,sp,-32
-    80002e50:	00113c23          	sd	ra,24(sp)
-    80002e54:	00813823          	sd	s0,16(sp)
-    80002e58:	00913423          	sd	s1,8(sp)
-    80002e5c:	02010413          	addi	s0,sp,32
-    80002e60:	00050493          	mv	s1,a0
+    80002e40:	fe010113          	addi	sp,sp,-32
+    80002e44:	00113c23          	sd	ra,24(sp)
+    80002e48:	00813823          	sd	s0,16(sp)
+    80002e4c:	00913423          	sd	s1,8(sp)
+    80002e50:	02010413          	addi	s0,sp,32
+    80002e54:	00050493          	mv	s1,a0
             delete node;
         }
     }
 
     bool isEmpty() const {
         return front == nullptr;
-    80002e64:	0084b503          	ld	a0,8(s1)
+    80002e58:	0084b503          	ld	a0,8(s1)
         while (!isEmpty()) {
-    80002e68:	00050e63          	beqz	a0,80002e84 <_ZN4KSemD1Ev+0x38>
+    80002e5c:	00050e63          	beqz	a0,80002e78 <_ZN4KSemD1Ev+0x38>
             front = front->next;
-    80002e6c:	00853783          	ld	a5,8(a0)
-    80002e70:	00f4b423          	sd	a5,8(s1)
+    80002e60:	00853783          	ld	a5,8(a0)
+    80002e64:	00f4b423          	sd	a5,8(s1)
             delete node;
-    80002e74:	fe0508e3          	beqz	a0,80002e64 <_ZN4KSemD1Ev+0x18>
+    80002e68:	fe0508e3          	beqz	a0,80002e58 <_ZN4KSemD1Ev+0x18>
             mem_free(ptr);
-    80002e78:	ffffe097          	auipc	ra,0xffffe
-    80002e7c:	55c080e7          	jalr	1372(ra) # 800013d4 <_Z8mem_freePv>
+    80002e6c:	ffffe097          	auipc	ra,0xffffe
+    80002e70:	568080e7          	jalr	1384(ra) # 800013d4 <_Z8mem_freePv>
         }
-    80002e80:	fe5ff06f          	j	80002e64 <_ZN4KSemD1Ev+0x18>
-    80002e84:	01813083          	ld	ra,24(sp)
-    80002e88:	01013403          	ld	s0,16(sp)
-    80002e8c:	00813483          	ld	s1,8(sp)
-    80002e90:	02010113          	addi	sp,sp,32
-    80002e94:	00008067          	ret
+    80002e74:	fe5ff06f          	j	80002e58 <_ZN4KSemD1Ev+0x18>
+    80002e78:	01813083          	ld	ra,24(sp)
+    80002e7c:	01013403          	ld	s0,16(sp)
+    80002e80:	00813483          	ld	s1,8(sp)
+    80002e84:	02010113          	addi	sp,sp,32
+    80002e88:	00008067          	ret
 
-0000000080002e98 <_ZN5Riscv6mc_sipEm>:
+0000000080002e8c <_ZN5Riscv6mc_sipEm>:
 inline void Riscv::mc_sip(uint64 mask) {
-    80002e98:	ff010113          	addi	sp,sp,-16
-    80002e9c:	00813423          	sd	s0,8(sp)
-    80002ea0:	01010413          	addi	s0,sp,16
+    80002e8c:	ff010113          	addi	sp,sp,-16
+    80002e90:	00813423          	sd	s0,8(sp)
+    80002e94:	01010413          	addi	s0,sp,16
 	__asm__ volatile("csrc sip, %[mask]": :[mask] "r"(mask));
-    80002ea4:	14453073          	csrc	sip,a0
+    80002e98:	14453073          	csrc	sip,a0
 }
-    80002ea8:	00813403          	ld	s0,8(sp)
-    80002eac:	01010113          	addi	sp,sp,16
-    80002eb0:	00008067          	ret
+    80002e9c:	00813403          	ld	s0,8(sp)
+    80002ea0:	01010113          	addi	sp,sp,16
+    80002ea4:	00008067          	ret
 
-0000000080002eb4 <_ZN8KConsole10getSRvalueEv>:
+0000000080002ea8 <_ZN8KConsole10getSRvalueEv>:
     static uint8 getSRvalue() { return *sr; }
-    80002eb4:	ff010113          	addi	sp,sp,-16
-    80002eb8:	00813423          	sd	s0,8(sp)
-    80002ebc:	01010413          	addi	s0,sp,16
-    80002ec0:	0000a797          	auipc	a5,0xa
-    80002ec4:	2087b783          	ld	a5,520(a5) # 8000d0c8 <_GLOBAL_OFFSET_TABLE_+0xb0>
-    80002ec8:	0007b783          	ld	a5,0(a5)
-    80002ecc:	0007c503          	lbu	a0,0(a5)
-    80002ed0:	00813403          	ld	s0,8(sp)
-    80002ed4:	01010113          	addi	sp,sp,16
-    80002ed8:	00008067          	ret
+    80002ea8:	ff010113          	addi	sp,sp,-16
+    80002eac:	00813423          	sd	s0,8(sp)
+    80002eb0:	01010413          	addi	s0,sp,16
+    80002eb4:	0000a797          	auipc	a5,0xa
+    80002eb8:	2447b783          	ld	a5,580(a5) # 8000d0f8 <_GLOBAL_OFFSET_TABLE_+0xb0>
+    80002ebc:	0007b783          	ld	a5,0(a5)
+    80002ec0:	0007c503          	lbu	a0,0(a5)
+    80002ec4:	00813403          	ld	s0,8(sp)
+    80002ec8:	01010113          	addi	sp,sp,16
+    80002ecc:	00008067          	ret
 
-0000000080002edc <_ZN8KConsole10getDRvalueEv>:
+0000000080002ed0 <_ZN8KConsole10getDRvalueEv>:
     static uint8 getDRvalue() { return *dr; }
-    80002edc:	ff010113          	addi	sp,sp,-16
-    80002ee0:	00813423          	sd	s0,8(sp)
-    80002ee4:	01010413          	addi	s0,sp,16
-    80002ee8:	0000a797          	auipc	a5,0xa
-    80002eec:	1907b783          	ld	a5,400(a5) # 8000d078 <_GLOBAL_OFFSET_TABLE_+0x60>
-    80002ef0:	0007b783          	ld	a5,0(a5)
-    80002ef4:	0007c503          	lbu	a0,0(a5)
-    80002ef8:	00813403          	ld	s0,8(sp)
-    80002efc:	01010113          	addi	sp,sp,16
-    80002f00:	00008067          	ret
+    80002ed0:	ff010113          	addi	sp,sp,-16
+    80002ed4:	00813423          	sd	s0,8(sp)
+    80002ed8:	01010413          	addi	s0,sp,16
+    80002edc:	0000a797          	auipc	a5,0xa
+    80002ee0:	1cc7b783          	ld	a5,460(a5) # 8000d0a8 <_GLOBAL_OFFSET_TABLE_+0x60>
+    80002ee4:	0007b783          	ld	a5,0(a5)
+    80002ee8:	0007c503          	lbu	a0,0(a5)
+    80002eec:	00813403          	ld	s0,8(sp)
+    80002ef0:	01010113          	addi	sp,sp,16
+    80002ef4:	00008067          	ret
 
-0000000080002f04 <_ZN8KConsole10setDRvalueEc>:
+0000000080002ef8 <_ZN8KConsole10setDRvalueEc>:
     static void setDRvalue(char c) { *dr = c; }
-    80002f04:	ff010113          	addi	sp,sp,-16
-    80002f08:	00813423          	sd	s0,8(sp)
-    80002f0c:	01010413          	addi	s0,sp,16
-    80002f10:	0000a797          	auipc	a5,0xa
-    80002f14:	1687b783          	ld	a5,360(a5) # 8000d078 <_GLOBAL_OFFSET_TABLE_+0x60>
-    80002f18:	0007b783          	ld	a5,0(a5)
-    80002f1c:	00a78023          	sb	a0,0(a5)
-    80002f20:	00813403          	ld	s0,8(sp)
-    80002f24:	01010113          	addi	sp,sp,16
-    80002f28:	00008067          	ret
+    80002ef8:	ff010113          	addi	sp,sp,-16
+    80002efc:	00813423          	sd	s0,8(sp)
+    80002f00:	01010413          	addi	s0,sp,16
+    80002f04:	0000a797          	auipc	a5,0xa
+    80002f08:	1a47b783          	ld	a5,420(a5) # 8000d0a8 <_GLOBAL_OFFSET_TABLE_+0x60>
+    80002f0c:	0007b783          	ld	a5,0(a5)
+    80002f10:	00a78023          	sb	a0,0(a5)
+    80002f14:	00813403          	ld	s0,8(sp)
+    80002f18:	01010113          	addi	sp,sp,16
+    80002f1c:	00008067          	ret
 
-0000000080002f2c <_ZN8KConsole23getOutputBufferHasSpaceEv>:
+0000000080002f20 <_ZN8KConsole23getOutputBufferHasSpaceEv>:
 
     static sem_t getOutputBufferHasSpace() { return outputBufferHasSpace; }
-    80002f2c:	ff010113          	addi	sp,sp,-16
-    80002f30:	00813423          	sd	s0,8(sp)
-    80002f34:	01010413          	addi	s0,sp,16
-    80002f38:	0000a797          	auipc	a5,0xa
-    80002f3c:	1587b783          	ld	a5,344(a5) # 8000d090 <_GLOBAL_OFFSET_TABLE_+0x78>
-    80002f40:	0007b503          	ld	a0,0(a5)
-    80002f44:	00813403          	ld	s0,8(sp)
-    80002f48:	01010113          	addi	sp,sp,16
-    80002f4c:	00008067          	ret
+    80002f20:	ff010113          	addi	sp,sp,-16
+    80002f24:	00813423          	sd	s0,8(sp)
+    80002f28:	01010413          	addi	s0,sp,16
+    80002f2c:	0000a797          	auipc	a5,0xa
+    80002f30:	1947b783          	ld	a5,404(a5) # 8000d0c0 <_GLOBAL_OFFSET_TABLE_+0x78>
+    80002f34:	0007b503          	ld	a0,0(a5)
+    80002f38:	00813403          	ld	s0,8(sp)
+    80002f3c:	01010113          	addi	sp,sp,16
+    80002f40:	00008067          	ret
 
-0000000080002f50 <_ZN8KConsole13getOutputHeadEv>:
+0000000080002f44 <_ZN8KConsole13getOutputHeadEv>:
 
     static int getOutputHead() { return outputHead; }
-    80002f50:	ff010113          	addi	sp,sp,-16
-    80002f54:	00813423          	sd	s0,8(sp)
-    80002f58:	01010413          	addi	s0,sp,16
-    80002f5c:	0000a797          	auipc	a5,0xa
-    80002f60:	10c7b783          	ld	a5,268(a5) # 8000d068 <_GLOBAL_OFFSET_TABLE_+0x50>
-    80002f64:	0007a503          	lw	a0,0(a5)
-    80002f68:	00813403          	ld	s0,8(sp)
-    80002f6c:	01010113          	addi	sp,sp,16
-    80002f70:	00008067          	ret
+    80002f44:	ff010113          	addi	sp,sp,-16
+    80002f48:	00813423          	sd	s0,8(sp)
+    80002f4c:	01010413          	addi	s0,sp,16
+    80002f50:	0000a797          	auipc	a5,0xa
+    80002f54:	1487b783          	ld	a5,328(a5) # 8000d098 <_GLOBAL_OFFSET_TABLE_+0x50>
+    80002f58:	0007a503          	lw	a0,0(a5)
+    80002f5c:	00813403          	ld	s0,8(sp)
+    80002f60:	01010113          	addi	sp,sp,16
+    80002f64:	00008067          	ret
 
-0000000080002f74 <_ZN8KConsole13getOutputTailEv>:
+0000000080002f68 <_ZN8KConsole13getOutputTailEv>:
 
     static int getOutputTail() { return outputTail; }
-    80002f74:	ff010113          	addi	sp,sp,-16
-    80002f78:	00813423          	sd	s0,8(sp)
-    80002f7c:	01010413          	addi	s0,sp,16
-    80002f80:	0000a797          	auipc	a5,0xa
-    80002f84:	1407b783          	ld	a5,320(a5) # 8000d0c0 <_GLOBAL_OFFSET_TABLE_+0xa8>
-    80002f88:	0007a503          	lw	a0,0(a5)
-    80002f8c:	00813403          	ld	s0,8(sp)
-    80002f90:	01010113          	addi	sp,sp,16
-    80002f94:	00008067          	ret
+    80002f68:	ff010113          	addi	sp,sp,-16
+    80002f6c:	00813423          	sd	s0,8(sp)
+    80002f70:	01010413          	addi	s0,sp,16
+    80002f74:	0000a797          	auipc	a5,0xa
+    80002f78:	17c7b783          	ld	a5,380(a5) # 8000d0f0 <_GLOBAL_OFFSET_TABLE_+0xa8>
+    80002f7c:	0007a503          	lw	a0,0(a5)
+    80002f80:	00813403          	ld	s0,8(sp)
+    80002f84:	01010113          	addi	sp,sp,16
+    80002f88:	00008067          	ret
 
-0000000080002f98 <_ZN3TCB9setStatusENS_12ThreadStatusE>:
-    80002f98:	ff010113          	addi	sp,sp,-16
-    80002f9c:	00813423          	sd	s0,8(sp)
-    80002fa0:	01010413          	addi	s0,sp,16
-    80002fa4:	04b52c23          	sw	a1,88(a0)
-    80002fa8:	00813403          	ld	s0,8(sp)
-    80002fac:	01010113          	addi	sp,sp,16
-    80002fb0:	00008067          	ret
+0000000080002f8c <_ZN3TCB9setStatusENS_12ThreadStatusE>:
+    80002f8c:	ff010113          	addi	sp,sp,-16
+    80002f90:	00813423          	sd	s0,8(sp)
+    80002f94:	01010413          	addi	s0,sp,16
+    80002f98:	04b52c23          	sw	a1,88(a0)
+    80002f9c:	00813403          	ld	s0,8(sp)
+    80002fa0:	01010113          	addi	sp,sp,16
+    80002fa4:	00008067          	ret
 
-0000000080002fb4 <_ZN3TCB12getTimeSliceEv>:
+0000000080002fa8 <_ZN3TCB12getTimeSliceEv>:
     uint64 getTimeSlice() { return timeSlice; }
-    80002fb4:	ff010113          	addi	sp,sp,-16
-    80002fb8:	00813423          	sd	s0,8(sp)
-    80002fbc:	01010413          	addi	s0,sp,16
-    80002fc0:	02853503          	ld	a0,40(a0)
-    80002fc4:	00813403          	ld	s0,8(sp)
-    80002fc8:	01010113          	addi	sp,sp,16
-    80002fcc:	00008067          	ret
+    80002fa8:	ff010113          	addi	sp,sp,-16
+    80002fac:	00813423          	sd	s0,8(sp)
+    80002fb0:	01010413          	addi	s0,sp,16
+    80002fb4:	02853503          	ld	a0,40(a0)
+    80002fb8:	00813403          	ld	s0,8(sp)
+    80002fbc:	01010113          	addi	sp,sp,16
+    80002fc0:	00008067          	ret
 
-0000000080002fd0 <_ZN3TCB7getBodyEv>:
+0000000080002fc4 <_ZN3TCB7getBodyEv>:
     Body getBody() { return threadFunction; }
-    80002fd0:	ff010113          	addi	sp,sp,-16
-    80002fd4:	00813423          	sd	s0,8(sp)
-    80002fd8:	01010413          	addi	s0,sp,16
-    80002fdc:	01053503          	ld	a0,16(a0)
-    80002fe0:	00813403          	ld	s0,8(sp)
-    80002fe4:	01010113          	addi	sp,sp,16
-    80002fe8:	00008067          	ret
+    80002fc4:	ff010113          	addi	sp,sp,-16
+    80002fc8:	00813423          	sd	s0,8(sp)
+    80002fcc:	01010413          	addi	s0,sp,16
+    80002fd0:	01053503          	ld	a0,16(a0)
+    80002fd4:	00813403          	ld	s0,8(sp)
+    80002fd8:	01010113          	addi	sp,sp,16
+    80002fdc:	00008067          	ret
 
-0000000080002fec <_ZN3TCB10getRunningEv>:
+0000000080002fe0 <_ZN3TCB10getRunningEv>:
+    void setMySemaphore(KSem* sem) { mySemaphore = sem; }
+    80002fe0:	ff010113          	addi	sp,sp,-16
+    80002fe4:	00813423          	sd	s0,8(sp)
+    80002fe8:	01010413          	addi	s0,sp,16
+    80002fec:	0000a797          	auipc	a5,0xa
+    80002ff0:	0dc7b783          	ld	a5,220(a5) # 8000d0c8 <_GLOBAL_OFFSET_TABLE_+0x80>
+    80002ff4:	0007b503          	ld	a0,0(a5)
+    80002ff8:	00813403          	ld	s0,8(sp)
+    80002ffc:	01010113          	addi	sp,sp,16
+    80003000:	00008067          	ret
+
+0000000080003004 <_ZN3TCB19getRunningTimeSliceEv>:
+
     static TCB* getRunning() { return running; }
-    80002fec:	ff010113          	addi	sp,sp,-16
-    80002ff0:	00813423          	sd	s0,8(sp)
-    80002ff4:	01010413          	addi	s0,sp,16
-    80002ff8:	0000a797          	auipc	a5,0xa
-    80002ffc:	0a07b783          	ld	a5,160(a5) # 8000d098 <_GLOBAL_OFFSET_TABLE_+0x80>
-    80003000:	0007b503          	ld	a0,0(a5)
-    80003004:	00813403          	ld	s0,8(sp)
-    80003008:	01010113          	addi	sp,sp,16
-    8000300c:	00008067          	ret
+    80003004:	ff010113          	addi	sp,sp,-16
+    80003008:	00813423          	sd	s0,8(sp)
+    8000300c:	01010413          	addi	s0,sp,16
+    80003010:	0000a517          	auipc	a0,0xa
+    80003014:	05053503          	ld	a0,80(a0) # 8000d060 <_GLOBAL_OFFSET_TABLE_+0x18>
+    80003018:	00813403          	ld	s0,8(sp)
+    8000301c:	01010113          	addi	sp,sp,16
+    80003020:	00008067          	ret
 
-0000000080003010 <_ZN3TCB19getRunningTimeSliceEv>:
-
-    static uint64 &getRunningTimeSlice() { return runningTimeSlice; }
-    80003010:	ff010113          	addi	sp,sp,-16
-    80003014:	00813423          	sd	s0,8(sp)
-    80003018:	01010413          	addi	s0,sp,16
-    8000301c:	0000a517          	auipc	a0,0xa
-    80003020:	01453503          	ld	a0,20(a0) # 8000d030 <_GLOBAL_OFFSET_TABLE_+0x18>
-    80003024:	00813403          	ld	s0,8(sp)
-    80003028:	01010113          	addi	sp,sp,16
-    8000302c:	00008067          	ret
-
-0000000080003030 <_ZN6ThreadD1Ev>:
+0000000080003024 <_ZN6ThreadD1Ev>:
     //a4 = pokazivac na najnizu adresu steka (stek raste ka nizim adresama, pokazuje na poslednju zauzetu)
 
     __asm__ volatile("ecall");
 }
 
 Thread::~Thread() {
-    80003030:	ff010113          	addi	sp,sp,-16
-    80003034:	00813423          	sd	s0,8(sp)
-    80003038:	01010413          	addi	s0,sp,16
-    8000303c:	0000a797          	auipc	a5,0xa
-    80003040:	dcc78793          	addi	a5,a5,-564 # 8000ce08 <_ZTV6Thread+0x10>
-    80003044:	00f53023          	sd	a5,0(a0)
+    80003024:	ff010113          	addi	sp,sp,-16
+    80003028:	00813423          	sd	s0,8(sp)
+    8000302c:	01010413          	addi	s0,sp,16
+    80003030:	0000a797          	auipc	a5,0xa
+    80003034:	e0878793          	addi	a5,a5,-504 # 8000ce38 <_ZTV6Thread+0x10>
+    80003038:	00f53023          	sd	a5,0(a0)
     //ne treba da se gasi running nit, vec nit na koju pokazuje rucka od this
 //    thread_join(this->myHandle);
 //    delete myHandle;
 
     __asm__ volatile("mv a1, %[handle]": :[handle] "r"(myHandle):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    80003048:	00853303          	ld	t1,8(a0)
-    8000304c:	00030593          	mv	a1,t1
+    8000303c:	00853303          	ld	t1,8(a0)
+    80003040:	00030593          	mv	a1,t1
     __asm__ volatile("li a0, 0x15");
-    80003050:	01500513          	li	a0,21
+    80003044:	01500513          	li	a0,21
 
     __asm__ volatile("ecall");
-    80003054:	00000073          	ecall
+    80003048:	00000073          	ecall
 }
-    80003058:	00813403          	ld	s0,8(sp)
-    8000305c:	01010113          	addi	sp,sp,16
-    80003060:	00008067          	ret
+    8000304c:	00813403          	ld	s0,8(sp)
+    80003050:	01010113          	addi	sp,sp,16
+    80003054:	00008067          	ret
 
-0000000080003064 <_ZN6Thread7wrapperEPv>:
+0000000080003058 <_ZN6Thread7wrapperEPv>:
 
     __asm__ volatile("ecall");
 }
 
 void Thread::wrapper(void* thread) {
     if (thread != nullptr) {
-    80003064:	02050863          	beqz	a0,80003094 <_ZN6Thread7wrapperEPv+0x30>
+    80003058:	02050863          	beqz	a0,80003088 <_ZN6Thread7wrapperEPv+0x30>
 void Thread::wrapper(void* thread) {
-    80003068:	ff010113          	addi	sp,sp,-16
-    8000306c:	00113423          	sd	ra,8(sp)
-    80003070:	00813023          	sd	s0,0(sp)
-    80003074:	01010413          	addi	s0,sp,16
+    8000305c:	ff010113          	addi	sp,sp,-16
+    80003060:	00113423          	sd	ra,8(sp)
+    80003064:	00813023          	sd	s0,0(sp)
+    80003068:	01010413          	addi	s0,sp,16
         ((Thread*)thread)->run();
-    80003078:	00053783          	ld	a5,0(a0)
-    8000307c:	0107b783          	ld	a5,16(a5)
-    80003080:	000780e7          	jalr	a5
+    8000306c:	00053783          	ld	a5,0(a0)
+    80003070:	0107b783          	ld	a5,16(a5)
+    80003074:	000780e7          	jalr	a5
     }
 }
-    80003084:	00813083          	ld	ra,8(sp)
-    80003088:	00013403          	ld	s0,0(sp)
-    8000308c:	01010113          	addi	sp,sp,16
-    80003090:	00008067          	ret
-    80003094:	00008067          	ret
+    80003078:	00813083          	ld	ra,8(sp)
+    8000307c:	00013403          	ld	s0,0(sp)
+    80003080:	01010113          	addi	sp,sp,16
+    80003084:	00008067          	ret
+    80003088:	00008067          	ret
 
-0000000080003098 <_ZN9SemaphoreD1Ev>:
+000000008000308c <_ZN9SemaphoreD1Ev>:
 
 Semaphore::Semaphore(unsigned int init) {
     sem_open(&myHandle, init);
 }
 
 Semaphore::~Semaphore() {
-    80003098:	fe010113          	addi	sp,sp,-32
-    8000309c:	00113c23          	sd	ra,24(sp)
-    800030a0:	00813823          	sd	s0,16(sp)
-    800030a4:	00913423          	sd	s1,8(sp)
-    800030a8:	02010413          	addi	s0,sp,32
-    800030ac:	00050493          	mv	s1,a0
-    800030b0:	0000a797          	auipc	a5,0xa
-    800030b4:	d8078793          	addi	a5,a5,-640 # 8000ce30 <_ZTV9Semaphore+0x10>
-    800030b8:	00f53023          	sd	a5,0(a0)
+    8000308c:	fe010113          	addi	sp,sp,-32
+    80003090:	00113c23          	sd	ra,24(sp)
+    80003094:	00813823          	sd	s0,16(sp)
+    80003098:	00913423          	sd	s1,8(sp)
+    8000309c:	02010413          	addi	s0,sp,32
+    800030a0:	00050493          	mv	s1,a0
+    800030a4:	0000a797          	auipc	a5,0xa
+    800030a8:	dbc78793          	addi	a5,a5,-580 # 8000ce60 <_ZTV9Semaphore+0x10>
+    800030ac:	00f53023          	sd	a5,0(a0)
     sem_close(myHandle);
-    800030bc:	00853503          	ld	a0,8(a0)
-    800030c0:	ffffe097          	auipc	ra,0xffffe
-    800030c4:	4b0080e7          	jalr	1200(ra) # 80001570 <_Z9sem_closeP4KSem>
+    800030b0:	00853503          	ld	a0,8(a0)
+    800030b4:	ffffe097          	auipc	ra,0xffffe
+    800030b8:	4bc080e7          	jalr	1212(ra) # 80001570 <_Z9sem_closeP4KSem>
     delete myHandle;
-    800030c8:	0084b483          	ld	s1,8(s1)
-    800030cc:	02048863          	beqz	s1,800030fc <_ZN9SemaphoreD1Ev+0x64>
+    800030bc:	0084b483          	ld	s1,8(s1)
+    800030c0:	02048863          	beqz	s1,800030f0 <_ZN9SemaphoreD1Ev+0x64>
         return front == nullptr;
-    800030d0:	0084b503          	ld	a0,8(s1)
+    800030c4:	0084b503          	ld	a0,8(s1)
         while (!isEmpty()) {
-    800030d4:	00050e63          	beqz	a0,800030f0 <_ZN9SemaphoreD1Ev+0x58>
+    800030c8:	00050e63          	beqz	a0,800030e4 <_ZN9SemaphoreD1Ev+0x58>
             front = front->next;
-    800030d8:	00853783          	ld	a5,8(a0)
-    800030dc:	00f4b423          	sd	a5,8(s1)
+    800030cc:	00853783          	ld	a5,8(a0)
+    800030d0:	00f4b423          	sd	a5,8(s1)
             delete node;
-    800030e0:	fe0508e3          	beqz	a0,800030d0 <_ZN9SemaphoreD1Ev+0x38>
+    800030d4:	fe0508e3          	beqz	a0,800030c4 <_ZN9SemaphoreD1Ev+0x38>
             mem_free(ptr);
-    800030e4:	ffffe097          	auipc	ra,0xffffe
-    800030e8:	2f0080e7          	jalr	752(ra) # 800013d4 <_Z8mem_freePv>
+    800030d8:	ffffe097          	auipc	ra,0xffffe
+    800030dc:	2fc080e7          	jalr	764(ra) # 800013d4 <_Z8mem_freePv>
         }
-    800030ec:	fe5ff06f          	j	800030d0 <_ZN9SemaphoreD1Ev+0x38>
-    800030f0:	00048513          	mv	a0,s1
-    800030f4:	00001097          	auipc	ra,0x1
-    800030f8:	a0c080e7          	jalr	-1524(ra) # 80003b00 <_ZN4KSemdlEPv>
+    800030e0:	fe5ff06f          	j	800030c4 <_ZN9SemaphoreD1Ev+0x38>
+    800030e4:	00048513          	mv	a0,s1
+    800030e8:	00001097          	auipc	ra,0x1
+    800030ec:	a1c080e7          	jalr	-1508(ra) # 80003b04 <_ZN4KSemdlEPv>
 }
-    800030fc:	01813083          	ld	ra,24(sp)
-    80003100:	01013403          	ld	s0,16(sp)
-    80003104:	00813483          	ld	s1,8(sp)
-    80003108:	02010113          	addi	sp,sp,32
-    8000310c:	00008067          	ret
+    800030f0:	01813083          	ld	ra,24(sp)
+    800030f4:	01013403          	ld	s0,16(sp)
+    800030f8:	00813483          	ld	s1,8(sp)
+    800030fc:	02010113          	addi	sp,sp,32
+    80003100:	00008067          	ret
 
-0000000080003110 <_Znwm>:
+0000000080003104 <_Znwm>:
 void* operator new(size_t size) {
-    80003110:	ff010113          	addi	sp,sp,-16
-    80003114:	00113423          	sd	ra,8(sp)
-    80003118:	00813023          	sd	s0,0(sp)
-    8000311c:	01010413          	addi	s0,sp,16
+    80003104:	ff010113          	addi	sp,sp,-16
+    80003108:	00113423          	sd	ra,8(sp)
+    8000310c:	00813023          	sd	s0,0(sp)
+    80003110:	01010413          	addi	s0,sp,16
     return mem_alloc(size);
-    80003120:	ffffe097          	auipc	ra,0xffffe
-    80003124:	274080e7          	jalr	628(ra) # 80001394 <_Z9mem_allocm>
+    80003114:	ffffe097          	auipc	ra,0xffffe
+    80003118:	280080e7          	jalr	640(ra) # 80001394 <_Z9mem_allocm>
 }
-    80003128:	00813083          	ld	ra,8(sp)
-    8000312c:	00013403          	ld	s0,0(sp)
-    80003130:	01010113          	addi	sp,sp,16
-    80003134:	00008067          	ret
+    8000311c:	00813083          	ld	ra,8(sp)
+    80003120:	00013403          	ld	s0,0(sp)
+    80003124:	01010113          	addi	sp,sp,16
+    80003128:	00008067          	ret
 
-0000000080003138 <_Znam>:
+000000008000312c <_Znam>:
 void* operator new[](size_t size) {
-    80003138:	ff010113          	addi	sp,sp,-16
-    8000313c:	00113423          	sd	ra,8(sp)
-    80003140:	00813023          	sd	s0,0(sp)
-    80003144:	01010413          	addi	s0,sp,16
+    8000312c:	ff010113          	addi	sp,sp,-16
+    80003130:	00113423          	sd	ra,8(sp)
+    80003134:	00813023          	sd	s0,0(sp)
+    80003138:	01010413          	addi	s0,sp,16
     return mem_alloc(size);
-    80003148:	ffffe097          	auipc	ra,0xffffe
-    8000314c:	24c080e7          	jalr	588(ra) # 80001394 <_Z9mem_allocm>
+    8000313c:	ffffe097          	auipc	ra,0xffffe
+    80003140:	258080e7          	jalr	600(ra) # 80001394 <_Z9mem_allocm>
 }
-    80003150:	00813083          	ld	ra,8(sp)
-    80003154:	00013403          	ld	s0,0(sp)
-    80003158:	01010113          	addi	sp,sp,16
-    8000315c:	00008067          	ret
+    80003144:	00813083          	ld	ra,8(sp)
+    80003148:	00013403          	ld	s0,0(sp)
+    8000314c:	01010113          	addi	sp,sp,16
+    80003150:	00008067          	ret
 
-0000000080003160 <_ZdlPv>:
+0000000080003154 <_ZdlPv>:
 noexcept {
-    80003160:	ff010113          	addi	sp,sp,-16
-    80003164:	00113423          	sd	ra,8(sp)
-    80003168:	00813023          	sd	s0,0(sp)
-    8000316c:	01010413          	addi	s0,sp,16
+    80003154:	ff010113          	addi	sp,sp,-16
+    80003158:	00113423          	sd	ra,8(sp)
+    8000315c:	00813023          	sd	s0,0(sp)
+    80003160:	01010413          	addi	s0,sp,16
 mem_free(ptr);
-    80003170:	ffffe097          	auipc	ra,0xffffe
-    80003174:	264080e7          	jalr	612(ra) # 800013d4 <_Z8mem_freePv>
+    80003164:	ffffe097          	auipc	ra,0xffffe
+    80003168:	270080e7          	jalr	624(ra) # 800013d4 <_Z8mem_freePv>
 }
-    80003178:	00813083          	ld	ra,8(sp)
-    8000317c:	00013403          	ld	s0,0(sp)
-    80003180:	01010113          	addi	sp,sp,16
-    80003184:	00008067          	ret
+    8000316c:	00813083          	ld	ra,8(sp)
+    80003170:	00013403          	ld	s0,0(sp)
+    80003174:	01010113          	addi	sp,sp,16
+    80003178:	00008067          	ret
 
-0000000080003188 <_ZN6ThreadD0Ev>:
+000000008000317c <_ZN6ThreadD0Ev>:
 Thread::~Thread() {
-    80003188:	fe010113          	addi	sp,sp,-32
-    8000318c:	00113c23          	sd	ra,24(sp)
-    80003190:	00813823          	sd	s0,16(sp)
-    80003194:	00913423          	sd	s1,8(sp)
-    80003198:	02010413          	addi	s0,sp,32
-    8000319c:	00050493          	mv	s1,a0
+    8000317c:	fe010113          	addi	sp,sp,-32
+    80003180:	00113c23          	sd	ra,24(sp)
+    80003184:	00813823          	sd	s0,16(sp)
+    80003188:	00913423          	sd	s1,8(sp)
+    8000318c:	02010413          	addi	s0,sp,32
+    80003190:	00050493          	mv	s1,a0
 }
+    80003194:	00000097          	auipc	ra,0x0
+    80003198:	e90080e7          	jalr	-368(ra) # 80003024 <_ZN6ThreadD1Ev>
+    8000319c:	00048513          	mv	a0,s1
     800031a0:	00000097          	auipc	ra,0x0
-    800031a4:	e90080e7          	jalr	-368(ra) # 80003030 <_ZN6ThreadD1Ev>
-    800031a8:	00048513          	mv	a0,s1
-    800031ac:	00000097          	auipc	ra,0x0
-    800031b0:	fb4080e7          	jalr	-76(ra) # 80003160 <_ZdlPv>
-    800031b4:	01813083          	ld	ra,24(sp)
-    800031b8:	01013403          	ld	s0,16(sp)
-    800031bc:	00813483          	ld	s1,8(sp)
-    800031c0:	02010113          	addi	sp,sp,32
-    800031c4:	00008067          	ret
+    800031a4:	fb4080e7          	jalr	-76(ra) # 80003154 <_ZdlPv>
+    800031a8:	01813083          	ld	ra,24(sp)
+    800031ac:	01013403          	ld	s0,16(sp)
+    800031b0:	00813483          	ld	s1,8(sp)
+    800031b4:	02010113          	addi	sp,sp,32
+    800031b8:	00008067          	ret
 
-00000000800031c8 <_ZN9SemaphoreD0Ev>:
+00000000800031bc <_ZN9SemaphoreD0Ev>:
 Semaphore::~Semaphore() {
-    800031c8:	fe010113          	addi	sp,sp,-32
-    800031cc:	00113c23          	sd	ra,24(sp)
-    800031d0:	00813823          	sd	s0,16(sp)
-    800031d4:	00913423          	sd	s1,8(sp)
-    800031d8:	02010413          	addi	s0,sp,32
-    800031dc:	00050493          	mv	s1,a0
+    800031bc:	fe010113          	addi	sp,sp,-32
+    800031c0:	00113c23          	sd	ra,24(sp)
+    800031c4:	00813823          	sd	s0,16(sp)
+    800031c8:	00913423          	sd	s1,8(sp)
+    800031cc:	02010413          	addi	s0,sp,32
+    800031d0:	00050493          	mv	s1,a0
 }
+    800031d4:	00000097          	auipc	ra,0x0
+    800031d8:	eb8080e7          	jalr	-328(ra) # 8000308c <_ZN9SemaphoreD1Ev>
+    800031dc:	00048513          	mv	a0,s1
     800031e0:	00000097          	auipc	ra,0x0
-    800031e4:	eb8080e7          	jalr	-328(ra) # 80003098 <_ZN9SemaphoreD1Ev>
-    800031e8:	00048513          	mv	a0,s1
-    800031ec:	00000097          	auipc	ra,0x0
-    800031f0:	f74080e7          	jalr	-140(ra) # 80003160 <_ZdlPv>
-    800031f4:	01813083          	ld	ra,24(sp)
-    800031f8:	01013403          	ld	s0,16(sp)
-    800031fc:	00813483          	ld	s1,8(sp)
-    80003200:	02010113          	addi	sp,sp,32
-    80003204:	00008067          	ret
+    800031e4:	f74080e7          	jalr	-140(ra) # 80003154 <_ZdlPv>
+    800031e8:	01813083          	ld	ra,24(sp)
+    800031ec:	01013403          	ld	s0,16(sp)
+    800031f0:	00813483          	ld	s1,8(sp)
+    800031f4:	02010113          	addi	sp,sp,32
+    800031f8:	00008067          	ret
 
-0000000080003208 <_ZdaPv>:
+00000000800031fc <_ZdaPv>:
 noexcept {
-    80003208:	ff010113          	addi	sp,sp,-16
-    8000320c:	00113423          	sd	ra,8(sp)
-    80003210:	00813023          	sd	s0,0(sp)
-    80003214:	01010413          	addi	s0,sp,16
+    800031fc:	ff010113          	addi	sp,sp,-16
+    80003200:	00113423          	sd	ra,8(sp)
+    80003204:	00813023          	sd	s0,0(sp)
+    80003208:	01010413          	addi	s0,sp,16
 mem_free(ptr);
-    80003218:	ffffe097          	auipc	ra,0xffffe
-    8000321c:	1bc080e7          	jalr	444(ra) # 800013d4 <_Z8mem_freePv>
+    8000320c:	ffffe097          	auipc	ra,0xffffe
+    80003210:	1c8080e7          	jalr	456(ra) # 800013d4 <_Z8mem_freePv>
 }
-    80003220:	00813083          	ld	ra,8(sp)
-    80003224:	00013403          	ld	s0,0(sp)
-    80003228:	01010113          	addi	sp,sp,16
-    8000322c:	00008067          	ret
+    80003214:	00813083          	ld	ra,8(sp)
+    80003218:	00013403          	ld	s0,0(sp)
+    8000321c:	01010113          	addi	sp,sp,16
+    80003220:	00008067          	ret
 
-0000000080003230 <_ZN6ThreadC1EPFvPvES0_>:
+0000000080003224 <_ZN6ThreadC1EPFvPvES0_>:
 Thread::Thread(void (* body)(void*), void* arg) {
-    80003230:	fd010113          	addi	sp,sp,-48
-    80003234:	02113423          	sd	ra,40(sp)
-    80003238:	02813023          	sd	s0,32(sp)
-    8000323c:	00913c23          	sd	s1,24(sp)
-    80003240:	01213823          	sd	s2,16(sp)
-    80003244:	01313423          	sd	s3,8(sp)
-    80003248:	03010413          	addi	s0,sp,48
-    8000324c:	00050493          	mv	s1,a0
-    80003250:	00058913          	mv	s2,a1
-    80003254:	00060993          	mv	s3,a2
-    80003258:	0000a797          	auipc	a5,0xa
-    8000325c:	bb078793          	addi	a5,a5,-1104 # 8000ce08 <_ZTV6Thread+0x10>
-    80003260:	00f53023          	sd	a5,0(a0)
+    80003224:	fd010113          	addi	sp,sp,-48
+    80003228:	02113423          	sd	ra,40(sp)
+    8000322c:	02813023          	sd	s0,32(sp)
+    80003230:	00913c23          	sd	s1,24(sp)
+    80003234:	01213823          	sd	s2,16(sp)
+    80003238:	01313423          	sd	s3,8(sp)
+    8000323c:	03010413          	addi	s0,sp,48
+    80003240:	00050493          	mv	s1,a0
+    80003244:	00058913          	mv	s2,a1
+    80003248:	00060993          	mv	s3,a2
+    8000324c:	0000a797          	auipc	a5,0xa
+    80003250:	bec78793          	addi	a5,a5,-1044 # 8000ce38 <_ZTV6Thread+0x10>
+    80003254:	00f53023          	sd	a5,0(a0)
     this->body = body;
-    80003264:	00b53823          	sd	a1,16(a0)
+    80003258:	00b53823          	sd	a1,16(a0)
     this->arg = arg;
-    80003268:	00c53c23          	sd	a2,24(a0)
+    8000325c:	00c53c23          	sd	a2,24(a0)
     if (body != (TCB::Body)main) {
-    8000326c:	0000a797          	auipc	a5,0xa
-    80003270:	e1c7b783          	ld	a5,-484(a5) # 8000d088 <_GLOBAL_OFFSET_TABLE_+0x70>
-    80003274:	04f58663          	beq	a1,a5,800032c0 <_ZN6ThreadC1EPFvPvES0_+0x90>
+    80003260:	0000a797          	auipc	a5,0xa
+    80003264:	e587b783          	ld	a5,-424(a5) # 8000d0b8 <_GLOBAL_OFFSET_TABLE_+0x70>
+    80003268:	04f58663          	beq	a1,a5,800032b4 <_ZN6ThreadC1EPFvPvES0_+0x90>
         stack = (uint64*)mem_alloc(DEFAULT_STACK_SIZE);
-    80003278:	00001537          	lui	a0,0x1
-    8000327c:	ffffe097          	auipc	ra,0xffffe
-    80003280:	118080e7          	jalr	280(ra) # 80001394 <_Z9mem_allocm>
-    80003284:	00050313          	mv	t1,a0
+    8000326c:	00001537          	lui	a0,0x1
+    80003270:	ffffe097          	auipc	ra,0xffffe
+    80003274:	124080e7          	jalr	292(ra) # 80001394 <_Z9mem_allocm>
+    80003278:	00050313          	mv	t1,a0
     __asm__ volatile("mv a4, %[sp]": :[sp] "r"(stack):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    80003288:	00030713          	mv	a4,t1
+    8000327c:	00030713          	mv	a4,t1
     __asm__ volatile("mv a3, %[arg]": :[arg] "r"(arg):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    8000328c:	00098693          	mv	a3,s3
+    80003280:	00098693          	mv	a3,s3
             body):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    80003290:	00090613          	mv	a2,s2
+    80003284:	00090613          	mv	a2,s2
     __asm__ volatile("mv a1, %[handle]": :[handle] "r"(&myHandle):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    80003294:	00848493          	addi	s1,s1,8
-    80003298:	00048593          	mv	a1,s1
+    80003288:	00848493          	addi	s1,s1,8
+    8000328c:	00048593          	mv	a1,s1
     __asm__ volatile("li a0, 0x80");
-    8000329c:	08000513          	li	a0,128
+    80003290:	08000513          	li	a0,128
     __asm__ volatile("ecall");
-    800032a0:	00000073          	ecall
+    80003294:	00000073          	ecall
 }
-    800032a4:	02813083          	ld	ra,40(sp)
-    800032a8:	02013403          	ld	s0,32(sp)
-    800032ac:	01813483          	ld	s1,24(sp)
-    800032b0:	01013903          	ld	s2,16(sp)
-    800032b4:	00813983          	ld	s3,8(sp)
-    800032b8:	03010113          	addi	sp,sp,48
-    800032bc:	00008067          	ret
+    80003298:	02813083          	ld	ra,40(sp)
+    8000329c:	02013403          	ld	s0,32(sp)
+    800032a0:	01813483          	ld	s1,24(sp)
+    800032a4:	01013903          	ld	s2,16(sp)
+    800032a8:	00813983          	ld	s3,8(sp)
+    800032ac:	03010113          	addi	sp,sp,48
+    800032b0:	00008067          	ret
     uint64* stack = nullptr;
-    800032c0:	00000313          	li	t1,0
-    800032c4:	fc5ff06f          	j	80003288 <_ZN6ThreadC1EPFvPvES0_+0x58>
+    800032b4:	00000313          	li	t1,0
+    800032b8:	fc5ff06f          	j	8000327c <_ZN6ThreadC1EPFvPvES0_+0x58>
 
-00000000800032c8 <_ZN6Thread5startEv>:
+00000000800032bc <_ZN6Thread5startEv>:
 int Thread::start() {
-    800032c8:	ff010113          	addi	sp,sp,-16
-    800032cc:	00813423          	sd	s0,8(sp)
-    800032d0:	01010413          	addi	s0,sp,16
+    800032bc:	ff010113          	addi	sp,sp,-16
+    800032c0:	00813423          	sd	s0,8(sp)
+    800032c4:	01010413          	addi	s0,sp,16
     if (myHandle == nullptr || myHandle->getStatus() != TCB::CREATED) return -1;
-    800032d4:	00853303          	ld	t1,8(a0) # 1008 <_entry-0x7fffeff8>
-    800032d8:	02030463          	beqz	t1,80003300 <_ZN6Thread5startEv+0x38>
+    800032c8:	00853303          	ld	t1,8(a0) # 1008 <_entry-0x7fffeff8>
+    800032cc:	02030463          	beqz	t1,800032f4 <_ZN6Thread5startEv+0x38>
     ThreadStatus getStatus() { return this->status; }
-    800032dc:	05832783          	lw	a5,88(t1)
-    800032e0:	02079463          	bnez	a5,80003308 <_ZN6Thread5startEv+0x40>
+    800032d0:	05832783          	lw	a5,88(t1)
+    800032d4:	02079463          	bnez	a5,800032fc <_ZN6Thread5startEv+0x40>
     __asm__ volatile("mv a1, %[handle]": :[handle] "r"(myHandle):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    800032e4:	00030593          	mv	a1,t1
+    800032d8:	00030593          	mv	a1,t1
     __asm__ volatile("li a0, 0x81");
-    800032e8:	08100513          	li	a0,129
+    800032dc:	08100513          	li	a0,129
     __asm__ volatile("ecall");
-    800032ec:	00000073          	ecall
+    800032e0:	00000073          	ecall
     return 0;
-    800032f0:	00000513          	li	a0,0
+    800032e4:	00000513          	li	a0,0
 }
-    800032f4:	00813403          	ld	s0,8(sp)
-    800032f8:	01010113          	addi	sp,sp,16
-    800032fc:	00008067          	ret
+    800032e8:	00813403          	ld	s0,8(sp)
+    800032ec:	01010113          	addi	sp,sp,16
+    800032f0:	00008067          	ret
     if (myHandle == nullptr || myHandle->getStatus() != TCB::CREATED) return -1;
-    80003300:	fff00513          	li	a0,-1
-    80003304:	ff1ff06f          	j	800032f4 <_ZN6Thread5startEv+0x2c>
-    80003308:	fff00513          	li	a0,-1
-    8000330c:	fe9ff06f          	j	800032f4 <_ZN6Thread5startEv+0x2c>
+    800032f4:	fff00513          	li	a0,-1
+    800032f8:	ff1ff06f          	j	800032e8 <_ZN6Thread5startEv+0x2c>
+    800032fc:	fff00513          	li	a0,-1
+    80003300:	fe9ff06f          	j	800032e8 <_ZN6Thread5startEv+0x2c>
 
-0000000080003310 <_ZN6Thread4joinEv>:
+0000000080003304 <_ZN6Thread4joinEv>:
+    if (myHandle) thread_join(myHandle);
+    80003304:	00853503          	ld	a0,8(a0)
+    80003308:	02050663          	beqz	a0,80003334 <_ZN6Thread4joinEv+0x30>
 void Thread::join() {
-    80003310:	ff010113          	addi	sp,sp,-16
-    80003314:	00113423          	sd	ra,8(sp)
-    80003318:	00813023          	sd	s0,0(sp)
-    8000331c:	01010413          	addi	s0,sp,16
-    thread_join(myHandle);
-    80003320:	00853503          	ld	a0,8(a0)
-    80003324:	ffffe097          	auipc	ra,0xffffe
-    80003328:	1bc080e7          	jalr	444(ra) # 800014e0 <_Z11thread_joinP3TCB>
+    8000330c:	ff010113          	addi	sp,sp,-16
+    80003310:	00113423          	sd	ra,8(sp)
+    80003314:	00813023          	sd	s0,0(sp)
+    80003318:	01010413          	addi	s0,sp,16
+    if (myHandle) thread_join(myHandle);
+    8000331c:	ffffe097          	auipc	ra,0xffffe
+    80003320:	1c4080e7          	jalr	452(ra) # 800014e0 <_Z11thread_joinP3TCB>
 }
-    8000332c:	00813083          	ld	ra,8(sp)
-    80003330:	00013403          	ld	s0,0(sp)
-    80003334:	01010113          	addi	sp,sp,16
-    80003338:	00008067          	ret
+    80003324:	00813083          	ld	ra,8(sp)
+    80003328:	00013403          	ld	s0,0(sp)
+    8000332c:	01010113          	addi	sp,sp,16
+    80003330:	00008067          	ret
+    80003334:	00008067          	ret
 
-000000008000333c <_ZN6Thread8dispatchEv>:
+0000000080003338 <_ZN6Thread8dispatchEv>:
 void Thread::dispatch() {
-    8000333c:	ff010113          	addi	sp,sp,-16
-    80003340:	00113423          	sd	ra,8(sp)
-    80003344:	00813023          	sd	s0,0(sp)
-    80003348:	01010413          	addi	s0,sp,16
+    80003338:	ff010113          	addi	sp,sp,-16
+    8000333c:	00113423          	sd	ra,8(sp)
+    80003340:	00813023          	sd	s0,0(sp)
+    80003344:	01010413          	addi	s0,sp,16
     thread_dispatch();
-    8000334c:	ffffe097          	auipc	ra,0xffffe
-    80003350:	174080e7          	jalr	372(ra) # 800014c0 <_Z15thread_dispatchv>
+    80003348:	ffffe097          	auipc	ra,0xffffe
+    8000334c:	178080e7          	jalr	376(ra) # 800014c0 <_Z15thread_dispatchv>
 }
-    80003354:	00813083          	ld	ra,8(sp)
-    80003358:	00013403          	ld	s0,0(sp)
-    8000335c:	01010113          	addi	sp,sp,16
-    80003360:	00008067          	ret
+    80003350:	00813083          	ld	ra,8(sp)
+    80003354:	00013403          	ld	s0,0(sp)
+    80003358:	01010113          	addi	sp,sp,16
+    8000335c:	00008067          	ret
 
-0000000080003364 <_ZN6Thread5sleepEm>:
+0000000080003360 <_ZN6Thread5sleepEm>:
 int Thread::sleep(time_t t) {
-    80003364:	ff010113          	addi	sp,sp,-16
-    80003368:	00113423          	sd	ra,8(sp)
-    8000336c:	00813023          	sd	s0,0(sp)
-    80003370:	01010413          	addi	s0,sp,16
+    80003360:	ff010113          	addi	sp,sp,-16
+    80003364:	00113423          	sd	ra,8(sp)
+    80003368:	00813023          	sd	s0,0(sp)
+    8000336c:	01010413          	addi	s0,sp,16
     time_sleep(t);
-    80003374:	ffffe097          	auipc	ra,0xffffe
-    80003378:	194080e7          	jalr	404(ra) # 80001508 <_Z10time_sleepm>
+    80003370:	ffffe097          	auipc	ra,0xffffe
+    80003374:	198080e7          	jalr	408(ra) # 80001508 <_Z10time_sleepm>
 }
-    8000337c:	00000513          	li	a0,0
-    80003380:	00813083          	ld	ra,8(sp)
-    80003384:	00013403          	ld	s0,0(sp)
-    80003388:	01010113          	addi	sp,sp,16
-    8000338c:	00008067          	ret
+    80003378:	00000513          	li	a0,0
+    8000337c:	00813083          	ld	ra,8(sp)
+    80003380:	00013403          	ld	s0,0(sp)
+    80003384:	01010113          	addi	sp,sp,16
+    80003388:	00008067          	ret
 
-0000000080003390 <_ZN14PeriodicThread3runEv>:
+000000008000338c <_ZN14PeriodicThread3runEv>:
 
 PeriodicThread::PeriodicThread(time_t period) : Thread(), period(period) {
     if (this->period < 0) this->period = 2;
 }
 
 void PeriodicThread::run() {
-    80003390:	fe010113          	addi	sp,sp,-32
-    80003394:	00113c23          	sd	ra,24(sp)
-    80003398:	00813823          	sd	s0,16(sp)
-    8000339c:	00913423          	sd	s1,8(sp)
-    800033a0:	02010413          	addi	s0,sp,32
-    800033a4:	00050493          	mv	s1,a0
+    8000338c:	fe010113          	addi	sp,sp,-32
+    80003390:	00113c23          	sd	ra,24(sp)
+    80003394:	00813823          	sd	s0,16(sp)
+    80003398:	00913423          	sd	s1,8(sp)
+    8000339c:	02010413          	addi	s0,sp,32
+    800033a0:	00050493          	mv	s1,a0
     while (period != -1UL) {
-    800033a8:	0204b703          	ld	a4,32(s1)
-    800033ac:	fff00793          	li	a5,-1
-    800033b0:	02f70663          	beq	a4,a5,800033dc <_ZN14PeriodicThread3runEv+0x4c>
+    800033a4:	0204b703          	ld	a4,32(s1)
+    800033a8:	fff00793          	li	a5,-1
+    800033ac:	02f70663          	beq	a4,a5,800033d8 <_ZN14PeriodicThread3runEv+0x4c>
         periodicActivation();
-    800033b4:	0004b783          	ld	a5,0(s1)
-    800033b8:	0187b783          	ld	a5,24(a5)
-    800033bc:	00048513          	mv	a0,s1
-    800033c0:	000780e7          	jalr	a5
+    800033b0:	0004b783          	ld	a5,0(s1)
+    800033b4:	0187b783          	ld	a5,24(a5)
+    800033b8:	00048513          	mv	a0,s1
+    800033bc:	000780e7          	jalr	a5
         if (period == -1UL) break;
-    800033c4:	0204b503          	ld	a0,32(s1)
-    800033c8:	fff00793          	li	a5,-1
-    800033cc:	00f50863          	beq	a0,a5,800033dc <_ZN14PeriodicThread3runEv+0x4c>
+    800033c0:	0204b503          	ld	a0,32(s1)
+    800033c4:	fff00793          	li	a5,-1
+    800033c8:	00f50863          	beq	a0,a5,800033d8 <_ZN14PeriodicThread3runEv+0x4c>
         sleep(period);
-    800033d0:	00000097          	auipc	ra,0x0
-    800033d4:	f94080e7          	jalr	-108(ra) # 80003364 <_ZN6Thread5sleepEm>
+    800033cc:	00000097          	auipc	ra,0x0
+    800033d0:	f94080e7          	jalr	-108(ra) # 80003360 <_ZN6Thread5sleepEm>
     while (period != -1UL) {
-    800033d8:	fd1ff06f          	j	800033a8 <_ZN14PeriodicThread3runEv+0x18>
+    800033d4:	fd1ff06f          	j	800033a4 <_ZN14PeriodicThread3runEv+0x18>
     }
     thread_exit();
-    800033dc:	ffffe097          	auipc	ra,0xffffe
-    800033e0:	0bc080e7          	jalr	188(ra) # 80001498 <_Z11thread_exitv>
+    800033d8:	ffffe097          	auipc	ra,0xffffe
+    800033dc:	0c0080e7          	jalr	192(ra) # 80001498 <_Z11thread_exitv>
 }
-    800033e4:	01813083          	ld	ra,24(sp)
-    800033e8:	01013403          	ld	s0,16(sp)
-    800033ec:	00813483          	ld	s1,8(sp)
-    800033f0:	02010113          	addi	sp,sp,32
-    800033f4:	00008067          	ret
+    800033e0:	01813083          	ld	ra,24(sp)
+    800033e4:	01013403          	ld	s0,16(sp)
+    800033e8:	00813483          	ld	s1,8(sp)
+    800033ec:	02010113          	addi	sp,sp,32
+    800033f0:	00008067          	ret
 
-00000000800033f8 <_ZN6ThreadC1Ev>:
+00000000800033f4 <_ZN6ThreadC1Ev>:
 Thread::Thread() {
-    800033f8:	fe010113          	addi	sp,sp,-32
-    800033fc:	00113c23          	sd	ra,24(sp)
-    80003400:	00813823          	sd	s0,16(sp)
-    80003404:	00913423          	sd	s1,8(sp)
-    80003408:	02010413          	addi	s0,sp,32
-    8000340c:	00050493          	mv	s1,a0
-    80003410:	0000a797          	auipc	a5,0xa
-    80003414:	9f878793          	addi	a5,a5,-1544 # 8000ce08 <_ZTV6Thread+0x10>
-    80003418:	00f53023          	sd	a5,0(a0)
+    800033f4:	fe010113          	addi	sp,sp,-32
+    800033f8:	00113c23          	sd	ra,24(sp)
+    800033fc:	00813823          	sd	s0,16(sp)
+    80003400:	00913423          	sd	s1,8(sp)
+    80003404:	02010413          	addi	s0,sp,32
+    80003408:	00050493          	mv	s1,a0
+    8000340c:	0000a797          	auipc	a5,0xa
+    80003410:	a2c78793          	addi	a5,a5,-1492 # 8000ce38 <_ZTV6Thread+0x10>
+    80003414:	00f53023          	sd	a5,0(a0)
     this->body = wrapper;
-    8000341c:	00000797          	auipc	a5,0x0
-    80003420:	c4878793          	addi	a5,a5,-952 # 80003064 <_ZN6Thread7wrapperEPv>
-    80003424:	00f53823          	sd	a5,16(a0)
+    80003418:	00000797          	auipc	a5,0x0
+    8000341c:	c4078793          	addi	a5,a5,-960 # 80003058 <_ZN6Thread7wrapperEPv>
+    80003420:	00f53823          	sd	a5,16(a0)
     this->arg = this;
-    80003428:	00a53c23          	sd	a0,24(a0)
+    80003424:	00a53c23          	sd	a0,24(a0)
     uint64* stack = (uint64*)mem_alloc(DEFAULT_STACK_SIZE);
-    8000342c:	00001537          	lui	a0,0x1
-    80003430:	ffffe097          	auipc	ra,0xffffe
-    80003434:	f64080e7          	jalr	-156(ra) # 80001394 <_Z9mem_allocm>
-    80003438:	00050313          	mv	t1,a0
+    80003428:	00001537          	lui	a0,0x1
+    8000342c:	ffffe097          	auipc	ra,0xffffe
+    80003430:	f68080e7          	jalr	-152(ra) # 80001394 <_Z9mem_allocm>
+    80003434:	00050313          	mv	t1,a0
     __asm__ volatile("mv a4, %[sp]": :[sp] "r"(stack):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    8000343c:	00030713          	mv	a4,t1
+    80003438:	00030713          	mv	a4,t1
     __asm__ volatile("mv a3, %[arg]": :[arg] "r"(arg):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    80003440:	0184b303          	ld	t1,24(s1)
-    80003444:	00030693          	mv	a3,t1
+    8000343c:	0184b303          	ld	t1,24(s1)
+    80003440:	00030693          	mv	a3,t1
             body):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    80003448:	0104b303          	ld	t1,16(s1)
-    8000344c:	00030613          	mv	a2,t1
+    80003444:	0104b303          	ld	t1,16(s1)
+    80003448:	00030613          	mv	a2,t1
     __asm__ volatile("mv a1, %[handle]": :[handle] "r"(&myHandle):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
-    80003450:	00848493          	addi	s1,s1,8
-    80003454:	00048593          	mv	a1,s1
+    8000344c:	00848493          	addi	s1,s1,8
+    80003450:	00048593          	mv	a1,s1
     __asm__ volatile("li a0, 0x80");
-    80003458:	08000513          	li	a0,128
+    80003454:	08000513          	li	a0,128
     __asm__ volatile("ecall");
-    8000345c:	00000073          	ecall
+    80003458:	00000073          	ecall
 }
-    80003460:	01813083          	ld	ra,24(sp)
-    80003464:	01013403          	ld	s0,16(sp)
-    80003468:	00813483          	ld	s1,8(sp)
-    8000346c:	02010113          	addi	sp,sp,32
-    80003470:	00008067          	ret
+    8000345c:	01813083          	ld	ra,24(sp)
+    80003460:	01013403          	ld	s0,16(sp)
+    80003464:	00813483          	ld	s1,8(sp)
+    80003468:	02010113          	addi	sp,sp,32
+    8000346c:	00008067          	ret
 
-0000000080003474 <_ZN9SemaphoreC1Ej>:
+0000000080003470 <_ZN9SemaphoreC1Ej>:
 Semaphore::Semaphore(unsigned int init) {
-    80003474:	ff010113          	addi	sp,sp,-16
-    80003478:	00113423          	sd	ra,8(sp)
-    8000347c:	00813023          	sd	s0,0(sp)
-    80003480:	01010413          	addi	s0,sp,16
-    80003484:	0000a797          	auipc	a5,0xa
-    80003488:	9ac78793          	addi	a5,a5,-1620 # 8000ce30 <_ZTV9Semaphore+0x10>
-    8000348c:	00f53023          	sd	a5,0(a0) # 1000 <_entry-0x7ffff000>
+    80003470:	ff010113          	addi	sp,sp,-16
+    80003474:	00113423          	sd	ra,8(sp)
+    80003478:	00813023          	sd	s0,0(sp)
+    8000347c:	01010413          	addi	s0,sp,16
+    80003480:	0000a797          	auipc	a5,0xa
+    80003484:	9e078793          	addi	a5,a5,-1568 # 8000ce60 <_ZTV9Semaphore+0x10>
+    80003488:	00f53023          	sd	a5,0(a0) # 1000 <_entry-0x7ffff000>
     sem_open(&myHandle, init);
-    80003490:	00850513          	addi	a0,a0,8
-    80003494:	ffffe097          	auipc	ra,0xffffe
-    80003498:	0a4080e7          	jalr	164(ra) # 80001538 <_Z8sem_openPP4KSemj>
+    8000348c:	00850513          	addi	a0,a0,8
+    80003490:	ffffe097          	auipc	ra,0xffffe
+    80003494:	0a8080e7          	jalr	168(ra) # 80001538 <_Z8sem_openPP4KSemj>
 }
-    8000349c:	00813083          	ld	ra,8(sp)
-    800034a0:	00013403          	ld	s0,0(sp)
-    800034a4:	01010113          	addi	sp,sp,16
-    800034a8:	00008067          	ret
+    80003498:	00813083          	ld	ra,8(sp)
+    8000349c:	00013403          	ld	s0,0(sp)
+    800034a0:	01010113          	addi	sp,sp,16
+    800034a4:	00008067          	ret
 
-00000000800034ac <_ZN9Semaphore4waitEv>:
+00000000800034a8 <_ZN9Semaphore4waitEv>:
 int Semaphore::wait() {
-    800034ac:	ff010113          	addi	sp,sp,-16
-    800034b0:	00113423          	sd	ra,8(sp)
-    800034b4:	00813023          	sd	s0,0(sp)
-    800034b8:	01010413          	addi	s0,sp,16
+    800034a8:	ff010113          	addi	sp,sp,-16
+    800034ac:	00113423          	sd	ra,8(sp)
+    800034b0:	00813023          	sd	s0,0(sp)
+    800034b4:	01010413          	addi	s0,sp,16
     return sem_wait(myHandle);
-    800034bc:	00853503          	ld	a0,8(a0)
-    800034c0:	ffffe097          	auipc	ra,0xffffe
-    800034c4:	0e0080e7          	jalr	224(ra) # 800015a0 <_Z8sem_waitP4KSem>
+    800034b8:	00853503          	ld	a0,8(a0)
+    800034bc:	ffffe097          	auipc	ra,0xffffe
+    800034c0:	0e4080e7          	jalr	228(ra) # 800015a0 <_Z8sem_waitP4KSem>
 }
-    800034c8:	00813083          	ld	ra,8(sp)
-    800034cc:	00013403          	ld	s0,0(sp)
-    800034d0:	01010113          	addi	sp,sp,16
-    800034d4:	00008067          	ret
+    800034c4:	00813083          	ld	ra,8(sp)
+    800034c8:	00013403          	ld	s0,0(sp)
+    800034cc:	01010113          	addi	sp,sp,16
+    800034d0:	00008067          	ret
 
-00000000800034d8 <_ZN9Semaphore6signalEv>:
+00000000800034d4 <_ZN9Semaphore6signalEv>:
 int Semaphore::signal() {
-    800034d8:	ff010113          	addi	sp,sp,-16
-    800034dc:	00113423          	sd	ra,8(sp)
-    800034e0:	00813023          	sd	s0,0(sp)
-    800034e4:	01010413          	addi	s0,sp,16
+    800034d4:	ff010113          	addi	sp,sp,-16
+    800034d8:	00113423          	sd	ra,8(sp)
+    800034dc:	00813023          	sd	s0,0(sp)
+    800034e0:	01010413          	addi	s0,sp,16
     return sem_signal(myHandle);
-    800034e8:	00853503          	ld	a0,8(a0)
-    800034ec:	ffffe097          	auipc	ra,0xffffe
-    800034f0:	0e4080e7          	jalr	228(ra) # 800015d0 <_Z10sem_signalP4KSem>
+    800034e4:	00853503          	ld	a0,8(a0)
+    800034e8:	ffffe097          	auipc	ra,0xffffe
+    800034ec:	0e8080e7          	jalr	232(ra) # 800015d0 <_Z10sem_signalP4KSem>
 }
-    800034f4:	00813083          	ld	ra,8(sp)
-    800034f8:	00013403          	ld	s0,0(sp)
-    800034fc:	01010113          	addi	sp,sp,16
-    80003500:	00008067          	ret
+    800034f0:	00813083          	ld	ra,8(sp)
+    800034f4:	00013403          	ld	s0,0(sp)
+    800034f8:	01010113          	addi	sp,sp,16
+    800034fc:	00008067          	ret
 
-0000000080003504 <_ZN14PeriodicThread9terminateEv>:
+0000000080003500 <_ZN14PeriodicThread9terminateEv>:
 void PeriodicThread::terminate() {
-    80003504:	ff010113          	addi	sp,sp,-16
-    80003508:	00813423          	sd	s0,8(sp)
-    8000350c:	01010413          	addi	s0,sp,16
+    80003500:	ff010113          	addi	sp,sp,-16
+    80003504:	00813423          	sd	s0,8(sp)
+    80003508:	01010413          	addi	s0,sp,16
     this->period = -1;
-    80003510:	fff00793          	li	a5,-1
-    80003514:	02f53023          	sd	a5,32(a0)
+    8000350c:	fff00793          	li	a5,-1
+    80003510:	02f53023          	sd	a5,32(a0)
 }
-    80003518:	00813403          	ld	s0,8(sp)
-    8000351c:	01010113          	addi	sp,sp,16
-    80003520:	00008067          	ret
+    80003514:	00813403          	ld	s0,8(sp)
+    80003518:	01010113          	addi	sp,sp,16
+    8000351c:	00008067          	ret
 
-0000000080003524 <_ZN14PeriodicThreadC1Em>:
+0000000080003520 <_ZN14PeriodicThreadC1Em>:
 PeriodicThread::PeriodicThread(time_t period) : Thread(), period(period) {
-    80003524:	fe010113          	addi	sp,sp,-32
-    80003528:	00113c23          	sd	ra,24(sp)
-    8000352c:	00813823          	sd	s0,16(sp)
-    80003530:	00913423          	sd	s1,8(sp)
-    80003534:	01213023          	sd	s2,0(sp)
-    80003538:	02010413          	addi	s0,sp,32
-    8000353c:	00050493          	mv	s1,a0
-    80003540:	00058913          	mv	s2,a1
-    80003544:	00000097          	auipc	ra,0x0
-    80003548:	eb4080e7          	jalr	-332(ra) # 800033f8 <_ZN6ThreadC1Ev>
-    8000354c:	0000a797          	auipc	a5,0xa
-    80003550:	90478793          	addi	a5,a5,-1788 # 8000ce50 <_ZTV14PeriodicThread+0x10>
-    80003554:	00f4b023          	sd	a5,0(s1)
-    80003558:	0324b023          	sd	s2,32(s1)
+    80003520:	fe010113          	addi	sp,sp,-32
+    80003524:	00113c23          	sd	ra,24(sp)
+    80003528:	00813823          	sd	s0,16(sp)
+    8000352c:	00913423          	sd	s1,8(sp)
+    80003530:	01213023          	sd	s2,0(sp)
+    80003534:	02010413          	addi	s0,sp,32
+    80003538:	00050493          	mv	s1,a0
+    8000353c:	00058913          	mv	s2,a1
+    80003540:	00000097          	auipc	ra,0x0
+    80003544:	eb4080e7          	jalr	-332(ra) # 800033f4 <_ZN6ThreadC1Ev>
+    80003548:	0000a797          	auipc	a5,0xa
+    8000354c:	93878793          	addi	a5,a5,-1736 # 8000ce80 <_ZTV14PeriodicThread+0x10>
+    80003550:	00f4b023          	sd	a5,0(s1)
+    80003554:	0324b023          	sd	s2,32(s1)
 }
-    8000355c:	01813083          	ld	ra,24(sp)
-    80003560:	01013403          	ld	s0,16(sp)
-    80003564:	00813483          	ld	s1,8(sp)
-    80003568:	00013903          	ld	s2,0(sp)
-    8000356c:	02010113          	addi	sp,sp,32
-    80003570:	00008067          	ret
+    80003558:	01813083          	ld	ra,24(sp)
+    8000355c:	01013403          	ld	s0,16(sp)
+    80003560:	00813483          	ld	s1,8(sp)
+    80003564:	00013903          	ld	s2,0(sp)
+    80003568:	02010113          	addi	sp,sp,32
+    8000356c:	00008067          	ret
 
-0000000080003574 <_ZN7Console4getcEv>:
+0000000080003570 <_ZN7Console4getcEv>:
 
 char Console::getc() {
-    80003574:	ff010113          	addi	sp,sp,-16
-    80003578:	00113423          	sd	ra,8(sp)
-    8000357c:	00813023          	sd	s0,0(sp)
-    80003580:	01010413          	addi	s0,sp,16
+    80003570:	ff010113          	addi	sp,sp,-16
+    80003574:	00113423          	sd	ra,8(sp)
+    80003578:	00813023          	sd	s0,0(sp)
+    8000357c:	01010413          	addi	s0,sp,16
     return ::getc();
-    80003584:	ffffe097          	auipc	ra,0xffffe
-    80003588:	07c080e7          	jalr	124(ra) # 80001600 <_Z4getcv>
+    80003580:	ffffe097          	auipc	ra,0xffffe
+    80003584:	080080e7          	jalr	128(ra) # 80001600 <_Z4getcv>
 }
-    8000358c:	00813083          	ld	ra,8(sp)
-    80003590:	00013403          	ld	s0,0(sp)
-    80003594:	01010113          	addi	sp,sp,16
-    80003598:	00008067          	ret
+    80003588:	00813083          	ld	ra,8(sp)
+    8000358c:	00013403          	ld	s0,0(sp)
+    80003590:	01010113          	addi	sp,sp,16
+    80003594:	00008067          	ret
 
-000000008000359c <_ZN7Console4putcEc>:
+0000000080003598 <_ZN7Console4putcEc>:
 
 void Console::putc(char c) {
-    8000359c:	ff010113          	addi	sp,sp,-16
-    800035a0:	00113423          	sd	ra,8(sp)
-    800035a4:	00813023          	sd	s0,0(sp)
-    800035a8:	01010413          	addi	s0,sp,16
+    80003598:	ff010113          	addi	sp,sp,-16
+    8000359c:	00113423          	sd	ra,8(sp)
+    800035a0:	00813023          	sd	s0,0(sp)
+    800035a4:	01010413          	addi	s0,sp,16
     ::putc(c);
-    800035ac:	ffffe097          	auipc	ra,0xffffe
-    800035b0:	07c080e7          	jalr	124(ra) # 80001628 <_Z4putcc>
+    800035a8:	ffffe097          	auipc	ra,0xffffe
+    800035ac:	080080e7          	jalr	128(ra) # 80001628 <_Z4putcc>
 }
-    800035b4:	00813083          	ld	ra,8(sp)
-    800035b8:	00013403          	ld	s0,0(sp)
-    800035bc:	01010113          	addi	sp,sp,16
-    800035c0:	00008067          	ret
+    800035b0:	00813083          	ld	ra,8(sp)
+    800035b4:	00013403          	ld	s0,0(sp)
+    800035b8:	01010113          	addi	sp,sp,16
+    800035bc:	00008067          	ret
 
-00000000800035c4 <_ZN6Thread3runEv>:
+00000000800035c0 <_ZN6Thread3runEv>:
     virtual void run() {}
-    800035c4:	ff010113          	addi	sp,sp,-16
-    800035c8:	00813423          	sd	s0,8(sp)
-    800035cc:	01010413          	addi	s0,sp,16
-    800035d0:	00813403          	ld	s0,8(sp)
-    800035d4:	01010113          	addi	sp,sp,16
-    800035d8:	00008067          	ret
+    800035c0:	ff010113          	addi	sp,sp,-16
+    800035c4:	00813423          	sd	s0,8(sp)
+    800035c8:	01010413          	addi	s0,sp,16
+    800035cc:	00813403          	ld	s0,8(sp)
+    800035d0:	01010113          	addi	sp,sp,16
+    800035d4:	00008067          	ret
 
-00000000800035dc <_ZN14PeriodicThread18periodicActivationEv>:
+00000000800035d8 <_ZN14PeriodicThread18periodicActivationEv>:
     void terminate();
 
 protected:
     PeriodicThread(time_t period);
 
     virtual void periodicActivation() {}
-    800035dc:	ff010113          	addi	sp,sp,-16
-    800035e0:	00813423          	sd	s0,8(sp)
-    800035e4:	01010413          	addi	s0,sp,16
-    800035e8:	00813403          	ld	s0,8(sp)
-    800035ec:	01010113          	addi	sp,sp,16
-    800035f0:	00008067          	ret
+    800035d8:	ff010113          	addi	sp,sp,-16
+    800035dc:	00813423          	sd	s0,8(sp)
+    800035e0:	01010413          	addi	s0,sp,16
+    800035e4:	00813403          	ld	s0,8(sp)
+    800035e8:	01010113          	addi	sp,sp,16
+    800035ec:	00008067          	ret
 
-00000000800035f4 <_ZN14PeriodicThreadD1Ev>:
+00000000800035f0 <_ZN14PeriodicThreadD1Ev>:
 class PeriodicThread : public Thread {
-    800035f4:	ff010113          	addi	sp,sp,-16
-    800035f8:	00113423          	sd	ra,8(sp)
-    800035fc:	00813023          	sd	s0,0(sp)
-    80003600:	01010413          	addi	s0,sp,16
-    80003604:	0000a797          	auipc	a5,0xa
-    80003608:	84c78793          	addi	a5,a5,-1972 # 8000ce50 <_ZTV14PeriodicThread+0x10>
-    8000360c:	00f53023          	sd	a5,0(a0)
-    80003610:	00000097          	auipc	ra,0x0
-    80003614:	a20080e7          	jalr	-1504(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80003618:	00813083          	ld	ra,8(sp)
-    8000361c:	00013403          	ld	s0,0(sp)
-    80003620:	01010113          	addi	sp,sp,16
-    80003624:	00008067          	ret
+    800035f0:	ff010113          	addi	sp,sp,-16
+    800035f4:	00113423          	sd	ra,8(sp)
+    800035f8:	00813023          	sd	s0,0(sp)
+    800035fc:	01010413          	addi	s0,sp,16
+    80003600:	0000a797          	auipc	a5,0xa
+    80003604:	88078793          	addi	a5,a5,-1920 # 8000ce80 <_ZTV14PeriodicThread+0x10>
+    80003608:	00f53023          	sd	a5,0(a0)
+    8000360c:	00000097          	auipc	ra,0x0
+    80003610:	a18080e7          	jalr	-1512(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80003614:	00813083          	ld	ra,8(sp)
+    80003618:	00013403          	ld	s0,0(sp)
+    8000361c:	01010113          	addi	sp,sp,16
+    80003620:	00008067          	ret
 
-0000000080003628 <_ZN14PeriodicThreadD0Ev>:
-    80003628:	fe010113          	addi	sp,sp,-32
-    8000362c:	00113c23          	sd	ra,24(sp)
-    80003630:	00813823          	sd	s0,16(sp)
-    80003634:	00913423          	sd	s1,8(sp)
-    80003638:	02010413          	addi	s0,sp,32
-    8000363c:	00050493          	mv	s1,a0
-    80003640:	0000a797          	auipc	a5,0xa
-    80003644:	81078793          	addi	a5,a5,-2032 # 8000ce50 <_ZTV14PeriodicThread+0x10>
-    80003648:	00f53023          	sd	a5,0(a0)
-    8000364c:	00000097          	auipc	ra,0x0
-    80003650:	9e4080e7          	jalr	-1564(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80003654:	00048513          	mv	a0,s1
-    80003658:	00000097          	auipc	ra,0x0
-    8000365c:	b08080e7          	jalr	-1272(ra) # 80003160 <_ZdlPv>
-    80003660:	01813083          	ld	ra,24(sp)
-    80003664:	01013403          	ld	s0,16(sp)
-    80003668:	00813483          	ld	s1,8(sp)
-    8000366c:	02010113          	addi	sp,sp,32
-    80003670:	00008067          	ret
+0000000080003624 <_ZN14PeriodicThreadD0Ev>:
+    80003624:	fe010113          	addi	sp,sp,-32
+    80003628:	00113c23          	sd	ra,24(sp)
+    8000362c:	00813823          	sd	s0,16(sp)
+    80003630:	00913423          	sd	s1,8(sp)
+    80003634:	02010413          	addi	s0,sp,32
+    80003638:	00050493          	mv	s1,a0
+    8000363c:	0000a797          	auipc	a5,0xa
+    80003640:	84478793          	addi	a5,a5,-1980 # 8000ce80 <_ZTV14PeriodicThread+0x10>
+    80003644:	00f53023          	sd	a5,0(a0)
+    80003648:	00000097          	auipc	ra,0x0
+    8000364c:	9dc080e7          	jalr	-1572(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80003650:	00048513          	mv	a0,s1
+    80003654:	00000097          	auipc	ra,0x0
+    80003658:	b00080e7          	jalr	-1280(ra) # 80003154 <_ZdlPv>
+    8000365c:	01813083          	ld	ra,24(sp)
+    80003660:	01013403          	ld	s0,16(sp)
+    80003664:	00813483          	ld	s1,8(sp)
+    80003668:	02010113          	addi	sp,sp,32
+    8000366c:	00008067          	ret
 
-0000000080003674 <_ZN3TCB7wrapperEv>:
+0000000080003670 <_ZN3TCB7wrapperEv>:
     }
 
     if (old != TCB::running) TCB::contextSwitch(&old->context, &running->context);
 }
 
 void TCB::wrapper() {
-    80003674:	ff010113          	addi	sp,sp,-16
-    80003678:	00113423          	sd	ra,8(sp)
-    8000367c:	00813023          	sd	s0,0(sp)
-    80003680:	01010413          	addi	s0,sp,16
+    80003670:	ff010113          	addi	sp,sp,-16
+    80003674:	00113423          	sd	ra,8(sp)
+    80003678:	00813023          	sd	s0,0(sp)
+    8000367c:	01010413          	addi	s0,sp,16
     //pocetak wrappera se izvrsava u supervisor modu,
     //jer nismo izasli iz prekidne rutine prilikom promene konteksta (dispatch)
     Riscv::returnFromInterrupt();
-    80003684:	00000097          	auipc	ra,0x0
-    80003688:	434080e7          	jalr	1076(ra) # 80003ab8 <_ZN5Riscv19returnFromInterruptEv>
+    80003680:	00000097          	auipc	ra,0x0
+    80003684:	43c080e7          	jalr	1084(ra) # 80003abc <_ZN5Riscv19returnFromInterruptEv>
     //na dalje se izvrsavamo u user modu (osim za kernel funkcije)
     running->threadFunction(running->args);
-    8000368c:	0000a797          	auipc	a5,0xa
-    80003690:	b9c7b783          	ld	a5,-1124(a5) # 8000d228 <_ZN3TCB7runningE>
-    80003694:	0107b703          	ld	a4,16(a5)
-    80003698:	0207b503          	ld	a0,32(a5)
-    8000369c:	000700e7          	jalr	a4
+    80003688:	0000a797          	auipc	a5,0xa
+    8000368c:	be87b783          	ld	a5,-1048(a5) # 8000d270 <_ZN3TCB7runningE>
+    80003690:	0107b703          	ld	a4,16(a5)
+    80003694:	0207b503          	ld	a0,32(a5)
+    80003698:	000700e7          	jalr	a4
     //i dalje smo u user modu, moramo promenu niti vrsiti sistemskim pozivom
     thread_exit();
-    800036a0:	ffffe097          	auipc	ra,0xffffe
-    800036a4:	df8080e7          	jalr	-520(ra) # 80001498 <_Z11thread_exitv>
+    8000369c:	ffffe097          	auipc	ra,0xffffe
+    800036a0:	dfc080e7          	jalr	-516(ra) # 80001498 <_Z11thread_exitv>
 }
-    800036a8:	00813083          	ld	ra,8(sp)
-    800036ac:	00013403          	ld	s0,0(sp)
-    800036b0:	01010113          	addi	sp,sp,16
-    800036b4:	00008067          	ret
+    800036a4:	00813083          	ld	ra,8(sp)
+    800036a8:	00013403          	ld	s0,0(sp)
+    800036ac:	01010113          	addi	sp,sp,16
+    800036b0:	00008067          	ret
 
-00000000800036b8 <_ZN3TCB8dispatchEv>:
+00000000800036b4 <_ZN3TCB8dispatchEv>:
 void TCB::dispatch() {
-    800036b8:	fe010113          	addi	sp,sp,-32
-    800036bc:	00113c23          	sd	ra,24(sp)
-    800036c0:	00813823          	sd	s0,16(sp)
-    800036c4:	00913423          	sd	s1,8(sp)
-    800036c8:	02010413          	addi	s0,sp,32
+    800036b4:	fe010113          	addi	sp,sp,-32
+    800036b8:	00113c23          	sd	ra,24(sp)
+    800036bc:	00813823          	sd	s0,16(sp)
+    800036c0:	00913423          	sd	s1,8(sp)
+    800036c4:	02010413          	addi	s0,sp,32
     TCB* old = TCB::running;
-    800036cc:	0000a497          	auipc	s1,0xa
-    800036d0:	b5c4b483          	ld	s1,-1188(s1) # 8000d228 <_ZN3TCB7runningE>
+    800036c8:	0000a497          	auipc	s1,0xa
+    800036cc:	ba84b483          	ld	s1,-1112(s1) # 8000d270 <_ZN3TCB7runningE>
     if (old->status == ACTIVE) {
-    800036d4:	0584a783          	lw	a5,88(s1)
-    800036d8:	00100713          	li	a4,1
-    800036dc:	04e78e63          	beq	a5,a4,80003738 <_ZN3TCB8dispatchEv+0x80>
+    800036d0:	0584a783          	lw	a5,88(s1)
+    800036d4:	00100713          	li	a4,1
+    800036d8:	04e78e63          	beq	a5,a4,80003734 <_ZN3TCB8dispatchEv+0x80>
     } else if (old->status == FINISHED) {
-    800036e0:	00500713          	li	a4,5
-    800036e4:	06e78263          	beq	a5,a4,80003748 <_ZN3TCB8dispatchEv+0x90>
+    800036dc:	00500713          	li	a4,5
+    800036e0:	06e78263          	beq	a5,a4,80003744 <_ZN3TCB8dispatchEv+0x90>
     TCB::running = Scheduler::get();
-    800036e8:	ffffe097          	auipc	ra,0xffffe
-    800036ec:	788080e7          	jalr	1928(ra) # 80001e70 <_ZN9Scheduler3getEv>
-    800036f0:	00050593          	mv	a1,a0
-    800036f4:	0000a797          	auipc	a5,0xa
-    800036f8:	b3478793          	addi	a5,a5,-1228 # 8000d228 <_ZN3TCB7runningE>
-    800036fc:	00a7b023          	sd	a0,0(a5)
+    800036e4:	ffffe097          	auipc	ra,0xffffe
+    800036e8:	780080e7          	jalr	1920(ra) # 80001e64 <_ZN9Scheduler3getEv>
+    800036ec:	00050593          	mv	a1,a0
+    800036f0:	0000a797          	auipc	a5,0xa
+    800036f4:	b8078793          	addi	a5,a5,-1152 # 8000d270 <_ZN3TCB7runningE>
+    800036f8:	00a7b023          	sd	a0,0(a5)
     TCB::runningTimeSlice = 0;
-    80003700:	0007b423          	sd	zero,8(a5)
+    800036fc:	0007b423          	sd	zero,8(a5)
     if (TCB::running->threadFunction == (TCB::Body)main || TCB::running->threadFunction == kernelConsumerFunction ||
-    80003704:	01053783          	ld	a5,16(a0)
-    80003708:	0000a717          	auipc	a4,0xa
-    8000370c:	98073703          	ld	a4,-1664(a4) # 8000d088 <_GLOBAL_OFFSET_TABLE_+0x70>
-    80003710:	04e78863          	beq	a5,a4,80003760 <_ZN3TCB8dispatchEv+0xa8>
-    80003714:	0000a717          	auipc	a4,0xa
-    80003718:	94473703          	ld	a4,-1724(a4) # 8000d058 <_GLOBAL_OFFSET_TABLE_+0x40>
-    8000371c:	04e78263          	beq	a5,a4,80003760 <_ZN3TCB8dispatchEv+0xa8>
-    80003720:	0000a717          	auipc	a4,0xa
-    80003724:	99873703          	ld	a4,-1640(a4) # 8000d0b8 <_GLOBAL_OFFSET_TABLE_+0xa0>
-    80003728:	02e78c63          	beq	a5,a4,80003760 <_ZN3TCB8dispatchEv+0xa8>
+    80003700:	01053783          	ld	a5,16(a0)
+    80003704:	0000a717          	auipc	a4,0xa
+    80003708:	9b473703          	ld	a4,-1612(a4) # 8000d0b8 <_GLOBAL_OFFSET_TABLE_+0x70>
+    8000370c:	04e78863          	beq	a5,a4,8000375c <_ZN3TCB8dispatchEv+0xa8>
+    80003710:	0000a717          	auipc	a4,0xa
+    80003714:	97873703          	ld	a4,-1672(a4) # 8000d088 <_GLOBAL_OFFSET_TABLE_+0x40>
+    80003718:	04e78263          	beq	a5,a4,8000375c <_ZN3TCB8dispatchEv+0xa8>
+    8000371c:	0000a717          	auipc	a4,0xa
+    80003720:	9cc73703          	ld	a4,-1588(a4) # 8000d0e8 <_GLOBAL_OFFSET_TABLE_+0xa0>
+    80003724:	02e78c63          	beq	a5,a4,8000375c <_ZN3TCB8dispatchEv+0xa8>
 	__asm__ volatile("csrc sstatus, %[mask]": :[mask] "r"(mask));
-    8000372c:	10000793          	li	a5,256
-    80003730:	1007b073          	csrc	sstatus,a5
+    80003728:	10000793          	li	a5,256
+    8000372c:	1007b073          	csrc	sstatus,a5
 }
-    80003734:	0340006f          	j	80003768 <_ZN3TCB8dispatchEv+0xb0>
+    80003730:	0340006f          	j	80003764 <_ZN3TCB8dispatchEv+0xb0>
         Scheduler::put(old);
-    80003738:	00048513          	mv	a0,s1
-    8000373c:	ffffe097          	auipc	ra,0xffffe
-    80003740:	6e8080e7          	jalr	1768(ra) # 80001e24 <_ZN9Scheduler3putEP3TCB>
-    80003744:	fa5ff06f          	j	800036e8 <_ZN3TCB8dispatchEv+0x30>
+    80003734:	00048513          	mv	a0,s1
+    80003738:	ffffe097          	auipc	ra,0xffffe
+    8000373c:	6e0080e7          	jalr	1760(ra) # 80001e18 <_ZN9Scheduler3putEP3TCB>
+    80003740:	fa5ff06f          	j	800036e4 <_ZN3TCB8dispatchEv+0x30>
         delete old->stack;
-    80003748:	0184b503          	ld	a0,24(s1)
-    8000374c:	00050663          	beqz	a0,80003758 <_ZN3TCB8dispatchEv+0xa0>
-    80003750:	00000097          	auipc	ra,0x0
-    80003754:	a10080e7          	jalr	-1520(ra) # 80003160 <_ZdlPv>
+    80003744:	0184b503          	ld	a0,24(s1)
+    80003748:	00050663          	beqz	a0,80003754 <_ZN3TCB8dispatchEv+0xa0>
+    8000374c:	00000097          	auipc	ra,0x0
+    80003750:	a08080e7          	jalr	-1528(ra) # 80003154 <_ZdlPv>
         old->stack = nullptr;
-    80003758:	0004bc23          	sd	zero,24(s1)
-    8000375c:	f8dff06f          	j	800036e8 <_ZN3TCB8dispatchEv+0x30>
+    80003754:	0004bc23          	sd	zero,24(s1)
+    80003758:	f8dff06f          	j	800036e4 <_ZN3TCB8dispatchEv+0x30>
 	__asm__ volatile("csrs sstatus, %[mask]": :[mask] "r"(mask));
-    80003760:	10000793          	li	a5,256
-    80003764:	1007a073          	csrs	sstatus,a5
+    8000375c:	10000793          	li	a5,256
+    80003760:	1007a073          	csrs	sstatus,a5
     if (old != TCB::running) TCB::contextSwitch(&old->context, &running->context);
-    80003768:	00b48863          	beq	s1,a1,80003778 <_ZN3TCB8dispatchEv+0xc0>
-    8000376c:	00048513          	mv	a0,s1
-    80003770:	ffffe097          	auipc	ra,0xffffe
-    80003774:	9a0080e7          	jalr	-1632(ra) # 80001110 <_ZN3TCB13contextSwitchEPNS_7ContextES1_>
+    80003764:	00b48863          	beq	s1,a1,80003774 <_ZN3TCB8dispatchEv+0xc0>
+    80003768:	00048513          	mv	a0,s1
+    8000376c:	ffffe097          	auipc	ra,0xffffe
+    80003770:	9a4080e7          	jalr	-1628(ra) # 80001110 <_ZN3TCB13contextSwitchEPNS_7ContextES1_>
 }
-    80003778:	01813083          	ld	ra,24(sp)
-    8000377c:	01013403          	ld	s0,16(sp)
-    80003780:	00813483          	ld	s1,8(sp)
-    80003784:	02010113          	addi	sp,sp,32
-    80003788:	00008067          	ret
+    80003774:	01813083          	ld	ra,24(sp)
+    80003778:	01013403          	ld	s0,16(sp)
+    8000377c:	00813483          	ld	s1,8(sp)
+    80003780:	02010113          	addi	sp,sp,32
+    80003784:	00008067          	ret
 
-000000008000378c <_ZN3TCBnwEm>:
+0000000080003788 <_ZN3TCBnwEm>:
 
 void* TCB::operator new(size_t size) {
-    8000378c:	ff010113          	addi	sp,sp,-16
-    80003790:	00113423          	sd	ra,8(sp)
-    80003794:	00813023          	sd	s0,0(sp)
-    80003798:	01010413          	addi	s0,sp,16
+    80003788:	ff010113          	addi	sp,sp,-16
+    8000378c:	00113423          	sd	ra,8(sp)
+    80003790:	00813023          	sd	s0,0(sp)
+    80003794:	01010413          	addi	s0,sp,16
     return mem_alloc(size);
-    8000379c:	ffffe097          	auipc	ra,0xffffe
-    800037a0:	bf8080e7          	jalr	-1032(ra) # 80001394 <_Z9mem_allocm>
+    80003798:	ffffe097          	auipc	ra,0xffffe
+    8000379c:	bfc080e7          	jalr	-1028(ra) # 80001394 <_Z9mem_allocm>
 }
-    800037a4:	00813083          	ld	ra,8(sp)
-    800037a8:	00013403          	ld	s0,0(sp)
-    800037ac:	01010113          	addi	sp,sp,16
-    800037b0:	00008067          	ret
+    800037a0:	00813083          	ld	ra,8(sp)
+    800037a4:	00013403          	ld	s0,0(sp)
+    800037a8:	01010113          	addi	sp,sp,16
+    800037ac:	00008067          	ret
 
-00000000800037b4 <_ZN3TCB12createThreadEPFvPvES0_Pm>:
+00000000800037b0 <_ZN3TCB12createThreadEPFvPvES0_Pm>:
 TCB* TCB::createThread(TCB::Body function, void* args, uint64* stack) {
-    800037b4:	fd010113          	addi	sp,sp,-48
-    800037b8:	02113423          	sd	ra,40(sp)
-    800037bc:	02813023          	sd	s0,32(sp)
-    800037c0:	00913c23          	sd	s1,24(sp)
-    800037c4:	01213823          	sd	s2,16(sp)
-    800037c8:	01313423          	sd	s3,8(sp)
-    800037cc:	03010413          	addi	s0,sp,48
-    800037d0:	00050913          	mv	s2,a0
-    800037d4:	00058993          	mv	s3,a1
-    800037d8:	00060493          	mv	s1,a2
+    800037b0:	fd010113          	addi	sp,sp,-48
+    800037b4:	02113423          	sd	ra,40(sp)
+    800037b8:	02813023          	sd	s0,32(sp)
+    800037bc:	00913c23          	sd	s1,24(sp)
+    800037c0:	01213823          	sd	s2,16(sp)
+    800037c4:	01313423          	sd	s3,8(sp)
+    800037c8:	03010413          	addi	s0,sp,48
+    800037cc:	00050913          	mv	s2,a0
+    800037d0:	00058993          	mv	s3,a1
+    800037d4:	00060493          	mv	s1,a2
     TCB* newThread = new TCB(function, args, stack);
-    800037dc:	07000513          	li	a0,112
-    800037e0:	00000097          	auipc	ra,0x0
-    800037e4:	fac080e7          	jalr	-84(ra) # 8000378c <_ZN3TCBnwEm>
+    800037d8:	07000513          	li	a0,112
+    800037dc:	00000097          	auipc	ra,0x0
+    800037e0:	fac080e7          	jalr	-84(ra) # 80003788 <_ZN3TCBnwEm>
 private:
     TCB(Body function, void* args, uint64* stack) : threadFunction(function), stack(stack), args(args),
                                                     timeSlice(DEFAULT_TIME_SLICE), nextInScheduler(nullptr),
                                                     timeToSleep(0),
                                                     nextSleeping(nullptr), status(CREATED), mySemaphore(nullptr),
                                                     joiningWithTCB(nullptr) {
-    800037e8:	01253823          	sd	s2,16(a0)
-    800037ec:	00953c23          	sd	s1,24(a0)
-    800037f0:	03353023          	sd	s3,32(a0)
-    800037f4:	00200793          	li	a5,2
-    800037f8:	02f53423          	sd	a5,40(a0)
-    800037fc:	02053823          	sd	zero,48(a0)
-    80003800:	02053c23          	sd	zero,56(a0)
-    80003804:	04053023          	sd	zero,64(a0)
+    800037e4:	01253823          	sd	s2,16(a0)
+    800037e8:	00953c23          	sd	s1,24(a0)
+    800037ec:	03353023          	sd	s3,32(a0)
+    800037f0:	00200793          	li	a5,2
+    800037f4:	02f53423          	sd	a5,40(a0)
+    800037f8:	02053823          	sd	zero,48(a0)
+    800037fc:	02053c23          	sd	zero,56(a0)
+    80003800:	04053023          	sd	zero,64(a0)
     ThreadQueue() : front(nullptr), back(nullptr) {}
-    80003808:	04053423          	sd	zero,72(a0)
-    8000380c:	04053823          	sd	zero,80(a0)
-    80003810:	04052c23          	sw	zero,88(a0)
-    80003814:	06053023          	sd	zero,96(a0)
-    80003818:	06053423          	sd	zero,104(a0)
+    80003804:	04053423          	sd	zero,72(a0)
+    80003808:	04053823          	sd	zero,80(a0)
+    8000380c:	04052c23          	sw	zero,88(a0)
+    80003810:	06053023          	sd	zero,96(a0)
+    80003814:	06053423          	sd	zero,104(a0)
         //formiranje pocetnog konteksta;
         //specijalni uslovi za main funkciju kojoj se pocetni kontekst automatski formira
         uint64 startRa = threadFunction != (TCB::Body)main ? (uint64)&wrapper : 0;
-    8000381c:	0000a797          	auipc	a5,0xa
-    80003820:	86c7b783          	ld	a5,-1940(a5) # 8000d088 <_GLOBAL_OFFSET_TABLE_+0x70>
-    80003824:	02f90e63          	beq	s2,a5,80003860 <_ZN3TCB12createThreadEPFvPvES0_Pm+0xac>
-    80003828:	00000797          	auipc	a5,0x0
-    8000382c:	e4c78793          	addi	a5,a5,-436 # 80003674 <_ZN3TCB7wrapperEv>
+    80003818:	0000a797          	auipc	a5,0xa
+    8000381c:	8a07b783          	ld	a5,-1888(a5) # 8000d0b8 <_GLOBAL_OFFSET_TABLE_+0x70>
+    80003820:	02f90e63          	beq	s2,a5,8000385c <_ZN3TCB12createThreadEPFvPvES0_Pm+0xac>
+    80003824:	00000797          	auipc	a5,0x0
+    80003828:	e4c78793          	addi	a5,a5,-436 # 80003670 <_ZN3TCB7wrapperEv>
         uint64 startSp = stack != nullptr ? (uint64)((char*)stack + DEFAULT_STACK_SIZE) : 0;
-    80003830:	02048c63          	beqz	s1,80003868 <_ZN3TCB12createThreadEPFvPvES0_Pm+0xb4>
-    80003834:	00001637          	lui	a2,0x1
-    80003838:	00c484b3          	add	s1,s1,a2
+    8000382c:	02048c63          	beqz	s1,80003864 <_ZN3TCB12createThreadEPFvPvES0_Pm+0xb4>
+    80003830:	00001637          	lui	a2,0x1
+    80003834:	00c484b3          	add	s1,s1,a2
         this->context.ra = startRa;
-    8000383c:	00f53023          	sd	a5,0(a0)
+    80003838:	00f53023          	sd	a5,0(a0)
         this->context.sp = startSp;
-    80003840:	00953423          	sd	s1,8(a0)
+    8000383c:	00953423          	sd	s1,8(a0)
 }
-    80003844:	02813083          	ld	ra,40(sp)
-    80003848:	02013403          	ld	s0,32(sp)
-    8000384c:	01813483          	ld	s1,24(sp)
-    80003850:	01013903          	ld	s2,16(sp)
-    80003854:	00813983          	ld	s3,8(sp)
-    80003858:	03010113          	addi	sp,sp,48
-    8000385c:	00008067          	ret
+    80003840:	02813083          	ld	ra,40(sp)
+    80003844:	02013403          	ld	s0,32(sp)
+    80003848:	01813483          	ld	s1,24(sp)
+    8000384c:	01013903          	ld	s2,16(sp)
+    80003850:	00813983          	ld	s3,8(sp)
+    80003854:	03010113          	addi	sp,sp,48
+    80003858:	00008067          	ret
         uint64 startRa = threadFunction != (TCB::Body)main ? (uint64)&wrapper : 0;
-    80003860:	00000793          	li	a5,0
-    80003864:	fcdff06f          	j	80003830 <_ZN3TCB12createThreadEPFvPvES0_Pm+0x7c>
+    8000385c:	00000793          	li	a5,0
+    80003860:	fcdff06f          	j	8000382c <_ZN3TCB12createThreadEPFvPvES0_Pm+0x7c>
         uint64 startSp = stack != nullptr ? (uint64)((char*)stack + DEFAULT_STACK_SIZE) : 0;
-    80003868:	00000493          	li	s1,0
-    8000386c:	fd1ff06f          	j	8000383c <_ZN3TCB12createThreadEPFvPvES0_Pm+0x88>
+    80003864:	00000493          	li	s1,0
+    80003868:	fd1ff06f          	j	80003838 <_ZN3TCB12createThreadEPFvPvES0_Pm+0x88>
 
-0000000080003870 <_ZN3TCBdlEPv>:
+000000008000386c <_ZN3TCBdlEPv>:
 
 void TCB::operator delete(void* ptr) {
-    80003870:	ff010113          	addi	sp,sp,-16
-    80003874:	00113423          	sd	ra,8(sp)
-    80003878:	00813023          	sd	s0,0(sp)
-    8000387c:	01010413          	addi	s0,sp,16
+    8000386c:	ff010113          	addi	sp,sp,-16
+    80003870:	00113423          	sd	ra,8(sp)
+    80003874:	00813023          	sd	s0,0(sp)
+    80003878:	01010413          	addi	s0,sp,16
     mem_free(ptr);
-    80003880:	ffffe097          	auipc	ra,0xffffe
-    80003884:	b54080e7          	jalr	-1196(ra) # 800013d4 <_Z8mem_freePv>
+    8000387c:	ffffe097          	auipc	ra,0xffffe
+    80003880:	b58080e7          	jalr	-1192(ra) # 800013d4 <_Z8mem_freePv>
 }
-    80003888:	00813083          	ld	ra,8(sp)
-    8000388c:	00013403          	ld	s0,0(sp)
-    80003890:	01010113          	addi	sp,sp,16
-    80003894:	00008067          	ret
+    80003884:	00813083          	ld	ra,8(sp)
+    80003888:	00013403          	ld	s0,0(sp)
+    8000388c:	01010113          	addi	sp,sp,16
+    80003890:	00008067          	ret
 
-0000000080003898 <_ZN3TCB10threadJoinEPS_>:
+0000000080003894 <_ZN3TCB10threadJoinEPS_>:
 
 void TCB::threadJoin(TCB* handle) {
     if (handle->status == FINISHED || TCB::running == handle) return;
-    80003898:	05852703          	lw	a4,88(a0)
-    8000389c:	00500793          	li	a5,5
-    800038a0:	04f70263          	beq	a4,a5,800038e4 <_ZN3TCB10threadJoinEPS_+0x4c>
-    800038a4:	0000a597          	auipc	a1,0xa
-    800038a8:	9845b583          	ld	a1,-1660(a1) # 8000d228 <_ZN3TCB7runningE>
-    800038ac:	02a58c63          	beq	a1,a0,800038e4 <_ZN3TCB10threadJoinEPS_+0x4c>
+    80003894:	05852703          	lw	a4,88(a0)
+    80003898:	00500793          	li	a5,5
+    8000389c:	04f70463          	beq	a4,a5,800038e4 <_ZN3TCB10threadJoinEPS_+0x50>
+    800038a0:	0000a597          	auipc	a1,0xa
+    800038a4:	9d05b583          	ld	a1,-1584(a1) # 8000d270 <_ZN3TCB7runningE>
+    800038a8:	02a58e63          	beq	a1,a0,800038e4 <_ZN3TCB10threadJoinEPS_+0x50>
 void TCB::threadJoin(TCB* handle) {
-    800038b0:	ff010113          	addi	sp,sp,-16
-    800038b4:	00113423          	sd	ra,8(sp)
-    800038b8:	00813023          	sd	s0,0(sp)
-    800038bc:	01010413          	addi	s0,sp,16
+    800038ac:	ff010113          	addi	sp,sp,-16
+    800038b0:	00113423          	sd	ra,8(sp)
+    800038b4:	00813023          	sd	s0,0(sp)
+    800038b8:	01010413          	addi	s0,sp,16
     TCB::running->status = JOINING;
-    800038c0:	00300793          	li	a5,3
-    800038c4:	04f5ac23          	sw	a5,88(a1)
+    800038bc:	00300793          	li	a5,3
+    800038c0:	04f5ac23          	sw	a5,88(a1)
+    void setJoiningWithTCB(TCB* tcb) { joiningWithTCB = tcb; }
+    800038c4:	06a5b423          	sd	a0,104(a1)
+    TCB::running->setJoiningWithTCB(handle);
     handle->waitingToJoin.putLast(TCB::running);
     800038c8:	04850513          	addi	a0,a0,72
     800038cc:	ffffe097          	auipc	ra,0xffffe
@@ -4135,6331 +4126,6336 @@ void TCB::releaseJoined(TCB* handle) {
         return front == nullptr;
     80003900:	0484b783          	ld	a5,72(s1)
     while (!handle->waitingToJoin.isEmpty()) {
-    80003904:	00078e63          	beqz	a5,80003920 <_ZN3TCB13releaseJoinedEPS_+0x38>
+    80003904:	02078063          	beqz	a5,80003924 <_ZN3TCB13releaseJoinedEPS_+0x3c>
         TCB* tcb = handle->waitingToJoin.getFirst();
     80003908:	04848513          	addi	a0,s1,72
     8000390c:	ffffe097          	auipc	ra,0xffffe
     80003910:	99c080e7          	jalr	-1636(ra) # 800012a8 <_ZN11ThreadQueue8getFirstEv>
+    80003914:	06053423          	sd	zero,104(a0)
+        tcb->setJoiningWithTCB(nullptr);
         Scheduler::put(tcb);
-    80003914:	ffffe097          	auipc	ra,0xffffe
-    80003918:	510080e7          	jalr	1296(ra) # 80001e24 <_ZN9Scheduler3putEP3TCB>
+    80003918:	ffffe097          	auipc	ra,0xffffe
+    8000391c:	500080e7          	jalr	1280(ra) # 80001e18 <_ZN9Scheduler3putEP3TCB>
     while (!handle->waitingToJoin.isEmpty()) {
-    8000391c:	fe5ff06f          	j	80003900 <_ZN3TCB13releaseJoinedEPS_+0x18>
+    80003920:	fe1ff06f          	j	80003900 <_ZN3TCB13releaseJoinedEPS_+0x18>
     }
 }
-    80003920:	01813083          	ld	ra,24(sp)
-    80003924:	01013403          	ld	s0,16(sp)
-    80003928:	00813483          	ld	s1,8(sp)
-    8000392c:	02010113          	addi	sp,sp,32
-    80003930:	00008067          	ret
+    80003924:	01813083          	ld	ra,24(sp)
+    80003928:	01013403          	ld	s0,16(sp)
+    8000392c:	00813483          	ld	s1,8(sp)
+    80003930:	02010113          	addi	sp,sp,32
+    80003934:	00008067          	ret
 
-0000000080003934 <_ZN3TCB10quitThreadEPS_>:
+0000000080003938 <_ZN3TCB10quitThreadEPS_>:
 
 void TCB::quitThread(TCB* handle) {
-    80003934:	fe010113          	addi	sp,sp,-32
-    80003938:	00113c23          	sd	ra,24(sp)
-    8000393c:	00813823          	sd	s0,16(sp)
-    80003940:	00913423          	sd	s1,8(sp)
-    80003944:	02010413          	addi	s0,sp,32
-    80003948:	00050493          	mv	s1,a0
+    80003938:	fe010113          	addi	sp,sp,-32
+    8000393c:	00113c23          	sd	ra,24(sp)
+    80003940:	00813823          	sd	s0,16(sp)
+    80003944:	00913423          	sd	s1,8(sp)
+    80003948:	02010413          	addi	s0,sp,32
+    8000394c:	00050493          	mv	s1,a0
     TCB* prev, * curr;
     switch (handle->status) {
-    8000394c:	05852783          	lw	a5,88(a0)
-    80003950:	00300713          	li	a4,3
-    80003954:	10e78063          	beq	a5,a4,80003a54 <_ZN3TCB10quitThreadEPS_+0x120>
-    80003958:	04f76263          	bltu	a4,a5,8000399c <_ZN3TCB10quitThreadEPS_+0x68>
-    8000395c:	00100713          	li	a4,1
-    80003960:	06e78263          	beq	a5,a4,800039c4 <_ZN3TCB10quitThreadEPS_+0x90>
-    80003964:	00200713          	li	a4,2
-    80003968:	08e79e63          	bne	a5,a4,80003a04 <_ZN3TCB10quitThreadEPS_+0xd0>
+    80003950:	05852783          	lw	a5,88(a0)
+    80003954:	00300713          	li	a4,3
+    80003958:	10e78063          	beq	a5,a4,80003a58 <_ZN3TCB10quitThreadEPS_+0x120>
+    8000395c:	04f76263          	bltu	a4,a5,800039a0 <_ZN3TCB10quitThreadEPS_+0x68>
+    80003960:	00100713          	li	a4,1
+    80003964:	06e78263          	beq	a5,a4,800039c8 <_ZN3TCB10quitThreadEPS_+0x90>
+    80003968:	00200713          	li	a4,2
+    8000396c:	08e79e63          	bne	a5,a4,80003a08 <_ZN3TCB10quitThreadEPS_+0xd0>
             }
             curr->nextInScheduler = nullptr;
             break;
         case BLOCKED:
             //nit blokirana na semaforu, treba da se izbaci iz reda blokiranih na semaforu
             if (handle->mySemaphore->getBlocked()->remove(handle) < 0) {
-    8000396c:	06053503          	ld	a0,96(a0)
-    80003970:	00048593          	mv	a1,s1
-    80003974:	00850513          	addi	a0,a0,8
-    80003978:	ffffe097          	auipc	ra,0xffffe
-    8000397c:	990080e7          	jalr	-1648(ra) # 80001308 <_ZN11ThreadQueue6removeEP3TCB>
-    80003980:	08054263          	bltz	a0,80003a04 <_ZN3TCB10quitThreadEPS_+0xd0>
+    80003970:	06053503          	ld	a0,96(a0)
+    80003974:	00048593          	mv	a1,s1
+    80003978:	00850513          	addi	a0,a0,8
+    8000397c:	ffffe097          	auipc	ra,0xffffe
+    80003980:	98c080e7          	jalr	-1652(ra) # 80001308 <_ZN11ThreadQueue6removeEP3TCB>
+    80003984:	08054263          	bltz	a0,80003a08 <_ZN3TCB10quitThreadEPS_+0xd0>
                 //greska
             } else {
                 handle->mySemaphore->increaseVal(1);
-    80003984:	0604b703          	ld	a4,96(s1)
+    80003988:	0604b703          	ld	a4,96(s1)
 
     static void operator delete(void* ptr);
 
     ThreadQueue* getBlocked() { return &blocked; }
 
     void increaseVal(int add) { val += add; }
-    80003988:	00072783          	lw	a5,0(a4)
-    8000398c:	0017879b          	addiw	a5,a5,1
-    80003990:	00f72023          	sw	a5,0(a4)
+    8000398c:	00072783          	lw	a5,0(a4)
+    80003990:	0017879b          	addiw	a5,a5,1
+    80003994:	00f72023          	sw	a5,0(a4)
                 handle->mySemaphore = nullptr;
-    80003994:	0604b023          	sd	zero,96(s1)
-    80003998:	06c0006f          	j	80003a04 <_ZN3TCB10quitThreadEPS_+0xd0>
+    80003998:	0604b023          	sd	zero,96(s1)
+    8000399c:	06c0006f          	j	80003a08 <_ZN3TCB10quitThreadEPS_+0xd0>
     switch (handle->status) {
-    8000399c:	00400713          	li	a4,4
-    800039a0:	06e79263          	bne	a5,a4,80003a04 <_ZN3TCB10quitThreadEPS_+0xd0>
+    800039a0:	00400713          	li	a4,4
+    800039a4:	06e79263          	bne	a5,a4,80003a08 <_ZN3TCB10quitThreadEPS_+0xd0>
 
     static TCB* getTail() { return tail; }
 
     static void setTail(TCB* tcb) { tail = tcb; }
 
     static TCB* getSleepingHead() { return sleepingHead; }
-    800039a4:	00009797          	auipc	a5,0x9
-    800039a8:	70c7b783          	ld	a5,1804(a5) # 8000d0b0 <_GLOBAL_OFFSET_TABLE_+0x98>
-    800039ac:	0007b783          	ld	a5,0(a5)
+    800039a8:	00009797          	auipc	a5,0x9
+    800039ac:	7387b783          	ld	a5,1848(a5) # 8000d0e0 <_GLOBAL_OFFSET_TABLE_+0x98>
+    800039b0:	0007b783          	ld	a5,0(a5)
                 handle->joiningWithTCB = nullptr;
             }
             break;
         case SLEEPING:
             //nit je u redu uspavanih, treba da se izbaci
             for (prev = nullptr, curr = Scheduler::getSleepingHead();
-    800039b0:	00000713          	li	a4,0
+    800039b4:	00000713          	li	a4,0
                  curr != handle; prev = curr, curr = curr->nextSleeping);
-    800039b4:	0c978063          	beq	a5,s1,80003a74 <_ZN3TCB10quitThreadEPS_+0x140>
-    800039b8:	00078713          	mv	a4,a5
-    800039bc:	0407b783          	ld	a5,64(a5)
+    800039b8:	0c978063          	beq	a5,s1,80003a78 <_ZN3TCB10quitThreadEPS_+0x140>
+    800039bc:	00078713          	mv	a4,a5
+    800039c0:	0407b783          	ld	a5,64(a5)
             for (prev = nullptr, curr = Scheduler::getSleepingHead();
-    800039c0:	ff5ff06f          	j	800039b4 <_ZN3TCB10quitThreadEPS_+0x80>
+    800039c4:	ff5ff06f          	j	800039b8 <_ZN3TCB10quitThreadEPS_+0x80>
     static TCB* getHead() { return head; }
-    800039c4:	00009797          	auipc	a5,0x9
-    800039c8:	69c7b783          	ld	a5,1692(a5) # 8000d060 <_GLOBAL_OFFSET_TABLE_+0x48>
-    800039cc:	0007b783          	ld	a5,0(a5)
+    800039c8:	00009797          	auipc	a5,0x9
+    800039cc:	6c87b783          	ld	a5,1736(a5) # 8000d090 <_GLOBAL_OFFSET_TABLE_+0x48>
+    800039d0:	0007b783          	ld	a5,0(a5)
             for (prev = nullptr, curr = Scheduler::getHead();
-    800039d0:	00000713          	li	a4,0
+    800039d4:	00000713          	li	a4,0
                  curr != handle; prev = curr, curr = curr->nextInScheduler);
-    800039d4:	00978863          	beq	a5,s1,800039e4 <_ZN3TCB10quitThreadEPS_+0xb0>
-    800039d8:	00078713          	mv	a4,a5
-    800039dc:	0307b783          	ld	a5,48(a5)
+    800039d8:	00978863          	beq	a5,s1,800039e8 <_ZN3TCB10quitThreadEPS_+0xb0>
+    800039dc:	00078713          	mv	a4,a5
+    800039e0:	0307b783          	ld	a5,48(a5)
             for (prev = nullptr, curr = Scheduler::getHead();
-    800039e0:	ff5ff06f          	j	800039d4 <_ZN3TCB10quitThreadEPS_+0xa0>
+    800039e4:	ff5ff06f          	j	800039d8 <_ZN3TCB10quitThreadEPS_+0xa0>
             if (!prev) {
-    800039e4:	04070663          	beqz	a4,80003a30 <_ZN3TCB10quitThreadEPS_+0xfc>
+    800039e8:	04070663          	beqz	a4,80003a34 <_ZN3TCB10quitThreadEPS_+0xfc>
                 prev->nextInScheduler = curr->nextInScheduler;
-    800039e8:	0307b683          	ld	a3,48(a5)
-    800039ec:	02d73823          	sd	a3,48(a4)
+    800039ec:	0307b683          	ld	a3,48(a5)
+    800039f0:	02d73823          	sd	a3,48(a4)
     static TCB* getTail() { return tail; }
-    800039f0:	00009697          	auipc	a3,0x9
-    800039f4:	6506b683          	ld	a3,1616(a3) # 8000d040 <_GLOBAL_OFFSET_TABLE_+0x28>
-    800039f8:	0006b683          	ld	a3,0(a3)
+    800039f4:	00009697          	auipc	a3,0x9
+    800039f8:	67c6b683          	ld	a3,1660(a3) # 8000d070 <_GLOBAL_OFFSET_TABLE_+0x28>
+    800039fc:	0006b683          	ld	a3,0(a3)
             if (curr == Scheduler::getTail()) {
-    800039fc:	04d78463          	beq	a5,a3,80003a44 <_ZN3TCB10quitThreadEPS_+0x110>
+    80003a00:	04d78463          	beq	a5,a3,80003a48 <_ZN3TCB10quitThreadEPS_+0x110>
             curr->nextInScheduler = nullptr;
-    80003a00:	0207b823          	sd	zero,48(a5)
+    80003a04:	0207b823          	sd	zero,48(a5)
         case FINISHED:
             break;
         default:
             break;
     }
     handle->status = FINISHED;
-    80003a04:	00500793          	li	a5,5
-    80003a08:	04f4ac23          	sw	a5,88(s1)
+    80003a08:	00500793          	li	a5,5
+    80003a0c:	04f4ac23          	sw	a5,88(s1)
     delete handle->stack;
-    80003a0c:	0184b503          	ld	a0,24(s1)
-    80003a10:	00050663          	beqz	a0,80003a1c <_ZN3TCB10quitThreadEPS_+0xe8>
-    80003a14:	fffff097          	auipc	ra,0xfffff
-    80003a18:	74c080e7          	jalr	1868(ra) # 80003160 <_ZdlPv>
+    80003a10:	0184b503          	ld	a0,24(s1)
+    80003a14:	00050663          	beqz	a0,80003a20 <_ZN3TCB10quitThreadEPS_+0xe8>
+    80003a18:	fffff097          	auipc	ra,0xfffff
+    80003a1c:	73c080e7          	jalr	1852(ra) # 80003154 <_ZdlPv>
 }
-    80003a1c:	01813083          	ld	ra,24(sp)
-    80003a20:	01013403          	ld	s0,16(sp)
-    80003a24:	00813483          	ld	s1,8(sp)
-    80003a28:	02010113          	addi	sp,sp,32
-    80003a2c:	00008067          	ret
+    80003a20:	01813083          	ld	ra,24(sp)
+    80003a24:	01013403          	ld	s0,16(sp)
+    80003a28:	00813483          	ld	s1,8(sp)
+    80003a2c:	02010113          	addi	sp,sp,32
+    80003a30:	00008067          	ret
                 Scheduler::setHead(curr->nextInScheduler);
-    80003a30:	0307b603          	ld	a2,48(a5)
+    80003a34:	0307b603          	ld	a2,48(a5)
     static void setHead(TCB* tcb) { head = tcb; }
-    80003a34:	00009697          	auipc	a3,0x9
-    80003a38:	62c6b683          	ld	a3,1580(a3) # 8000d060 <_GLOBAL_OFFSET_TABLE_+0x48>
-    80003a3c:	00c6b023          	sd	a2,0(a3)
-    80003a40:	fb1ff06f          	j	800039f0 <_ZN3TCB10quitThreadEPS_+0xbc>
+    80003a38:	00009697          	auipc	a3,0x9
+    80003a3c:	6586b683          	ld	a3,1624(a3) # 8000d090 <_GLOBAL_OFFSET_TABLE_+0x48>
+    80003a40:	00c6b023          	sd	a2,0(a3)
+    80003a44:	fb1ff06f          	j	800039f4 <_ZN3TCB10quitThreadEPS_+0xbc>
     static void setTail(TCB* tcb) { tail = tcb; }
-    80003a44:	00009697          	auipc	a3,0x9
-    80003a48:	5fc6b683          	ld	a3,1532(a3) # 8000d040 <_GLOBAL_OFFSET_TABLE_+0x28>
-    80003a4c:	00e6b023          	sd	a4,0(a3)
-    80003a50:	fb1ff06f          	j	80003a00 <_ZN3TCB10quitThreadEPS_+0xcc>
+    80003a48:	00009697          	auipc	a3,0x9
+    80003a4c:	6286b683          	ld	a3,1576(a3) # 8000d070 <_GLOBAL_OFFSET_TABLE_+0x28>
+    80003a50:	00e6b023          	sd	a4,0(a3)
+    80003a54:	fb1ff06f          	j	80003a04 <_ZN3TCB10quitThreadEPS_+0xcc>
             if (handle->joiningWithTCB->getListOfJoiningThreads()->remove(handle) < 0) {
-    80003a54:	06853503          	ld	a0,104(a0)
-    80003a58:	00048593          	mv	a1,s1
-    80003a5c:	04850513          	addi	a0,a0,72
-    80003a60:	ffffe097          	auipc	ra,0xffffe
-    80003a64:	8a8080e7          	jalr	-1880(ra) # 80001308 <_ZN11ThreadQueue6removeEP3TCB>
-    80003a68:	f8054ee3          	bltz	a0,80003a04 <_ZN3TCB10quitThreadEPS_+0xd0>
+    80003a58:	06853503          	ld	a0,104(a0)
+    80003a5c:	00048593          	mv	a1,s1
+    80003a60:	04850513          	addi	a0,a0,72
+    80003a64:	ffffe097          	auipc	ra,0xffffe
+    80003a68:	8a4080e7          	jalr	-1884(ra) # 80001308 <_ZN11ThreadQueue6removeEP3TCB>
+    80003a6c:	f8054ee3          	bltz	a0,80003a08 <_ZN3TCB10quitThreadEPS_+0xd0>
                 handle->joiningWithTCB = nullptr;
-    80003a6c:	0604b423          	sd	zero,104(s1)
-    80003a70:	f95ff06f          	j	80003a04 <_ZN3TCB10quitThreadEPS_+0xd0>
+    80003a70:	0604b423          	sd	zero,104(s1)
+    80003a74:	f95ff06f          	j	80003a08 <_ZN3TCB10quitThreadEPS_+0xd0>
             if (!prev) {
-    80003a74:	02070863          	beqz	a4,80003aa4 <_ZN3TCB10quitThreadEPS_+0x170>
+    80003a78:	02070863          	beqz	a4,80003aa8 <_ZN3TCB10quitThreadEPS_+0x170>
                 prev->nextSleeping = curr->nextSleeping;
-    80003a78:	0407b683          	ld	a3,64(a5)
-    80003a7c:	04d73023          	sd	a3,64(a4)
+    80003a7c:	0407b683          	ld	a3,64(a5)
+    80003a80:	04d73023          	sd	a3,64(a4)
             if (curr->nextSleeping) {
-    80003a80:	0407b703          	ld	a4,64(a5)
-    80003a84:	00070a63          	beqz	a4,80003a98 <_ZN3TCB10quitThreadEPS_+0x164>
+    80003a84:	0407b703          	ld	a4,64(a5)
+    80003a88:	00070a63          	beqz	a4,80003a9c <_ZN3TCB10quitThreadEPS_+0x164>
                 curr->nextSleeping->timeToSleep += curr->timeToSleep;
-    80003a88:	0387b603          	ld	a2,56(a5)
-    80003a8c:	03873683          	ld	a3,56(a4)
-    80003a90:	00c686b3          	add	a3,a3,a2
-    80003a94:	02d73c23          	sd	a3,56(a4)
+    80003a8c:	0387b603          	ld	a2,56(a5)
+    80003a90:	03873683          	ld	a3,56(a4)
+    80003a94:	00c686b3          	add	a3,a3,a2
+    80003a98:	02d73c23          	sd	a3,56(a4)
             curr->timeToSleep = 0;
-    80003a98:	0207bc23          	sd	zero,56(a5)
+    80003a9c:	0207bc23          	sd	zero,56(a5)
             curr->nextSleeping = nullptr;
-    80003a9c:	0407b023          	sd	zero,64(a5)
+    80003aa0:	0407b023          	sd	zero,64(a5)
             break;
-    80003aa0:	f65ff06f          	j	80003a04 <_ZN3TCB10quitThreadEPS_+0xd0>
+    80003aa4:	f65ff06f          	j	80003a08 <_ZN3TCB10quitThreadEPS_+0xd0>
                 Scheduler::setSleepingHead(curr->nextSleeping);
-    80003aa4:	0407b683          	ld	a3,64(a5)
+    80003aa8:	0407b683          	ld	a3,64(a5)
 
     static void setSleepingHead(TCB* tcb) { sleepingHead = tcb; }
-    80003aa8:	00009717          	auipc	a4,0x9
-    80003aac:	60873703          	ld	a4,1544(a4) # 8000d0b0 <_GLOBAL_OFFSET_TABLE_+0x98>
-    80003ab0:	00d73023          	sd	a3,0(a4)
-    80003ab4:	fcdff06f          	j	80003a80 <_ZN3TCB10quitThreadEPS_+0x14c>
+    80003aac:	00009717          	auipc	a4,0x9
+    80003ab0:	63473703          	ld	a4,1588(a4) # 8000d0e0 <_GLOBAL_OFFSET_TABLE_+0x98>
+    80003ab4:	00d73023          	sd	a3,0(a4)
+    80003ab8:	fcdff06f          	j	80003a84 <_ZN3TCB10quitThreadEPS_+0x14c>
 
-0000000080003ab8 <_ZN5Riscv19returnFromInterruptEv>:
+0000000080003abc <_ZN5Riscv19returnFromInterruptEv>:
 // Created by os on 5/17/23.
 //
 
 #include "../h/Riscv.hpp"
 
 void Riscv::returnFromInterrupt() {
-    80003ab8:	ff010113          	addi	sp,sp,-16
-    80003abc:	00813423          	sd	s0,8(sp)
-    80003ac0:	01010413          	addi	s0,sp,16
+    80003abc:	ff010113          	addi	sp,sp,-16
+    80003ac0:	00813423          	sd	s0,8(sp)
+    80003ac4:	01010413          	addi	s0,sp,16
 	//ra pokazuje iza ove funkcije na nastavak wrappera
 	__asm__ volatile("csrw sepc, ra");
-    80003ac4:	14109073          	csrw	sepc,ra
+    80003ac8:	14109073          	csrw	sepc,ra
 	__asm__ volatile("sret");
-    80003ac8:	10200073          	sret
-    80003acc:	00813403          	ld	s0,8(sp)
-    80003ad0:	01010113          	addi	sp,sp,16
-    80003ad4:	00008067          	ret
+    80003acc:	10200073          	sret
+    80003ad0:	00813403          	ld	s0,8(sp)
+    80003ad4:	01010113          	addi	sp,sp,16
+    80003ad8:	00008067          	ret
 
-0000000080003ad8 <_ZN4KSemnwEm>:
+0000000080003adc <_ZN4KSemnwEm>:
 
 #include "../h/KSem.hpp"
 #include "../h/TCB.hpp"
 #include "../h/Scheduler.hpp"
 
 void* KSem::operator new(size_t size) {
-    80003ad8:	ff010113          	addi	sp,sp,-16
-    80003adc:	00113423          	sd	ra,8(sp)
-    80003ae0:	00813023          	sd	s0,0(sp)
-    80003ae4:	01010413          	addi	s0,sp,16
+    80003adc:	ff010113          	addi	sp,sp,-16
+    80003ae0:	00113423          	sd	ra,8(sp)
+    80003ae4:	00813023          	sd	s0,0(sp)
+    80003ae8:	01010413          	addi	s0,sp,16
     return mem_alloc(size);
-    80003ae8:	ffffe097          	auipc	ra,0xffffe
-    80003aec:	8ac080e7          	jalr	-1876(ra) # 80001394 <_Z9mem_allocm>
+    80003aec:	ffffe097          	auipc	ra,0xffffe
+    80003af0:	8a8080e7          	jalr	-1880(ra) # 80001394 <_Z9mem_allocm>
 }
-    80003af0:	00813083          	ld	ra,8(sp)
-    80003af4:	00013403          	ld	s0,0(sp)
-    80003af8:	01010113          	addi	sp,sp,16
-    80003afc:	00008067          	ret
+    80003af4:	00813083          	ld	ra,8(sp)
+    80003af8:	00013403          	ld	s0,0(sp)
+    80003afc:	01010113          	addi	sp,sp,16
+    80003b00:	00008067          	ret
 
-0000000080003b00 <_ZN4KSemdlEPv>:
+0000000080003b04 <_ZN4KSemdlEPv>:
 
 void KSem::operator delete(void* ptr) {
-    80003b00:	ff010113          	addi	sp,sp,-16
-    80003b04:	00113423          	sd	ra,8(sp)
-    80003b08:	00813023          	sd	s0,0(sp)
-    80003b0c:	01010413          	addi	s0,sp,16
+    80003b04:	ff010113          	addi	sp,sp,-16
+    80003b08:	00113423          	sd	ra,8(sp)
+    80003b0c:	00813023          	sd	s0,0(sp)
+    80003b10:	01010413          	addi	s0,sp,16
     mem_free(ptr);
-    80003b10:	ffffe097          	auipc	ra,0xffffe
-    80003b14:	8c4080e7          	jalr	-1852(ra) # 800013d4 <_Z8mem_freePv>
+    80003b14:	ffffe097          	auipc	ra,0xffffe
+    80003b18:	8c0080e7          	jalr	-1856(ra) # 800013d4 <_Z8mem_freePv>
 }
-    80003b18:	00813083          	ld	ra,8(sp)
-    80003b1c:	00013403          	ld	s0,0(sp)
-    80003b20:	01010113          	addi	sp,sp,16
-    80003b24:	00008067          	ret
+    80003b1c:	00813083          	ld	ra,8(sp)
+    80003b20:	00013403          	ld	s0,0(sp)
+    80003b24:	01010113          	addi	sp,sp,16
+    80003b28:	00008067          	ret
 
-0000000080003b28 <_ZN4KSem7initSemEj>:
+0000000080003b2c <_ZN4KSem7initSemEj>:
 
 KSem* KSem::initSem(uint val) {
-    80003b28:	fe010113          	addi	sp,sp,-32
-    80003b2c:	00113c23          	sd	ra,24(sp)
-    80003b30:	00813823          	sd	s0,16(sp)
-    80003b34:	00913423          	sd	s1,8(sp)
-    80003b38:	02010413          	addi	s0,sp,32
-    80003b3c:	00050493          	mv	s1,a0
+    80003b2c:	fe010113          	addi	sp,sp,-32
+    80003b30:	00113c23          	sd	ra,24(sp)
+    80003b34:	00813823          	sd	s0,16(sp)
+    80003b38:	00913423          	sd	s1,8(sp)
+    80003b3c:	02010413          	addi	s0,sp,32
+    80003b40:	00050493          	mv	s1,a0
 	return new KSem(val);
-    80003b40:	01800513          	li	a0,24
-    80003b44:	00000097          	auipc	ra,0x0
-    80003b48:	f94080e7          	jalr	-108(ra) # 80003ad8 <_ZN4KSemnwEm>
+    80003b44:	01800513          	li	a0,24
+    80003b48:	00000097          	auipc	ra,0x0
+    80003b4c:	f94080e7          	jalr	-108(ra) # 80003adc <_ZN4KSemnwEm>
     void block();
 
     void unblock();
 
 private:
     KSem(uint val) : val(val) {}
-    80003b4c:	00952023          	sw	s1,0(a0)
+    80003b50:	00952023          	sw	s1,0(a0)
     ThreadQueue() : front(nullptr), back(nullptr) {}
-    80003b50:	00053423          	sd	zero,8(a0)
-    80003b54:	00053823          	sd	zero,16(a0)
+    80003b54:	00053423          	sd	zero,8(a0)
+    80003b58:	00053823          	sd	zero,16(a0)
 }
-    80003b58:	01813083          	ld	ra,24(sp)
-    80003b5c:	01013403          	ld	s0,16(sp)
-    80003b60:	00813483          	ld	s1,8(sp)
-    80003b64:	02010113          	addi	sp,sp,32
-    80003b68:	00008067          	ret
+    80003b5c:	01813083          	ld	ra,24(sp)
+    80003b60:	01013403          	ld	s0,16(sp)
+    80003b64:	00813483          	ld	s1,8(sp)
+    80003b68:	02010113          	addi	sp,sp,32
+    80003b6c:	00008067          	ret
 
-0000000080003b6c <_ZN4KSem5blockEv>:
+0000000080003b70 <_ZN4KSem5blockEv>:
 		unblock();
 	}
 	return 0;
 }
 
 void KSem::block() {
-    80003b6c:	ff010113          	addi	sp,sp,-16
-    80003b70:	00113423          	sd	ra,8(sp)
-    80003b74:	00813023          	sd	s0,0(sp)
-    80003b78:	01010413          	addi	s0,sp,16
+    80003b70:	ff010113          	addi	sp,sp,-16
+    80003b74:	00113423          	sd	ra,8(sp)
+    80003b78:	00813023          	sd	s0,0(sp)
+    80003b7c:	01010413          	addi	s0,sp,16
     static TCB* getRunning() { return running; }
-    80003b7c:	00009797          	auipc	a5,0x9
-    80003b80:	51c7b783          	ld	a5,1308(a5) # 8000d098 <_GLOBAL_OFFSET_TABLE_+0x80>
-    80003b84:	0007b583          	ld	a1,0(a5)
+    80003b80:	00009797          	auipc	a5,0x9
+    80003b84:	5487b783          	ld	a5,1352(a5) # 8000d0c8 <_GLOBAL_OFFSET_TABLE_+0x80>
+    80003b88:	0007b583          	ld	a1,0(a5)
     void setStatus(ThreadStatus stat) { this->status = stat; }
-    80003b88:	00200793          	li	a5,2
-    80003b8c:	04f5ac23          	sw	a5,88(a1)
+    80003b8c:	00200793          	li	a5,2
+    80003b90:	04f5ac23          	sw	a5,88(a1)
+    void setMySemaphore(KSem* sem) { mySemaphore = sem; }
+    80003b94:	06a5b023          	sd	a0,96(a1)
     TCB::getRunning()->setStatus(TCB::BLOCKED);
+    TCB::getRunning()->setMySemaphore(this);
 	blocked.putLast(TCB::getRunning());
-    80003b90:	00850513          	addi	a0,a0,8
-    80003b94:	ffffd097          	auipc	ra,0xffffd
-    80003b98:	6a8080e7          	jalr	1704(ra) # 8000123c <_ZN11ThreadQueue7putLastEP3TCB>
+    80003b98:	00850513          	addi	a0,a0,8
+    80003b9c:	ffffd097          	auipc	ra,0xffffd
+    80003ba0:	6a0080e7          	jalr	1696(ra) # 8000123c <_ZN11ThreadQueue7putLastEP3TCB>
 	TCB::dispatch();
-    80003b9c:	00000097          	auipc	ra,0x0
-    80003ba0:	b1c080e7          	jalr	-1252(ra) # 800036b8 <_ZN3TCB8dispatchEv>
+    80003ba4:	00000097          	auipc	ra,0x0
+    80003ba8:	b10080e7          	jalr	-1264(ra) # 800036b4 <_ZN3TCB8dispatchEv>
 }
-    80003ba4:	00813083          	ld	ra,8(sp)
-    80003ba8:	00013403          	ld	s0,0(sp)
-    80003bac:	01010113          	addi	sp,sp,16
-    80003bb0:	00008067          	ret
+    80003bac:	00813083          	ld	ra,8(sp)
+    80003bb0:	00013403          	ld	s0,0(sp)
+    80003bb4:	01010113          	addi	sp,sp,16
+    80003bb8:	00008067          	ret
 
-0000000080003bb4 <_ZN4KSem4waitEv>:
+0000000080003bbc <_ZN4KSem4waitEv>:
 	if (--val < 0) {
-    80003bb4:	00052783          	lw	a5,0(a0)
-    80003bb8:	fff7879b          	addiw	a5,a5,-1
-    80003bbc:	00f52023          	sw	a5,0(a0)
-    80003bc0:	02079713          	slli	a4,a5,0x20
-    80003bc4:	00074663          	bltz	a4,80003bd0 <_ZN4KSem4waitEv+0x1c>
+    80003bbc:	00052783          	lw	a5,0(a0)
+    80003bc0:	fff7879b          	addiw	a5,a5,-1
+    80003bc4:	00f52023          	sw	a5,0(a0)
+    80003bc8:	02079713          	slli	a4,a5,0x20
+    80003bcc:	00074663          	bltz	a4,80003bd8 <_ZN4KSem4waitEv+0x1c>
 	return 0;
-    80003bc8:	00000513          	li	a0,0
+    80003bd0:	00000513          	li	a0,0
 }
-    80003bcc:	00008067          	ret
+    80003bd4:	00008067          	ret
 int KSem::wait() {
-    80003bd0:	ff010113          	addi	sp,sp,-16
-    80003bd4:	00113423          	sd	ra,8(sp)
-    80003bd8:	00813023          	sd	s0,0(sp)
-    80003bdc:	01010413          	addi	s0,sp,16
+    80003bd8:	ff010113          	addi	sp,sp,-16
+    80003bdc:	00113423          	sd	ra,8(sp)
+    80003be0:	00813023          	sd	s0,0(sp)
+    80003be4:	01010413          	addi	s0,sp,16
 		block();
-    80003be0:	00000097          	auipc	ra,0x0
-    80003be4:	f8c080e7          	jalr	-116(ra) # 80003b6c <_ZN4KSem5blockEv>
+    80003be8:	00000097          	auipc	ra,0x0
+    80003bec:	f88080e7          	jalr	-120(ra) # 80003b70 <_ZN4KSem5blockEv>
 		return -1;
-    80003be8:	fff00513          	li	a0,-1
+    80003bf0:	fff00513          	li	a0,-1
 }
-    80003bec:	00813083          	ld	ra,8(sp)
-    80003bf0:	00013403          	ld	s0,0(sp)
-    80003bf4:	01010113          	addi	sp,sp,16
-    80003bf8:	00008067          	ret
+    80003bf4:	00813083          	ld	ra,8(sp)
+    80003bf8:	00013403          	ld	s0,0(sp)
+    80003bfc:	01010113          	addi	sp,sp,16
+    80003c00:	00008067          	ret
 
-0000000080003bfc <_ZN4KSem7unblockEv>:
+0000000080003c04 <_ZN4KSem7unblockEv>:
 
 void KSem::unblock() {
-    80003bfc:	ff010113          	addi	sp,sp,-16
-    80003c00:	00113423          	sd	ra,8(sp)
-    80003c04:	00813023          	sd	s0,0(sp)
-    80003c08:	01010413          	addi	s0,sp,16
+    80003c04:	ff010113          	addi	sp,sp,-16
+    80003c08:	00113423          	sd	ra,8(sp)
+    80003c0c:	00813023          	sd	s0,0(sp)
+    80003c10:	01010413          	addi	s0,sp,16
 	TCB* tcb = blocked.getFirst();
-    80003c0c:	00850513          	addi	a0,a0,8
-    80003c10:	ffffd097          	auipc	ra,0xffffd
-    80003c14:	698080e7          	jalr	1688(ra) # 800012a8 <_ZN11ThreadQueue8getFirstEv>
+    80003c14:	00850513          	addi	a0,a0,8
+    80003c18:	ffffd097          	auipc	ra,0xffffd
+    80003c1c:	690080e7          	jalr	1680(ra) # 800012a8 <_ZN11ThreadQueue8getFirstEv>
+    80003c20:	06053023          	sd	zero,96(a0)
+    tcb->setMySemaphore(nullptr);
 	Scheduler::put(tcb);
-    80003c18:	ffffe097          	auipc	ra,0xffffe
-    80003c1c:	20c080e7          	jalr	524(ra) # 80001e24 <_ZN9Scheduler3putEP3TCB>
+    80003c24:	ffffe097          	auipc	ra,0xffffe
+    80003c28:	1f4080e7          	jalr	500(ra) # 80001e18 <_ZN9Scheduler3putEP3TCB>
 }
-    80003c20:	00813083          	ld	ra,8(sp)
-    80003c24:	00013403          	ld	s0,0(sp)
-    80003c28:	01010113          	addi	sp,sp,16
-    80003c2c:	00008067          	ret
+    80003c2c:	00813083          	ld	ra,8(sp)
+    80003c30:	00013403          	ld	s0,0(sp)
+    80003c34:	01010113          	addi	sp,sp,16
+    80003c38:	00008067          	ret
 
-0000000080003c30 <_ZN4KSem6signalEv>:
+0000000080003c3c <_ZN4KSem6signalEv>:
 	if (val++ < 0) {
-    80003c30:	00052783          	lw	a5,0(a0)
-    80003c34:	0017871b          	addiw	a4,a5,1
-    80003c38:	00e52023          	sw	a4,0(a0)
-    80003c3c:	0007c663          	bltz	a5,80003c48 <_ZN4KSem6signalEv+0x18>
+    80003c3c:	00052783          	lw	a5,0(a0)
+    80003c40:	0017871b          	addiw	a4,a5,1
+    80003c44:	00e52023          	sw	a4,0(a0)
+    80003c48:	0007c663          	bltz	a5,80003c54 <_ZN4KSem6signalEv+0x18>
 }
-    80003c40:	00000513          	li	a0,0
-    80003c44:	00008067          	ret
+    80003c4c:	00000513          	li	a0,0
+    80003c50:	00008067          	ret
 int KSem::signal() {
-    80003c48:	ff010113          	addi	sp,sp,-16
-    80003c4c:	00113423          	sd	ra,8(sp)
-    80003c50:	00813023          	sd	s0,0(sp)
-    80003c54:	01010413          	addi	s0,sp,16
+    80003c54:	ff010113          	addi	sp,sp,-16
+    80003c58:	00113423          	sd	ra,8(sp)
+    80003c5c:	00813023          	sd	s0,0(sp)
+    80003c60:	01010413          	addi	s0,sp,16
 		unblock();
-    80003c58:	00000097          	auipc	ra,0x0
-    80003c5c:	fa4080e7          	jalr	-92(ra) # 80003bfc <_ZN4KSem7unblockEv>
+    80003c64:	00000097          	auipc	ra,0x0
+    80003c68:	fa0080e7          	jalr	-96(ra) # 80003c04 <_ZN4KSem7unblockEv>
 }
-    80003c60:	00000513          	li	a0,0
-    80003c64:	00813083          	ld	ra,8(sp)
-    80003c68:	00013403          	ld	s0,0(sp)
-    80003c6c:	01010113          	addi	sp,sp,16
-    80003c70:	00008067          	ret
+    80003c6c:	00000513          	li	a0,0
+    80003c70:	00813083          	ld	ra,8(sp)
+    80003c74:	00013403          	ld	s0,0(sp)
+    80003c78:	01010113          	addi	sp,sp,16
+    80003c7c:	00008067          	ret
 
-0000000080003c74 <_ZN4KSem8closeSemEPS_>:
+0000000080003c80 <_ZN4KSem8closeSemEPS_>:
 
 int KSem::closeSem(sem_t handle) {
-    80003c74:	fe010113          	addi	sp,sp,-32
-    80003c78:	00113c23          	sd	ra,24(sp)
-    80003c7c:	00813823          	sd	s0,16(sp)
-    80003c80:	00913423          	sd	s1,8(sp)
-    80003c84:	02010413          	addi	s0,sp,32
-    80003c88:	00050493          	mv	s1,a0
+    80003c80:	fe010113          	addi	sp,sp,-32
+    80003c84:	00113c23          	sd	ra,24(sp)
+    80003c88:	00813823          	sd	s0,16(sp)
+    80003c8c:	00913423          	sd	s1,8(sp)
+    80003c90:	02010413          	addi	s0,sp,32
+    80003c94:	00050493          	mv	s1,a0
         return front == nullptr;
-    80003c8c:	0084b783          	ld	a5,8(s1)
+    80003c98:	0084b783          	ld	a5,8(s1)
 	while (!handle->blocked.isEmpty()) {
-    80003c90:	00078e63          	beqz	a5,80003cac <_ZN4KSem8closeSemEPS_+0x38>
-		TCB* tcb = handle->blocked.getFirst();
-    80003c94:	00848513          	addi	a0,s1,8
-    80003c98:	ffffd097          	auipc	ra,0xffffd
-    80003c9c:	610080e7          	jalr	1552(ra) # 800012a8 <_ZN11ThreadQueue8getFirstEv>
-		Scheduler::put(tcb);
-    80003ca0:	ffffe097          	auipc	ra,0xffffe
-    80003ca4:	184080e7          	jalr	388(ra) # 80001e24 <_ZN9Scheduler3putEP3TCB>
+    80003c9c:	00078a63          	beqz	a5,80003cb0 <_ZN4KSem8closeSemEPS_+0x30>
+		handle->unblock();
+    80003ca0:	00048513          	mv	a0,s1
+    80003ca4:	00000097          	auipc	ra,0x0
+    80003ca8:	f60080e7          	jalr	-160(ra) # 80003c04 <_ZN4KSem7unblockEv>
 	while (!handle->blocked.isEmpty()) {
-    80003ca8:	fe5ff06f          	j	80003c8c <_ZN4KSem8closeSemEPS_+0x18>
+    80003cac:	fedff06f          	j	80003c98 <_ZN4KSem8closeSemEPS_+0x18>
 	}
 	return 0;
 }
-    80003cac:	00000513          	li	a0,0
-    80003cb0:	01813083          	ld	ra,24(sp)
-    80003cb4:	01013403          	ld	s0,16(sp)
-    80003cb8:	00813483          	ld	s1,8(sp)
-    80003cbc:	02010113          	addi	sp,sp,32
-    80003cc0:	00008067          	ret
+    80003cb0:	00000513          	li	a0,0
+    80003cb4:	01813083          	ld	ra,24(sp)
+    80003cb8:	01013403          	ld	s0,16(sp)
+    80003cbc:	00813483          	ld	s1,8(sp)
+    80003cc0:	02010113          	addi	sp,sp,32
+    80003cc4:	00008067          	ret
 
-0000000080003cc4 <_Z13emptyFunctionPv>:
+0000000080003cc8 <_Z13emptyFunctionPv>:
 void idle(void*);
 
 void kernelConsumerFunction(void*);
 
 
 void emptyFunction(void*) {}
-    80003cc4:	ff010113          	addi	sp,sp,-16
-    80003cc8:	00813423          	sd	s0,8(sp)
-    80003ccc:	01010413          	addi	s0,sp,16
-    80003cd0:	00813403          	ld	s0,8(sp)
-    80003cd4:	01010113          	addi	sp,sp,16
-    80003cd8:	00008067          	ret
+    80003cc8:	ff010113          	addi	sp,sp,-16
+    80003ccc:	00813423          	sd	s0,8(sp)
+    80003cd0:	01010413          	addi	s0,sp,16
+    80003cd4:	00813403          	ld	s0,8(sp)
+    80003cd8:	01010113          	addi	sp,sp,16
+    80003cdc:	00008067          	ret
 
-0000000080003cdc <_Z5nit1fPv>:
+0000000080003ce0 <_Z5nit1fPv>:
 
 void nit1f(void*) {
-    80003cdc:	fe010113          	addi	sp,sp,-32
-    80003ce0:	00113c23          	sd	ra,24(sp)
-    80003ce4:	00813823          	sd	s0,16(sp)
-    80003ce8:	02010413          	addi	s0,sp,32
+    80003ce0:	fe010113          	addi	sp,sp,-32
+    80003ce4:	00113c23          	sd	ra,24(sp)
+    80003ce8:	00813823          	sd	s0,16(sp)
+    80003cec:	02010413          	addi	s0,sp,32
     while (true) {
         thread_t handle;
         thread_create(&handle, emptyFunction, nullptr);
-    80003cec:	00000613          	li	a2,0
-    80003cf0:	00000597          	auipc	a1,0x0
-    80003cf4:	fd458593          	addi	a1,a1,-44 # 80003cc4 <_Z13emptyFunctionPv>
-    80003cf8:	fe840513          	addi	a0,s0,-24
-    80003cfc:	ffffd097          	auipc	ra,0xffffd
-    80003d00:	708080e7          	jalr	1800(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    80003cf0:	00000613          	li	a2,0
+    80003cf4:	00000597          	auipc	a1,0x0
+    80003cf8:	fd458593          	addi	a1,a1,-44 # 80003cc8 <_Z13emptyFunctionPv>
+    80003cfc:	fe840513          	addi	a0,s0,-24
+    80003d00:	ffffd097          	auipc	ra,0xffffd
+    80003d04:	704080e7          	jalr	1796(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     while (true) {
-    80003d04:	fe9ff06f          	j	80003cec <_Z5nit1fPv+0x10>
+    80003d08:	fe9ff06f          	j	80003cf0 <_Z5nit1fPv+0x10>
 
-0000000080003d08 <_Z5nit2fPv>:
+0000000080003d0c <_Z5nit2fPv>:
     }
 
     printString("\nGotova nit 1\n");
 }
 
 void nit2f(void* arg2) {
-    80003d08:	ff010113          	addi	sp,sp,-16
-    80003d0c:	00113423          	sd	ra,8(sp)
-    80003d10:	00813023          	sd	s0,0(sp)
-    80003d14:	01010413          	addi	s0,sp,16
+    80003d0c:	ff010113          	addi	sp,sp,-16
+    80003d10:	00113423          	sd	ra,8(sp)
+    80003d14:	00813023          	sd	s0,0(sp)
+    80003d18:	01010413          	addi	s0,sp,16
     printString("\nGotova nit 2\n");
-    80003d18:	00006517          	auipc	a0,0x6
-    80003d1c:	31850513          	addi	a0,a0,792 # 8000a030 <CONSOLE_STATUS+0x20>
-    80003d20:	00002097          	auipc	ra,0x2
-    80003d24:	658080e7          	jalr	1624(ra) # 80006378 <_Z11printStringPKc>
+    80003d1c:	00006517          	auipc	a0,0x6
+    80003d20:	31450513          	addi	a0,a0,788 # 8000a030 <CONSOLE_STATUS+0x20>
+    80003d24:	00002097          	auipc	ra,0x2
+    80003d28:	658080e7          	jalr	1624(ra) # 8000637c <_Z11printStringPKc>
 }
-    80003d28:	00813083          	ld	ra,8(sp)
-    80003d2c:	00013403          	ld	s0,0(sp)
-    80003d30:	01010113          	addi	sp,sp,16
-    80003d34:	00008067          	ret
+    80003d2c:	00813083          	ld	ra,8(sp)
+    80003d30:	00013403          	ld	s0,0(sp)
+    80003d34:	01010113          	addi	sp,sp,16
+    80003d38:	00008067          	ret
 
-0000000080003d38 <_Z5nit3fPv>:
+0000000080003d3c <_Z5nit3fPv>:
 
 
 void nit3f(void*) {
-    80003d38:	fe010113          	addi	sp,sp,-32
-    80003d3c:	00113c23          	sd	ra,24(sp)
-    80003d40:	00813823          	sd	s0,16(sp)
-    80003d44:	00913423          	sd	s1,8(sp)
-    80003d48:	02010413          	addi	s0,sp,32
-    80003d4c:	0180006f          	j	80003d64 <_Z5nit3fPv+0x2c>
+    80003d3c:	fe010113          	addi	sp,sp,-32
+    80003d40:	00113c23          	sd	ra,24(sp)
+    80003d44:	00813823          	sd	s0,16(sp)
+    80003d48:	00913423          	sd	s1,8(sp)
+    80003d4c:	02010413          	addi	s0,sp,32
+    80003d50:	0180006f          	j	80003d68 <_Z5nit3fPv+0x2c>
     char slovo;
     do {
         slovo = getc();
         putc(slovo);
         if (slovo == '\r') putc('\n');
-    80003d50:	00a00513          	li	a0,10
-    80003d54:	ffffe097          	auipc	ra,0xffffe
-    80003d58:	8d4080e7          	jalr	-1836(ra) # 80001628 <_Z4putcc>
+    80003d54:	00a00513          	li	a0,10
+    80003d58:	ffffe097          	auipc	ra,0xffffe
+    80003d5c:	8d0080e7          	jalr	-1840(ra) # 80001628 <_Z4putcc>
     } while (slovo != '0');
-    80003d5c:	03000793          	li	a5,48
-    80003d60:	02f48263          	beq	s1,a5,80003d84 <_Z5nit3fPv+0x4c>
+    80003d60:	03000793          	li	a5,48
+    80003d64:	02f48263          	beq	s1,a5,80003d88 <_Z5nit3fPv+0x4c>
         slovo = getc();
-    80003d64:	ffffe097          	auipc	ra,0xffffe
-    80003d68:	89c080e7          	jalr	-1892(ra) # 80001600 <_Z4getcv>
-    80003d6c:	00050493          	mv	s1,a0
+    80003d68:	ffffe097          	auipc	ra,0xffffe
+    80003d6c:	898080e7          	jalr	-1896(ra) # 80001600 <_Z4getcv>
+    80003d70:	00050493          	mv	s1,a0
         putc(slovo);
-    80003d70:	ffffe097          	auipc	ra,0xffffe
-    80003d74:	8b8080e7          	jalr	-1864(ra) # 80001628 <_Z4putcc>
+    80003d74:	ffffe097          	auipc	ra,0xffffe
+    80003d78:	8b4080e7          	jalr	-1868(ra) # 80001628 <_Z4putcc>
         if (slovo == '\r') putc('\n');
-    80003d78:	00d00793          	li	a5,13
-    80003d7c:	fef490e3          	bne	s1,a5,80003d5c <_Z5nit3fPv+0x24>
-    80003d80:	fd1ff06f          	j	80003d50 <_Z5nit3fPv+0x18>
+    80003d7c:	00d00793          	li	a5,13
+    80003d80:	fef490e3          	bne	s1,a5,80003d60 <_Z5nit3fPv+0x24>
+    80003d84:	fd1ff06f          	j	80003d54 <_Z5nit3fPv+0x18>
 
     printString("\nGotova nit3\n");
-    80003d84:	00006517          	auipc	a0,0x6
-    80003d88:	2c450513          	addi	a0,a0,708 # 8000a048 <CONSOLE_STATUS+0x38>
-    80003d8c:	00002097          	auipc	ra,0x2
-    80003d90:	5ec080e7          	jalr	1516(ra) # 80006378 <_Z11printStringPKc>
+    80003d88:	00006517          	auipc	a0,0x6
+    80003d8c:	2b850513          	addi	a0,a0,696 # 8000a040 <CONSOLE_STATUS+0x30>
+    80003d90:	00002097          	auipc	ra,0x2
+    80003d94:	5ec080e7          	jalr	1516(ra) # 8000637c <_Z11printStringPKc>
 }
-    80003d94:	01813083          	ld	ra,24(sp)
-    80003d98:	01013403          	ld	s0,16(sp)
-    80003d9c:	00813483          	ld	s1,8(sp)
-    80003da0:	02010113          	addi	sp,sp,32
-    80003da4:	00008067          	ret
+    80003d98:	01813083          	ld	ra,24(sp)
+    80003d9c:	01013403          	ld	s0,16(sp)
+    80003da0:	00813483          	ld	s1,8(sp)
+    80003da4:	02010113          	addi	sp,sp,32
+    80003da8:	00008067          	ret
 
-0000000080003da8 <_Z5main5v>:
+0000000080003dac <_Z5main5v>:
 
 
 int main5() {
-    80003da8:	fb010113          	addi	sp,sp,-80
-    80003dac:	04113423          	sd	ra,72(sp)
-    80003db0:	04813023          	sd	s0,64(sp)
-    80003db4:	02913c23          	sd	s1,56(sp)
-    80003db8:	05010413          	addi	s0,sp,80
+    80003dac:	fb010113          	addi	sp,sp,-80
+    80003db0:	04113423          	sd	ra,72(sp)
+    80003db4:	04813023          	sd	s0,64(sp)
+    80003db8:	02913c23          	sd	s1,56(sp)
+    80003dbc:	05010413          	addi	s0,sp,80
 //postavi adresu prekidne rutine u stvec
     __asm__ volatile("csrw stvec, %[handler]": :[handler] "r"(&interruptHandler));
-    80003dbc:	00009797          	auipc	a5,0x9
-    80003dc0:	2ec7b783          	ld	a5,748(a5) # 8000d0a8 <_GLOBAL_OFFSET_TABLE_+0x90>
-    80003dc4:	10579073          	csrw	stvec,a5
+    80003dc0:	00009797          	auipc	a5,0x9
+    80003dc4:	3187b783          	ld	a5,792(a5) # 8000d0d8 <_GLOBAL_OFFSET_TABLE_+0x90>
+    80003dc8:	10579073          	csrw	stvec,a5
 
     //inicijalizacija alokatora memorije
     KMemory::initializeMemory();
-    80003dc8:	ffffe097          	auipc	ra,0xffffe
-    80003dcc:	39c080e7          	jalr	924(ra) # 80002164 <_ZN7KMemory16initializeMemoryEv>
+    80003dcc:	ffffe097          	auipc	ra,0xffffe
+    80003dd0:	38c080e7          	jalr	908(ra) # 80002158 <_ZN7KMemory16initializeMemoryEv>
 
     //inicijalizacija komunikacije sa konzolom
     KConsole::initKConsole();
-    80003dd0:	ffffe097          	auipc	ra,0xffffe
-    80003dd4:	93c080e7          	jalr	-1732(ra) # 8000170c <_ZN8KConsole12initKConsoleEv>
+    80003dd4:	ffffe097          	auipc	ra,0xffffe
+    80003dd8:	938080e7          	jalr	-1736(ra) # 8000170c <_ZN8KConsole12initKConsoleEv>
 
     //testiranje kreiranja niti
     thread_t glavnaNit = nullptr;
-    80003dd8:	fc043c23          	sd	zero,-40(s0)
+    80003ddc:	fc043c23          	sd	zero,-40(s0)
     thread_t nit1 = nullptr;
-    80003ddc:	fc043823          	sd	zero,-48(s0)
+    80003de0:	fc043823          	sd	zero,-48(s0)
     thread_t nit2 = nullptr;
-    80003de0:	fc043423          	sd	zero,-56(s0)
+    80003de4:	fc043423          	sd	zero,-56(s0)
     thread_t nit3 = nullptr;
-    80003de4:	fc043023          	sd	zero,-64(s0)
+    80003de8:	fc043023          	sd	zero,-64(s0)
     thread_t idleNit = nullptr;
-    80003de8:	fa043c23          	sd	zero,-72(s0)
+    80003dec:	fa043c23          	sd	zero,-72(s0)
     thread_t kernelConsumerThread = nullptr;
-    80003dec:	fa043823          	sd	zero,-80(s0)
+    80003df0:	fa043823          	sd	zero,-80(s0)
     thread_create(&glavnaNit, (TCB::Body)main, nullptr);
-    80003df0:	00000613          	li	a2,0
-    80003df4:	00009597          	auipc	a1,0x9
-    80003df8:	2945b583          	ld	a1,660(a1) # 8000d088 <_GLOBAL_OFFSET_TABLE_+0x70>
-    80003dfc:	fd840513          	addi	a0,s0,-40
-    80003e00:	ffffd097          	auipc	ra,0xffffd
-    80003e04:	604080e7          	jalr	1540(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
-    static void setRunning(TCB* newRunning) { running = newRunning; }
-    80003e08:	fd843703          	ld	a4,-40(s0)
-    80003e0c:	00009797          	auipc	a5,0x9
-    80003e10:	28c7b783          	ld	a5,652(a5) # 8000d098 <_GLOBAL_OFFSET_TABLE_+0x80>
-    80003e14:	00e7b023          	sd	a4,0(a5)
+    80003df4:	00000613          	li	a2,0
+    80003df8:	00009597          	auipc	a1,0x9
+    80003dfc:	2c05b583          	ld	a1,704(a1) # 8000d0b8 <_GLOBAL_OFFSET_TABLE_+0x70>
+    80003e00:	fd840513          	addi	a0,s0,-40
+    80003e04:	ffffd097          	auipc	ra,0xffffd
+    80003e08:	600080e7          	jalr	1536(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    void setJoiningWithTCB(TCB* tcb) { joiningWithTCB = tcb; }
+    80003e0c:	fd843703          	ld	a4,-40(s0)
+    80003e10:	00009797          	auipc	a5,0x9
+    80003e14:	2b87b783          	ld	a5,696(a5) # 8000d0c8 <_GLOBAL_OFFSET_TABLE_+0x80>
+    80003e18:	00e7b023          	sd	a4,0(a5)
     TCB::setRunning(glavnaNit);
     thread_create(&idleNit, idle, nullptr);
-    80003e18:	00000613          	li	a2,0
-    80003e1c:	00009597          	auipc	a1,0x9
-    80003e20:	29c5b583          	ld	a1,668(a1) # 8000d0b8 <_GLOBAL_OFFSET_TABLE_+0xa0>
-    80003e24:	fb840513          	addi	a0,s0,-72
-    80003e28:	ffffd097          	auipc	ra,0xffffd
-    80003e2c:	5dc080e7          	jalr	1500(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    80003e1c:	00000613          	li	a2,0
+    80003e20:	00009597          	auipc	a1,0x9
+    80003e24:	2c85b583          	ld	a1,712(a1) # 8000d0e8 <_GLOBAL_OFFSET_TABLE_+0xa0>
+    80003e28:	fb840513          	addi	a0,s0,-72
+    80003e2c:	ffffd097          	auipc	ra,0xffffd
+    80003e30:	5d8080e7          	jalr	1496(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     thread_create(&kernelConsumerThread, kernelConsumerFunction, nullptr);
-    80003e30:	00000613          	li	a2,0
-    80003e34:	00009597          	auipc	a1,0x9
-    80003e38:	2245b583          	ld	a1,548(a1) # 8000d058 <_GLOBAL_OFFSET_TABLE_+0x40>
-    80003e3c:	fb040513          	addi	a0,s0,-80
-    80003e40:	ffffd097          	auipc	ra,0xffffd
-    80003e44:	5c4080e7          	jalr	1476(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    80003e34:	00000613          	li	a2,0
+    80003e38:	00009597          	auipc	a1,0x9
+    80003e3c:	2505b583          	ld	a1,592(a1) # 8000d088 <_GLOBAL_OFFSET_TABLE_+0x40>
+    80003e40:	fb040513          	addi	a0,s0,-80
+    80003e44:	ffffd097          	auipc	ra,0xffffd
+    80003e48:	5c0080e7          	jalr	1472(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
 
 
     thread_create(&nit1, nit1f, nullptr);
-    80003e48:	00000613          	li	a2,0
-    80003e4c:	00000597          	auipc	a1,0x0
-    80003e50:	e9058593          	addi	a1,a1,-368 # 80003cdc <_Z5nit1fPv>
-    80003e54:	fd040513          	addi	a0,s0,-48
-    80003e58:	ffffd097          	auipc	ra,0xffffd
-    80003e5c:	5ac080e7          	jalr	1452(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    80003e4c:	00000613          	li	a2,0
+    80003e50:	00000597          	auipc	a1,0x0
+    80003e54:	e9058593          	addi	a1,a1,-368 # 80003ce0 <_Z5nit1fPv>
+    80003e58:	fd040513          	addi	a0,s0,-48
+    80003e5c:	ffffd097          	auipc	ra,0xffffd
+    80003e60:	5a8080e7          	jalr	1448(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     thread_create(&nit2, nit2f, nullptr);
-    80003e60:	00000613          	li	a2,0
-    80003e64:	00000597          	auipc	a1,0x0
-    80003e68:	ea458593          	addi	a1,a1,-348 # 80003d08 <_Z5nit2fPv>
-    80003e6c:	fc840513          	addi	a0,s0,-56
-    80003e70:	ffffd097          	auipc	ra,0xffffd
-    80003e74:	594080e7          	jalr	1428(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    80003e64:	00000613          	li	a2,0
+    80003e68:	00000597          	auipc	a1,0x0
+    80003e6c:	ea458593          	addi	a1,a1,-348 # 80003d0c <_Z5nit2fPv>
+    80003e70:	fc840513          	addi	a0,s0,-56
+    80003e74:	ffffd097          	auipc	ra,0xffffd
+    80003e78:	590080e7          	jalr	1424(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     thread_create(&nit3, nit3f, nullptr);
-    80003e78:	00000613          	li	a2,0
-    80003e7c:	00000597          	auipc	a1,0x0
-    80003e80:	ebc58593          	addi	a1,a1,-324 # 80003d38 <_Z5nit3fPv>
-    80003e84:	fc040513          	addi	a0,s0,-64
-    80003e88:	ffffd097          	auipc	ra,0xffffd
-    80003e8c:	57c080e7          	jalr	1404(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
-    80003e90:	00200493          	li	s1,2
-    80003e94:	1004a073          	csrs	sstatus,s1
+    80003e7c:	00000613          	li	a2,0
+    80003e80:	00000597          	auipc	a1,0x0
+    80003e84:	ebc58593          	addi	a1,a1,-324 # 80003d3c <_Z5nit3fPv>
+    80003e88:	fc040513          	addi	a0,s0,-64
+    80003e8c:	ffffd097          	auipc	ra,0xffffd
+    80003e90:	578080e7          	jalr	1400(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    80003e94:	00200493          	li	s1,2
+    80003e98:	1004a073          	csrs	sstatus,s1
 
     //omoguci prekide
     Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
 
     thread_join(nit1);
-    80003e98:	fd043503          	ld	a0,-48(s0)
-    80003e9c:	ffffd097          	auipc	ra,0xffffd
-    80003ea0:	644080e7          	jalr	1604(ra) # 800014e0 <_Z11thread_joinP3TCB>
+    80003e9c:	fd043503          	ld	a0,-48(s0)
+    80003ea0:	ffffd097          	auipc	ra,0xffffd
+    80003ea4:	640080e7          	jalr	1600(ra) # 800014e0 <_Z11thread_joinP3TCB>
     thread_join(nit2);
-    80003ea4:	fc843503          	ld	a0,-56(s0)
-    80003ea8:	ffffd097          	auipc	ra,0xffffd
-    80003eac:	638080e7          	jalr	1592(ra) # 800014e0 <_Z11thread_joinP3TCB>
+    80003ea8:	fc843503          	ld	a0,-56(s0)
+    80003eac:	ffffd097          	auipc	ra,0xffffd
+    80003eb0:	634080e7          	jalr	1588(ra) # 800014e0 <_Z11thread_joinP3TCB>
     thread_join(nit3);
-    80003eb0:	fc043503          	ld	a0,-64(s0)
-    80003eb4:	ffffd097          	auipc	ra,0xffffd
-    80003eb8:	62c080e7          	jalr	1580(ra) # 800014e0 <_Z11thread_joinP3TCB>
+    80003eb4:	fc043503          	ld	a0,-64(s0)
+    80003eb8:	ffffd097          	auipc	ra,0xffffd
+    80003ebc:	628080e7          	jalr	1576(ra) # 800014e0 <_Z11thread_joinP3TCB>
     //thread_join(idleNit);
 
     printString("\nGotove user niti\n");
-    80003ebc:	00006517          	auipc	a0,0x6
-    80003ec0:	19c50513          	addi	a0,a0,412 # 8000a058 <CONSOLE_STATUS+0x48>
-    80003ec4:	00002097          	auipc	ra,0x2
-    80003ec8:	4b4080e7          	jalr	1204(ra) # 80006378 <_Z11printStringPKc>
+    80003ec0:	00006517          	auipc	a0,0x6
+    80003ec4:	19050513          	addi	a0,a0,400 # 8000a050 <CONSOLE_STATUS+0x40>
+    80003ec8:	00002097          	auipc	ra,0x2
+    80003ecc:	4b4080e7          	jalr	1204(ra) # 8000637c <_Z11printStringPKc>
 
     printString("\nSad cu da izadjem\n");
-    80003ecc:	00006517          	auipc	a0,0x6
-    80003ed0:	43450513          	addi	a0,a0,1076 # 8000a300 <CONSOLE_STATUS+0x2f0>
-    80003ed4:	00002097          	auipc	ra,0x2
-    80003ed8:	4a4080e7          	jalr	1188(ra) # 80006378 <_Z11printStringPKc>
+    80003ed0:	00006517          	auipc	a0,0x6
+    80003ed4:	43050513          	addi	a0,a0,1072 # 8000a300 <CONSOLE_STATUS+0x2f0>
+    80003ed8:	00002097          	auipc	ra,0x2
+    80003edc:	4a4080e7          	jalr	1188(ra) # 8000637c <_Z11printStringPKc>
         __asm__ volatile("li a0, 0x43");
-    80003edc:	04300513          	li	a0,67
+    80003ee0:	04300513          	li	a0,67
         __asm__ volatile("ecall");
-    80003ee0:	00000073          	ecall
+    80003ee4:	00000073          	ecall
 	__asm__ volatile("csrc sstatus, %[mask]": :[mask] "r"(mask));
-    80003ee4:	1004b073          	csrc	sstatus,s1
+    80003ee8:	1004b073          	csrc	sstatus,s1
 //	//zabrani prekide
     Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
 
 
     return 0;
-    80003ee8:	00000513          	li	a0,0
-    80003eec:	04813083          	ld	ra,72(sp)
-    80003ef0:	04013403          	ld	s0,64(sp)
-    80003ef4:	03813483          	ld	s1,56(sp)
-    80003ef8:	05010113          	addi	sp,sp,80
-    80003efc:	00008067          	ret
+    80003eec:	00000513          	li	a0,0
+    80003ef0:	04813083          	ld	ra,72(sp)
+    80003ef4:	04013403          	ld	s0,64(sp)
+    80003ef8:	03813483          	ld	s1,56(sp)
+    80003efc:	05010113          	addi	sp,sp,80
+    80003f00:	00008067          	ret
 
-0000000080003f00 <_ZL16producerKeyboardPv>:
+0000000080003f04 <_ZL16producerKeyboardPv>:
     sem_t wait;
 };
 
 static volatile int threadEnd = 0;
 
 static void producerKeyboard(void *arg) {
-    80003f00:	fe010113          	addi	sp,sp,-32
-    80003f04:	00113c23          	sd	ra,24(sp)
-    80003f08:	00813823          	sd	s0,16(sp)
-    80003f0c:	00913423          	sd	s1,8(sp)
-    80003f10:	01213023          	sd	s2,0(sp)
-    80003f14:	02010413          	addi	s0,sp,32
-    80003f18:	00050493          	mv	s1,a0
+    80003f04:	fe010113          	addi	sp,sp,-32
+    80003f08:	00113c23          	sd	ra,24(sp)
+    80003f0c:	00813823          	sd	s0,16(sp)
+    80003f10:	00913423          	sd	s1,8(sp)
+    80003f14:	01213023          	sd	s2,0(sp)
+    80003f18:	02010413          	addi	s0,sp,32
+    80003f1c:	00050493          	mv	s1,a0
     struct thread_data *data = (struct thread_data *) arg;
 
     int key;
     int i = 0;
-    80003f1c:	00000913          	li	s2,0
-    80003f20:	00c0006f          	j	80003f2c <_ZL16producerKeyboardPv+0x2c>
+    80003f20:	00000913          	li	s2,0
+    80003f24:	00c0006f          	j	80003f30 <_ZL16producerKeyboardPv+0x2c>
     while ((key = getc()) != 0x2d) {//1b po originalu - ESC, meni je -
         data->buffer->put(key);
         i++;
 
         if (i % (10 * data->id) == 0) {
             thread_dispatch();
-    80003f24:	ffffd097          	auipc	ra,0xffffd
-    80003f28:	59c080e7          	jalr	1436(ra) # 800014c0 <_Z15thread_dispatchv>
+    80003f28:	ffffd097          	auipc	ra,0xffffd
+    80003f2c:	598080e7          	jalr	1432(ra) # 800014c0 <_Z15thread_dispatchv>
     while ((key = getc()) != 0x2d) {//1b po originalu - ESC, meni je -
-    80003f2c:	ffffd097          	auipc	ra,0xffffd
-    80003f30:	6d4080e7          	jalr	1748(ra) # 80001600 <_Z4getcv>
-    80003f34:	0005059b          	sext.w	a1,a0
-    80003f38:	02d00793          	li	a5,45
-    80003f3c:	02f58a63          	beq	a1,a5,80003f70 <_ZL16producerKeyboardPv+0x70>
+    80003f30:	ffffd097          	auipc	ra,0xffffd
+    80003f34:	6d0080e7          	jalr	1744(ra) # 80001600 <_Z4getcv>
+    80003f38:	0005059b          	sext.w	a1,a0
+    80003f3c:	02d00793          	li	a5,45
+    80003f40:	02f58a63          	beq	a1,a5,80003f74 <_ZL16producerKeyboardPv+0x70>
         data->buffer->put(key);
-    80003f40:	0084b503          	ld	a0,8(s1)
-    80003f44:	00003097          	auipc	ra,0x3
-    80003f48:	400080e7          	jalr	1024(ra) # 80007344 <_ZN6Buffer3putEi>
+    80003f44:	0084b503          	ld	a0,8(s1)
+    80003f48:	00003097          	auipc	ra,0x3
+    80003f4c:	400080e7          	jalr	1024(ra) # 80007348 <_ZN6Buffer3putEi>
         i++;
-    80003f4c:	0019071b          	addiw	a4,s2,1
-    80003f50:	0007091b          	sext.w	s2,a4
+    80003f50:	0019071b          	addiw	a4,s2,1
+    80003f54:	0007091b          	sext.w	s2,a4
         if (i % (10 * data->id) == 0) {
-    80003f54:	0004a683          	lw	a3,0(s1)
-    80003f58:	0026979b          	slliw	a5,a3,0x2
-    80003f5c:	00d787bb          	addw	a5,a5,a3
-    80003f60:	0017979b          	slliw	a5,a5,0x1
-    80003f64:	02f767bb          	remw	a5,a4,a5
-    80003f68:	fc0792e3          	bnez	a5,80003f2c <_ZL16producerKeyboardPv+0x2c>
-    80003f6c:	fb9ff06f          	j	80003f24 <_ZL16producerKeyboardPv+0x24>
+    80003f58:	0004a683          	lw	a3,0(s1)
+    80003f5c:	0026979b          	slliw	a5,a3,0x2
+    80003f60:	00d787bb          	addw	a5,a5,a3
+    80003f64:	0017979b          	slliw	a5,a5,0x1
+    80003f68:	02f767bb          	remw	a5,a4,a5
+    80003f6c:	fc0792e3          	bnez	a5,80003f30 <_ZL16producerKeyboardPv+0x2c>
+    80003f70:	fb9ff06f          	j	80003f28 <_ZL16producerKeyboardPv+0x24>
         }
     }
 
     threadEnd = 1;
-    80003f70:	00100793          	li	a5,1
-    80003f74:	00009717          	auipc	a4,0x9
-    80003f78:	2cf72223          	sw	a5,708(a4) # 8000d238 <_ZL9threadEnd>
+    80003f74:	00100793          	li	a5,1
+    80003f78:	00009717          	auipc	a4,0x9
+    80003f7c:	30f72423          	sw	a5,776(a4) # 8000d280 <_ZL9threadEnd>
     data->buffer->put('!');
-    80003f7c:	02100593          	li	a1,33
-    80003f80:	0084b503          	ld	a0,8(s1)
-    80003f84:	00003097          	auipc	ra,0x3
-    80003f88:	3c0080e7          	jalr	960(ra) # 80007344 <_ZN6Buffer3putEi>
+    80003f80:	02100593          	li	a1,33
+    80003f84:	0084b503          	ld	a0,8(s1)
+    80003f88:	00003097          	auipc	ra,0x3
+    80003f8c:	3c0080e7          	jalr	960(ra) # 80007348 <_ZN6Buffer3putEi>
 
     sem_signal(data->wait);
-    80003f8c:	0104b503          	ld	a0,16(s1)
-    80003f90:	ffffd097          	auipc	ra,0xffffd
-    80003f94:	640080e7          	jalr	1600(ra) # 800015d0 <_Z10sem_signalP4KSem>
+    80003f90:	0104b503          	ld	a0,16(s1)
+    80003f94:	ffffd097          	auipc	ra,0xffffd
+    80003f98:	63c080e7          	jalr	1596(ra) # 800015d0 <_Z10sem_signalP4KSem>
 }
-    80003f98:	01813083          	ld	ra,24(sp)
-    80003f9c:	01013403          	ld	s0,16(sp)
-    80003fa0:	00813483          	ld	s1,8(sp)
-    80003fa4:	00013903          	ld	s2,0(sp)
-    80003fa8:	02010113          	addi	sp,sp,32
-    80003fac:	00008067          	ret
+    80003f9c:	01813083          	ld	ra,24(sp)
+    80003fa0:	01013403          	ld	s0,16(sp)
+    80003fa4:	00813483          	ld	s1,8(sp)
+    80003fa8:	00013903          	ld	s2,0(sp)
+    80003fac:	02010113          	addi	sp,sp,32
+    80003fb0:	00008067          	ret
 
-0000000080003fb0 <_ZL8producerPv>:
+0000000080003fb4 <_ZL8producerPv>:
 
 static void producer(void *arg) {
-    80003fb0:	fe010113          	addi	sp,sp,-32
-    80003fb4:	00113c23          	sd	ra,24(sp)
-    80003fb8:	00813823          	sd	s0,16(sp)
-    80003fbc:	00913423          	sd	s1,8(sp)
-    80003fc0:	01213023          	sd	s2,0(sp)
-    80003fc4:	02010413          	addi	s0,sp,32
-    80003fc8:	00050493          	mv	s1,a0
+    80003fb4:	fe010113          	addi	sp,sp,-32
+    80003fb8:	00113c23          	sd	ra,24(sp)
+    80003fbc:	00813823          	sd	s0,16(sp)
+    80003fc0:	00913423          	sd	s1,8(sp)
+    80003fc4:	01213023          	sd	s2,0(sp)
+    80003fc8:	02010413          	addi	s0,sp,32
+    80003fcc:	00050493          	mv	s1,a0
     struct thread_data *data = (struct thread_data *) arg;
 
     int i = 0;
-    80003fcc:	00000913          	li	s2,0
-    80003fd0:	00c0006f          	j	80003fdc <_ZL8producerPv+0x2c>
+    80003fd0:	00000913          	li	s2,0
+    80003fd4:	00c0006f          	j	80003fe0 <_ZL8producerPv+0x2c>
     while (!threadEnd) {
         data->buffer->put(data->id + '0');
         i++;
 
         if (i % (10 * data->id) == 0) {
             thread_dispatch();
-    80003fd4:	ffffd097          	auipc	ra,0xffffd
-    80003fd8:	4ec080e7          	jalr	1260(ra) # 800014c0 <_Z15thread_dispatchv>
+    80003fd8:	ffffd097          	auipc	ra,0xffffd
+    80003fdc:	4e8080e7          	jalr	1256(ra) # 800014c0 <_Z15thread_dispatchv>
     while (!threadEnd) {
-    80003fdc:	00009797          	auipc	a5,0x9
-    80003fe0:	25c7a783          	lw	a5,604(a5) # 8000d238 <_ZL9threadEnd>
-    80003fe4:	02079e63          	bnez	a5,80004020 <_ZL8producerPv+0x70>
+    80003fe0:	00009797          	auipc	a5,0x9
+    80003fe4:	2a07a783          	lw	a5,672(a5) # 8000d280 <_ZL9threadEnd>
+    80003fe8:	02079e63          	bnez	a5,80004024 <_ZL8producerPv+0x70>
         data->buffer->put(data->id + '0');
-    80003fe8:	0004a583          	lw	a1,0(s1)
-    80003fec:	0305859b          	addiw	a1,a1,48
-    80003ff0:	0084b503          	ld	a0,8(s1)
-    80003ff4:	00003097          	auipc	ra,0x3
-    80003ff8:	350080e7          	jalr	848(ra) # 80007344 <_ZN6Buffer3putEi>
+    80003fec:	0004a583          	lw	a1,0(s1)
+    80003ff0:	0305859b          	addiw	a1,a1,48
+    80003ff4:	0084b503          	ld	a0,8(s1)
+    80003ff8:	00003097          	auipc	ra,0x3
+    80003ffc:	350080e7          	jalr	848(ra) # 80007348 <_ZN6Buffer3putEi>
         i++;
-    80003ffc:	0019071b          	addiw	a4,s2,1
-    80004000:	0007091b          	sext.w	s2,a4
+    80004000:	0019071b          	addiw	a4,s2,1
+    80004004:	0007091b          	sext.w	s2,a4
         if (i % (10 * data->id) == 0) {
-    80004004:	0004a683          	lw	a3,0(s1)
-    80004008:	0026979b          	slliw	a5,a3,0x2
-    8000400c:	00d787bb          	addw	a5,a5,a3
-    80004010:	0017979b          	slliw	a5,a5,0x1
-    80004014:	02f767bb          	remw	a5,a4,a5
-    80004018:	fc0792e3          	bnez	a5,80003fdc <_ZL8producerPv+0x2c>
-    8000401c:	fb9ff06f          	j	80003fd4 <_ZL8producerPv+0x24>
+    80004008:	0004a683          	lw	a3,0(s1)
+    8000400c:	0026979b          	slliw	a5,a3,0x2
+    80004010:	00d787bb          	addw	a5,a5,a3
+    80004014:	0017979b          	slliw	a5,a5,0x1
+    80004018:	02f767bb          	remw	a5,a4,a5
+    8000401c:	fc0792e3          	bnez	a5,80003fe0 <_ZL8producerPv+0x2c>
+    80004020:	fb9ff06f          	j	80003fd8 <_ZL8producerPv+0x24>
         }
     }
 
     sem_signal(data->wait);
-    80004020:	0104b503          	ld	a0,16(s1)
-    80004024:	ffffd097          	auipc	ra,0xffffd
-    80004028:	5ac080e7          	jalr	1452(ra) # 800015d0 <_Z10sem_signalP4KSem>
+    80004024:	0104b503          	ld	a0,16(s1)
+    80004028:	ffffd097          	auipc	ra,0xffffd
+    8000402c:	5a8080e7          	jalr	1448(ra) # 800015d0 <_Z10sem_signalP4KSem>
 }
-    8000402c:	01813083          	ld	ra,24(sp)
-    80004030:	01013403          	ld	s0,16(sp)
-    80004034:	00813483          	ld	s1,8(sp)
-    80004038:	00013903          	ld	s2,0(sp)
-    8000403c:	02010113          	addi	sp,sp,32
-    80004040:	00008067          	ret
+    80004030:	01813083          	ld	ra,24(sp)
+    80004034:	01013403          	ld	s0,16(sp)
+    80004038:	00813483          	ld	s1,8(sp)
+    8000403c:	00013903          	ld	s2,0(sp)
+    80004040:	02010113          	addi	sp,sp,32
+    80004044:	00008067          	ret
 
-0000000080004044 <_ZL8consumerPv>:
+0000000080004048 <_ZL8consumerPv>:
 
 static void consumer(void *arg) {
-    80004044:	fd010113          	addi	sp,sp,-48
-    80004048:	02113423          	sd	ra,40(sp)
-    8000404c:	02813023          	sd	s0,32(sp)
-    80004050:	00913c23          	sd	s1,24(sp)
-    80004054:	01213823          	sd	s2,16(sp)
-    80004058:	01313423          	sd	s3,8(sp)
-    8000405c:	03010413          	addi	s0,sp,48
-    80004060:	00050913          	mv	s2,a0
+    80004048:	fd010113          	addi	sp,sp,-48
+    8000404c:	02113423          	sd	ra,40(sp)
+    80004050:	02813023          	sd	s0,32(sp)
+    80004054:	00913c23          	sd	s1,24(sp)
+    80004058:	01213823          	sd	s2,16(sp)
+    8000405c:	01313423          	sd	s3,8(sp)
+    80004060:	03010413          	addi	s0,sp,48
+    80004064:	00050913          	mv	s2,a0
     struct thread_data *data = (struct thread_data *) arg;
 
     int i = 0;
-    80004064:	00000993          	li	s3,0
-    80004068:	01c0006f          	j	80004084 <_ZL8consumerPv+0x40>
+    80004068:	00000993          	li	s3,0
+    8000406c:	01c0006f          	j	80004088 <_ZL8consumerPv+0x40>
         i++;
 
         putc(key);
 
         if (i % (5 * data->id) == 0) {
             thread_dispatch();
-    8000406c:	ffffd097          	auipc	ra,0xffffd
-    80004070:	454080e7          	jalr	1108(ra) # 800014c0 <_Z15thread_dispatchv>
-    80004074:	0500006f          	j	800040c4 <_ZL8consumerPv+0x80>
+    80004070:	ffffd097          	auipc	ra,0xffffd
+    80004074:	450080e7          	jalr	1104(ra) # 800014c0 <_Z15thread_dispatchv>
+    80004078:	0500006f          	j	800040c8 <_ZL8consumerPv+0x80>
         }
 
         if (i % 80 == 0) {
             putc('\n');
-    80004078:	00a00513          	li	a0,10
-    8000407c:	ffffd097          	auipc	ra,0xffffd
-    80004080:	5ac080e7          	jalr	1452(ra) # 80001628 <_Z4putcc>
+    8000407c:	00a00513          	li	a0,10
+    80004080:	ffffd097          	auipc	ra,0xffffd
+    80004084:	5a8080e7          	jalr	1448(ra) # 80001628 <_Z4putcc>
     while (!threadEnd) {
-    80004084:	00009797          	auipc	a5,0x9
-    80004088:	1b47a783          	lw	a5,436(a5) # 8000d238 <_ZL9threadEnd>
-    8000408c:	06079063          	bnez	a5,800040ec <_ZL8consumerPv+0xa8>
+    80004088:	00009797          	auipc	a5,0x9
+    8000408c:	1f87a783          	lw	a5,504(a5) # 8000d280 <_ZL9threadEnd>
+    80004090:	06079063          	bnez	a5,800040f0 <_ZL8consumerPv+0xa8>
         int key = data->buffer->get();
-    80004090:	00893503          	ld	a0,8(s2)
-    80004094:	00003097          	auipc	ra,0x3
-    80004098:	340080e7          	jalr	832(ra) # 800073d4 <_ZN6Buffer3getEv>
+    80004094:	00893503          	ld	a0,8(s2)
+    80004098:	00003097          	auipc	ra,0x3
+    8000409c:	340080e7          	jalr	832(ra) # 800073d8 <_ZN6Buffer3getEv>
         i++;
-    8000409c:	0019849b          	addiw	s1,s3,1
-    800040a0:	0004899b          	sext.w	s3,s1
+    800040a0:	0019849b          	addiw	s1,s3,1
+    800040a4:	0004899b          	sext.w	s3,s1
         putc(key);
-    800040a4:	0ff57513          	andi	a0,a0,255
-    800040a8:	ffffd097          	auipc	ra,0xffffd
-    800040ac:	580080e7          	jalr	1408(ra) # 80001628 <_Z4putcc>
+    800040a8:	0ff57513          	andi	a0,a0,255
+    800040ac:	ffffd097          	auipc	ra,0xffffd
+    800040b0:	57c080e7          	jalr	1404(ra) # 80001628 <_Z4putcc>
         if (i % (5 * data->id) == 0) {
-    800040b0:	00092703          	lw	a4,0(s2)
-    800040b4:	0027179b          	slliw	a5,a4,0x2
-    800040b8:	00e787bb          	addw	a5,a5,a4
-    800040bc:	02f4e7bb          	remw	a5,s1,a5
-    800040c0:	fa0786e3          	beqz	a5,8000406c <_ZL8consumerPv+0x28>
+    800040b4:	00092703          	lw	a4,0(s2)
+    800040b8:	0027179b          	slliw	a5,a4,0x2
+    800040bc:	00e787bb          	addw	a5,a5,a4
+    800040c0:	02f4e7bb          	remw	a5,s1,a5
+    800040c4:	fa0786e3          	beqz	a5,80004070 <_ZL8consumerPv+0x28>
         if (i % 80 == 0) {
-    800040c4:	05000793          	li	a5,80
-    800040c8:	02f4e4bb          	remw	s1,s1,a5
-    800040cc:	fa049ce3          	bnez	s1,80004084 <_ZL8consumerPv+0x40>
-    800040d0:	fa9ff06f          	j	80004078 <_ZL8consumerPv+0x34>
+    800040c8:	05000793          	li	a5,80
+    800040cc:	02f4e4bb          	remw	s1,s1,a5
+    800040d0:	fa049ce3          	bnez	s1,80004088 <_ZL8consumerPv+0x40>
+    800040d4:	fa9ff06f          	j	8000407c <_ZL8consumerPv+0x34>
         }
     }
 
     while (data->buffer->getCnt() > 0) {
         int key = data->buffer->get();
-    800040d4:	00893503          	ld	a0,8(s2)
-    800040d8:	00003097          	auipc	ra,0x3
-    800040dc:	2fc080e7          	jalr	764(ra) # 800073d4 <_ZN6Buffer3getEv>
+    800040d8:	00893503          	ld	a0,8(s2)
+    800040dc:	00003097          	auipc	ra,0x3
+    800040e0:	2fc080e7          	jalr	764(ra) # 800073d8 <_ZN6Buffer3getEv>
         putc(key);
-    800040e0:	0ff57513          	andi	a0,a0,255
-    800040e4:	ffffd097          	auipc	ra,0xffffd
-    800040e8:	544080e7          	jalr	1348(ra) # 80001628 <_Z4putcc>
+    800040e4:	0ff57513          	andi	a0,a0,255
+    800040e8:	ffffd097          	auipc	ra,0xffffd
+    800040ec:	540080e7          	jalr	1344(ra) # 80001628 <_Z4putcc>
     while (data->buffer->getCnt() > 0) {
-    800040ec:	00893503          	ld	a0,8(s2)
-    800040f0:	00003097          	auipc	ra,0x3
-    800040f4:	370080e7          	jalr	880(ra) # 80007460 <_ZN6Buffer6getCntEv>
-    800040f8:	fca04ee3          	bgtz	a0,800040d4 <_ZL8consumerPv+0x90>
+    800040f0:	00893503          	ld	a0,8(s2)
+    800040f4:	00003097          	auipc	ra,0x3
+    800040f8:	370080e7          	jalr	880(ra) # 80007464 <_ZN6Buffer6getCntEv>
+    800040fc:	fca04ee3          	bgtz	a0,800040d8 <_ZL8consumerPv+0x90>
     }
 
     sem_signal(data->wait);
-    800040fc:	01093503          	ld	a0,16(s2)
-    80004100:	ffffd097          	auipc	ra,0xffffd
-    80004104:	4d0080e7          	jalr	1232(ra) # 800015d0 <_Z10sem_signalP4KSem>
+    80004100:	01093503          	ld	a0,16(s2)
+    80004104:	ffffd097          	auipc	ra,0xffffd
+    80004108:	4cc080e7          	jalr	1228(ra) # 800015d0 <_Z10sem_signalP4KSem>
 }
-    80004108:	02813083          	ld	ra,40(sp)
-    8000410c:	02013403          	ld	s0,32(sp)
-    80004110:	01813483          	ld	s1,24(sp)
-    80004114:	01013903          	ld	s2,16(sp)
-    80004118:	00813983          	ld	s3,8(sp)
-    8000411c:	03010113          	addi	sp,sp,48
-    80004120:	00008067          	ret
+    8000410c:	02813083          	ld	ra,40(sp)
+    80004110:	02013403          	ld	s0,32(sp)
+    80004114:	01813483          	ld	s1,24(sp)
+    80004118:	01013903          	ld	s2,16(sp)
+    8000411c:	00813983          	ld	s3,8(sp)
+    80004120:	03010113          	addi	sp,sp,48
+    80004124:	00008067          	ret
 
-0000000080004124 <_Z22producerConsumer_C_APIv>:
+0000000080004128 <_Z22producerConsumer_C_APIv>:
 
 void producerConsumer_C_API() {
-    80004124:	f9010113          	addi	sp,sp,-112
-    80004128:	06113423          	sd	ra,104(sp)
-    8000412c:	06813023          	sd	s0,96(sp)
-    80004130:	04913c23          	sd	s1,88(sp)
-    80004134:	05213823          	sd	s2,80(sp)
-    80004138:	05313423          	sd	s3,72(sp)
-    8000413c:	05413023          	sd	s4,64(sp)
-    80004140:	03513c23          	sd	s5,56(sp)
-    80004144:	03613823          	sd	s6,48(sp)
-    80004148:	07010413          	addi	s0,sp,112
+    80004128:	f9010113          	addi	sp,sp,-112
+    8000412c:	06113423          	sd	ra,104(sp)
+    80004130:	06813023          	sd	s0,96(sp)
+    80004134:	04913c23          	sd	s1,88(sp)
+    80004138:	05213823          	sd	s2,80(sp)
+    8000413c:	05313423          	sd	s3,72(sp)
+    80004140:	05413023          	sd	s4,64(sp)
+    80004144:	03513c23          	sd	s5,56(sp)
+    80004148:	03613823          	sd	s6,48(sp)
+    8000414c:	07010413          	addi	s0,sp,112
         sem_wait(waitForAll);
     }
 
     sem_close(waitForAll);
 
     delete buffer;
-    8000414c:	00010b13          	mv	s6,sp
+    80004150:	00010b13          	mv	s6,sp
     printString("Unesite broj proizvodjaca?\n");
-    80004150:	00006517          	auipc	a0,0x6
-    80004154:	1c850513          	addi	a0,a0,456 # 8000a318 <CONSOLE_STATUS+0x308>
-    80004158:	00002097          	auipc	ra,0x2
-    8000415c:	220080e7          	jalr	544(ra) # 80006378 <_Z11printStringPKc>
+    80004154:	00006517          	auipc	a0,0x6
+    80004158:	1c450513          	addi	a0,a0,452 # 8000a318 <CONSOLE_STATUS+0x308>
+    8000415c:	00002097          	auipc	ra,0x2
+    80004160:	220080e7          	jalr	544(ra) # 8000637c <_Z11printStringPKc>
     getString(input, 30);
-    80004160:	01e00593          	li	a1,30
-    80004164:	fa040493          	addi	s1,s0,-96
-    80004168:	00048513          	mv	a0,s1
-    8000416c:	00002097          	auipc	ra,0x2
-    80004170:	294080e7          	jalr	660(ra) # 80006400 <_Z9getStringPci>
+    80004164:	01e00593          	li	a1,30
+    80004168:	fa040493          	addi	s1,s0,-96
+    8000416c:	00048513          	mv	a0,s1
+    80004170:	00002097          	auipc	ra,0x2
+    80004174:	294080e7          	jalr	660(ra) # 80006404 <_Z9getStringPci>
     threadNum = stringToInt(input);
-    80004174:	00048513          	mv	a0,s1
-    80004178:	00002097          	auipc	ra,0x2
-    8000417c:	360080e7          	jalr	864(ra) # 800064d8 <_Z11stringToIntPKc>
-    80004180:	00050913          	mv	s2,a0
+    80004178:	00048513          	mv	a0,s1
+    8000417c:	00002097          	auipc	ra,0x2
+    80004180:	360080e7          	jalr	864(ra) # 800064dc <_Z11stringToIntPKc>
+    80004184:	00050913          	mv	s2,a0
     printString("Unesite velicinu bafera?\n");
-    80004184:	00006517          	auipc	a0,0x6
-    80004188:	1b450513          	addi	a0,a0,436 # 8000a338 <CONSOLE_STATUS+0x328>
-    8000418c:	00002097          	auipc	ra,0x2
-    80004190:	1ec080e7          	jalr	492(ra) # 80006378 <_Z11printStringPKc>
+    80004188:	00006517          	auipc	a0,0x6
+    8000418c:	1b050513          	addi	a0,a0,432 # 8000a338 <CONSOLE_STATUS+0x328>
+    80004190:	00002097          	auipc	ra,0x2
+    80004194:	1ec080e7          	jalr	492(ra) # 8000637c <_Z11printStringPKc>
     getString(input, 30);
-    80004194:	01e00593          	li	a1,30
-    80004198:	00048513          	mv	a0,s1
-    8000419c:	00002097          	auipc	ra,0x2
-    800041a0:	264080e7          	jalr	612(ra) # 80006400 <_Z9getStringPci>
+    80004198:	01e00593          	li	a1,30
+    8000419c:	00048513          	mv	a0,s1
+    800041a0:	00002097          	auipc	ra,0x2
+    800041a4:	264080e7          	jalr	612(ra) # 80006404 <_Z9getStringPci>
     n = stringToInt(input);
-    800041a4:	00048513          	mv	a0,s1
-    800041a8:	00002097          	auipc	ra,0x2
-    800041ac:	330080e7          	jalr	816(ra) # 800064d8 <_Z11stringToIntPKc>
-    800041b0:	00050493          	mv	s1,a0
+    800041a8:	00048513          	mv	a0,s1
+    800041ac:	00002097          	auipc	ra,0x2
+    800041b0:	330080e7          	jalr	816(ra) # 800064dc <_Z11stringToIntPKc>
+    800041b4:	00050493          	mv	s1,a0
     printString("Broj proizvodjaca ");
-    800041b4:	00006517          	auipc	a0,0x6
-    800041b8:	1a450513          	addi	a0,a0,420 # 8000a358 <CONSOLE_STATUS+0x348>
-    800041bc:	00002097          	auipc	ra,0x2
-    800041c0:	1bc080e7          	jalr	444(ra) # 80006378 <_Z11printStringPKc>
+    800041b8:	00006517          	auipc	a0,0x6
+    800041bc:	1a050513          	addi	a0,a0,416 # 8000a358 <CONSOLE_STATUS+0x348>
+    800041c0:	00002097          	auipc	ra,0x2
+    800041c4:	1bc080e7          	jalr	444(ra) # 8000637c <_Z11printStringPKc>
 	printInt(threadNum);
-    800041c4:	00000613          	li	a2,0
-    800041c8:	00a00593          	li	a1,10
-    800041cc:	00090513          	mv	a0,s2
-    800041d0:	00002097          	auipc	ra,0x2
-    800041d4:	358080e7          	jalr	856(ra) # 80006528 <_Z8printIntiii>
+    800041c8:	00000613          	li	a2,0
+    800041cc:	00a00593          	li	a1,10
+    800041d0:	00090513          	mv	a0,s2
+    800041d4:	00002097          	auipc	ra,0x2
+    800041d8:	358080e7          	jalr	856(ra) # 8000652c <_Z8printIntiii>
     printString(" i velicina bafera ");
-    800041d8:	00006517          	auipc	a0,0x6
-    800041dc:	19850513          	addi	a0,a0,408 # 8000a370 <CONSOLE_STATUS+0x360>
-    800041e0:	00002097          	auipc	ra,0x2
-    800041e4:	198080e7          	jalr	408(ra) # 80006378 <_Z11printStringPKc>
+    800041dc:	00006517          	auipc	a0,0x6
+    800041e0:	19450513          	addi	a0,a0,404 # 8000a370 <CONSOLE_STATUS+0x360>
+    800041e4:	00002097          	auipc	ra,0x2
+    800041e8:	198080e7          	jalr	408(ra) # 8000637c <_Z11printStringPKc>
 	printInt(n);
-    800041e8:	00000613          	li	a2,0
-    800041ec:	00a00593          	li	a1,10
-    800041f0:	00048513          	mv	a0,s1
-    800041f4:	00002097          	auipc	ra,0x2
-    800041f8:	334080e7          	jalr	820(ra) # 80006528 <_Z8printIntiii>
+    800041ec:	00000613          	li	a2,0
+    800041f0:	00a00593          	li	a1,10
+    800041f4:	00048513          	mv	a0,s1
+    800041f8:	00002097          	auipc	ra,0x2
+    800041fc:	334080e7          	jalr	820(ra) # 8000652c <_Z8printIntiii>
     printString(".\n");
-    800041fc:	00006517          	auipc	a0,0x6
-    80004200:	18c50513          	addi	a0,a0,396 # 8000a388 <CONSOLE_STATUS+0x378>
-    80004204:	00002097          	auipc	ra,0x2
-    80004208:	174080e7          	jalr	372(ra) # 80006378 <_Z11printStringPKc>
+    80004200:	00006517          	auipc	a0,0x6
+    80004204:	18850513          	addi	a0,a0,392 # 8000a388 <CONSOLE_STATUS+0x378>
+    80004208:	00002097          	auipc	ra,0x2
+    8000420c:	174080e7          	jalr	372(ra) # 8000637c <_Z11printStringPKc>
     if(threadNum > n) {
-    8000420c:	0324c463          	blt	s1,s2,80004234 <_Z22producerConsumer_C_APIv+0x110>
+    80004210:	0324c463          	blt	s1,s2,80004238 <_Z22producerConsumer_C_APIv+0x110>
     } else if (threadNum < 1) {
-    80004210:	03205c63          	blez	s2,80004248 <_Z22producerConsumer_C_APIv+0x124>
+    80004214:	03205c63          	blez	s2,8000424c <_Z22producerConsumer_C_APIv+0x124>
     Buffer *buffer = new Buffer(n);
-    80004214:	03800513          	li	a0,56
-    80004218:	fffff097          	auipc	ra,0xfffff
-    8000421c:	ef8080e7          	jalr	-264(ra) # 80003110 <_Znwm>
-    80004220:	00050a13          	mv	s4,a0
-    80004224:	00048593          	mv	a1,s1
-    80004228:	00003097          	auipc	ra,0x3
-    8000422c:	080080e7          	jalr	128(ra) # 800072a8 <_ZN6BufferC1Ei>
-    80004230:	0300006f          	j	80004260 <_Z22producerConsumer_C_APIv+0x13c>
+    80004218:	03800513          	li	a0,56
+    8000421c:	fffff097          	auipc	ra,0xfffff
+    80004220:	ee8080e7          	jalr	-280(ra) # 80003104 <_Znwm>
+    80004224:	00050a13          	mv	s4,a0
+    80004228:	00048593          	mv	a1,s1
+    8000422c:	00003097          	auipc	ra,0x3
+    80004230:	080080e7          	jalr	128(ra) # 800072ac <_ZN6BufferC1Ei>
+    80004234:	0300006f          	j	80004264 <_Z22producerConsumer_C_APIv+0x13c>
         printString("Broj proizvodjaca ne sme biti manji od velicine bafera!\n");
-    80004234:	00006517          	auipc	a0,0x6
-    80004238:	15c50513          	addi	a0,a0,348 # 8000a390 <CONSOLE_STATUS+0x380>
-    8000423c:	00002097          	auipc	ra,0x2
-    80004240:	13c080e7          	jalr	316(ra) # 80006378 <_Z11printStringPKc>
+    80004238:	00006517          	auipc	a0,0x6
+    8000423c:	15850513          	addi	a0,a0,344 # 8000a390 <CONSOLE_STATUS+0x380>
+    80004240:	00002097          	auipc	ra,0x2
+    80004244:	13c080e7          	jalr	316(ra) # 8000637c <_Z11printStringPKc>
         return;
-    80004244:	0140006f          	j	80004258 <_Z22producerConsumer_C_APIv+0x134>
+    80004248:	0140006f          	j	8000425c <_Z22producerConsumer_C_APIv+0x134>
         printString("Broj proizvodjaca mora biti veci od nula!\n");
-    80004248:	00006517          	auipc	a0,0x6
-    8000424c:	18850513          	addi	a0,a0,392 # 8000a3d0 <CONSOLE_STATUS+0x3c0>
-    80004250:	00002097          	auipc	ra,0x2
-    80004254:	128080e7          	jalr	296(ra) # 80006378 <_Z11printStringPKc>
+    8000424c:	00006517          	auipc	a0,0x6
+    80004250:	18450513          	addi	a0,a0,388 # 8000a3d0 <CONSOLE_STATUS+0x3c0>
+    80004254:	00002097          	auipc	ra,0x2
+    80004258:	128080e7          	jalr	296(ra) # 8000637c <_Z11printStringPKc>
         return;
-    80004258:	000b0113          	mv	sp,s6
-    8000425c:	1500006f          	j	800043ac <_Z22producerConsumer_C_APIv+0x288>
+    8000425c:	000b0113          	mv	sp,s6
+    80004260:	1500006f          	j	800043b0 <_Z22producerConsumer_C_APIv+0x288>
     sem_open(&waitForAll, 0);
-    80004260:	00000593          	li	a1,0
-    80004264:	00009517          	auipc	a0,0x9
-    80004268:	fdc50513          	addi	a0,a0,-36 # 8000d240 <_ZL10waitForAll>
-    8000426c:	ffffd097          	auipc	ra,0xffffd
-    80004270:	2cc080e7          	jalr	716(ra) # 80001538 <_Z8sem_openPP4KSemj>
+    80004264:	00000593          	li	a1,0
+    80004268:	00009517          	auipc	a0,0x9
+    8000426c:	02050513          	addi	a0,a0,32 # 8000d288 <_ZL10waitForAll>
+    80004270:	ffffd097          	auipc	ra,0xffffd
+    80004274:	2c8080e7          	jalr	712(ra) # 80001538 <_Z8sem_openPP4KSemj>
     thread_t threads[threadNum];
-    80004274:	00391793          	slli	a5,s2,0x3
-    80004278:	00f78793          	addi	a5,a5,15
-    8000427c:	ff07f793          	andi	a5,a5,-16
-    80004280:	40f10133          	sub	sp,sp,a5
-    80004284:	00010a93          	mv	s5,sp
+    80004278:	00391793          	slli	a5,s2,0x3
+    8000427c:	00f78793          	addi	a5,a5,15
+    80004280:	ff07f793          	andi	a5,a5,-16
+    80004284:	40f10133          	sub	sp,sp,a5
+    80004288:	00010a93          	mv	s5,sp
     struct thread_data data[threadNum + 1];
-    80004288:	0019071b          	addiw	a4,s2,1
-    8000428c:	00171793          	slli	a5,a4,0x1
-    80004290:	00e787b3          	add	a5,a5,a4
-    80004294:	00379793          	slli	a5,a5,0x3
-    80004298:	00f78793          	addi	a5,a5,15
-    8000429c:	ff07f793          	andi	a5,a5,-16
-    800042a0:	40f10133          	sub	sp,sp,a5
-    800042a4:	00010993          	mv	s3,sp
+    8000428c:	0019071b          	addiw	a4,s2,1
+    80004290:	00171793          	slli	a5,a4,0x1
+    80004294:	00e787b3          	add	a5,a5,a4
+    80004298:	00379793          	slli	a5,a5,0x3
+    8000429c:	00f78793          	addi	a5,a5,15
+    800042a0:	ff07f793          	andi	a5,a5,-16
+    800042a4:	40f10133          	sub	sp,sp,a5
+    800042a8:	00010993          	mv	s3,sp
     data[threadNum].id = threadNum;
-    800042a8:	00191613          	slli	a2,s2,0x1
-    800042ac:	012607b3          	add	a5,a2,s2
-    800042b0:	00379793          	slli	a5,a5,0x3
-    800042b4:	00f987b3          	add	a5,s3,a5
-    800042b8:	0127a023          	sw	s2,0(a5)
+    800042ac:	00191613          	slli	a2,s2,0x1
+    800042b0:	012607b3          	add	a5,a2,s2
+    800042b4:	00379793          	slli	a5,a5,0x3
+    800042b8:	00f987b3          	add	a5,s3,a5
+    800042bc:	0127a023          	sw	s2,0(a5)
     data[threadNum].buffer = buffer;
-    800042bc:	0147b423          	sd	s4,8(a5)
+    800042c0:	0147b423          	sd	s4,8(a5)
     data[threadNum].wait = waitForAll;
-    800042c0:	00009717          	auipc	a4,0x9
-    800042c4:	f8073703          	ld	a4,-128(a4) # 8000d240 <_ZL10waitForAll>
-    800042c8:	00e7b823          	sd	a4,16(a5)
+    800042c4:	00009717          	auipc	a4,0x9
+    800042c8:	fc473703          	ld	a4,-60(a4) # 8000d288 <_ZL10waitForAll>
+    800042cc:	00e7b823          	sd	a4,16(a5)
     thread_create(&consumerThread, consumer, data + threadNum);
-    800042cc:	00078613          	mv	a2,a5
-    800042d0:	00000597          	auipc	a1,0x0
-    800042d4:	d7458593          	addi	a1,a1,-652 # 80004044 <_ZL8consumerPv>
-    800042d8:	f9840513          	addi	a0,s0,-104
-    800042dc:	ffffd097          	auipc	ra,0xffffd
-    800042e0:	128080e7          	jalr	296(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    800042d0:	00078613          	mv	a2,a5
+    800042d4:	00000597          	auipc	a1,0x0
+    800042d8:	d7458593          	addi	a1,a1,-652 # 80004048 <_ZL8consumerPv>
+    800042dc:	f9840513          	addi	a0,s0,-104
+    800042e0:	ffffd097          	auipc	ra,0xffffd
+    800042e4:	124080e7          	jalr	292(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     for (int i = 0; i < threadNum; i++) {
-    800042e4:	00000493          	li	s1,0
-    800042e8:	0280006f          	j	80004310 <_Z22producerConsumer_C_APIv+0x1ec>
+    800042e8:	00000493          	li	s1,0
+    800042ec:	0280006f          	j	80004314 <_Z22producerConsumer_C_APIv+0x1ec>
         thread_create(threads + i,
-    800042ec:	00000597          	auipc	a1,0x0
-    800042f0:	c1458593          	addi	a1,a1,-1004 # 80003f00 <_ZL16producerKeyboardPv>
+    800042f0:	00000597          	auipc	a1,0x0
+    800042f4:	c1458593          	addi	a1,a1,-1004 # 80003f04 <_ZL16producerKeyboardPv>
                       data + i);
-    800042f4:	00179613          	slli	a2,a5,0x1
-    800042f8:	00f60633          	add	a2,a2,a5
-    800042fc:	00361613          	slli	a2,a2,0x3
+    800042f8:	00179613          	slli	a2,a5,0x1
+    800042fc:	00f60633          	add	a2,a2,a5
+    80004300:	00361613          	slli	a2,a2,0x3
         thread_create(threads + i,
-    80004300:	00c98633          	add	a2,s3,a2
-    80004304:	ffffd097          	auipc	ra,0xffffd
-    80004308:	100080e7          	jalr	256(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    80004304:	00c98633          	add	a2,s3,a2
+    80004308:	ffffd097          	auipc	ra,0xffffd
+    8000430c:	0fc080e7          	jalr	252(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     for (int i = 0; i < threadNum; i++) {
-    8000430c:	0014849b          	addiw	s1,s1,1
-    80004310:	0524d263          	bge	s1,s2,80004354 <_Z22producerConsumer_C_APIv+0x230>
+    80004310:	0014849b          	addiw	s1,s1,1
+    80004314:	0524d263          	bge	s1,s2,80004358 <_Z22producerConsumer_C_APIv+0x230>
         data[i].id = i;
-    80004314:	00149793          	slli	a5,s1,0x1
-    80004318:	009787b3          	add	a5,a5,s1
-    8000431c:	00379793          	slli	a5,a5,0x3
-    80004320:	00f987b3          	add	a5,s3,a5
-    80004324:	0097a023          	sw	s1,0(a5)
+    80004318:	00149793          	slli	a5,s1,0x1
+    8000431c:	009787b3          	add	a5,a5,s1
+    80004320:	00379793          	slli	a5,a5,0x3
+    80004324:	00f987b3          	add	a5,s3,a5
+    80004328:	0097a023          	sw	s1,0(a5)
         data[i].buffer = buffer;
-    80004328:	0147b423          	sd	s4,8(a5)
+    8000432c:	0147b423          	sd	s4,8(a5)
         data[i].wait = waitForAll;
-    8000432c:	00009717          	auipc	a4,0x9
-    80004330:	f1473703          	ld	a4,-236(a4) # 8000d240 <_ZL10waitForAll>
-    80004334:	00e7b823          	sd	a4,16(a5)
+    80004330:	00009717          	auipc	a4,0x9
+    80004334:	f5873703          	ld	a4,-168(a4) # 8000d288 <_ZL10waitForAll>
+    80004338:	00e7b823          	sd	a4,16(a5)
         thread_create(threads + i,
-    80004338:	00048793          	mv	a5,s1
-    8000433c:	00349513          	slli	a0,s1,0x3
-    80004340:	00aa8533          	add	a0,s5,a0
-    80004344:	fa9054e3          	blez	s1,800042ec <_Z22producerConsumer_C_APIv+0x1c8>
-    80004348:	00000597          	auipc	a1,0x0
-    8000434c:	c6858593          	addi	a1,a1,-920 # 80003fb0 <_ZL8producerPv>
-    80004350:	fa5ff06f          	j	800042f4 <_Z22producerConsumer_C_APIv+0x1d0>
+    8000433c:	00048793          	mv	a5,s1
+    80004340:	00349513          	slli	a0,s1,0x3
+    80004344:	00aa8533          	add	a0,s5,a0
+    80004348:	fa9054e3          	blez	s1,800042f0 <_Z22producerConsumer_C_APIv+0x1c8>
+    8000434c:	00000597          	auipc	a1,0x0
+    80004350:	c6858593          	addi	a1,a1,-920 # 80003fb4 <_ZL8producerPv>
+    80004354:	fa5ff06f          	j	800042f8 <_Z22producerConsumer_C_APIv+0x1d0>
     thread_dispatch();
-    80004354:	ffffd097          	auipc	ra,0xffffd
-    80004358:	16c080e7          	jalr	364(ra) # 800014c0 <_Z15thread_dispatchv>
+    80004358:	ffffd097          	auipc	ra,0xffffd
+    8000435c:	168080e7          	jalr	360(ra) # 800014c0 <_Z15thread_dispatchv>
     for (int i = 0; i <= threadNum; i++) {
-    8000435c:	00000493          	li	s1,0
-    80004360:	00994e63          	blt	s2,s1,8000437c <_Z22producerConsumer_C_APIv+0x258>
+    80004360:	00000493          	li	s1,0
+    80004364:	00994e63          	blt	s2,s1,80004380 <_Z22producerConsumer_C_APIv+0x258>
         sem_wait(waitForAll);
-    80004364:	00009517          	auipc	a0,0x9
-    80004368:	edc53503          	ld	a0,-292(a0) # 8000d240 <_ZL10waitForAll>
-    8000436c:	ffffd097          	auipc	ra,0xffffd
-    80004370:	234080e7          	jalr	564(ra) # 800015a0 <_Z8sem_waitP4KSem>
+    80004368:	00009517          	auipc	a0,0x9
+    8000436c:	f2053503          	ld	a0,-224(a0) # 8000d288 <_ZL10waitForAll>
+    80004370:	ffffd097          	auipc	ra,0xffffd
+    80004374:	230080e7          	jalr	560(ra) # 800015a0 <_Z8sem_waitP4KSem>
     for (int i = 0; i <= threadNum; i++) {
-    80004374:	0014849b          	addiw	s1,s1,1
-    80004378:	fe9ff06f          	j	80004360 <_Z22producerConsumer_C_APIv+0x23c>
+    80004378:	0014849b          	addiw	s1,s1,1
+    8000437c:	fe9ff06f          	j	80004364 <_Z22producerConsumer_C_APIv+0x23c>
     sem_close(waitForAll);
-    8000437c:	00009517          	auipc	a0,0x9
-    80004380:	ec453503          	ld	a0,-316(a0) # 8000d240 <_ZL10waitForAll>
-    80004384:	ffffd097          	auipc	ra,0xffffd
-    80004388:	1ec080e7          	jalr	492(ra) # 80001570 <_Z9sem_closeP4KSem>
+    80004380:	00009517          	auipc	a0,0x9
+    80004384:	f0853503          	ld	a0,-248(a0) # 8000d288 <_ZL10waitForAll>
+    80004388:	ffffd097          	auipc	ra,0xffffd
+    8000438c:	1e8080e7          	jalr	488(ra) # 80001570 <_Z9sem_closeP4KSem>
     delete buffer;
-    8000438c:	000a0e63          	beqz	s4,800043a8 <_Z22producerConsumer_C_APIv+0x284>
-    80004390:	000a0513          	mv	a0,s4
-    80004394:	00003097          	auipc	ra,0x3
-    80004398:	154080e7          	jalr	340(ra) # 800074e8 <_ZN6BufferD1Ev>
-    8000439c:	000a0513          	mv	a0,s4
-    800043a0:	fffff097          	auipc	ra,0xfffff
-    800043a4:	dc0080e7          	jalr	-576(ra) # 80003160 <_ZdlPv>
-    800043a8:	000b0113          	mv	sp,s6
+    80004390:	000a0e63          	beqz	s4,800043ac <_Z22producerConsumer_C_APIv+0x284>
+    80004394:	000a0513          	mv	a0,s4
+    80004398:	00003097          	auipc	ra,0x3
+    8000439c:	154080e7          	jalr	340(ra) # 800074ec <_ZN6BufferD1Ev>
+    800043a0:	000a0513          	mv	a0,s4
+    800043a4:	fffff097          	auipc	ra,0xfffff
+    800043a8:	db0080e7          	jalr	-592(ra) # 80003154 <_ZdlPv>
+    800043ac:	000b0113          	mv	sp,s6
 
 }
-    800043ac:	f9040113          	addi	sp,s0,-112
-    800043b0:	06813083          	ld	ra,104(sp)
-    800043b4:	06013403          	ld	s0,96(sp)
-    800043b8:	05813483          	ld	s1,88(sp)
-    800043bc:	05013903          	ld	s2,80(sp)
-    800043c0:	04813983          	ld	s3,72(sp)
-    800043c4:	04013a03          	ld	s4,64(sp)
-    800043c8:	03813a83          	ld	s5,56(sp)
-    800043cc:	03013b03          	ld	s6,48(sp)
-    800043d0:	07010113          	addi	sp,sp,112
-    800043d4:	00008067          	ret
-    800043d8:	00050493          	mv	s1,a0
+    800043b0:	f9040113          	addi	sp,s0,-112
+    800043b4:	06813083          	ld	ra,104(sp)
+    800043b8:	06013403          	ld	s0,96(sp)
+    800043bc:	05813483          	ld	s1,88(sp)
+    800043c0:	05013903          	ld	s2,80(sp)
+    800043c4:	04813983          	ld	s3,72(sp)
+    800043c8:	04013a03          	ld	s4,64(sp)
+    800043cc:	03813a83          	ld	s5,56(sp)
+    800043d0:	03013b03          	ld	s6,48(sp)
+    800043d4:	07010113          	addi	sp,sp,112
+    800043d8:	00008067          	ret
+    800043dc:	00050493          	mv	s1,a0
     Buffer *buffer = new Buffer(n);
-    800043dc:	000a0513          	mv	a0,s4
-    800043e0:	fffff097          	auipc	ra,0xfffff
-    800043e4:	d80080e7          	jalr	-640(ra) # 80003160 <_ZdlPv>
-    800043e8:	00048513          	mv	a0,s1
-    800043ec:	0000a097          	auipc	ra,0xa
-    800043f0:	f7c080e7          	jalr	-132(ra) # 8000e368 <_Unwind_Resume>
+    800043e0:	000a0513          	mv	a0,s4
+    800043e4:	fffff097          	auipc	ra,0xfffff
+    800043e8:	d70080e7          	jalr	-656(ra) # 80003154 <_ZdlPv>
+    800043ec:	00048513          	mv	a0,s1
+    800043f0:	0000a097          	auipc	ra,0xa
+    800043f4:	fc8080e7          	jalr	-56(ra) # 8000e3b8 <_Unwind_Resume>
 
-00000000800043f4 <_ZL9fibonaccim>:
+00000000800043f8 <_ZL9fibonaccim>:
 static volatile bool finishedA = false;
 static volatile bool finishedB = false;
 static volatile bool finishedC = false;
 static volatile bool finishedD = false;
 
 static uint64 fibonacci(uint64 n) {
-    800043f4:	fe010113          	addi	sp,sp,-32
-    800043f8:	00113c23          	sd	ra,24(sp)
-    800043fc:	00813823          	sd	s0,16(sp)
-    80004400:	00913423          	sd	s1,8(sp)
-    80004404:	01213023          	sd	s2,0(sp)
-    80004408:	02010413          	addi	s0,sp,32
-    8000440c:	00050493          	mv	s1,a0
+    800043f8:	fe010113          	addi	sp,sp,-32
+    800043fc:	00113c23          	sd	ra,24(sp)
+    80004400:	00813823          	sd	s0,16(sp)
+    80004404:	00913423          	sd	s1,8(sp)
+    80004408:	01213023          	sd	s2,0(sp)
+    8000440c:	02010413          	addi	s0,sp,32
+    80004410:	00050493          	mv	s1,a0
     if (n == 0 || n == 1) { return n; }
-    80004410:	00100793          	li	a5,1
-    80004414:	02a7f863          	bgeu	a5,a0,80004444 <_ZL9fibonaccim+0x50>
+    80004414:	00100793          	li	a5,1
+    80004418:	02a7f863          	bgeu	a5,a0,80004448 <_ZL9fibonaccim+0x50>
     if (n % 10 == 0) { thread_dispatch(); }
-    80004418:	00a00793          	li	a5,10
-    8000441c:	02f577b3          	remu	a5,a0,a5
-    80004420:	02078e63          	beqz	a5,8000445c <_ZL9fibonaccim+0x68>
+    8000441c:	00a00793          	li	a5,10
+    80004420:	02f577b3          	remu	a5,a0,a5
+    80004424:	02078e63          	beqz	a5,80004460 <_ZL9fibonaccim+0x68>
     return fibonacci(n - 1) + fibonacci(n - 2);
-    80004424:	fff48513          	addi	a0,s1,-1
-    80004428:	00000097          	auipc	ra,0x0
-    8000442c:	fcc080e7          	jalr	-52(ra) # 800043f4 <_ZL9fibonaccim>
-    80004430:	00050913          	mv	s2,a0
-    80004434:	ffe48513          	addi	a0,s1,-2
-    80004438:	00000097          	auipc	ra,0x0
-    8000443c:	fbc080e7          	jalr	-68(ra) # 800043f4 <_ZL9fibonaccim>
-    80004440:	00a90533          	add	a0,s2,a0
+    80004428:	fff48513          	addi	a0,s1,-1
+    8000442c:	00000097          	auipc	ra,0x0
+    80004430:	fcc080e7          	jalr	-52(ra) # 800043f8 <_ZL9fibonaccim>
+    80004434:	00050913          	mv	s2,a0
+    80004438:	ffe48513          	addi	a0,s1,-2
+    8000443c:	00000097          	auipc	ra,0x0
+    80004440:	fbc080e7          	jalr	-68(ra) # 800043f8 <_ZL9fibonaccim>
+    80004444:	00a90533          	add	a0,s2,a0
 }
-    80004444:	01813083          	ld	ra,24(sp)
-    80004448:	01013403          	ld	s0,16(sp)
-    8000444c:	00813483          	ld	s1,8(sp)
-    80004450:	00013903          	ld	s2,0(sp)
-    80004454:	02010113          	addi	sp,sp,32
-    80004458:	00008067          	ret
+    80004448:	01813083          	ld	ra,24(sp)
+    8000444c:	01013403          	ld	s0,16(sp)
+    80004450:	00813483          	ld	s1,8(sp)
+    80004454:	00013903          	ld	s2,0(sp)
+    80004458:	02010113          	addi	sp,sp,32
+    8000445c:	00008067          	ret
     if (n % 10 == 0) { thread_dispatch(); }
-    8000445c:	ffffd097          	auipc	ra,0xffffd
-    80004460:	064080e7          	jalr	100(ra) # 800014c0 <_Z15thread_dispatchv>
-    80004464:	fc1ff06f          	j	80004424 <_ZL9fibonaccim+0x30>
+    80004460:	ffffd097          	auipc	ra,0xffffd
+    80004464:	060080e7          	jalr	96(ra) # 800014c0 <_Z15thread_dispatchv>
+    80004468:	fc1ff06f          	j	80004428 <_ZL9fibonaccim+0x30>
 
-0000000080004468 <_ZN7WorkerA11workerBodyAEPv>:
+000000008000446c <_ZN7WorkerA11workerBodyAEPv>:
     void run() override {
         workerBodyD(nullptr);
     }
 };
 
 void WorkerA::workerBodyA(void *arg) {
-    80004468:	fe010113          	addi	sp,sp,-32
-    8000446c:	00113c23          	sd	ra,24(sp)
-    80004470:	00813823          	sd	s0,16(sp)
-    80004474:	00913423          	sd	s1,8(sp)
-    80004478:	01213023          	sd	s2,0(sp)
-    8000447c:	02010413          	addi	s0,sp,32
+    8000446c:	fe010113          	addi	sp,sp,-32
+    80004470:	00113c23          	sd	ra,24(sp)
+    80004474:	00813823          	sd	s0,16(sp)
+    80004478:	00913423          	sd	s1,8(sp)
+    8000447c:	01213023          	sd	s2,0(sp)
+    80004480:	02010413          	addi	s0,sp,32
     for (uint64 i = 0; i < 10; i++) {
-    80004480:	00000913          	li	s2,0
-    80004484:	0380006f          	j	800044bc <_ZN7WorkerA11workerBodyAEPv+0x54>
+    80004484:	00000913          	li	s2,0
+    80004488:	0380006f          	j	800044c0 <_ZN7WorkerA11workerBodyAEPv+0x54>
         printString("A: i="); printInt(i); printString("\n");
         for (uint64 j = 0; j < 10000; j++) {
             for (uint64 k = 0; k < 30000; k++) { /* busy wait */ }
             thread_dispatch();
-    80004488:	ffffd097          	auipc	ra,0xffffd
-    8000448c:	038080e7          	jalr	56(ra) # 800014c0 <_Z15thread_dispatchv>
+    8000448c:	ffffd097          	auipc	ra,0xffffd
+    80004490:	034080e7          	jalr	52(ra) # 800014c0 <_Z15thread_dispatchv>
         for (uint64 j = 0; j < 10000; j++) {
-    80004490:	00148493          	addi	s1,s1,1
-    80004494:	000027b7          	lui	a5,0x2
-    80004498:	70f78793          	addi	a5,a5,1807 # 270f <_entry-0x7fffd8f1>
-    8000449c:	0097ee63          	bltu	a5,s1,800044b8 <_ZN7WorkerA11workerBodyAEPv+0x50>
+    80004494:	00148493          	addi	s1,s1,1
+    80004498:	000027b7          	lui	a5,0x2
+    8000449c:	70f78793          	addi	a5,a5,1807 # 270f <_entry-0x7fffd8f1>
+    800044a0:	0097ee63          	bltu	a5,s1,800044bc <_ZN7WorkerA11workerBodyAEPv+0x50>
             for (uint64 k = 0; k < 30000; k++) { /* busy wait */ }
-    800044a0:	00000713          	li	a4,0
-    800044a4:	000077b7          	lui	a5,0x7
-    800044a8:	52f78793          	addi	a5,a5,1327 # 752f <_entry-0x7fff8ad1>
-    800044ac:	fce7eee3          	bltu	a5,a4,80004488 <_ZN7WorkerA11workerBodyAEPv+0x20>
-    800044b0:	00170713          	addi	a4,a4,1
-    800044b4:	ff1ff06f          	j	800044a4 <_ZN7WorkerA11workerBodyAEPv+0x3c>
+    800044a4:	00000713          	li	a4,0
+    800044a8:	000077b7          	lui	a5,0x7
+    800044ac:	52f78793          	addi	a5,a5,1327 # 752f <_entry-0x7fff8ad1>
+    800044b0:	fce7eee3          	bltu	a5,a4,8000448c <_ZN7WorkerA11workerBodyAEPv+0x20>
+    800044b4:	00170713          	addi	a4,a4,1
+    800044b8:	ff1ff06f          	j	800044a8 <_ZN7WorkerA11workerBodyAEPv+0x3c>
     for (uint64 i = 0; i < 10; i++) {
-    800044b8:	00190913          	addi	s2,s2,1
-    800044bc:	00900793          	li	a5,9
-    800044c0:	0527e063          	bltu	a5,s2,80004500 <_ZN7WorkerA11workerBodyAEPv+0x98>
+    800044bc:	00190913          	addi	s2,s2,1
+    800044c0:	00900793          	li	a5,9
+    800044c4:	0527e063          	bltu	a5,s2,80004504 <_ZN7WorkerA11workerBodyAEPv+0x98>
         printString("A: i="); printInt(i); printString("\n");
-    800044c4:	00006517          	auipc	a0,0x6
-    800044c8:	f3c50513          	addi	a0,a0,-196 # 8000a400 <CONSOLE_STATUS+0x3f0>
-    800044cc:	00002097          	auipc	ra,0x2
-    800044d0:	eac080e7          	jalr	-340(ra) # 80006378 <_Z11printStringPKc>
-    800044d4:	00000613          	li	a2,0
-    800044d8:	00a00593          	li	a1,10
-    800044dc:	0009051b          	sext.w	a0,s2
-    800044e0:	00002097          	auipc	ra,0x2
-    800044e4:	048080e7          	jalr	72(ra) # 80006528 <_Z8printIntiii>
-    800044e8:	00006517          	auipc	a0,0x6
-    800044ec:	17850513          	addi	a0,a0,376 # 8000a660 <CONSOLE_STATUS+0x650>
-    800044f0:	00002097          	auipc	ra,0x2
-    800044f4:	e88080e7          	jalr	-376(ra) # 80006378 <_Z11printStringPKc>
+    800044c8:	00006517          	auipc	a0,0x6
+    800044cc:	f3850513          	addi	a0,a0,-200 # 8000a400 <CONSOLE_STATUS+0x3f0>
+    800044d0:	00002097          	auipc	ra,0x2
+    800044d4:	eac080e7          	jalr	-340(ra) # 8000637c <_Z11printStringPKc>
+    800044d8:	00000613          	li	a2,0
+    800044dc:	00a00593          	li	a1,10
+    800044e0:	0009051b          	sext.w	a0,s2
+    800044e4:	00002097          	auipc	ra,0x2
+    800044e8:	048080e7          	jalr	72(ra) # 8000652c <_Z8printIntiii>
+    800044ec:	00006517          	auipc	a0,0x6
+    800044f0:	17450513          	addi	a0,a0,372 # 8000a660 <CONSOLE_STATUS+0x650>
+    800044f4:	00002097          	auipc	ra,0x2
+    800044f8:	e88080e7          	jalr	-376(ra) # 8000637c <_Z11printStringPKc>
         for (uint64 j = 0; j < 10000; j++) {
-    800044f8:	00000493          	li	s1,0
-    800044fc:	f99ff06f          	j	80004494 <_ZN7WorkerA11workerBodyAEPv+0x2c>
+    800044fc:	00000493          	li	s1,0
+    80004500:	f99ff06f          	j	80004498 <_ZN7WorkerA11workerBodyAEPv+0x2c>
         }
     }
     printString("A finished!\n");
-    80004500:	00006517          	auipc	a0,0x6
-    80004504:	f0850513          	addi	a0,a0,-248 # 8000a408 <CONSOLE_STATUS+0x3f8>
-    80004508:	00002097          	auipc	ra,0x2
-    8000450c:	e70080e7          	jalr	-400(ra) # 80006378 <_Z11printStringPKc>
+    80004504:	00006517          	auipc	a0,0x6
+    80004508:	f0450513          	addi	a0,a0,-252 # 8000a408 <CONSOLE_STATUS+0x3f8>
+    8000450c:	00002097          	auipc	ra,0x2
+    80004510:	e70080e7          	jalr	-400(ra) # 8000637c <_Z11printStringPKc>
     finishedA = true;
-    80004510:	00100793          	li	a5,1
-    80004514:	00009717          	auipc	a4,0x9
-    80004518:	d2f70a23          	sb	a5,-716(a4) # 8000d248 <_ZL9finishedA>
+    80004514:	00100793          	li	a5,1
+    80004518:	00009717          	auipc	a4,0x9
+    8000451c:	d6f70c23          	sb	a5,-648(a4) # 8000d290 <_ZL9finishedA>
 }
-    8000451c:	01813083          	ld	ra,24(sp)
-    80004520:	01013403          	ld	s0,16(sp)
-    80004524:	00813483          	ld	s1,8(sp)
-    80004528:	00013903          	ld	s2,0(sp)
-    8000452c:	02010113          	addi	sp,sp,32
-    80004530:	00008067          	ret
+    80004520:	01813083          	ld	ra,24(sp)
+    80004524:	01013403          	ld	s0,16(sp)
+    80004528:	00813483          	ld	s1,8(sp)
+    8000452c:	00013903          	ld	s2,0(sp)
+    80004530:	02010113          	addi	sp,sp,32
+    80004534:	00008067          	ret
 
-0000000080004534 <_ZN7WorkerB11workerBodyBEPv>:
+0000000080004538 <_ZN7WorkerB11workerBodyBEPv>:
 
 void WorkerB::workerBodyB(void *arg) {
-    80004534:	fe010113          	addi	sp,sp,-32
-    80004538:	00113c23          	sd	ra,24(sp)
-    8000453c:	00813823          	sd	s0,16(sp)
-    80004540:	00913423          	sd	s1,8(sp)
-    80004544:	01213023          	sd	s2,0(sp)
-    80004548:	02010413          	addi	s0,sp,32
+    80004538:	fe010113          	addi	sp,sp,-32
+    8000453c:	00113c23          	sd	ra,24(sp)
+    80004540:	00813823          	sd	s0,16(sp)
+    80004544:	00913423          	sd	s1,8(sp)
+    80004548:	01213023          	sd	s2,0(sp)
+    8000454c:	02010413          	addi	s0,sp,32
     for (uint64 i = 0; i < 16; i++) {
-    8000454c:	00000913          	li	s2,0
-    80004550:	0380006f          	j	80004588 <_ZN7WorkerB11workerBodyBEPv+0x54>
+    80004550:	00000913          	li	s2,0
+    80004554:	0380006f          	j	8000458c <_ZN7WorkerB11workerBodyBEPv+0x54>
         printString("B: i="); printInt(i); printString("\n");
         for (uint64 j = 0; j < 10000; j++) {
             for (uint64 k = 0; k < 30000; k++) { /* busy wait */ }
             thread_dispatch();
-    80004554:	ffffd097          	auipc	ra,0xffffd
-    80004558:	f6c080e7          	jalr	-148(ra) # 800014c0 <_Z15thread_dispatchv>
+    80004558:	ffffd097          	auipc	ra,0xffffd
+    8000455c:	f68080e7          	jalr	-152(ra) # 800014c0 <_Z15thread_dispatchv>
         for (uint64 j = 0; j < 10000; j++) {
-    8000455c:	00148493          	addi	s1,s1,1
-    80004560:	000027b7          	lui	a5,0x2
-    80004564:	70f78793          	addi	a5,a5,1807 # 270f <_entry-0x7fffd8f1>
-    80004568:	0097ee63          	bltu	a5,s1,80004584 <_ZN7WorkerB11workerBodyBEPv+0x50>
+    80004560:	00148493          	addi	s1,s1,1
+    80004564:	000027b7          	lui	a5,0x2
+    80004568:	70f78793          	addi	a5,a5,1807 # 270f <_entry-0x7fffd8f1>
+    8000456c:	0097ee63          	bltu	a5,s1,80004588 <_ZN7WorkerB11workerBodyBEPv+0x50>
             for (uint64 k = 0; k < 30000; k++) { /* busy wait */ }
-    8000456c:	00000713          	li	a4,0
-    80004570:	000077b7          	lui	a5,0x7
-    80004574:	52f78793          	addi	a5,a5,1327 # 752f <_entry-0x7fff8ad1>
-    80004578:	fce7eee3          	bltu	a5,a4,80004554 <_ZN7WorkerB11workerBodyBEPv+0x20>
-    8000457c:	00170713          	addi	a4,a4,1
-    80004580:	ff1ff06f          	j	80004570 <_ZN7WorkerB11workerBodyBEPv+0x3c>
+    80004570:	00000713          	li	a4,0
+    80004574:	000077b7          	lui	a5,0x7
+    80004578:	52f78793          	addi	a5,a5,1327 # 752f <_entry-0x7fff8ad1>
+    8000457c:	fce7eee3          	bltu	a5,a4,80004558 <_ZN7WorkerB11workerBodyBEPv+0x20>
+    80004580:	00170713          	addi	a4,a4,1
+    80004584:	ff1ff06f          	j	80004574 <_ZN7WorkerB11workerBodyBEPv+0x3c>
     for (uint64 i = 0; i < 16; i++) {
-    80004584:	00190913          	addi	s2,s2,1
-    80004588:	00f00793          	li	a5,15
-    8000458c:	0527e063          	bltu	a5,s2,800045cc <_ZN7WorkerB11workerBodyBEPv+0x98>
+    80004588:	00190913          	addi	s2,s2,1
+    8000458c:	00f00793          	li	a5,15
+    80004590:	0527e063          	bltu	a5,s2,800045d0 <_ZN7WorkerB11workerBodyBEPv+0x98>
         printString("B: i="); printInt(i); printString("\n");
-    80004590:	00006517          	auipc	a0,0x6
-    80004594:	e8850513          	addi	a0,a0,-376 # 8000a418 <CONSOLE_STATUS+0x408>
-    80004598:	00002097          	auipc	ra,0x2
-    8000459c:	de0080e7          	jalr	-544(ra) # 80006378 <_Z11printStringPKc>
-    800045a0:	00000613          	li	a2,0
-    800045a4:	00a00593          	li	a1,10
-    800045a8:	0009051b          	sext.w	a0,s2
-    800045ac:	00002097          	auipc	ra,0x2
-    800045b0:	f7c080e7          	jalr	-132(ra) # 80006528 <_Z8printIntiii>
-    800045b4:	00006517          	auipc	a0,0x6
-    800045b8:	0ac50513          	addi	a0,a0,172 # 8000a660 <CONSOLE_STATUS+0x650>
-    800045bc:	00002097          	auipc	ra,0x2
-    800045c0:	dbc080e7          	jalr	-580(ra) # 80006378 <_Z11printStringPKc>
+    80004594:	00006517          	auipc	a0,0x6
+    80004598:	e8450513          	addi	a0,a0,-380 # 8000a418 <CONSOLE_STATUS+0x408>
+    8000459c:	00002097          	auipc	ra,0x2
+    800045a0:	de0080e7          	jalr	-544(ra) # 8000637c <_Z11printStringPKc>
+    800045a4:	00000613          	li	a2,0
+    800045a8:	00a00593          	li	a1,10
+    800045ac:	0009051b          	sext.w	a0,s2
+    800045b0:	00002097          	auipc	ra,0x2
+    800045b4:	f7c080e7          	jalr	-132(ra) # 8000652c <_Z8printIntiii>
+    800045b8:	00006517          	auipc	a0,0x6
+    800045bc:	0a850513          	addi	a0,a0,168 # 8000a660 <CONSOLE_STATUS+0x650>
+    800045c0:	00002097          	auipc	ra,0x2
+    800045c4:	dbc080e7          	jalr	-580(ra) # 8000637c <_Z11printStringPKc>
         for (uint64 j = 0; j < 10000; j++) {
-    800045c4:	00000493          	li	s1,0
-    800045c8:	f99ff06f          	j	80004560 <_ZN7WorkerB11workerBodyBEPv+0x2c>
+    800045c8:	00000493          	li	s1,0
+    800045cc:	f99ff06f          	j	80004564 <_ZN7WorkerB11workerBodyBEPv+0x2c>
         }
     }
     printString("B finished!\n");
-    800045cc:	00006517          	auipc	a0,0x6
-    800045d0:	e5450513          	addi	a0,a0,-428 # 8000a420 <CONSOLE_STATUS+0x410>
-    800045d4:	00002097          	auipc	ra,0x2
-    800045d8:	da4080e7          	jalr	-604(ra) # 80006378 <_Z11printStringPKc>
+    800045d0:	00006517          	auipc	a0,0x6
+    800045d4:	e5050513          	addi	a0,a0,-432 # 8000a420 <CONSOLE_STATUS+0x410>
+    800045d8:	00002097          	auipc	ra,0x2
+    800045dc:	da4080e7          	jalr	-604(ra) # 8000637c <_Z11printStringPKc>
     finishedB = true;
-    800045dc:	00100793          	li	a5,1
-    800045e0:	00009717          	auipc	a4,0x9
-    800045e4:	c6f704a3          	sb	a5,-919(a4) # 8000d249 <_ZL9finishedB>
+    800045e0:	00100793          	li	a5,1
+    800045e4:	00009717          	auipc	a4,0x9
+    800045e8:	caf706a3          	sb	a5,-851(a4) # 8000d291 <_ZL9finishedB>
     thread_dispatch();
-    800045e8:	ffffd097          	auipc	ra,0xffffd
-    800045ec:	ed8080e7          	jalr	-296(ra) # 800014c0 <_Z15thread_dispatchv>
+    800045ec:	ffffd097          	auipc	ra,0xffffd
+    800045f0:	ed4080e7          	jalr	-300(ra) # 800014c0 <_Z15thread_dispatchv>
 }
-    800045f0:	01813083          	ld	ra,24(sp)
-    800045f4:	01013403          	ld	s0,16(sp)
-    800045f8:	00813483          	ld	s1,8(sp)
-    800045fc:	00013903          	ld	s2,0(sp)
-    80004600:	02010113          	addi	sp,sp,32
-    80004604:	00008067          	ret
+    800045f4:	01813083          	ld	ra,24(sp)
+    800045f8:	01013403          	ld	s0,16(sp)
+    800045fc:	00813483          	ld	s1,8(sp)
+    80004600:	00013903          	ld	s2,0(sp)
+    80004604:	02010113          	addi	sp,sp,32
+    80004608:	00008067          	ret
 
-0000000080004608 <_ZN7WorkerC11workerBodyCEPv>:
+000000008000460c <_ZN7WorkerC11workerBodyCEPv>:
 
 void WorkerC::workerBodyC(void *arg) {
-    80004608:	fe010113          	addi	sp,sp,-32
-    8000460c:	00113c23          	sd	ra,24(sp)
-    80004610:	00813823          	sd	s0,16(sp)
-    80004614:	00913423          	sd	s1,8(sp)
-    80004618:	01213023          	sd	s2,0(sp)
-    8000461c:	02010413          	addi	s0,sp,32
+    8000460c:	fe010113          	addi	sp,sp,-32
+    80004610:	00113c23          	sd	ra,24(sp)
+    80004614:	00813823          	sd	s0,16(sp)
+    80004618:	00913423          	sd	s1,8(sp)
+    8000461c:	01213023          	sd	s2,0(sp)
+    80004620:	02010413          	addi	s0,sp,32
     uint8 i = 0;
-    80004620:	00000493          	li	s1,0
-    80004624:	0400006f          	j	80004664 <_ZN7WorkerC11workerBodyCEPv+0x5c>
+    80004624:	00000493          	li	s1,0
+    80004628:	0400006f          	j	80004668 <_ZN7WorkerC11workerBodyCEPv+0x5c>
     for (; i < 3; i++) {
         printString("C: i="); printInt(i); printString("\n");
-    80004628:	00006517          	auipc	a0,0x6
-    8000462c:	e0850513          	addi	a0,a0,-504 # 8000a430 <CONSOLE_STATUS+0x420>
-    80004630:	00002097          	auipc	ra,0x2
-    80004634:	d48080e7          	jalr	-696(ra) # 80006378 <_Z11printStringPKc>
-    80004638:	00000613          	li	a2,0
-    8000463c:	00a00593          	li	a1,10
-    80004640:	00048513          	mv	a0,s1
-    80004644:	00002097          	auipc	ra,0x2
-    80004648:	ee4080e7          	jalr	-284(ra) # 80006528 <_Z8printIntiii>
-    8000464c:	00006517          	auipc	a0,0x6
-    80004650:	01450513          	addi	a0,a0,20 # 8000a660 <CONSOLE_STATUS+0x650>
-    80004654:	00002097          	auipc	ra,0x2
-    80004658:	d24080e7          	jalr	-732(ra) # 80006378 <_Z11printStringPKc>
+    8000462c:	00006517          	auipc	a0,0x6
+    80004630:	e0450513          	addi	a0,a0,-508 # 8000a430 <CONSOLE_STATUS+0x420>
+    80004634:	00002097          	auipc	ra,0x2
+    80004638:	d48080e7          	jalr	-696(ra) # 8000637c <_Z11printStringPKc>
+    8000463c:	00000613          	li	a2,0
+    80004640:	00a00593          	li	a1,10
+    80004644:	00048513          	mv	a0,s1
+    80004648:	00002097          	auipc	ra,0x2
+    8000464c:	ee4080e7          	jalr	-284(ra) # 8000652c <_Z8printIntiii>
+    80004650:	00006517          	auipc	a0,0x6
+    80004654:	01050513          	addi	a0,a0,16 # 8000a660 <CONSOLE_STATUS+0x650>
+    80004658:	00002097          	auipc	ra,0x2
+    8000465c:	d24080e7          	jalr	-732(ra) # 8000637c <_Z11printStringPKc>
     for (; i < 3; i++) {
-    8000465c:	0014849b          	addiw	s1,s1,1
-    80004660:	0ff4f493          	andi	s1,s1,255
-    80004664:	00200793          	li	a5,2
-    80004668:	fc97f0e3          	bgeu	a5,s1,80004628 <_ZN7WorkerC11workerBodyCEPv+0x20>
+    80004660:	0014849b          	addiw	s1,s1,1
+    80004664:	0ff4f493          	andi	s1,s1,255
+    80004668:	00200793          	li	a5,2
+    8000466c:	fc97f0e3          	bgeu	a5,s1,8000462c <_ZN7WorkerC11workerBodyCEPv+0x20>
     }
 
     printString("C: dispatch\n");
-    8000466c:	00006517          	auipc	a0,0x6
-    80004670:	dcc50513          	addi	a0,a0,-564 # 8000a438 <CONSOLE_STATUS+0x428>
-    80004674:	00002097          	auipc	ra,0x2
-    80004678:	d04080e7          	jalr	-764(ra) # 80006378 <_Z11printStringPKc>
+    80004670:	00006517          	auipc	a0,0x6
+    80004674:	dc850513          	addi	a0,a0,-568 # 8000a438 <CONSOLE_STATUS+0x428>
+    80004678:	00002097          	auipc	ra,0x2
+    8000467c:	d04080e7          	jalr	-764(ra) # 8000637c <_Z11printStringPKc>
     __asm__ ("li t1, 7");
-    8000467c:	00700313          	li	t1,7
+    80004680:	00700313          	li	t1,7
     thread_dispatch();
-    80004680:	ffffd097          	auipc	ra,0xffffd
-    80004684:	e40080e7          	jalr	-448(ra) # 800014c0 <_Z15thread_dispatchv>
+    80004684:	ffffd097          	auipc	ra,0xffffd
+    80004688:	e3c080e7          	jalr	-452(ra) # 800014c0 <_Z15thread_dispatchv>
 
     uint64 t1 = 0;
     __asm__ ("mv %[t1], t1" : [t1] "=r"(t1));
-    80004688:	00030913          	mv	s2,t1
+    8000468c:	00030913          	mv	s2,t1
 
     printString("C: t1="); printInt(t1); printString("\n");
-    8000468c:	00006517          	auipc	a0,0x6
-    80004690:	dbc50513          	addi	a0,a0,-580 # 8000a448 <CONSOLE_STATUS+0x438>
-    80004694:	00002097          	auipc	ra,0x2
-    80004698:	ce4080e7          	jalr	-796(ra) # 80006378 <_Z11printStringPKc>
-    8000469c:	00000613          	li	a2,0
-    800046a0:	00a00593          	li	a1,10
-    800046a4:	0009051b          	sext.w	a0,s2
-    800046a8:	00002097          	auipc	ra,0x2
-    800046ac:	e80080e7          	jalr	-384(ra) # 80006528 <_Z8printIntiii>
-    800046b0:	00006517          	auipc	a0,0x6
-    800046b4:	fb050513          	addi	a0,a0,-80 # 8000a660 <CONSOLE_STATUS+0x650>
-    800046b8:	00002097          	auipc	ra,0x2
-    800046bc:	cc0080e7          	jalr	-832(ra) # 80006378 <_Z11printStringPKc>
+    80004690:	00006517          	auipc	a0,0x6
+    80004694:	db850513          	addi	a0,a0,-584 # 8000a448 <CONSOLE_STATUS+0x438>
+    80004698:	00002097          	auipc	ra,0x2
+    8000469c:	ce4080e7          	jalr	-796(ra) # 8000637c <_Z11printStringPKc>
+    800046a0:	00000613          	li	a2,0
+    800046a4:	00a00593          	li	a1,10
+    800046a8:	0009051b          	sext.w	a0,s2
+    800046ac:	00002097          	auipc	ra,0x2
+    800046b0:	e80080e7          	jalr	-384(ra) # 8000652c <_Z8printIntiii>
+    800046b4:	00006517          	auipc	a0,0x6
+    800046b8:	fac50513          	addi	a0,a0,-84 # 8000a660 <CONSOLE_STATUS+0x650>
+    800046bc:	00002097          	auipc	ra,0x2
+    800046c0:	cc0080e7          	jalr	-832(ra) # 8000637c <_Z11printStringPKc>
 
     uint64 result = fibonacci(12);
-    800046c0:	00c00513          	li	a0,12
-    800046c4:	00000097          	auipc	ra,0x0
-    800046c8:	d30080e7          	jalr	-720(ra) # 800043f4 <_ZL9fibonaccim>
-    800046cc:	00050913          	mv	s2,a0
+    800046c4:	00c00513          	li	a0,12
+    800046c8:	00000097          	auipc	ra,0x0
+    800046cc:	d30080e7          	jalr	-720(ra) # 800043f8 <_ZL9fibonaccim>
+    800046d0:	00050913          	mv	s2,a0
     printString("C: fibonaci="); printInt(result); printString("\n");
-    800046d0:	00006517          	auipc	a0,0x6
-    800046d4:	d8050513          	addi	a0,a0,-640 # 8000a450 <CONSOLE_STATUS+0x440>
-    800046d8:	00002097          	auipc	ra,0x2
-    800046dc:	ca0080e7          	jalr	-864(ra) # 80006378 <_Z11printStringPKc>
-    800046e0:	00000613          	li	a2,0
-    800046e4:	00a00593          	li	a1,10
-    800046e8:	0009051b          	sext.w	a0,s2
-    800046ec:	00002097          	auipc	ra,0x2
-    800046f0:	e3c080e7          	jalr	-452(ra) # 80006528 <_Z8printIntiii>
-    800046f4:	00006517          	auipc	a0,0x6
-    800046f8:	f6c50513          	addi	a0,a0,-148 # 8000a660 <CONSOLE_STATUS+0x650>
-    800046fc:	00002097          	auipc	ra,0x2
-    80004700:	c7c080e7          	jalr	-900(ra) # 80006378 <_Z11printStringPKc>
-    80004704:	0400006f          	j	80004744 <_ZN7WorkerC11workerBodyCEPv+0x13c>
+    800046d4:	00006517          	auipc	a0,0x6
+    800046d8:	d7c50513          	addi	a0,a0,-644 # 8000a450 <CONSOLE_STATUS+0x440>
+    800046dc:	00002097          	auipc	ra,0x2
+    800046e0:	ca0080e7          	jalr	-864(ra) # 8000637c <_Z11printStringPKc>
+    800046e4:	00000613          	li	a2,0
+    800046e8:	00a00593          	li	a1,10
+    800046ec:	0009051b          	sext.w	a0,s2
+    800046f0:	00002097          	auipc	ra,0x2
+    800046f4:	e3c080e7          	jalr	-452(ra) # 8000652c <_Z8printIntiii>
+    800046f8:	00006517          	auipc	a0,0x6
+    800046fc:	f6850513          	addi	a0,a0,-152 # 8000a660 <CONSOLE_STATUS+0x650>
+    80004700:	00002097          	auipc	ra,0x2
+    80004704:	c7c080e7          	jalr	-900(ra) # 8000637c <_Z11printStringPKc>
+    80004708:	0400006f          	j	80004748 <_ZN7WorkerC11workerBodyCEPv+0x13c>
 
     for (; i < 6; i++) {
         printString("C: i="); printInt(i); printString("\n");
-    80004708:	00006517          	auipc	a0,0x6
-    8000470c:	d2850513          	addi	a0,a0,-728 # 8000a430 <CONSOLE_STATUS+0x420>
-    80004710:	00002097          	auipc	ra,0x2
-    80004714:	c68080e7          	jalr	-920(ra) # 80006378 <_Z11printStringPKc>
-    80004718:	00000613          	li	a2,0
-    8000471c:	00a00593          	li	a1,10
-    80004720:	00048513          	mv	a0,s1
-    80004724:	00002097          	auipc	ra,0x2
-    80004728:	e04080e7          	jalr	-508(ra) # 80006528 <_Z8printIntiii>
-    8000472c:	00006517          	auipc	a0,0x6
-    80004730:	f3450513          	addi	a0,a0,-204 # 8000a660 <CONSOLE_STATUS+0x650>
-    80004734:	00002097          	auipc	ra,0x2
-    80004738:	c44080e7          	jalr	-956(ra) # 80006378 <_Z11printStringPKc>
+    8000470c:	00006517          	auipc	a0,0x6
+    80004710:	d2450513          	addi	a0,a0,-732 # 8000a430 <CONSOLE_STATUS+0x420>
+    80004714:	00002097          	auipc	ra,0x2
+    80004718:	c68080e7          	jalr	-920(ra) # 8000637c <_Z11printStringPKc>
+    8000471c:	00000613          	li	a2,0
+    80004720:	00a00593          	li	a1,10
+    80004724:	00048513          	mv	a0,s1
+    80004728:	00002097          	auipc	ra,0x2
+    8000472c:	e04080e7          	jalr	-508(ra) # 8000652c <_Z8printIntiii>
+    80004730:	00006517          	auipc	a0,0x6
+    80004734:	f3050513          	addi	a0,a0,-208 # 8000a660 <CONSOLE_STATUS+0x650>
+    80004738:	00002097          	auipc	ra,0x2
+    8000473c:	c44080e7          	jalr	-956(ra) # 8000637c <_Z11printStringPKc>
     for (; i < 6; i++) {
-    8000473c:	0014849b          	addiw	s1,s1,1
-    80004740:	0ff4f493          	andi	s1,s1,255
-    80004744:	00500793          	li	a5,5
-    80004748:	fc97f0e3          	bgeu	a5,s1,80004708 <_ZN7WorkerC11workerBodyCEPv+0x100>
+    80004740:	0014849b          	addiw	s1,s1,1
+    80004744:	0ff4f493          	andi	s1,s1,255
+    80004748:	00500793          	li	a5,5
+    8000474c:	fc97f0e3          	bgeu	a5,s1,8000470c <_ZN7WorkerC11workerBodyCEPv+0x100>
     }
 
     printString("C finished!\n");
-    8000474c:	00006517          	auipc	a0,0x6
-    80004750:	d1450513          	addi	a0,a0,-748 # 8000a460 <CONSOLE_STATUS+0x450>
-    80004754:	00002097          	auipc	ra,0x2
-    80004758:	c24080e7          	jalr	-988(ra) # 80006378 <_Z11printStringPKc>
+    80004750:	00006517          	auipc	a0,0x6
+    80004754:	d1050513          	addi	a0,a0,-752 # 8000a460 <CONSOLE_STATUS+0x450>
+    80004758:	00002097          	auipc	ra,0x2
+    8000475c:	c24080e7          	jalr	-988(ra) # 8000637c <_Z11printStringPKc>
     finishedC = true;
-    8000475c:	00100793          	li	a5,1
-    80004760:	00009717          	auipc	a4,0x9
-    80004764:	aef70523          	sb	a5,-1302(a4) # 8000d24a <_ZL9finishedC>
+    80004760:	00100793          	li	a5,1
+    80004764:	00009717          	auipc	a4,0x9
+    80004768:	b2f70723          	sb	a5,-1234(a4) # 8000d292 <_ZL9finishedC>
     thread_dispatch();
-    80004768:	ffffd097          	auipc	ra,0xffffd
-    8000476c:	d58080e7          	jalr	-680(ra) # 800014c0 <_Z15thread_dispatchv>
+    8000476c:	ffffd097          	auipc	ra,0xffffd
+    80004770:	d54080e7          	jalr	-684(ra) # 800014c0 <_Z15thread_dispatchv>
 }
-    80004770:	01813083          	ld	ra,24(sp)
-    80004774:	01013403          	ld	s0,16(sp)
-    80004778:	00813483          	ld	s1,8(sp)
-    8000477c:	00013903          	ld	s2,0(sp)
-    80004780:	02010113          	addi	sp,sp,32
-    80004784:	00008067          	ret
+    80004774:	01813083          	ld	ra,24(sp)
+    80004778:	01013403          	ld	s0,16(sp)
+    8000477c:	00813483          	ld	s1,8(sp)
+    80004780:	00013903          	ld	s2,0(sp)
+    80004784:	02010113          	addi	sp,sp,32
+    80004788:	00008067          	ret
 
-0000000080004788 <_ZN7WorkerD11workerBodyDEPv>:
+000000008000478c <_ZN7WorkerD11workerBodyDEPv>:
 
 void WorkerD::workerBodyD(void* arg) {
-    80004788:	fe010113          	addi	sp,sp,-32
-    8000478c:	00113c23          	sd	ra,24(sp)
-    80004790:	00813823          	sd	s0,16(sp)
-    80004794:	00913423          	sd	s1,8(sp)
-    80004798:	01213023          	sd	s2,0(sp)
-    8000479c:	02010413          	addi	s0,sp,32
+    8000478c:	fe010113          	addi	sp,sp,-32
+    80004790:	00113c23          	sd	ra,24(sp)
+    80004794:	00813823          	sd	s0,16(sp)
+    80004798:	00913423          	sd	s1,8(sp)
+    8000479c:	01213023          	sd	s2,0(sp)
+    800047a0:	02010413          	addi	s0,sp,32
     uint8 i = 10;
-    800047a0:	00a00493          	li	s1,10
-    800047a4:	0400006f          	j	800047e4 <_ZN7WorkerD11workerBodyDEPv+0x5c>
+    800047a4:	00a00493          	li	s1,10
+    800047a8:	0400006f          	j	800047e8 <_ZN7WorkerD11workerBodyDEPv+0x5c>
     for (; i < 13; i++) {
         printString("D: i="); printInt(i); printString("\n");
-    800047a8:	00006517          	auipc	a0,0x6
-    800047ac:	cc850513          	addi	a0,a0,-824 # 8000a470 <CONSOLE_STATUS+0x460>
-    800047b0:	00002097          	auipc	ra,0x2
-    800047b4:	bc8080e7          	jalr	-1080(ra) # 80006378 <_Z11printStringPKc>
-    800047b8:	00000613          	li	a2,0
-    800047bc:	00a00593          	li	a1,10
-    800047c0:	00048513          	mv	a0,s1
-    800047c4:	00002097          	auipc	ra,0x2
-    800047c8:	d64080e7          	jalr	-668(ra) # 80006528 <_Z8printIntiii>
-    800047cc:	00006517          	auipc	a0,0x6
-    800047d0:	e9450513          	addi	a0,a0,-364 # 8000a660 <CONSOLE_STATUS+0x650>
-    800047d4:	00002097          	auipc	ra,0x2
-    800047d8:	ba4080e7          	jalr	-1116(ra) # 80006378 <_Z11printStringPKc>
+    800047ac:	00006517          	auipc	a0,0x6
+    800047b0:	cc450513          	addi	a0,a0,-828 # 8000a470 <CONSOLE_STATUS+0x460>
+    800047b4:	00002097          	auipc	ra,0x2
+    800047b8:	bc8080e7          	jalr	-1080(ra) # 8000637c <_Z11printStringPKc>
+    800047bc:	00000613          	li	a2,0
+    800047c0:	00a00593          	li	a1,10
+    800047c4:	00048513          	mv	a0,s1
+    800047c8:	00002097          	auipc	ra,0x2
+    800047cc:	d64080e7          	jalr	-668(ra) # 8000652c <_Z8printIntiii>
+    800047d0:	00006517          	auipc	a0,0x6
+    800047d4:	e9050513          	addi	a0,a0,-368 # 8000a660 <CONSOLE_STATUS+0x650>
+    800047d8:	00002097          	auipc	ra,0x2
+    800047dc:	ba4080e7          	jalr	-1116(ra) # 8000637c <_Z11printStringPKc>
     for (; i < 13; i++) {
-    800047dc:	0014849b          	addiw	s1,s1,1
-    800047e0:	0ff4f493          	andi	s1,s1,255
-    800047e4:	00c00793          	li	a5,12
-    800047e8:	fc97f0e3          	bgeu	a5,s1,800047a8 <_ZN7WorkerD11workerBodyDEPv+0x20>
+    800047e0:	0014849b          	addiw	s1,s1,1
+    800047e4:	0ff4f493          	andi	s1,s1,255
+    800047e8:	00c00793          	li	a5,12
+    800047ec:	fc97f0e3          	bgeu	a5,s1,800047ac <_ZN7WorkerD11workerBodyDEPv+0x20>
     }
 
     printString("D: dispatch\n");
-    800047ec:	00006517          	auipc	a0,0x6
-    800047f0:	c8c50513          	addi	a0,a0,-884 # 8000a478 <CONSOLE_STATUS+0x468>
-    800047f4:	00002097          	auipc	ra,0x2
-    800047f8:	b84080e7          	jalr	-1148(ra) # 80006378 <_Z11printStringPKc>
+    800047f0:	00006517          	auipc	a0,0x6
+    800047f4:	c8850513          	addi	a0,a0,-888 # 8000a478 <CONSOLE_STATUS+0x468>
+    800047f8:	00002097          	auipc	ra,0x2
+    800047fc:	b84080e7          	jalr	-1148(ra) # 8000637c <_Z11printStringPKc>
     __asm__ ("li t1, 5");
-    800047fc:	00500313          	li	t1,5
+    80004800:	00500313          	li	t1,5
     thread_dispatch();
-    80004800:	ffffd097          	auipc	ra,0xffffd
-    80004804:	cc0080e7          	jalr	-832(ra) # 800014c0 <_Z15thread_dispatchv>
+    80004804:	ffffd097          	auipc	ra,0xffffd
+    80004808:	cbc080e7          	jalr	-836(ra) # 800014c0 <_Z15thread_dispatchv>
 
     uint64 result = fibonacci(16);
-    80004808:	01000513          	li	a0,16
-    8000480c:	00000097          	auipc	ra,0x0
-    80004810:	be8080e7          	jalr	-1048(ra) # 800043f4 <_ZL9fibonaccim>
-    80004814:	00050913          	mv	s2,a0
+    8000480c:	01000513          	li	a0,16
+    80004810:	00000097          	auipc	ra,0x0
+    80004814:	be8080e7          	jalr	-1048(ra) # 800043f8 <_ZL9fibonaccim>
+    80004818:	00050913          	mv	s2,a0
     printString("D: fibonaci="); printInt(result); printString("\n");
-    80004818:	00006517          	auipc	a0,0x6
-    8000481c:	c7050513          	addi	a0,a0,-912 # 8000a488 <CONSOLE_STATUS+0x478>
-    80004820:	00002097          	auipc	ra,0x2
-    80004824:	b58080e7          	jalr	-1192(ra) # 80006378 <_Z11printStringPKc>
-    80004828:	00000613          	li	a2,0
-    8000482c:	00a00593          	li	a1,10
-    80004830:	0009051b          	sext.w	a0,s2
-    80004834:	00002097          	auipc	ra,0x2
-    80004838:	cf4080e7          	jalr	-780(ra) # 80006528 <_Z8printIntiii>
-    8000483c:	00006517          	auipc	a0,0x6
-    80004840:	e2450513          	addi	a0,a0,-476 # 8000a660 <CONSOLE_STATUS+0x650>
-    80004844:	00002097          	auipc	ra,0x2
-    80004848:	b34080e7          	jalr	-1228(ra) # 80006378 <_Z11printStringPKc>
-    8000484c:	0400006f          	j	8000488c <_ZN7WorkerD11workerBodyDEPv+0x104>
+    8000481c:	00006517          	auipc	a0,0x6
+    80004820:	c6c50513          	addi	a0,a0,-916 # 8000a488 <CONSOLE_STATUS+0x478>
+    80004824:	00002097          	auipc	ra,0x2
+    80004828:	b58080e7          	jalr	-1192(ra) # 8000637c <_Z11printStringPKc>
+    8000482c:	00000613          	li	a2,0
+    80004830:	00a00593          	li	a1,10
+    80004834:	0009051b          	sext.w	a0,s2
+    80004838:	00002097          	auipc	ra,0x2
+    8000483c:	cf4080e7          	jalr	-780(ra) # 8000652c <_Z8printIntiii>
+    80004840:	00006517          	auipc	a0,0x6
+    80004844:	e2050513          	addi	a0,a0,-480 # 8000a660 <CONSOLE_STATUS+0x650>
+    80004848:	00002097          	auipc	ra,0x2
+    8000484c:	b34080e7          	jalr	-1228(ra) # 8000637c <_Z11printStringPKc>
+    80004850:	0400006f          	j	80004890 <_ZN7WorkerD11workerBodyDEPv+0x104>
 
     for (; i < 16; i++) {
         printString("D: i="); printInt(i); printString("\n");
-    80004850:	00006517          	auipc	a0,0x6
-    80004854:	c2050513          	addi	a0,a0,-992 # 8000a470 <CONSOLE_STATUS+0x460>
-    80004858:	00002097          	auipc	ra,0x2
-    8000485c:	b20080e7          	jalr	-1248(ra) # 80006378 <_Z11printStringPKc>
-    80004860:	00000613          	li	a2,0
-    80004864:	00a00593          	li	a1,10
-    80004868:	00048513          	mv	a0,s1
-    8000486c:	00002097          	auipc	ra,0x2
-    80004870:	cbc080e7          	jalr	-836(ra) # 80006528 <_Z8printIntiii>
-    80004874:	00006517          	auipc	a0,0x6
-    80004878:	dec50513          	addi	a0,a0,-532 # 8000a660 <CONSOLE_STATUS+0x650>
-    8000487c:	00002097          	auipc	ra,0x2
-    80004880:	afc080e7          	jalr	-1284(ra) # 80006378 <_Z11printStringPKc>
+    80004854:	00006517          	auipc	a0,0x6
+    80004858:	c1c50513          	addi	a0,a0,-996 # 8000a470 <CONSOLE_STATUS+0x460>
+    8000485c:	00002097          	auipc	ra,0x2
+    80004860:	b20080e7          	jalr	-1248(ra) # 8000637c <_Z11printStringPKc>
+    80004864:	00000613          	li	a2,0
+    80004868:	00a00593          	li	a1,10
+    8000486c:	00048513          	mv	a0,s1
+    80004870:	00002097          	auipc	ra,0x2
+    80004874:	cbc080e7          	jalr	-836(ra) # 8000652c <_Z8printIntiii>
+    80004878:	00006517          	auipc	a0,0x6
+    8000487c:	de850513          	addi	a0,a0,-536 # 8000a660 <CONSOLE_STATUS+0x650>
+    80004880:	00002097          	auipc	ra,0x2
+    80004884:	afc080e7          	jalr	-1284(ra) # 8000637c <_Z11printStringPKc>
     for (; i < 16; i++) {
-    80004884:	0014849b          	addiw	s1,s1,1
-    80004888:	0ff4f493          	andi	s1,s1,255
-    8000488c:	00f00793          	li	a5,15
-    80004890:	fc97f0e3          	bgeu	a5,s1,80004850 <_ZN7WorkerD11workerBodyDEPv+0xc8>
+    80004888:	0014849b          	addiw	s1,s1,1
+    8000488c:	0ff4f493          	andi	s1,s1,255
+    80004890:	00f00793          	li	a5,15
+    80004894:	fc97f0e3          	bgeu	a5,s1,80004854 <_ZN7WorkerD11workerBodyDEPv+0xc8>
     }
 
     printString("D finished!\n");
-    80004894:	00006517          	auipc	a0,0x6
-    80004898:	c0450513          	addi	a0,a0,-1020 # 8000a498 <CONSOLE_STATUS+0x488>
-    8000489c:	00002097          	auipc	ra,0x2
-    800048a0:	adc080e7          	jalr	-1316(ra) # 80006378 <_Z11printStringPKc>
+    80004898:	00006517          	auipc	a0,0x6
+    8000489c:	c0050513          	addi	a0,a0,-1024 # 8000a498 <CONSOLE_STATUS+0x488>
+    800048a0:	00002097          	auipc	ra,0x2
+    800048a4:	adc080e7          	jalr	-1316(ra) # 8000637c <_Z11printStringPKc>
     finishedD = true;
-    800048a4:	00100793          	li	a5,1
-    800048a8:	00009717          	auipc	a4,0x9
-    800048ac:	9af701a3          	sb	a5,-1629(a4) # 8000d24b <_ZL9finishedD>
+    800048a8:	00100793          	li	a5,1
+    800048ac:	00009717          	auipc	a4,0x9
+    800048b0:	9ef703a3          	sb	a5,-1561(a4) # 8000d293 <_ZL9finishedD>
     thread_dispatch();
-    800048b0:	ffffd097          	auipc	ra,0xffffd
-    800048b4:	c10080e7          	jalr	-1008(ra) # 800014c0 <_Z15thread_dispatchv>
+    800048b4:	ffffd097          	auipc	ra,0xffffd
+    800048b8:	c0c080e7          	jalr	-1012(ra) # 800014c0 <_Z15thread_dispatchv>
 }
-    800048b8:	01813083          	ld	ra,24(sp)
-    800048bc:	01013403          	ld	s0,16(sp)
-    800048c0:	00813483          	ld	s1,8(sp)
-    800048c4:	00013903          	ld	s2,0(sp)
-    800048c8:	02010113          	addi	sp,sp,32
-    800048cc:	00008067          	ret
+    800048bc:	01813083          	ld	ra,24(sp)
+    800048c0:	01013403          	ld	s0,16(sp)
+    800048c4:	00813483          	ld	s1,8(sp)
+    800048c8:	00013903          	ld	s2,0(sp)
+    800048cc:	02010113          	addi	sp,sp,32
+    800048d0:	00008067          	ret
 
-00000000800048d0 <_Z20Threads_CPP_API_testv>:
+00000000800048d4 <_Z20Threads_CPP_API_testv>:
 
 
 void Threads_CPP_API_test() {
-    800048d0:	fc010113          	addi	sp,sp,-64
-    800048d4:	02113c23          	sd	ra,56(sp)
-    800048d8:	02813823          	sd	s0,48(sp)
-    800048dc:	02913423          	sd	s1,40(sp)
-    800048e0:	03213023          	sd	s2,32(sp)
-    800048e4:	04010413          	addi	s0,sp,64
+    800048d4:	fc010113          	addi	sp,sp,-64
+    800048d8:	02113c23          	sd	ra,56(sp)
+    800048dc:	02813823          	sd	s0,48(sp)
+    800048e0:	02913423          	sd	s1,40(sp)
+    800048e4:	03213023          	sd	s2,32(sp)
+    800048e8:	04010413          	addi	s0,sp,64
     Thread* threads[4];
 
     threads[0] = new WorkerA();
-    800048e8:	02000513          	li	a0,32
-    800048ec:	fffff097          	auipc	ra,0xfffff
-    800048f0:	824080e7          	jalr	-2012(ra) # 80003110 <_Znwm>
-    800048f4:	00050493          	mv	s1,a0
+    800048ec:	02000513          	li	a0,32
+    800048f0:	fffff097          	auipc	ra,0xfffff
+    800048f4:	814080e7          	jalr	-2028(ra) # 80003104 <_Znwm>
+    800048f8:	00050493          	mv	s1,a0
     WorkerA():Thread() {}
-    800048f8:	fffff097          	auipc	ra,0xfffff
-    800048fc:	b00080e7          	jalr	-1280(ra) # 800033f8 <_ZN6ThreadC1Ev>
-    80004900:	00008797          	auipc	a5,0x8
-    80004904:	58078793          	addi	a5,a5,1408 # 8000ce80 <_ZTV7WorkerA+0x10>
-    80004908:	00f4b023          	sd	a5,0(s1)
+    800048fc:	fffff097          	auipc	ra,0xfffff
+    80004900:	af8080e7          	jalr	-1288(ra) # 800033f4 <_ZN6ThreadC1Ev>
+    80004904:	00008797          	auipc	a5,0x8
+    80004908:	5ac78793          	addi	a5,a5,1452 # 8000ceb0 <_ZTV7WorkerA+0x10>
+    8000490c:	00f4b023          	sd	a5,0(s1)
     threads[0] = new WorkerA();
-    8000490c:	fc943023          	sd	s1,-64(s0)
+    80004910:	fc943023          	sd	s1,-64(s0)
     printString("ThreadA created\n");
-    80004910:	00006517          	auipc	a0,0x6
-    80004914:	b9850513          	addi	a0,a0,-1128 # 8000a4a8 <CONSOLE_STATUS+0x498>
-    80004918:	00002097          	auipc	ra,0x2
-    8000491c:	a60080e7          	jalr	-1440(ra) # 80006378 <_Z11printStringPKc>
+    80004914:	00006517          	auipc	a0,0x6
+    80004918:	b9450513          	addi	a0,a0,-1132 # 8000a4a8 <CONSOLE_STATUS+0x498>
+    8000491c:	00002097          	auipc	ra,0x2
+    80004920:	a60080e7          	jalr	-1440(ra) # 8000637c <_Z11printStringPKc>
 
     threads[1] = new WorkerB();
-    80004920:	02000513          	li	a0,32
-    80004924:	ffffe097          	auipc	ra,0xffffe
-    80004928:	7ec080e7          	jalr	2028(ra) # 80003110 <_Znwm>
-    8000492c:	00050493          	mv	s1,a0
+    80004924:	02000513          	li	a0,32
+    80004928:	ffffe097          	auipc	ra,0xffffe
+    8000492c:	7dc080e7          	jalr	2012(ra) # 80003104 <_Znwm>
+    80004930:	00050493          	mv	s1,a0
     WorkerB():Thread() {}
-    80004930:	fffff097          	auipc	ra,0xfffff
-    80004934:	ac8080e7          	jalr	-1336(ra) # 800033f8 <_ZN6ThreadC1Ev>
-    80004938:	00008797          	auipc	a5,0x8
-    8000493c:	57078793          	addi	a5,a5,1392 # 8000cea8 <_ZTV7WorkerB+0x10>
-    80004940:	00f4b023          	sd	a5,0(s1)
+    80004934:	fffff097          	auipc	ra,0xfffff
+    80004938:	ac0080e7          	jalr	-1344(ra) # 800033f4 <_ZN6ThreadC1Ev>
+    8000493c:	00008797          	auipc	a5,0x8
+    80004940:	59c78793          	addi	a5,a5,1436 # 8000ced8 <_ZTV7WorkerB+0x10>
+    80004944:	00f4b023          	sd	a5,0(s1)
     threads[1] = new WorkerB();
-    80004944:	fc943423          	sd	s1,-56(s0)
+    80004948:	fc943423          	sd	s1,-56(s0)
     printString("ThreadB created\n");
-    80004948:	00006517          	auipc	a0,0x6
-    8000494c:	b7850513          	addi	a0,a0,-1160 # 8000a4c0 <CONSOLE_STATUS+0x4b0>
-    80004950:	00002097          	auipc	ra,0x2
-    80004954:	a28080e7          	jalr	-1496(ra) # 80006378 <_Z11printStringPKc>
+    8000494c:	00006517          	auipc	a0,0x6
+    80004950:	b7450513          	addi	a0,a0,-1164 # 8000a4c0 <CONSOLE_STATUS+0x4b0>
+    80004954:	00002097          	auipc	ra,0x2
+    80004958:	a28080e7          	jalr	-1496(ra) # 8000637c <_Z11printStringPKc>
 
     threads[2] = new WorkerC();
-    80004958:	02000513          	li	a0,32
-    8000495c:	ffffe097          	auipc	ra,0xffffe
-    80004960:	7b4080e7          	jalr	1972(ra) # 80003110 <_Znwm>
-    80004964:	00050493          	mv	s1,a0
+    8000495c:	02000513          	li	a0,32
+    80004960:	ffffe097          	auipc	ra,0xffffe
+    80004964:	7a4080e7          	jalr	1956(ra) # 80003104 <_Znwm>
+    80004968:	00050493          	mv	s1,a0
     WorkerC():Thread() {}
-    80004968:	fffff097          	auipc	ra,0xfffff
-    8000496c:	a90080e7          	jalr	-1392(ra) # 800033f8 <_ZN6ThreadC1Ev>
-    80004970:	00008797          	auipc	a5,0x8
-    80004974:	56078793          	addi	a5,a5,1376 # 8000ced0 <_ZTV7WorkerC+0x10>
-    80004978:	00f4b023          	sd	a5,0(s1)
+    8000496c:	fffff097          	auipc	ra,0xfffff
+    80004970:	a88080e7          	jalr	-1400(ra) # 800033f4 <_ZN6ThreadC1Ev>
+    80004974:	00008797          	auipc	a5,0x8
+    80004978:	58c78793          	addi	a5,a5,1420 # 8000cf00 <_ZTV7WorkerC+0x10>
+    8000497c:	00f4b023          	sd	a5,0(s1)
     threads[2] = new WorkerC();
-    8000497c:	fc943823          	sd	s1,-48(s0)
+    80004980:	fc943823          	sd	s1,-48(s0)
     printString("ThreadC created\n");
-    80004980:	00006517          	auipc	a0,0x6
-    80004984:	b5850513          	addi	a0,a0,-1192 # 8000a4d8 <CONSOLE_STATUS+0x4c8>
-    80004988:	00002097          	auipc	ra,0x2
-    8000498c:	9f0080e7          	jalr	-1552(ra) # 80006378 <_Z11printStringPKc>
+    80004984:	00006517          	auipc	a0,0x6
+    80004988:	b5450513          	addi	a0,a0,-1196 # 8000a4d8 <CONSOLE_STATUS+0x4c8>
+    8000498c:	00002097          	auipc	ra,0x2
+    80004990:	9f0080e7          	jalr	-1552(ra) # 8000637c <_Z11printStringPKc>
 
     threads[3] = new WorkerD();
-    80004990:	02000513          	li	a0,32
-    80004994:	ffffe097          	auipc	ra,0xffffe
-    80004998:	77c080e7          	jalr	1916(ra) # 80003110 <_Znwm>
-    8000499c:	00050493          	mv	s1,a0
+    80004994:	02000513          	li	a0,32
+    80004998:	ffffe097          	auipc	ra,0xffffe
+    8000499c:	76c080e7          	jalr	1900(ra) # 80003104 <_Znwm>
+    800049a0:	00050493          	mv	s1,a0
     WorkerD():Thread() {}
-    800049a0:	fffff097          	auipc	ra,0xfffff
-    800049a4:	a58080e7          	jalr	-1448(ra) # 800033f8 <_ZN6ThreadC1Ev>
-    800049a8:	00008797          	auipc	a5,0x8
-    800049ac:	55078793          	addi	a5,a5,1360 # 8000cef8 <_ZTV7WorkerD+0x10>
-    800049b0:	00f4b023          	sd	a5,0(s1)
+    800049a4:	fffff097          	auipc	ra,0xfffff
+    800049a8:	a50080e7          	jalr	-1456(ra) # 800033f4 <_ZN6ThreadC1Ev>
+    800049ac:	00008797          	auipc	a5,0x8
+    800049b0:	57c78793          	addi	a5,a5,1404 # 8000cf28 <_ZTV7WorkerD+0x10>
+    800049b4:	00f4b023          	sd	a5,0(s1)
     threads[3] = new WorkerD();
-    800049b4:	fc943c23          	sd	s1,-40(s0)
+    800049b8:	fc943c23          	sd	s1,-40(s0)
     printString("ThreadD created\n");
-    800049b8:	00006517          	auipc	a0,0x6
-    800049bc:	b3850513          	addi	a0,a0,-1224 # 8000a4f0 <CONSOLE_STATUS+0x4e0>
-    800049c0:	00002097          	auipc	ra,0x2
-    800049c4:	9b8080e7          	jalr	-1608(ra) # 80006378 <_Z11printStringPKc>
+    800049bc:	00006517          	auipc	a0,0x6
+    800049c0:	b3450513          	addi	a0,a0,-1228 # 8000a4f0 <CONSOLE_STATUS+0x4e0>
+    800049c4:	00002097          	auipc	ra,0x2
+    800049c8:	9b8080e7          	jalr	-1608(ra) # 8000637c <_Z11printStringPKc>
 
     for(int i=0; i<4; i++) {
-    800049c8:	00000493          	li	s1,0
-    800049cc:	00300793          	li	a5,3
-    800049d0:	0297c663          	blt	a5,s1,800049fc <_Z20Threads_CPP_API_testv+0x12c>
+    800049cc:	00000493          	li	s1,0
+    800049d0:	00300793          	li	a5,3
+    800049d4:	0297c663          	blt	a5,s1,80004a00 <_Z20Threads_CPP_API_testv+0x12c>
         threads[i]->start();
-    800049d4:	00349793          	slli	a5,s1,0x3
-    800049d8:	fe040713          	addi	a4,s0,-32
-    800049dc:	00f707b3          	add	a5,a4,a5
-    800049e0:	fe07b503          	ld	a0,-32(a5)
-    800049e4:	fffff097          	auipc	ra,0xfffff
-    800049e8:	8e4080e7          	jalr	-1820(ra) # 800032c8 <_ZN6Thread5startEv>
+    800049d8:	00349793          	slli	a5,s1,0x3
+    800049dc:	fe040713          	addi	a4,s0,-32
+    800049e0:	00f707b3          	add	a5,a4,a5
+    800049e4:	fe07b503          	ld	a0,-32(a5)
+    800049e8:	fffff097          	auipc	ra,0xfffff
+    800049ec:	8d4080e7          	jalr	-1836(ra) # 800032bc <_ZN6Thread5startEv>
     for(int i=0; i<4; i++) {
-    800049ec:	0014849b          	addiw	s1,s1,1
-    800049f0:	fddff06f          	j	800049cc <_Z20Threads_CPP_API_testv+0xfc>
+    800049f0:	0014849b          	addiw	s1,s1,1
+    800049f4:	fddff06f          	j	800049d0 <_Z20Threads_CPP_API_testv+0xfc>
     }
 
     while (!(finishedA && finishedB && finishedC && finishedD)) {
         Thread::dispatch();
-    800049f4:	fffff097          	auipc	ra,0xfffff
-    800049f8:	948080e7          	jalr	-1720(ra) # 8000333c <_ZN6Thread8dispatchEv>
+    800049f8:	fffff097          	auipc	ra,0xfffff
+    800049fc:	940080e7          	jalr	-1728(ra) # 80003338 <_ZN6Thread8dispatchEv>
     while (!(finishedA && finishedB && finishedC && finishedD)) {
-    800049fc:	00009797          	auipc	a5,0x9
-    80004a00:	84c7c783          	lbu	a5,-1972(a5) # 8000d248 <_ZL9finishedA>
-    80004a04:	fe0788e3          	beqz	a5,800049f4 <_Z20Threads_CPP_API_testv+0x124>
-    80004a08:	00009797          	auipc	a5,0x9
-    80004a0c:	8417c783          	lbu	a5,-1983(a5) # 8000d249 <_ZL9finishedB>
-    80004a10:	fe0782e3          	beqz	a5,800049f4 <_Z20Threads_CPP_API_testv+0x124>
-    80004a14:	00009797          	auipc	a5,0x9
-    80004a18:	8367c783          	lbu	a5,-1994(a5) # 8000d24a <_ZL9finishedC>
-    80004a1c:	fc078ce3          	beqz	a5,800049f4 <_Z20Threads_CPP_API_testv+0x124>
-    80004a20:	00009797          	auipc	a5,0x9
-    80004a24:	82b7c783          	lbu	a5,-2005(a5) # 8000d24b <_ZL9finishedD>
-    80004a28:	fc0786e3          	beqz	a5,800049f4 <_Z20Threads_CPP_API_testv+0x124>
-    80004a2c:	fc040493          	addi	s1,s0,-64
-    80004a30:	0080006f          	j	80004a38 <_Z20Threads_CPP_API_testv+0x168>
+    80004a00:	00009797          	auipc	a5,0x9
+    80004a04:	8907c783          	lbu	a5,-1904(a5) # 8000d290 <_ZL9finishedA>
+    80004a08:	fe0788e3          	beqz	a5,800049f8 <_Z20Threads_CPP_API_testv+0x124>
+    80004a0c:	00009797          	auipc	a5,0x9
+    80004a10:	8857c783          	lbu	a5,-1915(a5) # 8000d291 <_ZL9finishedB>
+    80004a14:	fe0782e3          	beqz	a5,800049f8 <_Z20Threads_CPP_API_testv+0x124>
+    80004a18:	00009797          	auipc	a5,0x9
+    80004a1c:	87a7c783          	lbu	a5,-1926(a5) # 8000d292 <_ZL9finishedC>
+    80004a20:	fc078ce3          	beqz	a5,800049f8 <_Z20Threads_CPP_API_testv+0x124>
+    80004a24:	00009797          	auipc	a5,0x9
+    80004a28:	86f7c783          	lbu	a5,-1937(a5) # 8000d293 <_ZL9finishedD>
+    80004a2c:	fc0786e3          	beqz	a5,800049f8 <_Z20Threads_CPP_API_testv+0x124>
+    80004a30:	fc040493          	addi	s1,s0,-64
+    80004a34:	0080006f          	j	80004a3c <_Z20Threads_CPP_API_testv+0x168>
     }
 
     for (auto thread: threads) {
-    80004a34:	00848493          	addi	s1,s1,8
-    80004a38:	fe040793          	addi	a5,s0,-32
-    80004a3c:	08f48663          	beq	s1,a5,80004ac8 <_Z20Threads_CPP_API_testv+0x1f8>
-    80004a40:	0004b503          	ld	a0,0(s1)
+    80004a38:	00848493          	addi	s1,s1,8
+    80004a3c:	fe040793          	addi	a5,s0,-32
+    80004a40:	08f48663          	beq	s1,a5,80004acc <_Z20Threads_CPP_API_testv+0x1f8>
+    80004a44:	0004b503          	ld	a0,0(s1)
 		delete thread;
-    80004a44:	fe0508e3          	beqz	a0,80004a34 <_Z20Threads_CPP_API_testv+0x164>
-    80004a48:	00053783          	ld	a5,0(a0)
-    80004a4c:	0087b783          	ld	a5,8(a5)
-    80004a50:	000780e7          	jalr	a5
-    80004a54:	fe1ff06f          	j	80004a34 <_Z20Threads_CPP_API_testv+0x164>
-    80004a58:	00050913          	mv	s2,a0
+    80004a48:	fe0508e3          	beqz	a0,80004a38 <_Z20Threads_CPP_API_testv+0x164>
+    80004a4c:	00053783          	ld	a5,0(a0)
+    80004a50:	0087b783          	ld	a5,8(a5)
+    80004a54:	000780e7          	jalr	a5
+    80004a58:	fe1ff06f          	j	80004a38 <_Z20Threads_CPP_API_testv+0x164>
+    80004a5c:	00050913          	mv	s2,a0
     threads[0] = new WorkerA();
-    80004a5c:	00048513          	mv	a0,s1
-    80004a60:	ffffe097          	auipc	ra,0xffffe
-    80004a64:	700080e7          	jalr	1792(ra) # 80003160 <_ZdlPv>
-    80004a68:	00090513          	mv	a0,s2
-    80004a6c:	0000a097          	auipc	ra,0xa
-    80004a70:	8fc080e7          	jalr	-1796(ra) # 8000e368 <_Unwind_Resume>
-    80004a74:	00050913          	mv	s2,a0
+    80004a60:	00048513          	mv	a0,s1
+    80004a64:	ffffe097          	auipc	ra,0xffffe
+    80004a68:	6f0080e7          	jalr	1776(ra) # 80003154 <_ZdlPv>
+    80004a6c:	00090513          	mv	a0,s2
+    80004a70:	0000a097          	auipc	ra,0xa
+    80004a74:	948080e7          	jalr	-1720(ra) # 8000e3b8 <_Unwind_Resume>
+    80004a78:	00050913          	mv	s2,a0
     threads[1] = new WorkerB();
-    80004a78:	00048513          	mv	a0,s1
-    80004a7c:	ffffe097          	auipc	ra,0xffffe
-    80004a80:	6e4080e7          	jalr	1764(ra) # 80003160 <_ZdlPv>
-    80004a84:	00090513          	mv	a0,s2
-    80004a88:	0000a097          	auipc	ra,0xa
-    80004a8c:	8e0080e7          	jalr	-1824(ra) # 8000e368 <_Unwind_Resume>
-    80004a90:	00050913          	mv	s2,a0
+    80004a7c:	00048513          	mv	a0,s1
+    80004a80:	ffffe097          	auipc	ra,0xffffe
+    80004a84:	6d4080e7          	jalr	1748(ra) # 80003154 <_ZdlPv>
+    80004a88:	00090513          	mv	a0,s2
+    80004a8c:	0000a097          	auipc	ra,0xa
+    80004a90:	92c080e7          	jalr	-1748(ra) # 8000e3b8 <_Unwind_Resume>
+    80004a94:	00050913          	mv	s2,a0
     threads[2] = new WorkerC();
-    80004a94:	00048513          	mv	a0,s1
-    80004a98:	ffffe097          	auipc	ra,0xffffe
-    80004a9c:	6c8080e7          	jalr	1736(ra) # 80003160 <_ZdlPv>
-    80004aa0:	00090513          	mv	a0,s2
-    80004aa4:	0000a097          	auipc	ra,0xa
-    80004aa8:	8c4080e7          	jalr	-1852(ra) # 8000e368 <_Unwind_Resume>
-    80004aac:	00050913          	mv	s2,a0
+    80004a98:	00048513          	mv	a0,s1
+    80004a9c:	ffffe097          	auipc	ra,0xffffe
+    80004aa0:	6b8080e7          	jalr	1720(ra) # 80003154 <_ZdlPv>
+    80004aa4:	00090513          	mv	a0,s2
+    80004aa8:	0000a097          	auipc	ra,0xa
+    80004aac:	910080e7          	jalr	-1776(ra) # 8000e3b8 <_Unwind_Resume>
+    80004ab0:	00050913          	mv	s2,a0
     threads[3] = new WorkerD();
-    80004ab0:	00048513          	mv	a0,s1
-    80004ab4:	ffffe097          	auipc	ra,0xffffe
-    80004ab8:	6ac080e7          	jalr	1708(ra) # 80003160 <_ZdlPv>
-    80004abc:	00090513          	mv	a0,s2
-    80004ac0:	0000a097          	auipc	ra,0xa
-    80004ac4:	8a8080e7          	jalr	-1880(ra) # 8000e368 <_Unwind_Resume>
+    80004ab4:	00048513          	mv	a0,s1
+    80004ab8:	ffffe097          	auipc	ra,0xffffe
+    80004abc:	69c080e7          	jalr	1692(ra) # 80003154 <_ZdlPv>
+    80004ac0:	00090513          	mv	a0,s2
+    80004ac4:	0000a097          	auipc	ra,0xa
+    80004ac8:	8f4080e7          	jalr	-1804(ra) # 8000e3b8 <_Unwind_Resume>
 	}
 }
-    80004ac8:	03813083          	ld	ra,56(sp)
-    80004acc:	03013403          	ld	s0,48(sp)
-    80004ad0:	02813483          	ld	s1,40(sp)
-    80004ad4:	02013903          	ld	s2,32(sp)
-    80004ad8:	04010113          	addi	sp,sp,64
-    80004adc:	00008067          	ret
+    80004acc:	03813083          	ld	ra,56(sp)
+    80004ad0:	03013403          	ld	s0,48(sp)
+    80004ad4:	02813483          	ld	s1,40(sp)
+    80004ad8:	02013903          	ld	s2,32(sp)
+    80004adc:	04010113          	addi	sp,sp,64
+    80004ae0:	00008067          	ret
 
-0000000080004ae0 <_ZN7WorkerAD1Ev>:
+0000000080004ae4 <_ZN7WorkerAD1Ev>:
 class WorkerA: public Thread {
-    80004ae0:	ff010113          	addi	sp,sp,-16
-    80004ae4:	00113423          	sd	ra,8(sp)
-    80004ae8:	00813023          	sd	s0,0(sp)
-    80004aec:	01010413          	addi	s0,sp,16
-    80004af0:	00008797          	auipc	a5,0x8
-    80004af4:	39078793          	addi	a5,a5,912 # 8000ce80 <_ZTV7WorkerA+0x10>
-    80004af8:	00f53023          	sd	a5,0(a0)
-    80004afc:	ffffe097          	auipc	ra,0xffffe
-    80004b00:	534080e7          	jalr	1332(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80004b04:	00813083          	ld	ra,8(sp)
-    80004b08:	00013403          	ld	s0,0(sp)
-    80004b0c:	01010113          	addi	sp,sp,16
-    80004b10:	00008067          	ret
+    80004ae4:	ff010113          	addi	sp,sp,-16
+    80004ae8:	00113423          	sd	ra,8(sp)
+    80004aec:	00813023          	sd	s0,0(sp)
+    80004af0:	01010413          	addi	s0,sp,16
+    80004af4:	00008797          	auipc	a5,0x8
+    80004af8:	3bc78793          	addi	a5,a5,956 # 8000ceb0 <_ZTV7WorkerA+0x10>
+    80004afc:	00f53023          	sd	a5,0(a0)
+    80004b00:	ffffe097          	auipc	ra,0xffffe
+    80004b04:	524080e7          	jalr	1316(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80004b08:	00813083          	ld	ra,8(sp)
+    80004b0c:	00013403          	ld	s0,0(sp)
+    80004b10:	01010113          	addi	sp,sp,16
+    80004b14:	00008067          	ret
 
-0000000080004b14 <_ZN7WorkerAD0Ev>:
-    80004b14:	fe010113          	addi	sp,sp,-32
-    80004b18:	00113c23          	sd	ra,24(sp)
-    80004b1c:	00813823          	sd	s0,16(sp)
-    80004b20:	00913423          	sd	s1,8(sp)
-    80004b24:	02010413          	addi	s0,sp,32
-    80004b28:	00050493          	mv	s1,a0
-    80004b2c:	00008797          	auipc	a5,0x8
-    80004b30:	35478793          	addi	a5,a5,852 # 8000ce80 <_ZTV7WorkerA+0x10>
-    80004b34:	00f53023          	sd	a5,0(a0)
-    80004b38:	ffffe097          	auipc	ra,0xffffe
-    80004b3c:	4f8080e7          	jalr	1272(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80004b40:	00048513          	mv	a0,s1
-    80004b44:	ffffe097          	auipc	ra,0xffffe
-    80004b48:	61c080e7          	jalr	1564(ra) # 80003160 <_ZdlPv>
-    80004b4c:	01813083          	ld	ra,24(sp)
-    80004b50:	01013403          	ld	s0,16(sp)
-    80004b54:	00813483          	ld	s1,8(sp)
-    80004b58:	02010113          	addi	sp,sp,32
-    80004b5c:	00008067          	ret
+0000000080004b18 <_ZN7WorkerAD0Ev>:
+    80004b18:	fe010113          	addi	sp,sp,-32
+    80004b1c:	00113c23          	sd	ra,24(sp)
+    80004b20:	00813823          	sd	s0,16(sp)
+    80004b24:	00913423          	sd	s1,8(sp)
+    80004b28:	02010413          	addi	s0,sp,32
+    80004b2c:	00050493          	mv	s1,a0
+    80004b30:	00008797          	auipc	a5,0x8
+    80004b34:	38078793          	addi	a5,a5,896 # 8000ceb0 <_ZTV7WorkerA+0x10>
+    80004b38:	00f53023          	sd	a5,0(a0)
+    80004b3c:	ffffe097          	auipc	ra,0xffffe
+    80004b40:	4e8080e7          	jalr	1256(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80004b44:	00048513          	mv	a0,s1
+    80004b48:	ffffe097          	auipc	ra,0xffffe
+    80004b4c:	60c080e7          	jalr	1548(ra) # 80003154 <_ZdlPv>
+    80004b50:	01813083          	ld	ra,24(sp)
+    80004b54:	01013403          	ld	s0,16(sp)
+    80004b58:	00813483          	ld	s1,8(sp)
+    80004b5c:	02010113          	addi	sp,sp,32
+    80004b60:	00008067          	ret
 
-0000000080004b60 <_ZN7WorkerBD1Ev>:
+0000000080004b64 <_ZN7WorkerBD1Ev>:
 class WorkerB: public Thread {
-    80004b60:	ff010113          	addi	sp,sp,-16
-    80004b64:	00113423          	sd	ra,8(sp)
-    80004b68:	00813023          	sd	s0,0(sp)
-    80004b6c:	01010413          	addi	s0,sp,16
-    80004b70:	00008797          	auipc	a5,0x8
-    80004b74:	33878793          	addi	a5,a5,824 # 8000cea8 <_ZTV7WorkerB+0x10>
-    80004b78:	00f53023          	sd	a5,0(a0)
-    80004b7c:	ffffe097          	auipc	ra,0xffffe
-    80004b80:	4b4080e7          	jalr	1204(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80004b84:	00813083          	ld	ra,8(sp)
-    80004b88:	00013403          	ld	s0,0(sp)
-    80004b8c:	01010113          	addi	sp,sp,16
-    80004b90:	00008067          	ret
+    80004b64:	ff010113          	addi	sp,sp,-16
+    80004b68:	00113423          	sd	ra,8(sp)
+    80004b6c:	00813023          	sd	s0,0(sp)
+    80004b70:	01010413          	addi	s0,sp,16
+    80004b74:	00008797          	auipc	a5,0x8
+    80004b78:	36478793          	addi	a5,a5,868 # 8000ced8 <_ZTV7WorkerB+0x10>
+    80004b7c:	00f53023          	sd	a5,0(a0)
+    80004b80:	ffffe097          	auipc	ra,0xffffe
+    80004b84:	4a4080e7          	jalr	1188(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80004b88:	00813083          	ld	ra,8(sp)
+    80004b8c:	00013403          	ld	s0,0(sp)
+    80004b90:	01010113          	addi	sp,sp,16
+    80004b94:	00008067          	ret
 
-0000000080004b94 <_ZN7WorkerBD0Ev>:
-    80004b94:	fe010113          	addi	sp,sp,-32
-    80004b98:	00113c23          	sd	ra,24(sp)
-    80004b9c:	00813823          	sd	s0,16(sp)
-    80004ba0:	00913423          	sd	s1,8(sp)
-    80004ba4:	02010413          	addi	s0,sp,32
-    80004ba8:	00050493          	mv	s1,a0
-    80004bac:	00008797          	auipc	a5,0x8
-    80004bb0:	2fc78793          	addi	a5,a5,764 # 8000cea8 <_ZTV7WorkerB+0x10>
-    80004bb4:	00f53023          	sd	a5,0(a0)
-    80004bb8:	ffffe097          	auipc	ra,0xffffe
-    80004bbc:	478080e7          	jalr	1144(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80004bc0:	00048513          	mv	a0,s1
-    80004bc4:	ffffe097          	auipc	ra,0xffffe
-    80004bc8:	59c080e7          	jalr	1436(ra) # 80003160 <_ZdlPv>
-    80004bcc:	01813083          	ld	ra,24(sp)
-    80004bd0:	01013403          	ld	s0,16(sp)
-    80004bd4:	00813483          	ld	s1,8(sp)
-    80004bd8:	02010113          	addi	sp,sp,32
-    80004bdc:	00008067          	ret
+0000000080004b98 <_ZN7WorkerBD0Ev>:
+    80004b98:	fe010113          	addi	sp,sp,-32
+    80004b9c:	00113c23          	sd	ra,24(sp)
+    80004ba0:	00813823          	sd	s0,16(sp)
+    80004ba4:	00913423          	sd	s1,8(sp)
+    80004ba8:	02010413          	addi	s0,sp,32
+    80004bac:	00050493          	mv	s1,a0
+    80004bb0:	00008797          	auipc	a5,0x8
+    80004bb4:	32878793          	addi	a5,a5,808 # 8000ced8 <_ZTV7WorkerB+0x10>
+    80004bb8:	00f53023          	sd	a5,0(a0)
+    80004bbc:	ffffe097          	auipc	ra,0xffffe
+    80004bc0:	468080e7          	jalr	1128(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80004bc4:	00048513          	mv	a0,s1
+    80004bc8:	ffffe097          	auipc	ra,0xffffe
+    80004bcc:	58c080e7          	jalr	1420(ra) # 80003154 <_ZdlPv>
+    80004bd0:	01813083          	ld	ra,24(sp)
+    80004bd4:	01013403          	ld	s0,16(sp)
+    80004bd8:	00813483          	ld	s1,8(sp)
+    80004bdc:	02010113          	addi	sp,sp,32
+    80004be0:	00008067          	ret
 
-0000000080004be0 <_ZN7WorkerCD1Ev>:
+0000000080004be4 <_ZN7WorkerCD1Ev>:
 class WorkerC: public Thread {
-    80004be0:	ff010113          	addi	sp,sp,-16
-    80004be4:	00113423          	sd	ra,8(sp)
-    80004be8:	00813023          	sd	s0,0(sp)
-    80004bec:	01010413          	addi	s0,sp,16
-    80004bf0:	00008797          	auipc	a5,0x8
-    80004bf4:	2e078793          	addi	a5,a5,736 # 8000ced0 <_ZTV7WorkerC+0x10>
-    80004bf8:	00f53023          	sd	a5,0(a0)
-    80004bfc:	ffffe097          	auipc	ra,0xffffe
-    80004c00:	434080e7          	jalr	1076(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80004c04:	00813083          	ld	ra,8(sp)
-    80004c08:	00013403          	ld	s0,0(sp)
-    80004c0c:	01010113          	addi	sp,sp,16
-    80004c10:	00008067          	ret
+    80004be4:	ff010113          	addi	sp,sp,-16
+    80004be8:	00113423          	sd	ra,8(sp)
+    80004bec:	00813023          	sd	s0,0(sp)
+    80004bf0:	01010413          	addi	s0,sp,16
+    80004bf4:	00008797          	auipc	a5,0x8
+    80004bf8:	30c78793          	addi	a5,a5,780 # 8000cf00 <_ZTV7WorkerC+0x10>
+    80004bfc:	00f53023          	sd	a5,0(a0)
+    80004c00:	ffffe097          	auipc	ra,0xffffe
+    80004c04:	424080e7          	jalr	1060(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80004c08:	00813083          	ld	ra,8(sp)
+    80004c0c:	00013403          	ld	s0,0(sp)
+    80004c10:	01010113          	addi	sp,sp,16
+    80004c14:	00008067          	ret
 
-0000000080004c14 <_ZN7WorkerCD0Ev>:
-    80004c14:	fe010113          	addi	sp,sp,-32
-    80004c18:	00113c23          	sd	ra,24(sp)
-    80004c1c:	00813823          	sd	s0,16(sp)
-    80004c20:	00913423          	sd	s1,8(sp)
-    80004c24:	02010413          	addi	s0,sp,32
-    80004c28:	00050493          	mv	s1,a0
-    80004c2c:	00008797          	auipc	a5,0x8
-    80004c30:	2a478793          	addi	a5,a5,676 # 8000ced0 <_ZTV7WorkerC+0x10>
-    80004c34:	00f53023          	sd	a5,0(a0)
-    80004c38:	ffffe097          	auipc	ra,0xffffe
-    80004c3c:	3f8080e7          	jalr	1016(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80004c40:	00048513          	mv	a0,s1
-    80004c44:	ffffe097          	auipc	ra,0xffffe
-    80004c48:	51c080e7          	jalr	1308(ra) # 80003160 <_ZdlPv>
-    80004c4c:	01813083          	ld	ra,24(sp)
-    80004c50:	01013403          	ld	s0,16(sp)
-    80004c54:	00813483          	ld	s1,8(sp)
-    80004c58:	02010113          	addi	sp,sp,32
-    80004c5c:	00008067          	ret
+0000000080004c18 <_ZN7WorkerCD0Ev>:
+    80004c18:	fe010113          	addi	sp,sp,-32
+    80004c1c:	00113c23          	sd	ra,24(sp)
+    80004c20:	00813823          	sd	s0,16(sp)
+    80004c24:	00913423          	sd	s1,8(sp)
+    80004c28:	02010413          	addi	s0,sp,32
+    80004c2c:	00050493          	mv	s1,a0
+    80004c30:	00008797          	auipc	a5,0x8
+    80004c34:	2d078793          	addi	a5,a5,720 # 8000cf00 <_ZTV7WorkerC+0x10>
+    80004c38:	00f53023          	sd	a5,0(a0)
+    80004c3c:	ffffe097          	auipc	ra,0xffffe
+    80004c40:	3e8080e7          	jalr	1000(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80004c44:	00048513          	mv	a0,s1
+    80004c48:	ffffe097          	auipc	ra,0xffffe
+    80004c4c:	50c080e7          	jalr	1292(ra) # 80003154 <_ZdlPv>
+    80004c50:	01813083          	ld	ra,24(sp)
+    80004c54:	01013403          	ld	s0,16(sp)
+    80004c58:	00813483          	ld	s1,8(sp)
+    80004c5c:	02010113          	addi	sp,sp,32
+    80004c60:	00008067          	ret
 
-0000000080004c60 <_ZN7WorkerDD1Ev>:
+0000000080004c64 <_ZN7WorkerDD1Ev>:
 class WorkerD: public Thread {
-    80004c60:	ff010113          	addi	sp,sp,-16
-    80004c64:	00113423          	sd	ra,8(sp)
-    80004c68:	00813023          	sd	s0,0(sp)
-    80004c6c:	01010413          	addi	s0,sp,16
-    80004c70:	00008797          	auipc	a5,0x8
-    80004c74:	28878793          	addi	a5,a5,648 # 8000cef8 <_ZTV7WorkerD+0x10>
-    80004c78:	00f53023          	sd	a5,0(a0)
-    80004c7c:	ffffe097          	auipc	ra,0xffffe
-    80004c80:	3b4080e7          	jalr	948(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80004c84:	00813083          	ld	ra,8(sp)
-    80004c88:	00013403          	ld	s0,0(sp)
-    80004c8c:	01010113          	addi	sp,sp,16
-    80004c90:	00008067          	ret
+    80004c64:	ff010113          	addi	sp,sp,-16
+    80004c68:	00113423          	sd	ra,8(sp)
+    80004c6c:	00813023          	sd	s0,0(sp)
+    80004c70:	01010413          	addi	s0,sp,16
+    80004c74:	00008797          	auipc	a5,0x8
+    80004c78:	2b478793          	addi	a5,a5,692 # 8000cf28 <_ZTV7WorkerD+0x10>
+    80004c7c:	00f53023          	sd	a5,0(a0)
+    80004c80:	ffffe097          	auipc	ra,0xffffe
+    80004c84:	3a4080e7          	jalr	932(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80004c88:	00813083          	ld	ra,8(sp)
+    80004c8c:	00013403          	ld	s0,0(sp)
+    80004c90:	01010113          	addi	sp,sp,16
+    80004c94:	00008067          	ret
 
-0000000080004c94 <_ZN7WorkerDD0Ev>:
-    80004c94:	fe010113          	addi	sp,sp,-32
-    80004c98:	00113c23          	sd	ra,24(sp)
-    80004c9c:	00813823          	sd	s0,16(sp)
-    80004ca0:	00913423          	sd	s1,8(sp)
-    80004ca4:	02010413          	addi	s0,sp,32
-    80004ca8:	00050493          	mv	s1,a0
-    80004cac:	00008797          	auipc	a5,0x8
-    80004cb0:	24c78793          	addi	a5,a5,588 # 8000cef8 <_ZTV7WorkerD+0x10>
-    80004cb4:	00f53023          	sd	a5,0(a0)
-    80004cb8:	ffffe097          	auipc	ra,0xffffe
-    80004cbc:	378080e7          	jalr	888(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80004cc0:	00048513          	mv	a0,s1
-    80004cc4:	ffffe097          	auipc	ra,0xffffe
-    80004cc8:	49c080e7          	jalr	1180(ra) # 80003160 <_ZdlPv>
-    80004ccc:	01813083          	ld	ra,24(sp)
-    80004cd0:	01013403          	ld	s0,16(sp)
-    80004cd4:	00813483          	ld	s1,8(sp)
-    80004cd8:	02010113          	addi	sp,sp,32
-    80004cdc:	00008067          	ret
+0000000080004c98 <_ZN7WorkerDD0Ev>:
+    80004c98:	fe010113          	addi	sp,sp,-32
+    80004c9c:	00113c23          	sd	ra,24(sp)
+    80004ca0:	00813823          	sd	s0,16(sp)
+    80004ca4:	00913423          	sd	s1,8(sp)
+    80004ca8:	02010413          	addi	s0,sp,32
+    80004cac:	00050493          	mv	s1,a0
+    80004cb0:	00008797          	auipc	a5,0x8
+    80004cb4:	27878793          	addi	a5,a5,632 # 8000cf28 <_ZTV7WorkerD+0x10>
+    80004cb8:	00f53023          	sd	a5,0(a0)
+    80004cbc:	ffffe097          	auipc	ra,0xffffe
+    80004cc0:	368080e7          	jalr	872(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80004cc4:	00048513          	mv	a0,s1
+    80004cc8:	ffffe097          	auipc	ra,0xffffe
+    80004ccc:	48c080e7          	jalr	1164(ra) # 80003154 <_ZdlPv>
+    80004cd0:	01813083          	ld	ra,24(sp)
+    80004cd4:	01013403          	ld	s0,16(sp)
+    80004cd8:	00813483          	ld	s1,8(sp)
+    80004cdc:	02010113          	addi	sp,sp,32
+    80004ce0:	00008067          	ret
 
-0000000080004ce0 <_ZN7WorkerA3runEv>:
+0000000080004ce4 <_ZN7WorkerA3runEv>:
     void run() override {
-    80004ce0:	ff010113          	addi	sp,sp,-16
-    80004ce4:	00113423          	sd	ra,8(sp)
-    80004ce8:	00813023          	sd	s0,0(sp)
-    80004cec:	01010413          	addi	s0,sp,16
+    80004ce4:	ff010113          	addi	sp,sp,-16
+    80004ce8:	00113423          	sd	ra,8(sp)
+    80004cec:	00813023          	sd	s0,0(sp)
+    80004cf0:	01010413          	addi	s0,sp,16
         workerBodyA(nullptr);
-    80004cf0:	00000593          	li	a1,0
-    80004cf4:	fffff097          	auipc	ra,0xfffff
-    80004cf8:	774080e7          	jalr	1908(ra) # 80004468 <_ZN7WorkerA11workerBodyAEPv>
+    80004cf4:	00000593          	li	a1,0
+    80004cf8:	fffff097          	auipc	ra,0xfffff
+    80004cfc:	774080e7          	jalr	1908(ra) # 8000446c <_ZN7WorkerA11workerBodyAEPv>
     }
-    80004cfc:	00813083          	ld	ra,8(sp)
-    80004d00:	00013403          	ld	s0,0(sp)
-    80004d04:	01010113          	addi	sp,sp,16
-    80004d08:	00008067          	ret
+    80004d00:	00813083          	ld	ra,8(sp)
+    80004d04:	00013403          	ld	s0,0(sp)
+    80004d08:	01010113          	addi	sp,sp,16
+    80004d0c:	00008067          	ret
 
-0000000080004d0c <_ZN7WorkerB3runEv>:
+0000000080004d10 <_ZN7WorkerB3runEv>:
     void run() override {
-    80004d0c:	ff010113          	addi	sp,sp,-16
-    80004d10:	00113423          	sd	ra,8(sp)
-    80004d14:	00813023          	sd	s0,0(sp)
-    80004d18:	01010413          	addi	s0,sp,16
+    80004d10:	ff010113          	addi	sp,sp,-16
+    80004d14:	00113423          	sd	ra,8(sp)
+    80004d18:	00813023          	sd	s0,0(sp)
+    80004d1c:	01010413          	addi	s0,sp,16
         workerBodyB(nullptr);
-    80004d1c:	00000593          	li	a1,0
-    80004d20:	00000097          	auipc	ra,0x0
-    80004d24:	814080e7          	jalr	-2028(ra) # 80004534 <_ZN7WorkerB11workerBodyBEPv>
+    80004d20:	00000593          	li	a1,0
+    80004d24:	00000097          	auipc	ra,0x0
+    80004d28:	814080e7          	jalr	-2028(ra) # 80004538 <_ZN7WorkerB11workerBodyBEPv>
     }
-    80004d28:	00813083          	ld	ra,8(sp)
-    80004d2c:	00013403          	ld	s0,0(sp)
-    80004d30:	01010113          	addi	sp,sp,16
-    80004d34:	00008067          	ret
+    80004d2c:	00813083          	ld	ra,8(sp)
+    80004d30:	00013403          	ld	s0,0(sp)
+    80004d34:	01010113          	addi	sp,sp,16
+    80004d38:	00008067          	ret
 
-0000000080004d38 <_ZN7WorkerC3runEv>:
+0000000080004d3c <_ZN7WorkerC3runEv>:
     void run() override {
-    80004d38:	ff010113          	addi	sp,sp,-16
-    80004d3c:	00113423          	sd	ra,8(sp)
-    80004d40:	00813023          	sd	s0,0(sp)
-    80004d44:	01010413          	addi	s0,sp,16
+    80004d3c:	ff010113          	addi	sp,sp,-16
+    80004d40:	00113423          	sd	ra,8(sp)
+    80004d44:	00813023          	sd	s0,0(sp)
+    80004d48:	01010413          	addi	s0,sp,16
         workerBodyC(nullptr);
-    80004d48:	00000593          	li	a1,0
-    80004d4c:	00000097          	auipc	ra,0x0
-    80004d50:	8bc080e7          	jalr	-1860(ra) # 80004608 <_ZN7WorkerC11workerBodyCEPv>
+    80004d4c:	00000593          	li	a1,0
+    80004d50:	00000097          	auipc	ra,0x0
+    80004d54:	8bc080e7          	jalr	-1860(ra) # 8000460c <_ZN7WorkerC11workerBodyCEPv>
     }
-    80004d54:	00813083          	ld	ra,8(sp)
-    80004d58:	00013403          	ld	s0,0(sp)
-    80004d5c:	01010113          	addi	sp,sp,16
-    80004d60:	00008067          	ret
+    80004d58:	00813083          	ld	ra,8(sp)
+    80004d5c:	00013403          	ld	s0,0(sp)
+    80004d60:	01010113          	addi	sp,sp,16
+    80004d64:	00008067          	ret
 
-0000000080004d64 <_ZN7WorkerD3runEv>:
+0000000080004d68 <_ZN7WorkerD3runEv>:
     void run() override {
-    80004d64:	ff010113          	addi	sp,sp,-16
-    80004d68:	00113423          	sd	ra,8(sp)
-    80004d6c:	00813023          	sd	s0,0(sp)
-    80004d70:	01010413          	addi	s0,sp,16
+    80004d68:	ff010113          	addi	sp,sp,-16
+    80004d6c:	00113423          	sd	ra,8(sp)
+    80004d70:	00813023          	sd	s0,0(sp)
+    80004d74:	01010413          	addi	s0,sp,16
         workerBodyD(nullptr);
-    80004d74:	00000593          	li	a1,0
-    80004d78:	00000097          	auipc	ra,0x0
-    80004d7c:	a10080e7          	jalr	-1520(ra) # 80004788 <_ZN7WorkerD11workerBodyDEPv>
+    80004d78:	00000593          	li	a1,0
+    80004d7c:	00000097          	auipc	ra,0x0
+    80004d80:	a10080e7          	jalr	-1520(ra) # 8000478c <_ZN7WorkerD11workerBodyDEPv>
     }
-    80004d80:	00813083          	ld	ra,8(sp)
-    80004d84:	00013403          	ld	s0,0(sp)
-    80004d88:	01010113          	addi	sp,sp,16
-    80004d8c:	00008067          	ret
+    80004d84:	00813083          	ld	ra,8(sp)
+    80004d88:	00013403          	ld	s0,0(sp)
+    80004d8c:	01010113          	addi	sp,sp,16
+    80004d90:	00008067          	ret
 
-0000000080004d90 <_Z20testConsumerProducerv>:
+0000000080004d94 <_Z20testConsumerProducerv>:
 
         td->sem->signal();
     }
 };
 
 void testConsumerProducer() {
-    80004d90:	f8010113          	addi	sp,sp,-128
-    80004d94:	06113c23          	sd	ra,120(sp)
-    80004d98:	06813823          	sd	s0,112(sp)
-    80004d9c:	06913423          	sd	s1,104(sp)
-    80004da0:	07213023          	sd	s2,96(sp)
-    80004da4:	05313c23          	sd	s3,88(sp)
-    80004da8:	05413823          	sd	s4,80(sp)
-    80004dac:	05513423          	sd	s5,72(sp)
-    80004db0:	05613023          	sd	s6,64(sp)
-    80004db4:	03713c23          	sd	s7,56(sp)
-    80004db8:	03813823          	sd	s8,48(sp)
-    80004dbc:	03913423          	sd	s9,40(sp)
-    80004dc0:	08010413          	addi	s0,sp,128
+    80004d94:	f8010113          	addi	sp,sp,-128
+    80004d98:	06113c23          	sd	ra,120(sp)
+    80004d9c:	06813823          	sd	s0,112(sp)
+    80004da0:	06913423          	sd	s1,104(sp)
+    80004da4:	07213023          	sd	s2,96(sp)
+    80004da8:	05313c23          	sd	s3,88(sp)
+    80004dac:	05413823          	sd	s4,80(sp)
+    80004db0:	05513423          	sd	s5,72(sp)
+    80004db4:	05613023          	sd	s6,64(sp)
+    80004db8:	03713c23          	sd	s7,56(sp)
+    80004dbc:	03813823          	sd	s8,48(sp)
+    80004dc0:	03913423          	sd	s9,40(sp)
+    80004dc4:	08010413          	addi	s0,sp,128
     delete waitForAll;
     for (int i = 0; i < threadNum; i++) {
         delete producers[i];
     }
     delete consumer;
     delete buffer;
-    80004dc4:	00010c13          	mv	s8,sp
+    80004dc8:	00010c13          	mv	s8,sp
     printString("Unesite broj proizvodjaca?\n");
-    80004dc8:	00005517          	auipc	a0,0x5
-    80004dcc:	55050513          	addi	a0,a0,1360 # 8000a318 <CONSOLE_STATUS+0x308>
-    80004dd0:	00001097          	auipc	ra,0x1
-    80004dd4:	5a8080e7          	jalr	1448(ra) # 80006378 <_Z11printStringPKc>
+    80004dcc:	00005517          	auipc	a0,0x5
+    80004dd0:	54c50513          	addi	a0,a0,1356 # 8000a318 <CONSOLE_STATUS+0x308>
+    80004dd4:	00001097          	auipc	ra,0x1
+    80004dd8:	5a8080e7          	jalr	1448(ra) # 8000637c <_Z11printStringPKc>
     getString(input, 30);
-    80004dd8:	01e00593          	li	a1,30
-    80004ddc:	f8040493          	addi	s1,s0,-128
-    80004de0:	00048513          	mv	a0,s1
-    80004de4:	00001097          	auipc	ra,0x1
-    80004de8:	61c080e7          	jalr	1564(ra) # 80006400 <_Z9getStringPci>
+    80004ddc:	01e00593          	li	a1,30
+    80004de0:	f8040493          	addi	s1,s0,-128
+    80004de4:	00048513          	mv	a0,s1
+    80004de8:	00001097          	auipc	ra,0x1
+    80004dec:	61c080e7          	jalr	1564(ra) # 80006404 <_Z9getStringPci>
     threadNum = stringToInt(input);
-    80004dec:	00048513          	mv	a0,s1
-    80004df0:	00001097          	auipc	ra,0x1
-    80004df4:	6e8080e7          	jalr	1768(ra) # 800064d8 <_Z11stringToIntPKc>
-    80004df8:	00050993          	mv	s3,a0
+    80004df0:	00048513          	mv	a0,s1
+    80004df4:	00001097          	auipc	ra,0x1
+    80004df8:	6e8080e7          	jalr	1768(ra) # 800064dc <_Z11stringToIntPKc>
+    80004dfc:	00050993          	mv	s3,a0
     printString("Unesite velicinu bafera?\n");
-    80004dfc:	00005517          	auipc	a0,0x5
-    80004e00:	53c50513          	addi	a0,a0,1340 # 8000a338 <CONSOLE_STATUS+0x328>
-    80004e04:	00001097          	auipc	ra,0x1
-    80004e08:	574080e7          	jalr	1396(ra) # 80006378 <_Z11printStringPKc>
+    80004e00:	00005517          	auipc	a0,0x5
+    80004e04:	53850513          	addi	a0,a0,1336 # 8000a338 <CONSOLE_STATUS+0x328>
+    80004e08:	00001097          	auipc	ra,0x1
+    80004e0c:	574080e7          	jalr	1396(ra) # 8000637c <_Z11printStringPKc>
     getString(input, 30);
-    80004e0c:	01e00593          	li	a1,30
-    80004e10:	00048513          	mv	a0,s1
-    80004e14:	00001097          	auipc	ra,0x1
-    80004e18:	5ec080e7          	jalr	1516(ra) # 80006400 <_Z9getStringPci>
+    80004e10:	01e00593          	li	a1,30
+    80004e14:	00048513          	mv	a0,s1
+    80004e18:	00001097          	auipc	ra,0x1
+    80004e1c:	5ec080e7          	jalr	1516(ra) # 80006404 <_Z9getStringPci>
     n = stringToInt(input);
-    80004e1c:	00048513          	mv	a0,s1
-    80004e20:	00001097          	auipc	ra,0x1
-    80004e24:	6b8080e7          	jalr	1720(ra) # 800064d8 <_Z11stringToIntPKc>
-    80004e28:	00050493          	mv	s1,a0
+    80004e20:	00048513          	mv	a0,s1
+    80004e24:	00001097          	auipc	ra,0x1
+    80004e28:	6b8080e7          	jalr	1720(ra) # 800064dc <_Z11stringToIntPKc>
+    80004e2c:	00050493          	mv	s1,a0
     printString("Broj proizvodjaca ");
-    80004e2c:	00005517          	auipc	a0,0x5
-    80004e30:	52c50513          	addi	a0,a0,1324 # 8000a358 <CONSOLE_STATUS+0x348>
-    80004e34:	00001097          	auipc	ra,0x1
-    80004e38:	544080e7          	jalr	1348(ra) # 80006378 <_Z11printStringPKc>
+    80004e30:	00005517          	auipc	a0,0x5
+    80004e34:	52850513          	addi	a0,a0,1320 # 8000a358 <CONSOLE_STATUS+0x348>
+    80004e38:	00001097          	auipc	ra,0x1
+    80004e3c:	544080e7          	jalr	1348(ra) # 8000637c <_Z11printStringPKc>
     printInt(threadNum);
-    80004e3c:	00000613          	li	a2,0
-    80004e40:	00a00593          	li	a1,10
-    80004e44:	00098513          	mv	a0,s3
-    80004e48:	00001097          	auipc	ra,0x1
-    80004e4c:	6e0080e7          	jalr	1760(ra) # 80006528 <_Z8printIntiii>
+    80004e40:	00000613          	li	a2,0
+    80004e44:	00a00593          	li	a1,10
+    80004e48:	00098513          	mv	a0,s3
+    80004e4c:	00001097          	auipc	ra,0x1
+    80004e50:	6e0080e7          	jalr	1760(ra) # 8000652c <_Z8printIntiii>
     printString(" i velicina bafera ");
-    80004e50:	00005517          	auipc	a0,0x5
-    80004e54:	52050513          	addi	a0,a0,1312 # 8000a370 <CONSOLE_STATUS+0x360>
-    80004e58:	00001097          	auipc	ra,0x1
-    80004e5c:	520080e7          	jalr	1312(ra) # 80006378 <_Z11printStringPKc>
+    80004e54:	00005517          	auipc	a0,0x5
+    80004e58:	51c50513          	addi	a0,a0,1308 # 8000a370 <CONSOLE_STATUS+0x360>
+    80004e5c:	00001097          	auipc	ra,0x1
+    80004e60:	520080e7          	jalr	1312(ra) # 8000637c <_Z11printStringPKc>
     printInt(n);
-    80004e60:	00000613          	li	a2,0
-    80004e64:	00a00593          	li	a1,10
-    80004e68:	00048513          	mv	a0,s1
-    80004e6c:	00001097          	auipc	ra,0x1
-    80004e70:	6bc080e7          	jalr	1724(ra) # 80006528 <_Z8printIntiii>
+    80004e64:	00000613          	li	a2,0
+    80004e68:	00a00593          	li	a1,10
+    80004e6c:	00048513          	mv	a0,s1
+    80004e70:	00001097          	auipc	ra,0x1
+    80004e74:	6bc080e7          	jalr	1724(ra) # 8000652c <_Z8printIntiii>
     printString(".\n");
-    80004e74:	00005517          	auipc	a0,0x5
-    80004e78:	51450513          	addi	a0,a0,1300 # 8000a388 <CONSOLE_STATUS+0x378>
-    80004e7c:	00001097          	auipc	ra,0x1
-    80004e80:	4fc080e7          	jalr	1276(ra) # 80006378 <_Z11printStringPKc>
+    80004e78:	00005517          	auipc	a0,0x5
+    80004e7c:	51050513          	addi	a0,a0,1296 # 8000a388 <CONSOLE_STATUS+0x378>
+    80004e80:	00001097          	auipc	ra,0x1
+    80004e84:	4fc080e7          	jalr	1276(ra) # 8000637c <_Z11printStringPKc>
     if (threadNum > n) {
-    80004e84:	0334c463          	blt	s1,s3,80004eac <_Z20testConsumerProducerv+0x11c>
+    80004e88:	0334c463          	blt	s1,s3,80004eb0 <_Z20testConsumerProducerv+0x11c>
     } else if (threadNum < 1) {
-    80004e88:	03305c63          	blez	s3,80004ec0 <_Z20testConsumerProducerv+0x130>
+    80004e8c:	03305c63          	blez	s3,80004ec4 <_Z20testConsumerProducerv+0x130>
     BufferCPP *buffer = new BufferCPP(n);
-    80004e8c:	03800513          	li	a0,56
-    80004e90:	ffffe097          	auipc	ra,0xffffe
-    80004e94:	280080e7          	jalr	640(ra) # 80003110 <_Znwm>
-    80004e98:	00050a93          	mv	s5,a0
-    80004e9c:	00048593          	mv	a1,s1
-    80004ea0:	00001097          	auipc	ra,0x1
-    80004ea4:	7a8080e7          	jalr	1960(ra) # 80006648 <_ZN9BufferCPPC1Ei>
-    80004ea8:	0300006f          	j	80004ed8 <_Z20testConsumerProducerv+0x148>
+    80004e90:	03800513          	li	a0,56
+    80004e94:	ffffe097          	auipc	ra,0xffffe
+    80004e98:	270080e7          	jalr	624(ra) # 80003104 <_Znwm>
+    80004e9c:	00050a93          	mv	s5,a0
+    80004ea0:	00048593          	mv	a1,s1
+    80004ea4:	00001097          	auipc	ra,0x1
+    80004ea8:	7a8080e7          	jalr	1960(ra) # 8000664c <_ZN9BufferCPPC1Ei>
+    80004eac:	0300006f          	j	80004edc <_Z20testConsumerProducerv+0x148>
         printString("Broj proizvodjaca ne sme biti manji od velicine bafera!\n");
-    80004eac:	00005517          	auipc	a0,0x5
-    80004eb0:	4e450513          	addi	a0,a0,1252 # 8000a390 <CONSOLE_STATUS+0x380>
-    80004eb4:	00001097          	auipc	ra,0x1
-    80004eb8:	4c4080e7          	jalr	1220(ra) # 80006378 <_Z11printStringPKc>
+    80004eb0:	00005517          	auipc	a0,0x5
+    80004eb4:	4e050513          	addi	a0,a0,1248 # 8000a390 <CONSOLE_STATUS+0x380>
+    80004eb8:	00001097          	auipc	ra,0x1
+    80004ebc:	4c4080e7          	jalr	1220(ra) # 8000637c <_Z11printStringPKc>
         return;
-    80004ebc:	0140006f          	j	80004ed0 <_Z20testConsumerProducerv+0x140>
+    80004ec0:	0140006f          	j	80004ed4 <_Z20testConsumerProducerv+0x140>
         printString("Broj proizvodjaca mora biti veci od nula!\n");
-    80004ec0:	00005517          	auipc	a0,0x5
-    80004ec4:	51050513          	addi	a0,a0,1296 # 8000a3d0 <CONSOLE_STATUS+0x3c0>
-    80004ec8:	00001097          	auipc	ra,0x1
-    80004ecc:	4b0080e7          	jalr	1200(ra) # 80006378 <_Z11printStringPKc>
+    80004ec4:	00005517          	auipc	a0,0x5
+    80004ec8:	50c50513          	addi	a0,a0,1292 # 8000a3d0 <CONSOLE_STATUS+0x3c0>
+    80004ecc:	00001097          	auipc	ra,0x1
+    80004ed0:	4b0080e7          	jalr	1200(ra) # 8000637c <_Z11printStringPKc>
         return;
-    80004ed0:	000c0113          	mv	sp,s8
-    80004ed4:	2140006f          	j	800050e8 <_Z20testConsumerProducerv+0x358>
+    80004ed4:	000c0113          	mv	sp,s8
+    80004ed8:	2140006f          	j	800050ec <_Z20testConsumerProducerv+0x358>
     waitForAll = new Semaphore(0);
-    80004ed8:	01000513          	li	a0,16
-    80004edc:	ffffe097          	auipc	ra,0xffffe
-    80004ee0:	234080e7          	jalr	564(ra) # 80003110 <_Znwm>
-    80004ee4:	00050913          	mv	s2,a0
-    80004ee8:	00000593          	li	a1,0
-    80004eec:	ffffe097          	auipc	ra,0xffffe
-    80004ef0:	588080e7          	jalr	1416(ra) # 80003474 <_ZN9SemaphoreC1Ej>
-    80004ef4:	00008797          	auipc	a5,0x8
-    80004ef8:	3727b223          	sd	s2,868(a5) # 8000d258 <_ZL10waitForAll>
+    80004edc:	01000513          	li	a0,16
+    80004ee0:	ffffe097          	auipc	ra,0xffffe
+    80004ee4:	224080e7          	jalr	548(ra) # 80003104 <_Znwm>
+    80004ee8:	00050913          	mv	s2,a0
+    80004eec:	00000593          	li	a1,0
+    80004ef0:	ffffe097          	auipc	ra,0xffffe
+    80004ef4:	580080e7          	jalr	1408(ra) # 80003470 <_ZN9SemaphoreC1Ej>
+    80004ef8:	00008797          	auipc	a5,0x8
+    80004efc:	3b27b423          	sd	s2,936(a5) # 8000d2a0 <_ZL10waitForAll>
     Thread *producers[threadNum];
-    80004efc:	00399793          	slli	a5,s3,0x3
-    80004f00:	00f78793          	addi	a5,a5,15
-    80004f04:	ff07f793          	andi	a5,a5,-16
-    80004f08:	40f10133          	sub	sp,sp,a5
-    80004f0c:	00010a13          	mv	s4,sp
+    80004f00:	00399793          	slli	a5,s3,0x3
+    80004f04:	00f78793          	addi	a5,a5,15
+    80004f08:	ff07f793          	andi	a5,a5,-16
+    80004f0c:	40f10133          	sub	sp,sp,a5
+    80004f10:	00010a13          	mv	s4,sp
     thread_data threadData[threadNum + 1];
-    80004f10:	0019871b          	addiw	a4,s3,1
-    80004f14:	00171793          	slli	a5,a4,0x1
-    80004f18:	00e787b3          	add	a5,a5,a4
-    80004f1c:	00379793          	slli	a5,a5,0x3
-    80004f20:	00f78793          	addi	a5,a5,15
-    80004f24:	ff07f793          	andi	a5,a5,-16
-    80004f28:	40f10133          	sub	sp,sp,a5
-    80004f2c:	00010b13          	mv	s6,sp
+    80004f14:	0019871b          	addiw	a4,s3,1
+    80004f18:	00171793          	slli	a5,a4,0x1
+    80004f1c:	00e787b3          	add	a5,a5,a4
+    80004f20:	00379793          	slli	a5,a5,0x3
+    80004f24:	00f78793          	addi	a5,a5,15
+    80004f28:	ff07f793          	andi	a5,a5,-16
+    80004f2c:	40f10133          	sub	sp,sp,a5
+    80004f30:	00010b13          	mv	s6,sp
     threadData[threadNum].id = threadNum;
-    80004f30:	00199493          	slli	s1,s3,0x1
-    80004f34:	013484b3          	add	s1,s1,s3
-    80004f38:	00349493          	slli	s1,s1,0x3
-    80004f3c:	009b04b3          	add	s1,s6,s1
-    80004f40:	0134a023          	sw	s3,0(s1)
+    80004f34:	00199493          	slli	s1,s3,0x1
+    80004f38:	013484b3          	add	s1,s1,s3
+    80004f3c:	00349493          	slli	s1,s1,0x3
+    80004f40:	009b04b3          	add	s1,s6,s1
+    80004f44:	0134a023          	sw	s3,0(s1)
     threadData[threadNum].buffer = buffer;
-    80004f44:	0154b423          	sd	s5,8(s1)
+    80004f48:	0154b423          	sd	s5,8(s1)
     threadData[threadNum].sem = waitForAll;
-    80004f48:	0124b823          	sd	s2,16(s1)
+    80004f4c:	0124b823          	sd	s2,16(s1)
     Thread *consumer = new Consumer(&threadData[threadNum]);
-    80004f4c:	02800513          	li	a0,40
-    80004f50:	ffffe097          	auipc	ra,0xffffe
-    80004f54:	1c0080e7          	jalr	448(ra) # 80003110 <_Znwm>
-    80004f58:	00050b93          	mv	s7,a0
+    80004f50:	02800513          	li	a0,40
+    80004f54:	ffffe097          	auipc	ra,0xffffe
+    80004f58:	1b0080e7          	jalr	432(ra) # 80003104 <_Znwm>
+    80004f5c:	00050b93          	mv	s7,a0
     Consumer(thread_data *_td) : Thread(), td(_td) {}
-    80004f5c:	ffffe097          	auipc	ra,0xffffe
-    80004f60:	49c080e7          	jalr	1180(ra) # 800033f8 <_ZN6ThreadC1Ev>
-    80004f64:	00008797          	auipc	a5,0x8
-    80004f68:	00c78793          	addi	a5,a5,12 # 8000cf70 <_ZTV8Consumer+0x10>
-    80004f6c:	00fbb023          	sd	a5,0(s7)
-    80004f70:	029bb023          	sd	s1,32(s7)
+    80004f60:	ffffe097          	auipc	ra,0xffffe
+    80004f64:	494080e7          	jalr	1172(ra) # 800033f4 <_ZN6ThreadC1Ev>
+    80004f68:	00008797          	auipc	a5,0x8
+    80004f6c:	03878793          	addi	a5,a5,56 # 8000cfa0 <_ZTV8Consumer+0x10>
+    80004f70:	00fbb023          	sd	a5,0(s7)
+    80004f74:	029bb023          	sd	s1,32(s7)
     consumer->start();
-    80004f74:	000b8513          	mv	a0,s7
-    80004f78:	ffffe097          	auipc	ra,0xffffe
-    80004f7c:	350080e7          	jalr	848(ra) # 800032c8 <_ZN6Thread5startEv>
+    80004f78:	000b8513          	mv	a0,s7
+    80004f7c:	ffffe097          	auipc	ra,0xffffe
+    80004f80:	340080e7          	jalr	832(ra) # 800032bc <_ZN6Thread5startEv>
     threadData[0].id = 0;
-    80004f80:	000b2023          	sw	zero,0(s6)
+    80004f84:	000b2023          	sw	zero,0(s6)
     threadData[0].buffer = buffer;
-    80004f84:	015b3423          	sd	s5,8(s6)
+    80004f88:	015b3423          	sd	s5,8(s6)
     threadData[0].sem = waitForAll;
-    80004f88:	00008797          	auipc	a5,0x8
-    80004f8c:	2d07b783          	ld	a5,720(a5) # 8000d258 <_ZL10waitForAll>
-    80004f90:	00fb3823          	sd	a5,16(s6)
+    80004f8c:	00008797          	auipc	a5,0x8
+    80004f90:	3147b783          	ld	a5,788(a5) # 8000d2a0 <_ZL10waitForAll>
+    80004f94:	00fb3823          	sd	a5,16(s6)
     producers[0] = new ProducerKeyborad(&threadData[0]);
-    80004f94:	02800513          	li	a0,40
-    80004f98:	ffffe097          	auipc	ra,0xffffe
-    80004f9c:	178080e7          	jalr	376(ra) # 80003110 <_Znwm>
-    80004fa0:	00050493          	mv	s1,a0
+    80004f98:	02800513          	li	a0,40
+    80004f9c:	ffffe097          	auipc	ra,0xffffe
+    80004fa0:	168080e7          	jalr	360(ra) # 80003104 <_Znwm>
+    80004fa4:	00050493          	mv	s1,a0
     ProducerKeyborad(thread_data *_td) : Thread(), td(_td) {}
-    80004fa4:	ffffe097          	auipc	ra,0xffffe
-    80004fa8:	454080e7          	jalr	1108(ra) # 800033f8 <_ZN6ThreadC1Ev>
-    80004fac:	00008797          	auipc	a5,0x8
-    80004fb0:	f7478793          	addi	a5,a5,-140 # 8000cf20 <_ZTV16ProducerKeyborad+0x10>
-    80004fb4:	00f4b023          	sd	a5,0(s1)
-    80004fb8:	0364b023          	sd	s6,32(s1)
+    80004fa8:	ffffe097          	auipc	ra,0xffffe
+    80004fac:	44c080e7          	jalr	1100(ra) # 800033f4 <_ZN6ThreadC1Ev>
+    80004fb0:	00008797          	auipc	a5,0x8
+    80004fb4:	fa078793          	addi	a5,a5,-96 # 8000cf50 <_ZTV16ProducerKeyborad+0x10>
+    80004fb8:	00f4b023          	sd	a5,0(s1)
+    80004fbc:	0364b023          	sd	s6,32(s1)
     producers[0] = new ProducerKeyborad(&threadData[0]);
-    80004fbc:	009a3023          	sd	s1,0(s4)
+    80004fc0:	009a3023          	sd	s1,0(s4)
     producers[0]->start();
-    80004fc0:	00048513          	mv	a0,s1
-    80004fc4:	ffffe097          	auipc	ra,0xffffe
-    80004fc8:	304080e7          	jalr	772(ra) # 800032c8 <_ZN6Thread5startEv>
+    80004fc4:	00048513          	mv	a0,s1
+    80004fc8:	ffffe097          	auipc	ra,0xffffe
+    80004fcc:	2f4080e7          	jalr	756(ra) # 800032bc <_ZN6Thread5startEv>
     for (int i = 1; i < threadNum; i++) {
-    80004fcc:	00100913          	li	s2,1
-    80004fd0:	0300006f          	j	80005000 <_Z20testConsumerProducerv+0x270>
+    80004fd0:	00100913          	li	s2,1
+    80004fd4:	0300006f          	j	80005004 <_Z20testConsumerProducerv+0x270>
     Producer(thread_data *_td) : Thread(), td(_td) {}
-    80004fd4:	00008797          	auipc	a5,0x8
-    80004fd8:	f7478793          	addi	a5,a5,-140 # 8000cf48 <_ZTV8Producer+0x10>
-    80004fdc:	00fcb023          	sd	a5,0(s9)
-    80004fe0:	029cb023          	sd	s1,32(s9)
+    80004fd8:	00008797          	auipc	a5,0x8
+    80004fdc:	fa078793          	addi	a5,a5,-96 # 8000cf78 <_ZTV8Producer+0x10>
+    80004fe0:	00fcb023          	sd	a5,0(s9)
+    80004fe4:	029cb023          	sd	s1,32(s9)
         producers[i] = new Producer(&threadData[i]);
-    80004fe4:	00391793          	slli	a5,s2,0x3
-    80004fe8:	00fa07b3          	add	a5,s4,a5
-    80004fec:	0197b023          	sd	s9,0(a5)
+    80004fe8:	00391793          	slli	a5,s2,0x3
+    80004fec:	00fa07b3          	add	a5,s4,a5
+    80004ff0:	0197b023          	sd	s9,0(a5)
         producers[i]->start();
-    80004ff0:	000c8513          	mv	a0,s9
-    80004ff4:	ffffe097          	auipc	ra,0xffffe
-    80004ff8:	2d4080e7          	jalr	724(ra) # 800032c8 <_ZN6Thread5startEv>
+    80004ff4:	000c8513          	mv	a0,s9
+    80004ff8:	ffffe097          	auipc	ra,0xffffe
+    80004ffc:	2c4080e7          	jalr	708(ra) # 800032bc <_ZN6Thread5startEv>
     for (int i = 1; i < threadNum; i++) {
-    80004ffc:	0019091b          	addiw	s2,s2,1
-    80005000:	05395263          	bge	s2,s3,80005044 <_Z20testConsumerProducerv+0x2b4>
+    80005000:	0019091b          	addiw	s2,s2,1
+    80005004:	05395263          	bge	s2,s3,80005048 <_Z20testConsumerProducerv+0x2b4>
         threadData[i].id = i;
-    80005004:	00191493          	slli	s1,s2,0x1
-    80005008:	012484b3          	add	s1,s1,s2
-    8000500c:	00349493          	slli	s1,s1,0x3
-    80005010:	009b04b3          	add	s1,s6,s1
-    80005014:	0124a023          	sw	s2,0(s1)
+    80005008:	00191493          	slli	s1,s2,0x1
+    8000500c:	012484b3          	add	s1,s1,s2
+    80005010:	00349493          	slli	s1,s1,0x3
+    80005014:	009b04b3          	add	s1,s6,s1
+    80005018:	0124a023          	sw	s2,0(s1)
         threadData[i].buffer = buffer;
-    80005018:	0154b423          	sd	s5,8(s1)
+    8000501c:	0154b423          	sd	s5,8(s1)
         threadData[i].sem = waitForAll;
-    8000501c:	00008797          	auipc	a5,0x8
-    80005020:	23c7b783          	ld	a5,572(a5) # 8000d258 <_ZL10waitForAll>
-    80005024:	00f4b823          	sd	a5,16(s1)
+    80005020:	00008797          	auipc	a5,0x8
+    80005024:	2807b783          	ld	a5,640(a5) # 8000d2a0 <_ZL10waitForAll>
+    80005028:	00f4b823          	sd	a5,16(s1)
         producers[i] = new Producer(&threadData[i]);
-    80005028:	02800513          	li	a0,40
-    8000502c:	ffffe097          	auipc	ra,0xffffe
-    80005030:	0e4080e7          	jalr	228(ra) # 80003110 <_Znwm>
-    80005034:	00050c93          	mv	s9,a0
+    8000502c:	02800513          	li	a0,40
+    80005030:	ffffe097          	auipc	ra,0xffffe
+    80005034:	0d4080e7          	jalr	212(ra) # 80003104 <_Znwm>
+    80005038:	00050c93          	mv	s9,a0
     Producer(thread_data *_td) : Thread(), td(_td) {}
-    80005038:	ffffe097          	auipc	ra,0xffffe
-    8000503c:	3c0080e7          	jalr	960(ra) # 800033f8 <_ZN6ThreadC1Ev>
-    80005040:	f95ff06f          	j	80004fd4 <_Z20testConsumerProducerv+0x244>
+    8000503c:	ffffe097          	auipc	ra,0xffffe
+    80005040:	3b8080e7          	jalr	952(ra) # 800033f4 <_ZN6ThreadC1Ev>
+    80005044:	f95ff06f          	j	80004fd8 <_Z20testConsumerProducerv+0x244>
     Thread::dispatch();
-    80005044:	ffffe097          	auipc	ra,0xffffe
-    80005048:	2f8080e7          	jalr	760(ra) # 8000333c <_ZN6Thread8dispatchEv>
+    80005048:	ffffe097          	auipc	ra,0xffffe
+    8000504c:	2f0080e7          	jalr	752(ra) # 80003338 <_ZN6Thread8dispatchEv>
     for (int i = 0; i <= threadNum; i++) {
-    8000504c:	00000493          	li	s1,0
-    80005050:	0099ce63          	blt	s3,s1,8000506c <_Z20testConsumerProducerv+0x2dc>
+    80005050:	00000493          	li	s1,0
+    80005054:	0099ce63          	blt	s3,s1,80005070 <_Z20testConsumerProducerv+0x2dc>
         waitForAll->wait();
-    80005054:	00008517          	auipc	a0,0x8
-    80005058:	20453503          	ld	a0,516(a0) # 8000d258 <_ZL10waitForAll>
-    8000505c:	ffffe097          	auipc	ra,0xffffe
-    80005060:	450080e7          	jalr	1104(ra) # 800034ac <_ZN9Semaphore4waitEv>
+    80005058:	00008517          	auipc	a0,0x8
+    8000505c:	24853503          	ld	a0,584(a0) # 8000d2a0 <_ZL10waitForAll>
+    80005060:	ffffe097          	auipc	ra,0xffffe
+    80005064:	448080e7          	jalr	1096(ra) # 800034a8 <_ZN9Semaphore4waitEv>
     for (int i = 0; i <= threadNum; i++) {
-    80005064:	0014849b          	addiw	s1,s1,1
-    80005068:	fe9ff06f          	j	80005050 <_Z20testConsumerProducerv+0x2c0>
+    80005068:	0014849b          	addiw	s1,s1,1
+    8000506c:	fe9ff06f          	j	80005054 <_Z20testConsumerProducerv+0x2c0>
     delete waitForAll;
-    8000506c:	00008517          	auipc	a0,0x8
-    80005070:	1ec53503          	ld	a0,492(a0) # 8000d258 <_ZL10waitForAll>
-    80005074:	00050863          	beqz	a0,80005084 <_Z20testConsumerProducerv+0x2f4>
-    80005078:	00053783          	ld	a5,0(a0)
-    8000507c:	0087b783          	ld	a5,8(a5)
-    80005080:	000780e7          	jalr	a5
+    80005070:	00008517          	auipc	a0,0x8
+    80005074:	23053503          	ld	a0,560(a0) # 8000d2a0 <_ZL10waitForAll>
+    80005078:	00050863          	beqz	a0,80005088 <_Z20testConsumerProducerv+0x2f4>
+    8000507c:	00053783          	ld	a5,0(a0)
+    80005080:	0087b783          	ld	a5,8(a5)
+    80005084:	000780e7          	jalr	a5
     for (int i = 0; i <= threadNum; i++) {
-    80005084:	00000493          	li	s1,0
-    80005088:	0080006f          	j	80005090 <_Z20testConsumerProducerv+0x300>
+    80005088:	00000493          	li	s1,0
+    8000508c:	0080006f          	j	80005094 <_Z20testConsumerProducerv+0x300>
     for (int i = 0; i < threadNum; i++) {
-    8000508c:	0014849b          	addiw	s1,s1,1
-    80005090:	0334d263          	bge	s1,s3,800050b4 <_Z20testConsumerProducerv+0x324>
+    80005090:	0014849b          	addiw	s1,s1,1
+    80005094:	0334d263          	bge	s1,s3,800050b8 <_Z20testConsumerProducerv+0x324>
         delete producers[i];
-    80005094:	00349793          	slli	a5,s1,0x3
-    80005098:	00fa07b3          	add	a5,s4,a5
-    8000509c:	0007b503          	ld	a0,0(a5)
-    800050a0:	fe0506e3          	beqz	a0,8000508c <_Z20testConsumerProducerv+0x2fc>
-    800050a4:	00053783          	ld	a5,0(a0)
-    800050a8:	0087b783          	ld	a5,8(a5)
-    800050ac:	000780e7          	jalr	a5
-    800050b0:	fddff06f          	j	8000508c <_Z20testConsumerProducerv+0x2fc>
+    80005098:	00349793          	slli	a5,s1,0x3
+    8000509c:	00fa07b3          	add	a5,s4,a5
+    800050a0:	0007b503          	ld	a0,0(a5)
+    800050a4:	fe0506e3          	beqz	a0,80005090 <_Z20testConsumerProducerv+0x2fc>
+    800050a8:	00053783          	ld	a5,0(a0)
+    800050ac:	0087b783          	ld	a5,8(a5)
+    800050b0:	000780e7          	jalr	a5
+    800050b4:	fddff06f          	j	80005090 <_Z20testConsumerProducerv+0x2fc>
     delete consumer;
-    800050b4:	000b8a63          	beqz	s7,800050c8 <_Z20testConsumerProducerv+0x338>
-    800050b8:	000bb783          	ld	a5,0(s7)
-    800050bc:	0087b783          	ld	a5,8(a5)
-    800050c0:	000b8513          	mv	a0,s7
-    800050c4:	000780e7          	jalr	a5
+    800050b8:	000b8a63          	beqz	s7,800050cc <_Z20testConsumerProducerv+0x338>
+    800050bc:	000bb783          	ld	a5,0(s7)
+    800050c0:	0087b783          	ld	a5,8(a5)
+    800050c4:	000b8513          	mv	a0,s7
+    800050c8:	000780e7          	jalr	a5
     delete buffer;
-    800050c8:	000a8e63          	beqz	s5,800050e4 <_Z20testConsumerProducerv+0x354>
-    800050cc:	000a8513          	mv	a0,s5
-    800050d0:	00002097          	auipc	ra,0x2
-    800050d4:	870080e7          	jalr	-1936(ra) # 80006940 <_ZN9BufferCPPD1Ev>
-    800050d8:	000a8513          	mv	a0,s5
-    800050dc:	ffffe097          	auipc	ra,0xffffe
-    800050e0:	084080e7          	jalr	132(ra) # 80003160 <_ZdlPv>
-    800050e4:	000c0113          	mv	sp,s8
+    800050cc:	000a8e63          	beqz	s5,800050e8 <_Z20testConsumerProducerv+0x354>
+    800050d0:	000a8513          	mv	a0,s5
+    800050d4:	00002097          	auipc	ra,0x2
+    800050d8:	870080e7          	jalr	-1936(ra) # 80006944 <_ZN9BufferCPPD1Ev>
+    800050dc:	000a8513          	mv	a0,s5
+    800050e0:	ffffe097          	auipc	ra,0xffffe
+    800050e4:	074080e7          	jalr	116(ra) # 80003154 <_ZdlPv>
+    800050e8:	000c0113          	mv	sp,s8
 }
-    800050e8:	f8040113          	addi	sp,s0,-128
-    800050ec:	07813083          	ld	ra,120(sp)
-    800050f0:	07013403          	ld	s0,112(sp)
-    800050f4:	06813483          	ld	s1,104(sp)
-    800050f8:	06013903          	ld	s2,96(sp)
-    800050fc:	05813983          	ld	s3,88(sp)
-    80005100:	05013a03          	ld	s4,80(sp)
-    80005104:	04813a83          	ld	s5,72(sp)
-    80005108:	04013b03          	ld	s6,64(sp)
-    8000510c:	03813b83          	ld	s7,56(sp)
-    80005110:	03013c03          	ld	s8,48(sp)
-    80005114:	02813c83          	ld	s9,40(sp)
-    80005118:	08010113          	addi	sp,sp,128
-    8000511c:	00008067          	ret
-    80005120:	00050493          	mv	s1,a0
+    800050ec:	f8040113          	addi	sp,s0,-128
+    800050f0:	07813083          	ld	ra,120(sp)
+    800050f4:	07013403          	ld	s0,112(sp)
+    800050f8:	06813483          	ld	s1,104(sp)
+    800050fc:	06013903          	ld	s2,96(sp)
+    80005100:	05813983          	ld	s3,88(sp)
+    80005104:	05013a03          	ld	s4,80(sp)
+    80005108:	04813a83          	ld	s5,72(sp)
+    8000510c:	04013b03          	ld	s6,64(sp)
+    80005110:	03813b83          	ld	s7,56(sp)
+    80005114:	03013c03          	ld	s8,48(sp)
+    80005118:	02813c83          	ld	s9,40(sp)
+    8000511c:	08010113          	addi	sp,sp,128
+    80005120:	00008067          	ret
+    80005124:	00050493          	mv	s1,a0
     BufferCPP *buffer = new BufferCPP(n);
-    80005124:	000a8513          	mv	a0,s5
-    80005128:	ffffe097          	auipc	ra,0xffffe
-    8000512c:	038080e7          	jalr	56(ra) # 80003160 <_ZdlPv>
-    80005130:	00048513          	mv	a0,s1
-    80005134:	00009097          	auipc	ra,0x9
-    80005138:	234080e7          	jalr	564(ra) # 8000e368 <_Unwind_Resume>
-    8000513c:	00050493          	mv	s1,a0
+    80005128:	000a8513          	mv	a0,s5
+    8000512c:	ffffe097          	auipc	ra,0xffffe
+    80005130:	028080e7          	jalr	40(ra) # 80003154 <_ZdlPv>
+    80005134:	00048513          	mv	a0,s1
+    80005138:	00009097          	auipc	ra,0x9
+    8000513c:	280080e7          	jalr	640(ra) # 8000e3b8 <_Unwind_Resume>
+    80005140:	00050493          	mv	s1,a0
     waitForAll = new Semaphore(0);
-    80005140:	00090513          	mv	a0,s2
-    80005144:	ffffe097          	auipc	ra,0xffffe
-    80005148:	01c080e7          	jalr	28(ra) # 80003160 <_ZdlPv>
-    8000514c:	00048513          	mv	a0,s1
-    80005150:	00009097          	auipc	ra,0x9
-    80005154:	218080e7          	jalr	536(ra) # 8000e368 <_Unwind_Resume>
-    80005158:	00050493          	mv	s1,a0
+    80005144:	00090513          	mv	a0,s2
+    80005148:	ffffe097          	auipc	ra,0xffffe
+    8000514c:	00c080e7          	jalr	12(ra) # 80003154 <_ZdlPv>
+    80005150:	00048513          	mv	a0,s1
+    80005154:	00009097          	auipc	ra,0x9
+    80005158:	264080e7          	jalr	612(ra) # 8000e3b8 <_Unwind_Resume>
+    8000515c:	00050493          	mv	s1,a0
     Thread *consumer = new Consumer(&threadData[threadNum]);
-    8000515c:	000b8513          	mv	a0,s7
-    80005160:	ffffe097          	auipc	ra,0xffffe
-    80005164:	000080e7          	jalr	ra # 80003160 <_ZdlPv>
-    80005168:	00048513          	mv	a0,s1
-    8000516c:	00009097          	auipc	ra,0x9
-    80005170:	1fc080e7          	jalr	508(ra) # 8000e368 <_Unwind_Resume>
-    80005174:	00050913          	mv	s2,a0
+    80005160:	000b8513          	mv	a0,s7
+    80005164:	ffffe097          	auipc	ra,0xffffe
+    80005168:	ff0080e7          	jalr	-16(ra) # 80003154 <_ZdlPv>
+    8000516c:	00048513          	mv	a0,s1
+    80005170:	00009097          	auipc	ra,0x9
+    80005174:	248080e7          	jalr	584(ra) # 8000e3b8 <_Unwind_Resume>
+    80005178:	00050913          	mv	s2,a0
     producers[0] = new ProducerKeyborad(&threadData[0]);
-    80005178:	00048513          	mv	a0,s1
-    8000517c:	ffffe097          	auipc	ra,0xffffe
-    80005180:	fe4080e7          	jalr	-28(ra) # 80003160 <_ZdlPv>
-    80005184:	00090513          	mv	a0,s2
-    80005188:	00009097          	auipc	ra,0x9
-    8000518c:	1e0080e7          	jalr	480(ra) # 8000e368 <_Unwind_Resume>
-    80005190:	00050493          	mv	s1,a0
+    8000517c:	00048513          	mv	a0,s1
+    80005180:	ffffe097          	auipc	ra,0xffffe
+    80005184:	fd4080e7          	jalr	-44(ra) # 80003154 <_ZdlPv>
+    80005188:	00090513          	mv	a0,s2
+    8000518c:	00009097          	auipc	ra,0x9
+    80005190:	22c080e7          	jalr	556(ra) # 8000e3b8 <_Unwind_Resume>
+    80005194:	00050493          	mv	s1,a0
         producers[i] = new Producer(&threadData[i]);
-    80005194:	000c8513          	mv	a0,s9
-    80005198:	ffffe097          	auipc	ra,0xffffe
-    8000519c:	fc8080e7          	jalr	-56(ra) # 80003160 <_ZdlPv>
-    800051a0:	00048513          	mv	a0,s1
-    800051a4:	00009097          	auipc	ra,0x9
-    800051a8:	1c4080e7          	jalr	452(ra) # 8000e368 <_Unwind_Resume>
+    80005198:	000c8513          	mv	a0,s9
+    8000519c:	ffffe097          	auipc	ra,0xffffe
+    800051a0:	fb8080e7          	jalr	-72(ra) # 80003154 <_ZdlPv>
+    800051a4:	00048513          	mv	a0,s1
+    800051a8:	00009097          	auipc	ra,0x9
+    800051ac:	210080e7          	jalr	528(ra) # 8000e3b8 <_Unwind_Resume>
 
-00000000800051ac <_ZN8Consumer3runEv>:
+00000000800051b0 <_ZN8Consumer3runEv>:
     void run() override {
-    800051ac:	fd010113          	addi	sp,sp,-48
-    800051b0:	02113423          	sd	ra,40(sp)
-    800051b4:	02813023          	sd	s0,32(sp)
-    800051b8:	00913c23          	sd	s1,24(sp)
-    800051bc:	01213823          	sd	s2,16(sp)
-    800051c0:	01313423          	sd	s3,8(sp)
-    800051c4:	03010413          	addi	s0,sp,48
-    800051c8:	00050913          	mv	s2,a0
+    800051b0:	fd010113          	addi	sp,sp,-48
+    800051b4:	02113423          	sd	ra,40(sp)
+    800051b8:	02813023          	sd	s0,32(sp)
+    800051bc:	00913c23          	sd	s1,24(sp)
+    800051c0:	01213823          	sd	s2,16(sp)
+    800051c4:	01313423          	sd	s3,8(sp)
+    800051c8:	03010413          	addi	s0,sp,48
+    800051cc:	00050913          	mv	s2,a0
         int i = 0;
-    800051cc:	00000993          	li	s3,0
-    800051d0:	0100006f          	j	800051e0 <_ZN8Consumer3runEv+0x34>
+    800051d0:	00000993          	li	s3,0
+    800051d4:	0100006f          	j	800051e4 <_ZN8Consumer3runEv+0x34>
                 Console::putc('\n');
-    800051d4:	00a00513          	li	a0,10
-    800051d8:	ffffe097          	auipc	ra,0xffffe
-    800051dc:	3c4080e7          	jalr	964(ra) # 8000359c <_ZN7Console4putcEc>
+    800051d8:	00a00513          	li	a0,10
+    800051dc:	ffffe097          	auipc	ra,0xffffe
+    800051e0:	3bc080e7          	jalr	956(ra) # 80003598 <_ZN7Console4putcEc>
         while (!threadEnd) {
-    800051e0:	00008797          	auipc	a5,0x8
-    800051e4:	0707a783          	lw	a5,112(a5) # 8000d250 <_ZL9threadEnd>
-    800051e8:	04079a63          	bnez	a5,8000523c <_ZN8Consumer3runEv+0x90>
+    800051e4:	00008797          	auipc	a5,0x8
+    800051e8:	0b47a783          	lw	a5,180(a5) # 8000d298 <_ZL9threadEnd>
+    800051ec:	04079a63          	bnez	a5,80005240 <_ZN8Consumer3runEv+0x90>
             int key = td->buffer->get();
-    800051ec:	02093783          	ld	a5,32(s2)
-    800051f0:	0087b503          	ld	a0,8(a5)
-    800051f4:	00001097          	auipc	ra,0x1
-    800051f8:	638080e7          	jalr	1592(ra) # 8000682c <_ZN9BufferCPP3getEv>
+    800051f0:	02093783          	ld	a5,32(s2)
+    800051f4:	0087b503          	ld	a0,8(a5)
+    800051f8:	00001097          	auipc	ra,0x1
+    800051fc:	638080e7          	jalr	1592(ra) # 80006830 <_ZN9BufferCPP3getEv>
             i++;
-    800051fc:	0019849b          	addiw	s1,s3,1
-    80005200:	0004899b          	sext.w	s3,s1
+    80005200:	0019849b          	addiw	s1,s3,1
+    80005204:	0004899b          	sext.w	s3,s1
             Console::putc(key);
-    80005204:	0ff57513          	andi	a0,a0,255
-    80005208:	ffffe097          	auipc	ra,0xffffe
-    8000520c:	394080e7          	jalr	916(ra) # 8000359c <_ZN7Console4putcEc>
+    80005208:	0ff57513          	andi	a0,a0,255
+    8000520c:	ffffe097          	auipc	ra,0xffffe
+    80005210:	38c080e7          	jalr	908(ra) # 80003598 <_ZN7Console4putcEc>
             if (i % 80 == 0) {
-    80005210:	05000793          	li	a5,80
-    80005214:	02f4e4bb          	remw	s1,s1,a5
-    80005218:	fc0494e3          	bnez	s1,800051e0 <_ZN8Consumer3runEv+0x34>
-    8000521c:	fb9ff06f          	j	800051d4 <_ZN8Consumer3runEv+0x28>
+    80005214:	05000793          	li	a5,80
+    80005218:	02f4e4bb          	remw	s1,s1,a5
+    8000521c:	fc0494e3          	bnez	s1,800051e4 <_ZN8Consumer3runEv+0x34>
+    80005220:	fb9ff06f          	j	800051d8 <_ZN8Consumer3runEv+0x28>
             int key = td->buffer->get();
-    80005220:	02093783          	ld	a5,32(s2)
-    80005224:	0087b503          	ld	a0,8(a5)
-    80005228:	00001097          	auipc	ra,0x1
-    8000522c:	604080e7          	jalr	1540(ra) # 8000682c <_ZN9BufferCPP3getEv>
+    80005224:	02093783          	ld	a5,32(s2)
+    80005228:	0087b503          	ld	a0,8(a5)
+    8000522c:	00001097          	auipc	ra,0x1
+    80005230:	604080e7          	jalr	1540(ra) # 80006830 <_ZN9BufferCPP3getEv>
             Console::putc(key);
-    80005230:	0ff57513          	andi	a0,a0,255
-    80005234:	ffffe097          	auipc	ra,0xffffe
-    80005238:	368080e7          	jalr	872(ra) # 8000359c <_ZN7Console4putcEc>
+    80005234:	0ff57513          	andi	a0,a0,255
+    80005238:	ffffe097          	auipc	ra,0xffffe
+    8000523c:	360080e7          	jalr	864(ra) # 80003598 <_ZN7Console4putcEc>
         while (td->buffer->getCnt() > 0) {
-    8000523c:	02093783          	ld	a5,32(s2)
-    80005240:	0087b503          	ld	a0,8(a5)
-    80005244:	00001097          	auipc	ra,0x1
-    80005248:	674080e7          	jalr	1652(ra) # 800068b8 <_ZN9BufferCPP6getCntEv>
-    8000524c:	fca04ae3          	bgtz	a0,80005220 <_ZN8Consumer3runEv+0x74>
+    80005240:	02093783          	ld	a5,32(s2)
+    80005244:	0087b503          	ld	a0,8(a5)
+    80005248:	00001097          	auipc	ra,0x1
+    8000524c:	674080e7          	jalr	1652(ra) # 800068bc <_ZN9BufferCPP6getCntEv>
+    80005250:	fca04ae3          	bgtz	a0,80005224 <_ZN8Consumer3runEv+0x74>
         td->sem->signal();
-    80005250:	02093783          	ld	a5,32(s2)
-    80005254:	0107b503          	ld	a0,16(a5)
-    80005258:	ffffe097          	auipc	ra,0xffffe
-    8000525c:	280080e7          	jalr	640(ra) # 800034d8 <_ZN9Semaphore6signalEv>
+    80005254:	02093783          	ld	a5,32(s2)
+    80005258:	0107b503          	ld	a0,16(a5)
+    8000525c:	ffffe097          	auipc	ra,0xffffe
+    80005260:	278080e7          	jalr	632(ra) # 800034d4 <_ZN9Semaphore6signalEv>
     }
-    80005260:	02813083          	ld	ra,40(sp)
-    80005264:	02013403          	ld	s0,32(sp)
-    80005268:	01813483          	ld	s1,24(sp)
-    8000526c:	01013903          	ld	s2,16(sp)
-    80005270:	00813983          	ld	s3,8(sp)
-    80005274:	03010113          	addi	sp,sp,48
-    80005278:	00008067          	ret
+    80005264:	02813083          	ld	ra,40(sp)
+    80005268:	02013403          	ld	s0,32(sp)
+    8000526c:	01813483          	ld	s1,24(sp)
+    80005270:	01013903          	ld	s2,16(sp)
+    80005274:	00813983          	ld	s3,8(sp)
+    80005278:	03010113          	addi	sp,sp,48
+    8000527c:	00008067          	ret
 
-000000008000527c <_ZN8ConsumerD1Ev>:
+0000000080005280 <_ZN8ConsumerD1Ev>:
 class Consumer : public Thread {
-    8000527c:	ff010113          	addi	sp,sp,-16
-    80005280:	00113423          	sd	ra,8(sp)
-    80005284:	00813023          	sd	s0,0(sp)
-    80005288:	01010413          	addi	s0,sp,16
-    8000528c:	00008797          	auipc	a5,0x8
-    80005290:	ce478793          	addi	a5,a5,-796 # 8000cf70 <_ZTV8Consumer+0x10>
-    80005294:	00f53023          	sd	a5,0(a0)
-    80005298:	ffffe097          	auipc	ra,0xffffe
-    8000529c:	d98080e7          	jalr	-616(ra) # 80003030 <_ZN6ThreadD1Ev>
-    800052a0:	00813083          	ld	ra,8(sp)
-    800052a4:	00013403          	ld	s0,0(sp)
-    800052a8:	01010113          	addi	sp,sp,16
-    800052ac:	00008067          	ret
+    80005280:	ff010113          	addi	sp,sp,-16
+    80005284:	00113423          	sd	ra,8(sp)
+    80005288:	00813023          	sd	s0,0(sp)
+    8000528c:	01010413          	addi	s0,sp,16
+    80005290:	00008797          	auipc	a5,0x8
+    80005294:	d1078793          	addi	a5,a5,-752 # 8000cfa0 <_ZTV8Consumer+0x10>
+    80005298:	00f53023          	sd	a5,0(a0)
+    8000529c:	ffffe097          	auipc	ra,0xffffe
+    800052a0:	d88080e7          	jalr	-632(ra) # 80003024 <_ZN6ThreadD1Ev>
+    800052a4:	00813083          	ld	ra,8(sp)
+    800052a8:	00013403          	ld	s0,0(sp)
+    800052ac:	01010113          	addi	sp,sp,16
+    800052b0:	00008067          	ret
 
-00000000800052b0 <_ZN8ConsumerD0Ev>:
-    800052b0:	fe010113          	addi	sp,sp,-32
-    800052b4:	00113c23          	sd	ra,24(sp)
-    800052b8:	00813823          	sd	s0,16(sp)
-    800052bc:	00913423          	sd	s1,8(sp)
-    800052c0:	02010413          	addi	s0,sp,32
-    800052c4:	00050493          	mv	s1,a0
-    800052c8:	00008797          	auipc	a5,0x8
-    800052cc:	ca878793          	addi	a5,a5,-856 # 8000cf70 <_ZTV8Consumer+0x10>
-    800052d0:	00f53023          	sd	a5,0(a0)
-    800052d4:	ffffe097          	auipc	ra,0xffffe
-    800052d8:	d5c080e7          	jalr	-676(ra) # 80003030 <_ZN6ThreadD1Ev>
-    800052dc:	00048513          	mv	a0,s1
-    800052e0:	ffffe097          	auipc	ra,0xffffe
-    800052e4:	e80080e7          	jalr	-384(ra) # 80003160 <_ZdlPv>
-    800052e8:	01813083          	ld	ra,24(sp)
-    800052ec:	01013403          	ld	s0,16(sp)
-    800052f0:	00813483          	ld	s1,8(sp)
-    800052f4:	02010113          	addi	sp,sp,32
-    800052f8:	00008067          	ret
+00000000800052b4 <_ZN8ConsumerD0Ev>:
+    800052b4:	fe010113          	addi	sp,sp,-32
+    800052b8:	00113c23          	sd	ra,24(sp)
+    800052bc:	00813823          	sd	s0,16(sp)
+    800052c0:	00913423          	sd	s1,8(sp)
+    800052c4:	02010413          	addi	s0,sp,32
+    800052c8:	00050493          	mv	s1,a0
+    800052cc:	00008797          	auipc	a5,0x8
+    800052d0:	cd478793          	addi	a5,a5,-812 # 8000cfa0 <_ZTV8Consumer+0x10>
+    800052d4:	00f53023          	sd	a5,0(a0)
+    800052d8:	ffffe097          	auipc	ra,0xffffe
+    800052dc:	d4c080e7          	jalr	-692(ra) # 80003024 <_ZN6ThreadD1Ev>
+    800052e0:	00048513          	mv	a0,s1
+    800052e4:	ffffe097          	auipc	ra,0xffffe
+    800052e8:	e70080e7          	jalr	-400(ra) # 80003154 <_ZdlPv>
+    800052ec:	01813083          	ld	ra,24(sp)
+    800052f0:	01013403          	ld	s0,16(sp)
+    800052f4:	00813483          	ld	s1,8(sp)
+    800052f8:	02010113          	addi	sp,sp,32
+    800052fc:	00008067          	ret
 
-00000000800052fc <_ZN16ProducerKeyboradD1Ev>:
+0000000080005300 <_ZN16ProducerKeyboradD1Ev>:
 class ProducerKeyborad : public Thread {
-    800052fc:	ff010113          	addi	sp,sp,-16
-    80005300:	00113423          	sd	ra,8(sp)
-    80005304:	00813023          	sd	s0,0(sp)
-    80005308:	01010413          	addi	s0,sp,16
-    8000530c:	00008797          	auipc	a5,0x8
-    80005310:	c1478793          	addi	a5,a5,-1004 # 8000cf20 <_ZTV16ProducerKeyborad+0x10>
-    80005314:	00f53023          	sd	a5,0(a0)
-    80005318:	ffffe097          	auipc	ra,0xffffe
-    8000531c:	d18080e7          	jalr	-744(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80005320:	00813083          	ld	ra,8(sp)
-    80005324:	00013403          	ld	s0,0(sp)
-    80005328:	01010113          	addi	sp,sp,16
-    8000532c:	00008067          	ret
+    80005300:	ff010113          	addi	sp,sp,-16
+    80005304:	00113423          	sd	ra,8(sp)
+    80005308:	00813023          	sd	s0,0(sp)
+    8000530c:	01010413          	addi	s0,sp,16
+    80005310:	00008797          	auipc	a5,0x8
+    80005314:	c4078793          	addi	a5,a5,-960 # 8000cf50 <_ZTV16ProducerKeyborad+0x10>
+    80005318:	00f53023          	sd	a5,0(a0)
+    8000531c:	ffffe097          	auipc	ra,0xffffe
+    80005320:	d08080e7          	jalr	-760(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80005324:	00813083          	ld	ra,8(sp)
+    80005328:	00013403          	ld	s0,0(sp)
+    8000532c:	01010113          	addi	sp,sp,16
+    80005330:	00008067          	ret
 
-0000000080005330 <_ZN16ProducerKeyboradD0Ev>:
-    80005330:	fe010113          	addi	sp,sp,-32
-    80005334:	00113c23          	sd	ra,24(sp)
-    80005338:	00813823          	sd	s0,16(sp)
-    8000533c:	00913423          	sd	s1,8(sp)
-    80005340:	02010413          	addi	s0,sp,32
-    80005344:	00050493          	mv	s1,a0
-    80005348:	00008797          	auipc	a5,0x8
-    8000534c:	bd878793          	addi	a5,a5,-1064 # 8000cf20 <_ZTV16ProducerKeyborad+0x10>
-    80005350:	00f53023          	sd	a5,0(a0)
-    80005354:	ffffe097          	auipc	ra,0xffffe
-    80005358:	cdc080e7          	jalr	-804(ra) # 80003030 <_ZN6ThreadD1Ev>
-    8000535c:	00048513          	mv	a0,s1
-    80005360:	ffffe097          	auipc	ra,0xffffe
-    80005364:	e00080e7          	jalr	-512(ra) # 80003160 <_ZdlPv>
-    80005368:	01813083          	ld	ra,24(sp)
-    8000536c:	01013403          	ld	s0,16(sp)
-    80005370:	00813483          	ld	s1,8(sp)
-    80005374:	02010113          	addi	sp,sp,32
-    80005378:	00008067          	ret
+0000000080005334 <_ZN16ProducerKeyboradD0Ev>:
+    80005334:	fe010113          	addi	sp,sp,-32
+    80005338:	00113c23          	sd	ra,24(sp)
+    8000533c:	00813823          	sd	s0,16(sp)
+    80005340:	00913423          	sd	s1,8(sp)
+    80005344:	02010413          	addi	s0,sp,32
+    80005348:	00050493          	mv	s1,a0
+    8000534c:	00008797          	auipc	a5,0x8
+    80005350:	c0478793          	addi	a5,a5,-1020 # 8000cf50 <_ZTV16ProducerKeyborad+0x10>
+    80005354:	00f53023          	sd	a5,0(a0)
+    80005358:	ffffe097          	auipc	ra,0xffffe
+    8000535c:	ccc080e7          	jalr	-820(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80005360:	00048513          	mv	a0,s1
+    80005364:	ffffe097          	auipc	ra,0xffffe
+    80005368:	df0080e7          	jalr	-528(ra) # 80003154 <_ZdlPv>
+    8000536c:	01813083          	ld	ra,24(sp)
+    80005370:	01013403          	ld	s0,16(sp)
+    80005374:	00813483          	ld	s1,8(sp)
+    80005378:	02010113          	addi	sp,sp,32
+    8000537c:	00008067          	ret
 
-000000008000537c <_ZN8ProducerD1Ev>:
+0000000080005380 <_ZN8ProducerD1Ev>:
 class Producer : public Thread {
-    8000537c:	ff010113          	addi	sp,sp,-16
-    80005380:	00113423          	sd	ra,8(sp)
-    80005384:	00813023          	sd	s0,0(sp)
-    80005388:	01010413          	addi	s0,sp,16
-    8000538c:	00008797          	auipc	a5,0x8
-    80005390:	bbc78793          	addi	a5,a5,-1092 # 8000cf48 <_ZTV8Producer+0x10>
-    80005394:	00f53023          	sd	a5,0(a0)
-    80005398:	ffffe097          	auipc	ra,0xffffe
-    8000539c:	c98080e7          	jalr	-872(ra) # 80003030 <_ZN6ThreadD1Ev>
-    800053a0:	00813083          	ld	ra,8(sp)
-    800053a4:	00013403          	ld	s0,0(sp)
-    800053a8:	01010113          	addi	sp,sp,16
-    800053ac:	00008067          	ret
+    80005380:	ff010113          	addi	sp,sp,-16
+    80005384:	00113423          	sd	ra,8(sp)
+    80005388:	00813023          	sd	s0,0(sp)
+    8000538c:	01010413          	addi	s0,sp,16
+    80005390:	00008797          	auipc	a5,0x8
+    80005394:	be878793          	addi	a5,a5,-1048 # 8000cf78 <_ZTV8Producer+0x10>
+    80005398:	00f53023          	sd	a5,0(a0)
+    8000539c:	ffffe097          	auipc	ra,0xffffe
+    800053a0:	c88080e7          	jalr	-888(ra) # 80003024 <_ZN6ThreadD1Ev>
+    800053a4:	00813083          	ld	ra,8(sp)
+    800053a8:	00013403          	ld	s0,0(sp)
+    800053ac:	01010113          	addi	sp,sp,16
+    800053b0:	00008067          	ret
 
-00000000800053b0 <_ZN8ProducerD0Ev>:
-    800053b0:	fe010113          	addi	sp,sp,-32
-    800053b4:	00113c23          	sd	ra,24(sp)
-    800053b8:	00813823          	sd	s0,16(sp)
-    800053bc:	00913423          	sd	s1,8(sp)
-    800053c0:	02010413          	addi	s0,sp,32
-    800053c4:	00050493          	mv	s1,a0
-    800053c8:	00008797          	auipc	a5,0x8
-    800053cc:	b8078793          	addi	a5,a5,-1152 # 8000cf48 <_ZTV8Producer+0x10>
-    800053d0:	00f53023          	sd	a5,0(a0)
-    800053d4:	ffffe097          	auipc	ra,0xffffe
-    800053d8:	c5c080e7          	jalr	-932(ra) # 80003030 <_ZN6ThreadD1Ev>
-    800053dc:	00048513          	mv	a0,s1
-    800053e0:	ffffe097          	auipc	ra,0xffffe
-    800053e4:	d80080e7          	jalr	-640(ra) # 80003160 <_ZdlPv>
-    800053e8:	01813083          	ld	ra,24(sp)
-    800053ec:	01013403          	ld	s0,16(sp)
-    800053f0:	00813483          	ld	s1,8(sp)
-    800053f4:	02010113          	addi	sp,sp,32
-    800053f8:	00008067          	ret
+00000000800053b4 <_ZN8ProducerD0Ev>:
+    800053b4:	fe010113          	addi	sp,sp,-32
+    800053b8:	00113c23          	sd	ra,24(sp)
+    800053bc:	00813823          	sd	s0,16(sp)
+    800053c0:	00913423          	sd	s1,8(sp)
+    800053c4:	02010413          	addi	s0,sp,32
+    800053c8:	00050493          	mv	s1,a0
+    800053cc:	00008797          	auipc	a5,0x8
+    800053d0:	bac78793          	addi	a5,a5,-1108 # 8000cf78 <_ZTV8Producer+0x10>
+    800053d4:	00f53023          	sd	a5,0(a0)
+    800053d8:	ffffe097          	auipc	ra,0xffffe
+    800053dc:	c4c080e7          	jalr	-948(ra) # 80003024 <_ZN6ThreadD1Ev>
+    800053e0:	00048513          	mv	a0,s1
+    800053e4:	ffffe097          	auipc	ra,0xffffe
+    800053e8:	d70080e7          	jalr	-656(ra) # 80003154 <_ZdlPv>
+    800053ec:	01813083          	ld	ra,24(sp)
+    800053f0:	01013403          	ld	s0,16(sp)
+    800053f4:	00813483          	ld	s1,8(sp)
+    800053f8:	02010113          	addi	sp,sp,32
+    800053fc:	00008067          	ret
 
-00000000800053fc <_ZN16ProducerKeyborad3runEv>:
+0000000080005400 <_ZN16ProducerKeyborad3runEv>:
     void run() override {
-    800053fc:	fe010113          	addi	sp,sp,-32
-    80005400:	00113c23          	sd	ra,24(sp)
-    80005404:	00813823          	sd	s0,16(sp)
-    80005408:	00913423          	sd	s1,8(sp)
-    8000540c:	02010413          	addi	s0,sp,32
-    80005410:	00050493          	mv	s1,a0
+    80005400:	fe010113          	addi	sp,sp,-32
+    80005404:	00113c23          	sd	ra,24(sp)
+    80005408:	00813823          	sd	s0,16(sp)
+    8000540c:	00913423          	sd	s1,8(sp)
+    80005410:	02010413          	addi	s0,sp,32
+    80005414:	00050493          	mv	s1,a0
         while ((key = getc()) != 0x1b) {
-    80005414:	ffffc097          	auipc	ra,0xffffc
-    80005418:	1ec080e7          	jalr	492(ra) # 80001600 <_Z4getcv>
-    8000541c:	0005059b          	sext.w	a1,a0
-    80005420:	01b00793          	li	a5,27
-    80005424:	00f58c63          	beq	a1,a5,8000543c <_ZN16ProducerKeyborad3runEv+0x40>
+    80005418:	ffffc097          	auipc	ra,0xffffc
+    8000541c:	1e8080e7          	jalr	488(ra) # 80001600 <_Z4getcv>
+    80005420:	0005059b          	sext.w	a1,a0
+    80005424:	01b00793          	li	a5,27
+    80005428:	00f58c63          	beq	a1,a5,80005440 <_ZN16ProducerKeyborad3runEv+0x40>
             td->buffer->put(key);
-    80005428:	0204b783          	ld	a5,32(s1)
-    8000542c:	0087b503          	ld	a0,8(a5)
-    80005430:	00001097          	auipc	ra,0x1
-    80005434:	36c080e7          	jalr	876(ra) # 8000679c <_ZN9BufferCPP3putEi>
+    8000542c:	0204b783          	ld	a5,32(s1)
+    80005430:	0087b503          	ld	a0,8(a5)
+    80005434:	00001097          	auipc	ra,0x1
+    80005438:	36c080e7          	jalr	876(ra) # 800067a0 <_ZN9BufferCPP3putEi>
         while ((key = getc()) != 0x1b) {
-    80005438:	fddff06f          	j	80005414 <_ZN16ProducerKeyborad3runEv+0x18>
+    8000543c:	fddff06f          	j	80005418 <_ZN16ProducerKeyborad3runEv+0x18>
         threadEnd = 1;
-    8000543c:	00100793          	li	a5,1
-    80005440:	00008717          	auipc	a4,0x8
-    80005444:	e0f72823          	sw	a5,-496(a4) # 8000d250 <_ZL9threadEnd>
+    80005440:	00100793          	li	a5,1
+    80005444:	00008717          	auipc	a4,0x8
+    80005448:	e4f72a23          	sw	a5,-428(a4) # 8000d298 <_ZL9threadEnd>
         td->buffer->put('!');
-    80005448:	0204b783          	ld	a5,32(s1)
-    8000544c:	02100593          	li	a1,33
-    80005450:	0087b503          	ld	a0,8(a5)
-    80005454:	00001097          	auipc	ra,0x1
-    80005458:	348080e7          	jalr	840(ra) # 8000679c <_ZN9BufferCPP3putEi>
+    8000544c:	0204b783          	ld	a5,32(s1)
+    80005450:	02100593          	li	a1,33
+    80005454:	0087b503          	ld	a0,8(a5)
+    80005458:	00001097          	auipc	ra,0x1
+    8000545c:	348080e7          	jalr	840(ra) # 800067a0 <_ZN9BufferCPP3putEi>
         td->sem->signal();
-    8000545c:	0204b783          	ld	a5,32(s1)
-    80005460:	0107b503          	ld	a0,16(a5)
-    80005464:	ffffe097          	auipc	ra,0xffffe
-    80005468:	074080e7          	jalr	116(ra) # 800034d8 <_ZN9Semaphore6signalEv>
+    80005460:	0204b783          	ld	a5,32(s1)
+    80005464:	0107b503          	ld	a0,16(a5)
+    80005468:	ffffe097          	auipc	ra,0xffffe
+    8000546c:	06c080e7          	jalr	108(ra) # 800034d4 <_ZN9Semaphore6signalEv>
     }
-    8000546c:	01813083          	ld	ra,24(sp)
-    80005470:	01013403          	ld	s0,16(sp)
-    80005474:	00813483          	ld	s1,8(sp)
-    80005478:	02010113          	addi	sp,sp,32
-    8000547c:	00008067          	ret
+    80005470:	01813083          	ld	ra,24(sp)
+    80005474:	01013403          	ld	s0,16(sp)
+    80005478:	00813483          	ld	s1,8(sp)
+    8000547c:	02010113          	addi	sp,sp,32
+    80005480:	00008067          	ret
 
-0000000080005480 <_ZN8Producer3runEv>:
+0000000080005484 <_ZN8Producer3runEv>:
     void run() override {
-    80005480:	fe010113          	addi	sp,sp,-32
-    80005484:	00113c23          	sd	ra,24(sp)
-    80005488:	00813823          	sd	s0,16(sp)
-    8000548c:	00913423          	sd	s1,8(sp)
-    80005490:	01213023          	sd	s2,0(sp)
-    80005494:	02010413          	addi	s0,sp,32
-    80005498:	00050493          	mv	s1,a0
+    80005484:	fe010113          	addi	sp,sp,-32
+    80005488:	00113c23          	sd	ra,24(sp)
+    8000548c:	00813823          	sd	s0,16(sp)
+    80005490:	00913423          	sd	s1,8(sp)
+    80005494:	01213023          	sd	s2,0(sp)
+    80005498:	02010413          	addi	s0,sp,32
+    8000549c:	00050493          	mv	s1,a0
         int i = 0;
-    8000549c:	00000913          	li	s2,0
+    800054a0:	00000913          	li	s2,0
         while (!threadEnd) {
-    800054a0:	00008797          	auipc	a5,0x8
-    800054a4:	db07a783          	lw	a5,-592(a5) # 8000d250 <_ZL9threadEnd>
-    800054a8:	04079263          	bnez	a5,800054ec <_ZN8Producer3runEv+0x6c>
+    800054a4:	00008797          	auipc	a5,0x8
+    800054a8:	df47a783          	lw	a5,-524(a5) # 8000d298 <_ZL9threadEnd>
+    800054ac:	04079263          	bnez	a5,800054f0 <_ZN8Producer3runEv+0x6c>
             td->buffer->put(td->id + '0');
-    800054ac:	0204b783          	ld	a5,32(s1)
-    800054b0:	0007a583          	lw	a1,0(a5)
-    800054b4:	0305859b          	addiw	a1,a1,48
-    800054b8:	0087b503          	ld	a0,8(a5)
-    800054bc:	00001097          	auipc	ra,0x1
-    800054c0:	2e0080e7          	jalr	736(ra) # 8000679c <_ZN9BufferCPP3putEi>
+    800054b0:	0204b783          	ld	a5,32(s1)
+    800054b4:	0007a583          	lw	a1,0(a5)
+    800054b8:	0305859b          	addiw	a1,a1,48
+    800054bc:	0087b503          	ld	a0,8(a5)
+    800054c0:	00001097          	auipc	ra,0x1
+    800054c4:	2e0080e7          	jalr	736(ra) # 800067a0 <_ZN9BufferCPP3putEi>
             i++;
-    800054c4:	0019071b          	addiw	a4,s2,1
-    800054c8:	0007091b          	sext.w	s2,a4
+    800054c8:	0019071b          	addiw	a4,s2,1
+    800054cc:	0007091b          	sext.w	s2,a4
             Thread::sleep((i + td->id) % 5);
-    800054cc:	0204b783          	ld	a5,32(s1)
-    800054d0:	0007a783          	lw	a5,0(a5)
-    800054d4:	00e787bb          	addw	a5,a5,a4
-    800054d8:	00500513          	li	a0,5
-    800054dc:	02a7e53b          	remw	a0,a5,a0
-    800054e0:	ffffe097          	auipc	ra,0xffffe
-    800054e4:	e84080e7          	jalr	-380(ra) # 80003364 <_ZN6Thread5sleepEm>
+    800054d0:	0204b783          	ld	a5,32(s1)
+    800054d4:	0007a783          	lw	a5,0(a5)
+    800054d8:	00e787bb          	addw	a5,a5,a4
+    800054dc:	00500513          	li	a0,5
+    800054e0:	02a7e53b          	remw	a0,a5,a0
+    800054e4:	ffffe097          	auipc	ra,0xffffe
+    800054e8:	e7c080e7          	jalr	-388(ra) # 80003360 <_ZN6Thread5sleepEm>
         while (!threadEnd) {
-    800054e8:	fb9ff06f          	j	800054a0 <_ZN8Producer3runEv+0x20>
+    800054ec:	fb9ff06f          	j	800054a4 <_ZN8Producer3runEv+0x20>
         td->sem->signal();
-    800054ec:	0204b783          	ld	a5,32(s1)
-    800054f0:	0107b503          	ld	a0,16(a5)
-    800054f4:	ffffe097          	auipc	ra,0xffffe
-    800054f8:	fe4080e7          	jalr	-28(ra) # 800034d8 <_ZN9Semaphore6signalEv>
+    800054f0:	0204b783          	ld	a5,32(s1)
+    800054f4:	0107b503          	ld	a0,16(a5)
+    800054f8:	ffffe097          	auipc	ra,0xffffe
+    800054fc:	fdc080e7          	jalr	-36(ra) # 800034d4 <_ZN9Semaphore6signalEv>
     }
-    800054fc:	01813083          	ld	ra,24(sp)
-    80005500:	01013403          	ld	s0,16(sp)
-    80005504:	00813483          	ld	s1,8(sp)
-    80005508:	00013903          	ld	s2,0(sp)
-    8000550c:	02010113          	addi	sp,sp,32
-    80005510:	00008067          	ret
+    80005500:	01813083          	ld	ra,24(sp)
+    80005504:	01013403          	ld	s0,16(sp)
+    80005508:	00813483          	ld	s1,8(sp)
+    8000550c:	00013903          	ld	s2,0(sp)
+    80005510:	02010113          	addi	sp,sp,32
+    80005514:	00008067          	ret
 
-0000000080005514 <_ZL9fibonaccim>:
+0000000080005518 <_ZL9fibonaccim>:
 static volatile bool finishedA = false;
 static volatile bool finishedB = false;
 static volatile bool finishedC = false;
 static volatile bool finishedD = false;
 
 static uint64 fibonacci(uint64 n) {
-    80005514:	fe010113          	addi	sp,sp,-32
-    80005518:	00113c23          	sd	ra,24(sp)
-    8000551c:	00813823          	sd	s0,16(sp)
-    80005520:	00913423          	sd	s1,8(sp)
-    80005524:	01213023          	sd	s2,0(sp)
-    80005528:	02010413          	addi	s0,sp,32
-    8000552c:	00050493          	mv	s1,a0
+    80005518:	fe010113          	addi	sp,sp,-32
+    8000551c:	00113c23          	sd	ra,24(sp)
+    80005520:	00813823          	sd	s0,16(sp)
+    80005524:	00913423          	sd	s1,8(sp)
+    80005528:	01213023          	sd	s2,0(sp)
+    8000552c:	02010413          	addi	s0,sp,32
+    80005530:	00050493          	mv	s1,a0
     if (n == 0 || n == 1) { return n; }
-    80005530:	00100793          	li	a5,1
-    80005534:	02a7f863          	bgeu	a5,a0,80005564 <_ZL9fibonaccim+0x50>
+    80005534:	00100793          	li	a5,1
+    80005538:	02a7f863          	bgeu	a5,a0,80005568 <_ZL9fibonaccim+0x50>
     if (n % 10 == 0) { thread_dispatch(); }
-    80005538:	00a00793          	li	a5,10
-    8000553c:	02f577b3          	remu	a5,a0,a5
-    80005540:	02078e63          	beqz	a5,8000557c <_ZL9fibonaccim+0x68>
+    8000553c:	00a00793          	li	a5,10
+    80005540:	02f577b3          	remu	a5,a0,a5
+    80005544:	02078e63          	beqz	a5,80005580 <_ZL9fibonaccim+0x68>
     return fibonacci(n - 1) + fibonacci(n - 2);
-    80005544:	fff48513          	addi	a0,s1,-1
-    80005548:	00000097          	auipc	ra,0x0
-    8000554c:	fcc080e7          	jalr	-52(ra) # 80005514 <_ZL9fibonaccim>
-    80005550:	00050913          	mv	s2,a0
-    80005554:	ffe48513          	addi	a0,s1,-2
-    80005558:	00000097          	auipc	ra,0x0
-    8000555c:	fbc080e7          	jalr	-68(ra) # 80005514 <_ZL9fibonaccim>
-    80005560:	00a90533          	add	a0,s2,a0
+    80005548:	fff48513          	addi	a0,s1,-1
+    8000554c:	00000097          	auipc	ra,0x0
+    80005550:	fcc080e7          	jalr	-52(ra) # 80005518 <_ZL9fibonaccim>
+    80005554:	00050913          	mv	s2,a0
+    80005558:	ffe48513          	addi	a0,s1,-2
+    8000555c:	00000097          	auipc	ra,0x0
+    80005560:	fbc080e7          	jalr	-68(ra) # 80005518 <_ZL9fibonaccim>
+    80005564:	00a90533          	add	a0,s2,a0
 }
-    80005564:	01813083          	ld	ra,24(sp)
-    80005568:	01013403          	ld	s0,16(sp)
-    8000556c:	00813483          	ld	s1,8(sp)
-    80005570:	00013903          	ld	s2,0(sp)
-    80005574:	02010113          	addi	sp,sp,32
-    80005578:	00008067          	ret
+    80005568:	01813083          	ld	ra,24(sp)
+    8000556c:	01013403          	ld	s0,16(sp)
+    80005570:	00813483          	ld	s1,8(sp)
+    80005574:	00013903          	ld	s2,0(sp)
+    80005578:	02010113          	addi	sp,sp,32
+    8000557c:	00008067          	ret
     if (n % 10 == 0) { thread_dispatch(); }
-    8000557c:	ffffc097          	auipc	ra,0xffffc
-    80005580:	f44080e7          	jalr	-188(ra) # 800014c0 <_Z15thread_dispatchv>
-    80005584:	fc1ff06f          	j	80005544 <_ZL9fibonaccim+0x30>
+    80005580:	ffffc097          	auipc	ra,0xffffc
+    80005584:	f40080e7          	jalr	-192(ra) # 800014c0 <_Z15thread_dispatchv>
+    80005588:	fc1ff06f          	j	80005548 <_ZL9fibonaccim+0x30>
 
-0000000080005588 <_ZL11workerBodyDPv>:
+000000008000558c <_ZL11workerBodyDPv>:
     printString("C finished!\n");
     finishedC = true;
     thread_dispatch();
 }
 
 static void workerBodyD(void* arg) {
-    80005588:	fe010113          	addi	sp,sp,-32
-    8000558c:	00113c23          	sd	ra,24(sp)
-    80005590:	00813823          	sd	s0,16(sp)
-    80005594:	00913423          	sd	s1,8(sp)
-    80005598:	01213023          	sd	s2,0(sp)
-    8000559c:	02010413          	addi	s0,sp,32
+    8000558c:	fe010113          	addi	sp,sp,-32
+    80005590:	00113c23          	sd	ra,24(sp)
+    80005594:	00813823          	sd	s0,16(sp)
+    80005598:	00913423          	sd	s1,8(sp)
+    8000559c:	01213023          	sd	s2,0(sp)
+    800055a0:	02010413          	addi	s0,sp,32
     uint8 i = 10;
-    800055a0:	00a00493          	li	s1,10
-    800055a4:	0400006f          	j	800055e4 <_ZL11workerBodyDPv+0x5c>
+    800055a4:	00a00493          	li	s1,10
+    800055a8:	0400006f          	j	800055e8 <_ZL11workerBodyDPv+0x5c>
     for (; i < 13; i++) {
         printString("D: i="); printInt(i); printString("\n");
-    800055a8:	00005517          	auipc	a0,0x5
-    800055ac:	ec850513          	addi	a0,a0,-312 # 8000a470 <CONSOLE_STATUS+0x460>
-    800055b0:	00001097          	auipc	ra,0x1
-    800055b4:	dc8080e7          	jalr	-568(ra) # 80006378 <_Z11printStringPKc>
-    800055b8:	00000613          	li	a2,0
-    800055bc:	00a00593          	li	a1,10
-    800055c0:	00048513          	mv	a0,s1
-    800055c4:	00001097          	auipc	ra,0x1
-    800055c8:	f64080e7          	jalr	-156(ra) # 80006528 <_Z8printIntiii>
-    800055cc:	00005517          	auipc	a0,0x5
-    800055d0:	09450513          	addi	a0,a0,148 # 8000a660 <CONSOLE_STATUS+0x650>
-    800055d4:	00001097          	auipc	ra,0x1
-    800055d8:	da4080e7          	jalr	-604(ra) # 80006378 <_Z11printStringPKc>
+    800055ac:	00005517          	auipc	a0,0x5
+    800055b0:	ec450513          	addi	a0,a0,-316 # 8000a470 <CONSOLE_STATUS+0x460>
+    800055b4:	00001097          	auipc	ra,0x1
+    800055b8:	dc8080e7          	jalr	-568(ra) # 8000637c <_Z11printStringPKc>
+    800055bc:	00000613          	li	a2,0
+    800055c0:	00a00593          	li	a1,10
+    800055c4:	00048513          	mv	a0,s1
+    800055c8:	00001097          	auipc	ra,0x1
+    800055cc:	f64080e7          	jalr	-156(ra) # 8000652c <_Z8printIntiii>
+    800055d0:	00005517          	auipc	a0,0x5
+    800055d4:	09050513          	addi	a0,a0,144 # 8000a660 <CONSOLE_STATUS+0x650>
+    800055d8:	00001097          	auipc	ra,0x1
+    800055dc:	da4080e7          	jalr	-604(ra) # 8000637c <_Z11printStringPKc>
     for (; i < 13; i++) {
-    800055dc:	0014849b          	addiw	s1,s1,1
-    800055e0:	0ff4f493          	andi	s1,s1,255
-    800055e4:	00c00793          	li	a5,12
-    800055e8:	fc97f0e3          	bgeu	a5,s1,800055a8 <_ZL11workerBodyDPv+0x20>
+    800055e0:	0014849b          	addiw	s1,s1,1
+    800055e4:	0ff4f493          	andi	s1,s1,255
+    800055e8:	00c00793          	li	a5,12
+    800055ec:	fc97f0e3          	bgeu	a5,s1,800055ac <_ZL11workerBodyDPv+0x20>
     }
 
     printString("D: dispatch\n");
-    800055ec:	00005517          	auipc	a0,0x5
-    800055f0:	e8c50513          	addi	a0,a0,-372 # 8000a478 <CONSOLE_STATUS+0x468>
-    800055f4:	00001097          	auipc	ra,0x1
-    800055f8:	d84080e7          	jalr	-636(ra) # 80006378 <_Z11printStringPKc>
+    800055f0:	00005517          	auipc	a0,0x5
+    800055f4:	e8850513          	addi	a0,a0,-376 # 8000a478 <CONSOLE_STATUS+0x468>
+    800055f8:	00001097          	auipc	ra,0x1
+    800055fc:	d84080e7          	jalr	-636(ra) # 8000637c <_Z11printStringPKc>
     __asm__ ("li t1, 5");
-    800055fc:	00500313          	li	t1,5
+    80005600:	00500313          	li	t1,5
     thread_dispatch();
-    80005600:	ffffc097          	auipc	ra,0xffffc
-    80005604:	ec0080e7          	jalr	-320(ra) # 800014c0 <_Z15thread_dispatchv>
+    80005604:	ffffc097          	auipc	ra,0xffffc
+    80005608:	ebc080e7          	jalr	-324(ra) # 800014c0 <_Z15thread_dispatchv>
 
     uint64 result = fibonacci(16);
-    80005608:	01000513          	li	a0,16
-    8000560c:	00000097          	auipc	ra,0x0
-    80005610:	f08080e7          	jalr	-248(ra) # 80005514 <_ZL9fibonaccim>
-    80005614:	00050913          	mv	s2,a0
+    8000560c:	01000513          	li	a0,16
+    80005610:	00000097          	auipc	ra,0x0
+    80005614:	f08080e7          	jalr	-248(ra) # 80005518 <_ZL9fibonaccim>
+    80005618:	00050913          	mv	s2,a0
     printString("D: fibonaci="); printInt(result); printString("\n");
-    80005618:	00005517          	auipc	a0,0x5
-    8000561c:	e7050513          	addi	a0,a0,-400 # 8000a488 <CONSOLE_STATUS+0x478>
-    80005620:	00001097          	auipc	ra,0x1
-    80005624:	d58080e7          	jalr	-680(ra) # 80006378 <_Z11printStringPKc>
-    80005628:	00000613          	li	a2,0
-    8000562c:	00a00593          	li	a1,10
-    80005630:	0009051b          	sext.w	a0,s2
-    80005634:	00001097          	auipc	ra,0x1
-    80005638:	ef4080e7          	jalr	-268(ra) # 80006528 <_Z8printIntiii>
-    8000563c:	00005517          	auipc	a0,0x5
-    80005640:	02450513          	addi	a0,a0,36 # 8000a660 <CONSOLE_STATUS+0x650>
-    80005644:	00001097          	auipc	ra,0x1
-    80005648:	d34080e7          	jalr	-716(ra) # 80006378 <_Z11printStringPKc>
-    8000564c:	0400006f          	j	8000568c <_ZL11workerBodyDPv+0x104>
+    8000561c:	00005517          	auipc	a0,0x5
+    80005620:	e6c50513          	addi	a0,a0,-404 # 8000a488 <CONSOLE_STATUS+0x478>
+    80005624:	00001097          	auipc	ra,0x1
+    80005628:	d58080e7          	jalr	-680(ra) # 8000637c <_Z11printStringPKc>
+    8000562c:	00000613          	li	a2,0
+    80005630:	00a00593          	li	a1,10
+    80005634:	0009051b          	sext.w	a0,s2
+    80005638:	00001097          	auipc	ra,0x1
+    8000563c:	ef4080e7          	jalr	-268(ra) # 8000652c <_Z8printIntiii>
+    80005640:	00005517          	auipc	a0,0x5
+    80005644:	02050513          	addi	a0,a0,32 # 8000a660 <CONSOLE_STATUS+0x650>
+    80005648:	00001097          	auipc	ra,0x1
+    8000564c:	d34080e7          	jalr	-716(ra) # 8000637c <_Z11printStringPKc>
+    80005650:	0400006f          	j	80005690 <_ZL11workerBodyDPv+0x104>
 
     for (; i < 16; i++) {
         printString("D: i="); printInt(i); printString("\n");
-    80005650:	00005517          	auipc	a0,0x5
-    80005654:	e2050513          	addi	a0,a0,-480 # 8000a470 <CONSOLE_STATUS+0x460>
-    80005658:	00001097          	auipc	ra,0x1
-    8000565c:	d20080e7          	jalr	-736(ra) # 80006378 <_Z11printStringPKc>
-    80005660:	00000613          	li	a2,0
-    80005664:	00a00593          	li	a1,10
-    80005668:	00048513          	mv	a0,s1
-    8000566c:	00001097          	auipc	ra,0x1
-    80005670:	ebc080e7          	jalr	-324(ra) # 80006528 <_Z8printIntiii>
-    80005674:	00005517          	auipc	a0,0x5
-    80005678:	fec50513          	addi	a0,a0,-20 # 8000a660 <CONSOLE_STATUS+0x650>
-    8000567c:	00001097          	auipc	ra,0x1
-    80005680:	cfc080e7          	jalr	-772(ra) # 80006378 <_Z11printStringPKc>
+    80005654:	00005517          	auipc	a0,0x5
+    80005658:	e1c50513          	addi	a0,a0,-484 # 8000a470 <CONSOLE_STATUS+0x460>
+    8000565c:	00001097          	auipc	ra,0x1
+    80005660:	d20080e7          	jalr	-736(ra) # 8000637c <_Z11printStringPKc>
+    80005664:	00000613          	li	a2,0
+    80005668:	00a00593          	li	a1,10
+    8000566c:	00048513          	mv	a0,s1
+    80005670:	00001097          	auipc	ra,0x1
+    80005674:	ebc080e7          	jalr	-324(ra) # 8000652c <_Z8printIntiii>
+    80005678:	00005517          	auipc	a0,0x5
+    8000567c:	fe850513          	addi	a0,a0,-24 # 8000a660 <CONSOLE_STATUS+0x650>
+    80005680:	00001097          	auipc	ra,0x1
+    80005684:	cfc080e7          	jalr	-772(ra) # 8000637c <_Z11printStringPKc>
     for (; i < 16; i++) {
-    80005684:	0014849b          	addiw	s1,s1,1
-    80005688:	0ff4f493          	andi	s1,s1,255
-    8000568c:	00f00793          	li	a5,15
-    80005690:	fc97f0e3          	bgeu	a5,s1,80005650 <_ZL11workerBodyDPv+0xc8>
+    80005688:	0014849b          	addiw	s1,s1,1
+    8000568c:	0ff4f493          	andi	s1,s1,255
+    80005690:	00f00793          	li	a5,15
+    80005694:	fc97f0e3          	bgeu	a5,s1,80005654 <_ZL11workerBodyDPv+0xc8>
     }
 
     printString("D finished!\n");
-    80005694:	00005517          	auipc	a0,0x5
-    80005698:	e0450513          	addi	a0,a0,-508 # 8000a498 <CONSOLE_STATUS+0x488>
-    8000569c:	00001097          	auipc	ra,0x1
-    800056a0:	cdc080e7          	jalr	-804(ra) # 80006378 <_Z11printStringPKc>
+    80005698:	00005517          	auipc	a0,0x5
+    8000569c:	e0050513          	addi	a0,a0,-512 # 8000a498 <CONSOLE_STATUS+0x488>
+    800056a0:	00001097          	auipc	ra,0x1
+    800056a4:	cdc080e7          	jalr	-804(ra) # 8000637c <_Z11printStringPKc>
     finishedD = true;
-    800056a4:	00100793          	li	a5,1
-    800056a8:	00008717          	auipc	a4,0x8
-    800056ac:	baf70c23          	sb	a5,-1096(a4) # 8000d260 <_ZL9finishedD>
+    800056a8:	00100793          	li	a5,1
+    800056ac:	00008717          	auipc	a4,0x8
+    800056b0:	bef70e23          	sb	a5,-1028(a4) # 8000d2a8 <_ZL9finishedD>
     thread_dispatch();
-    800056b0:	ffffc097          	auipc	ra,0xffffc
-    800056b4:	e10080e7          	jalr	-496(ra) # 800014c0 <_Z15thread_dispatchv>
+    800056b4:	ffffc097          	auipc	ra,0xffffc
+    800056b8:	e0c080e7          	jalr	-500(ra) # 800014c0 <_Z15thread_dispatchv>
 }
-    800056b8:	01813083          	ld	ra,24(sp)
-    800056bc:	01013403          	ld	s0,16(sp)
-    800056c0:	00813483          	ld	s1,8(sp)
-    800056c4:	00013903          	ld	s2,0(sp)
-    800056c8:	02010113          	addi	sp,sp,32
-    800056cc:	00008067          	ret
+    800056bc:	01813083          	ld	ra,24(sp)
+    800056c0:	01013403          	ld	s0,16(sp)
+    800056c4:	00813483          	ld	s1,8(sp)
+    800056c8:	00013903          	ld	s2,0(sp)
+    800056cc:	02010113          	addi	sp,sp,32
+    800056d0:	00008067          	ret
 
-00000000800056d0 <_ZL11workerBodyCPv>:
+00000000800056d4 <_ZL11workerBodyCPv>:
 static void workerBodyC(void* arg) {
-    800056d0:	fe010113          	addi	sp,sp,-32
-    800056d4:	00113c23          	sd	ra,24(sp)
-    800056d8:	00813823          	sd	s0,16(sp)
-    800056dc:	00913423          	sd	s1,8(sp)
-    800056e0:	01213023          	sd	s2,0(sp)
-    800056e4:	02010413          	addi	s0,sp,32
+    800056d4:	fe010113          	addi	sp,sp,-32
+    800056d8:	00113c23          	sd	ra,24(sp)
+    800056dc:	00813823          	sd	s0,16(sp)
+    800056e0:	00913423          	sd	s1,8(sp)
+    800056e4:	01213023          	sd	s2,0(sp)
+    800056e8:	02010413          	addi	s0,sp,32
     uint8 i = 0;
-    800056e8:	00000493          	li	s1,0
-    800056ec:	0400006f          	j	8000572c <_ZL11workerBodyCPv+0x5c>
+    800056ec:	00000493          	li	s1,0
+    800056f0:	0400006f          	j	80005730 <_ZL11workerBodyCPv+0x5c>
         printString("C: i="); printInt(i); printString("\n");
-    800056f0:	00005517          	auipc	a0,0x5
-    800056f4:	d4050513          	addi	a0,a0,-704 # 8000a430 <CONSOLE_STATUS+0x420>
-    800056f8:	00001097          	auipc	ra,0x1
-    800056fc:	c80080e7          	jalr	-896(ra) # 80006378 <_Z11printStringPKc>
-    80005700:	00000613          	li	a2,0
-    80005704:	00a00593          	li	a1,10
-    80005708:	00048513          	mv	a0,s1
-    8000570c:	00001097          	auipc	ra,0x1
-    80005710:	e1c080e7          	jalr	-484(ra) # 80006528 <_Z8printIntiii>
-    80005714:	00005517          	auipc	a0,0x5
-    80005718:	f4c50513          	addi	a0,a0,-180 # 8000a660 <CONSOLE_STATUS+0x650>
-    8000571c:	00001097          	auipc	ra,0x1
-    80005720:	c5c080e7          	jalr	-932(ra) # 80006378 <_Z11printStringPKc>
+    800056f4:	00005517          	auipc	a0,0x5
+    800056f8:	d3c50513          	addi	a0,a0,-708 # 8000a430 <CONSOLE_STATUS+0x420>
+    800056fc:	00001097          	auipc	ra,0x1
+    80005700:	c80080e7          	jalr	-896(ra) # 8000637c <_Z11printStringPKc>
+    80005704:	00000613          	li	a2,0
+    80005708:	00a00593          	li	a1,10
+    8000570c:	00048513          	mv	a0,s1
+    80005710:	00001097          	auipc	ra,0x1
+    80005714:	e1c080e7          	jalr	-484(ra) # 8000652c <_Z8printIntiii>
+    80005718:	00005517          	auipc	a0,0x5
+    8000571c:	f4850513          	addi	a0,a0,-184 # 8000a660 <CONSOLE_STATUS+0x650>
+    80005720:	00001097          	auipc	ra,0x1
+    80005724:	c5c080e7          	jalr	-932(ra) # 8000637c <_Z11printStringPKc>
     for (; i < 3; i++) {
-    80005724:	0014849b          	addiw	s1,s1,1
-    80005728:	0ff4f493          	andi	s1,s1,255
-    8000572c:	00200793          	li	a5,2
-    80005730:	fc97f0e3          	bgeu	a5,s1,800056f0 <_ZL11workerBodyCPv+0x20>
+    80005728:	0014849b          	addiw	s1,s1,1
+    8000572c:	0ff4f493          	andi	s1,s1,255
+    80005730:	00200793          	li	a5,2
+    80005734:	fc97f0e3          	bgeu	a5,s1,800056f4 <_ZL11workerBodyCPv+0x20>
     printString("C: dispatch\n");
-    80005734:	00005517          	auipc	a0,0x5
-    80005738:	d0450513          	addi	a0,a0,-764 # 8000a438 <CONSOLE_STATUS+0x428>
-    8000573c:	00001097          	auipc	ra,0x1
-    80005740:	c3c080e7          	jalr	-964(ra) # 80006378 <_Z11printStringPKc>
+    80005738:	00005517          	auipc	a0,0x5
+    8000573c:	d0050513          	addi	a0,a0,-768 # 8000a438 <CONSOLE_STATUS+0x428>
+    80005740:	00001097          	auipc	ra,0x1
+    80005744:	c3c080e7          	jalr	-964(ra) # 8000637c <_Z11printStringPKc>
     __asm__ ("li t1, 7");
-    80005744:	00700313          	li	t1,7
+    80005748:	00700313          	li	t1,7
     thread_dispatch();
-    80005748:	ffffc097          	auipc	ra,0xffffc
-    8000574c:	d78080e7          	jalr	-648(ra) # 800014c0 <_Z15thread_dispatchv>
+    8000574c:	ffffc097          	auipc	ra,0xffffc
+    80005750:	d74080e7          	jalr	-652(ra) # 800014c0 <_Z15thread_dispatchv>
     __asm__ ("mv %[t1], t1" : [t1] "=r"(t1));
-    80005750:	00030913          	mv	s2,t1
+    80005754:	00030913          	mv	s2,t1
     printString("C: t1="); printInt(t1); printString("\n");
-    80005754:	00005517          	auipc	a0,0x5
-    80005758:	cf450513          	addi	a0,a0,-780 # 8000a448 <CONSOLE_STATUS+0x438>
-    8000575c:	00001097          	auipc	ra,0x1
-    80005760:	c1c080e7          	jalr	-996(ra) # 80006378 <_Z11printStringPKc>
-    80005764:	00000613          	li	a2,0
-    80005768:	00a00593          	li	a1,10
-    8000576c:	0009051b          	sext.w	a0,s2
-    80005770:	00001097          	auipc	ra,0x1
-    80005774:	db8080e7          	jalr	-584(ra) # 80006528 <_Z8printIntiii>
-    80005778:	00005517          	auipc	a0,0x5
-    8000577c:	ee850513          	addi	a0,a0,-280 # 8000a660 <CONSOLE_STATUS+0x650>
-    80005780:	00001097          	auipc	ra,0x1
-    80005784:	bf8080e7          	jalr	-1032(ra) # 80006378 <_Z11printStringPKc>
+    80005758:	00005517          	auipc	a0,0x5
+    8000575c:	cf050513          	addi	a0,a0,-784 # 8000a448 <CONSOLE_STATUS+0x438>
+    80005760:	00001097          	auipc	ra,0x1
+    80005764:	c1c080e7          	jalr	-996(ra) # 8000637c <_Z11printStringPKc>
+    80005768:	00000613          	li	a2,0
+    8000576c:	00a00593          	li	a1,10
+    80005770:	0009051b          	sext.w	a0,s2
+    80005774:	00001097          	auipc	ra,0x1
+    80005778:	db8080e7          	jalr	-584(ra) # 8000652c <_Z8printIntiii>
+    8000577c:	00005517          	auipc	a0,0x5
+    80005780:	ee450513          	addi	a0,a0,-284 # 8000a660 <CONSOLE_STATUS+0x650>
+    80005784:	00001097          	auipc	ra,0x1
+    80005788:	bf8080e7          	jalr	-1032(ra) # 8000637c <_Z11printStringPKc>
     uint64 result = fibonacci(12);
-    80005788:	00c00513          	li	a0,12
-    8000578c:	00000097          	auipc	ra,0x0
-    80005790:	d88080e7          	jalr	-632(ra) # 80005514 <_ZL9fibonaccim>
-    80005794:	00050913          	mv	s2,a0
+    8000578c:	00c00513          	li	a0,12
+    80005790:	00000097          	auipc	ra,0x0
+    80005794:	d88080e7          	jalr	-632(ra) # 80005518 <_ZL9fibonaccim>
+    80005798:	00050913          	mv	s2,a0
     printString("C: fibonaci="); printInt(result); printString("\n");
-    80005798:	00005517          	auipc	a0,0x5
-    8000579c:	cb850513          	addi	a0,a0,-840 # 8000a450 <CONSOLE_STATUS+0x440>
-    800057a0:	00001097          	auipc	ra,0x1
-    800057a4:	bd8080e7          	jalr	-1064(ra) # 80006378 <_Z11printStringPKc>
-    800057a8:	00000613          	li	a2,0
-    800057ac:	00a00593          	li	a1,10
-    800057b0:	0009051b          	sext.w	a0,s2
-    800057b4:	00001097          	auipc	ra,0x1
-    800057b8:	d74080e7          	jalr	-652(ra) # 80006528 <_Z8printIntiii>
-    800057bc:	00005517          	auipc	a0,0x5
-    800057c0:	ea450513          	addi	a0,a0,-348 # 8000a660 <CONSOLE_STATUS+0x650>
-    800057c4:	00001097          	auipc	ra,0x1
-    800057c8:	bb4080e7          	jalr	-1100(ra) # 80006378 <_Z11printStringPKc>
-    800057cc:	0400006f          	j	8000580c <_ZL11workerBodyCPv+0x13c>
+    8000579c:	00005517          	auipc	a0,0x5
+    800057a0:	cb450513          	addi	a0,a0,-844 # 8000a450 <CONSOLE_STATUS+0x440>
+    800057a4:	00001097          	auipc	ra,0x1
+    800057a8:	bd8080e7          	jalr	-1064(ra) # 8000637c <_Z11printStringPKc>
+    800057ac:	00000613          	li	a2,0
+    800057b0:	00a00593          	li	a1,10
+    800057b4:	0009051b          	sext.w	a0,s2
+    800057b8:	00001097          	auipc	ra,0x1
+    800057bc:	d74080e7          	jalr	-652(ra) # 8000652c <_Z8printIntiii>
+    800057c0:	00005517          	auipc	a0,0x5
+    800057c4:	ea050513          	addi	a0,a0,-352 # 8000a660 <CONSOLE_STATUS+0x650>
+    800057c8:	00001097          	auipc	ra,0x1
+    800057cc:	bb4080e7          	jalr	-1100(ra) # 8000637c <_Z11printStringPKc>
+    800057d0:	0400006f          	j	80005810 <_ZL11workerBodyCPv+0x13c>
         printString("C: i="); printInt(i); printString("\n");
-    800057d0:	00005517          	auipc	a0,0x5
-    800057d4:	c6050513          	addi	a0,a0,-928 # 8000a430 <CONSOLE_STATUS+0x420>
-    800057d8:	00001097          	auipc	ra,0x1
-    800057dc:	ba0080e7          	jalr	-1120(ra) # 80006378 <_Z11printStringPKc>
-    800057e0:	00000613          	li	a2,0
-    800057e4:	00a00593          	li	a1,10
-    800057e8:	00048513          	mv	a0,s1
-    800057ec:	00001097          	auipc	ra,0x1
-    800057f0:	d3c080e7          	jalr	-708(ra) # 80006528 <_Z8printIntiii>
-    800057f4:	00005517          	auipc	a0,0x5
-    800057f8:	e6c50513          	addi	a0,a0,-404 # 8000a660 <CONSOLE_STATUS+0x650>
-    800057fc:	00001097          	auipc	ra,0x1
-    80005800:	b7c080e7          	jalr	-1156(ra) # 80006378 <_Z11printStringPKc>
+    800057d4:	00005517          	auipc	a0,0x5
+    800057d8:	c5c50513          	addi	a0,a0,-932 # 8000a430 <CONSOLE_STATUS+0x420>
+    800057dc:	00001097          	auipc	ra,0x1
+    800057e0:	ba0080e7          	jalr	-1120(ra) # 8000637c <_Z11printStringPKc>
+    800057e4:	00000613          	li	a2,0
+    800057e8:	00a00593          	li	a1,10
+    800057ec:	00048513          	mv	a0,s1
+    800057f0:	00001097          	auipc	ra,0x1
+    800057f4:	d3c080e7          	jalr	-708(ra) # 8000652c <_Z8printIntiii>
+    800057f8:	00005517          	auipc	a0,0x5
+    800057fc:	e6850513          	addi	a0,a0,-408 # 8000a660 <CONSOLE_STATUS+0x650>
+    80005800:	00001097          	auipc	ra,0x1
+    80005804:	b7c080e7          	jalr	-1156(ra) # 8000637c <_Z11printStringPKc>
     for (; i < 6; i++) {
-    80005804:	0014849b          	addiw	s1,s1,1
-    80005808:	0ff4f493          	andi	s1,s1,255
-    8000580c:	00500793          	li	a5,5
-    80005810:	fc97f0e3          	bgeu	a5,s1,800057d0 <_ZL11workerBodyCPv+0x100>
+    80005808:	0014849b          	addiw	s1,s1,1
+    8000580c:	0ff4f493          	andi	s1,s1,255
+    80005810:	00500793          	li	a5,5
+    80005814:	fc97f0e3          	bgeu	a5,s1,800057d4 <_ZL11workerBodyCPv+0x100>
     printString("C finished!\n");
-    80005814:	00005517          	auipc	a0,0x5
-    80005818:	c4c50513          	addi	a0,a0,-948 # 8000a460 <CONSOLE_STATUS+0x450>
-    8000581c:	00001097          	auipc	ra,0x1
-    80005820:	b5c080e7          	jalr	-1188(ra) # 80006378 <_Z11printStringPKc>
+    80005818:	00005517          	auipc	a0,0x5
+    8000581c:	c4850513          	addi	a0,a0,-952 # 8000a460 <CONSOLE_STATUS+0x450>
+    80005820:	00001097          	auipc	ra,0x1
+    80005824:	b5c080e7          	jalr	-1188(ra) # 8000637c <_Z11printStringPKc>
     finishedC = true;
-    80005824:	00100793          	li	a5,1
-    80005828:	00008717          	auipc	a4,0x8
-    8000582c:	a2f70ca3          	sb	a5,-1479(a4) # 8000d261 <_ZL9finishedC>
+    80005828:	00100793          	li	a5,1
+    8000582c:	00008717          	auipc	a4,0x8
+    80005830:	a6f70ea3          	sb	a5,-1411(a4) # 8000d2a9 <_ZL9finishedC>
     thread_dispatch();
-    80005830:	ffffc097          	auipc	ra,0xffffc
-    80005834:	c90080e7          	jalr	-880(ra) # 800014c0 <_Z15thread_dispatchv>
+    80005834:	ffffc097          	auipc	ra,0xffffc
+    80005838:	c8c080e7          	jalr	-884(ra) # 800014c0 <_Z15thread_dispatchv>
 }
-    80005838:	01813083          	ld	ra,24(sp)
-    8000583c:	01013403          	ld	s0,16(sp)
-    80005840:	00813483          	ld	s1,8(sp)
-    80005844:	00013903          	ld	s2,0(sp)
-    80005848:	02010113          	addi	sp,sp,32
-    8000584c:	00008067          	ret
+    8000583c:	01813083          	ld	ra,24(sp)
+    80005840:	01013403          	ld	s0,16(sp)
+    80005844:	00813483          	ld	s1,8(sp)
+    80005848:	00013903          	ld	s2,0(sp)
+    8000584c:	02010113          	addi	sp,sp,32
+    80005850:	00008067          	ret
 
-0000000080005850 <_ZL11workerBodyBPv>:
+0000000080005854 <_ZL11workerBodyBPv>:
 static void workerBodyB(void* arg) {
-    80005850:	fe010113          	addi	sp,sp,-32
-    80005854:	00113c23          	sd	ra,24(sp)
-    80005858:	00813823          	sd	s0,16(sp)
-    8000585c:	00913423          	sd	s1,8(sp)
-    80005860:	01213023          	sd	s2,0(sp)
-    80005864:	02010413          	addi	s0,sp,32
+    80005854:	fe010113          	addi	sp,sp,-32
+    80005858:	00113c23          	sd	ra,24(sp)
+    8000585c:	00813823          	sd	s0,16(sp)
+    80005860:	00913423          	sd	s1,8(sp)
+    80005864:	01213023          	sd	s2,0(sp)
+    80005868:	02010413          	addi	s0,sp,32
     for (uint64 i = 0; i < 16; i++) {
-    80005868:	00000913          	li	s2,0
-    8000586c:	0380006f          	j	800058a4 <_ZL11workerBodyBPv+0x54>
+    8000586c:	00000913          	li	s2,0
+    80005870:	0380006f          	j	800058a8 <_ZL11workerBodyBPv+0x54>
             thread_dispatch();
-    80005870:	ffffc097          	auipc	ra,0xffffc
-    80005874:	c50080e7          	jalr	-944(ra) # 800014c0 <_Z15thread_dispatchv>
+    80005874:	ffffc097          	auipc	ra,0xffffc
+    80005878:	c4c080e7          	jalr	-948(ra) # 800014c0 <_Z15thread_dispatchv>
         for (uint64 j = 0; j < 10000; j++) {
-    80005878:	00148493          	addi	s1,s1,1
-    8000587c:	000027b7          	lui	a5,0x2
-    80005880:	70f78793          	addi	a5,a5,1807 # 270f <_entry-0x7fffd8f1>
-    80005884:	0097ee63          	bltu	a5,s1,800058a0 <_ZL11workerBodyBPv+0x50>
+    8000587c:	00148493          	addi	s1,s1,1
+    80005880:	000027b7          	lui	a5,0x2
+    80005884:	70f78793          	addi	a5,a5,1807 # 270f <_entry-0x7fffd8f1>
+    80005888:	0097ee63          	bltu	a5,s1,800058a4 <_ZL11workerBodyBPv+0x50>
             for (uint64 k = 0; k < 30000; k++) { /* busy wait */ }
-    80005888:	00000713          	li	a4,0
-    8000588c:	000077b7          	lui	a5,0x7
-    80005890:	52f78793          	addi	a5,a5,1327 # 752f <_entry-0x7fff8ad1>
-    80005894:	fce7eee3          	bltu	a5,a4,80005870 <_ZL11workerBodyBPv+0x20>
-    80005898:	00170713          	addi	a4,a4,1
-    8000589c:	ff1ff06f          	j	8000588c <_ZL11workerBodyBPv+0x3c>
+    8000588c:	00000713          	li	a4,0
+    80005890:	000077b7          	lui	a5,0x7
+    80005894:	52f78793          	addi	a5,a5,1327 # 752f <_entry-0x7fff8ad1>
+    80005898:	fce7eee3          	bltu	a5,a4,80005874 <_ZL11workerBodyBPv+0x20>
+    8000589c:	00170713          	addi	a4,a4,1
+    800058a0:	ff1ff06f          	j	80005890 <_ZL11workerBodyBPv+0x3c>
     for (uint64 i = 0; i < 16; i++) {
-    800058a0:	00190913          	addi	s2,s2,1
-    800058a4:	00f00793          	li	a5,15
-    800058a8:	0527e063          	bltu	a5,s2,800058e8 <_ZL11workerBodyBPv+0x98>
+    800058a4:	00190913          	addi	s2,s2,1
+    800058a8:	00f00793          	li	a5,15
+    800058ac:	0527e063          	bltu	a5,s2,800058ec <_ZL11workerBodyBPv+0x98>
         printString("B: i="); printInt(i); printString("\n");
-    800058ac:	00005517          	auipc	a0,0x5
-    800058b0:	b6c50513          	addi	a0,a0,-1172 # 8000a418 <CONSOLE_STATUS+0x408>
-    800058b4:	00001097          	auipc	ra,0x1
-    800058b8:	ac4080e7          	jalr	-1340(ra) # 80006378 <_Z11printStringPKc>
-    800058bc:	00000613          	li	a2,0
-    800058c0:	00a00593          	li	a1,10
-    800058c4:	0009051b          	sext.w	a0,s2
-    800058c8:	00001097          	auipc	ra,0x1
-    800058cc:	c60080e7          	jalr	-928(ra) # 80006528 <_Z8printIntiii>
-    800058d0:	00005517          	auipc	a0,0x5
-    800058d4:	d9050513          	addi	a0,a0,-624 # 8000a660 <CONSOLE_STATUS+0x650>
-    800058d8:	00001097          	auipc	ra,0x1
-    800058dc:	aa0080e7          	jalr	-1376(ra) # 80006378 <_Z11printStringPKc>
+    800058b0:	00005517          	auipc	a0,0x5
+    800058b4:	b6850513          	addi	a0,a0,-1176 # 8000a418 <CONSOLE_STATUS+0x408>
+    800058b8:	00001097          	auipc	ra,0x1
+    800058bc:	ac4080e7          	jalr	-1340(ra) # 8000637c <_Z11printStringPKc>
+    800058c0:	00000613          	li	a2,0
+    800058c4:	00a00593          	li	a1,10
+    800058c8:	0009051b          	sext.w	a0,s2
+    800058cc:	00001097          	auipc	ra,0x1
+    800058d0:	c60080e7          	jalr	-928(ra) # 8000652c <_Z8printIntiii>
+    800058d4:	00005517          	auipc	a0,0x5
+    800058d8:	d8c50513          	addi	a0,a0,-628 # 8000a660 <CONSOLE_STATUS+0x650>
+    800058dc:	00001097          	auipc	ra,0x1
+    800058e0:	aa0080e7          	jalr	-1376(ra) # 8000637c <_Z11printStringPKc>
         for (uint64 j = 0; j < 10000; j++) {
-    800058e0:	00000493          	li	s1,0
-    800058e4:	f99ff06f          	j	8000587c <_ZL11workerBodyBPv+0x2c>
+    800058e4:	00000493          	li	s1,0
+    800058e8:	f99ff06f          	j	80005880 <_ZL11workerBodyBPv+0x2c>
     printString("B finished!\n");
-    800058e8:	00005517          	auipc	a0,0x5
-    800058ec:	b3850513          	addi	a0,a0,-1224 # 8000a420 <CONSOLE_STATUS+0x410>
-    800058f0:	00001097          	auipc	ra,0x1
-    800058f4:	a88080e7          	jalr	-1400(ra) # 80006378 <_Z11printStringPKc>
+    800058ec:	00005517          	auipc	a0,0x5
+    800058f0:	b3450513          	addi	a0,a0,-1228 # 8000a420 <CONSOLE_STATUS+0x410>
+    800058f4:	00001097          	auipc	ra,0x1
+    800058f8:	a88080e7          	jalr	-1400(ra) # 8000637c <_Z11printStringPKc>
     finishedB = true;
-    800058f8:	00100793          	li	a5,1
-    800058fc:	00008717          	auipc	a4,0x8
-    80005900:	96f70323          	sb	a5,-1690(a4) # 8000d262 <_ZL9finishedB>
+    800058fc:	00100793          	li	a5,1
+    80005900:	00008717          	auipc	a4,0x8
+    80005904:	9af70523          	sb	a5,-1622(a4) # 8000d2aa <_ZL9finishedB>
     thread_dispatch();
-    80005904:	ffffc097          	auipc	ra,0xffffc
-    80005908:	bbc080e7          	jalr	-1092(ra) # 800014c0 <_Z15thread_dispatchv>
+    80005908:	ffffc097          	auipc	ra,0xffffc
+    8000590c:	bb8080e7          	jalr	-1096(ra) # 800014c0 <_Z15thread_dispatchv>
 }
-    8000590c:	01813083          	ld	ra,24(sp)
-    80005910:	01013403          	ld	s0,16(sp)
-    80005914:	00813483          	ld	s1,8(sp)
-    80005918:	00013903          	ld	s2,0(sp)
-    8000591c:	02010113          	addi	sp,sp,32
-    80005920:	00008067          	ret
+    80005910:	01813083          	ld	ra,24(sp)
+    80005914:	01013403          	ld	s0,16(sp)
+    80005918:	00813483          	ld	s1,8(sp)
+    8000591c:	00013903          	ld	s2,0(sp)
+    80005920:	02010113          	addi	sp,sp,32
+    80005924:	00008067          	ret
 
-0000000080005924 <_ZL11workerBodyAPv>:
+0000000080005928 <_ZL11workerBodyAPv>:
 static void workerBodyA(void* arg) {
-    80005924:	fe010113          	addi	sp,sp,-32
-    80005928:	00113c23          	sd	ra,24(sp)
-    8000592c:	00813823          	sd	s0,16(sp)
-    80005930:	00913423          	sd	s1,8(sp)
-    80005934:	01213023          	sd	s2,0(sp)
-    80005938:	02010413          	addi	s0,sp,32
+    80005928:	fe010113          	addi	sp,sp,-32
+    8000592c:	00113c23          	sd	ra,24(sp)
+    80005930:	00813823          	sd	s0,16(sp)
+    80005934:	00913423          	sd	s1,8(sp)
+    80005938:	01213023          	sd	s2,0(sp)
+    8000593c:	02010413          	addi	s0,sp,32
     for (uint64 i = 0; i < 10; i++) {
-    8000593c:	00000913          	li	s2,0
-    80005940:	0380006f          	j	80005978 <_ZL11workerBodyAPv+0x54>
+    80005940:	00000913          	li	s2,0
+    80005944:	0380006f          	j	8000597c <_ZL11workerBodyAPv+0x54>
             thread_dispatch();
-    80005944:	ffffc097          	auipc	ra,0xffffc
-    80005948:	b7c080e7          	jalr	-1156(ra) # 800014c0 <_Z15thread_dispatchv>
+    80005948:	ffffc097          	auipc	ra,0xffffc
+    8000594c:	b78080e7          	jalr	-1160(ra) # 800014c0 <_Z15thread_dispatchv>
         for (uint64 j = 0; j < 10000; j++) {
-    8000594c:	00148493          	addi	s1,s1,1
-    80005950:	000027b7          	lui	a5,0x2
-    80005954:	70f78793          	addi	a5,a5,1807 # 270f <_entry-0x7fffd8f1>
-    80005958:	0097ee63          	bltu	a5,s1,80005974 <_ZL11workerBodyAPv+0x50>
+    80005950:	00148493          	addi	s1,s1,1
+    80005954:	000027b7          	lui	a5,0x2
+    80005958:	70f78793          	addi	a5,a5,1807 # 270f <_entry-0x7fffd8f1>
+    8000595c:	0097ee63          	bltu	a5,s1,80005978 <_ZL11workerBodyAPv+0x50>
             for (uint64 k = 0; k < 30000; k++) { /* busy wait */ }
-    8000595c:	00000713          	li	a4,0
-    80005960:	000077b7          	lui	a5,0x7
-    80005964:	52f78793          	addi	a5,a5,1327 # 752f <_entry-0x7fff8ad1>
-    80005968:	fce7eee3          	bltu	a5,a4,80005944 <_ZL11workerBodyAPv+0x20>
-    8000596c:	00170713          	addi	a4,a4,1
-    80005970:	ff1ff06f          	j	80005960 <_ZL11workerBodyAPv+0x3c>
+    80005960:	00000713          	li	a4,0
+    80005964:	000077b7          	lui	a5,0x7
+    80005968:	52f78793          	addi	a5,a5,1327 # 752f <_entry-0x7fff8ad1>
+    8000596c:	fce7eee3          	bltu	a5,a4,80005948 <_ZL11workerBodyAPv+0x20>
+    80005970:	00170713          	addi	a4,a4,1
+    80005974:	ff1ff06f          	j	80005964 <_ZL11workerBodyAPv+0x3c>
     for (uint64 i = 0; i < 10; i++) {
-    80005974:	00190913          	addi	s2,s2,1
-    80005978:	00900793          	li	a5,9
-    8000597c:	0527e063          	bltu	a5,s2,800059bc <_ZL11workerBodyAPv+0x98>
+    80005978:	00190913          	addi	s2,s2,1
+    8000597c:	00900793          	li	a5,9
+    80005980:	0527e063          	bltu	a5,s2,800059c0 <_ZL11workerBodyAPv+0x98>
         printString("A: i="); printInt(i); printString("\n");
-    80005980:	00005517          	auipc	a0,0x5
-    80005984:	a8050513          	addi	a0,a0,-1408 # 8000a400 <CONSOLE_STATUS+0x3f0>
-    80005988:	00001097          	auipc	ra,0x1
-    8000598c:	9f0080e7          	jalr	-1552(ra) # 80006378 <_Z11printStringPKc>
-    80005990:	00000613          	li	a2,0
-    80005994:	00a00593          	li	a1,10
-    80005998:	0009051b          	sext.w	a0,s2
-    8000599c:	00001097          	auipc	ra,0x1
-    800059a0:	b8c080e7          	jalr	-1140(ra) # 80006528 <_Z8printIntiii>
-    800059a4:	00005517          	auipc	a0,0x5
-    800059a8:	cbc50513          	addi	a0,a0,-836 # 8000a660 <CONSOLE_STATUS+0x650>
-    800059ac:	00001097          	auipc	ra,0x1
-    800059b0:	9cc080e7          	jalr	-1588(ra) # 80006378 <_Z11printStringPKc>
+    80005984:	00005517          	auipc	a0,0x5
+    80005988:	a7c50513          	addi	a0,a0,-1412 # 8000a400 <CONSOLE_STATUS+0x3f0>
+    8000598c:	00001097          	auipc	ra,0x1
+    80005990:	9f0080e7          	jalr	-1552(ra) # 8000637c <_Z11printStringPKc>
+    80005994:	00000613          	li	a2,0
+    80005998:	00a00593          	li	a1,10
+    8000599c:	0009051b          	sext.w	a0,s2
+    800059a0:	00001097          	auipc	ra,0x1
+    800059a4:	b8c080e7          	jalr	-1140(ra) # 8000652c <_Z8printIntiii>
+    800059a8:	00005517          	auipc	a0,0x5
+    800059ac:	cb850513          	addi	a0,a0,-840 # 8000a660 <CONSOLE_STATUS+0x650>
+    800059b0:	00001097          	auipc	ra,0x1
+    800059b4:	9cc080e7          	jalr	-1588(ra) # 8000637c <_Z11printStringPKc>
         for (uint64 j = 0; j < 10000; j++) {
-    800059b4:	00000493          	li	s1,0
-    800059b8:	f99ff06f          	j	80005950 <_ZL11workerBodyAPv+0x2c>
+    800059b8:	00000493          	li	s1,0
+    800059bc:	f99ff06f          	j	80005954 <_ZL11workerBodyAPv+0x2c>
     printString("A finished!\n");
-    800059bc:	00005517          	auipc	a0,0x5
-    800059c0:	a4c50513          	addi	a0,a0,-1460 # 8000a408 <CONSOLE_STATUS+0x3f8>
-    800059c4:	00001097          	auipc	ra,0x1
-    800059c8:	9b4080e7          	jalr	-1612(ra) # 80006378 <_Z11printStringPKc>
+    800059c0:	00005517          	auipc	a0,0x5
+    800059c4:	a4850513          	addi	a0,a0,-1464 # 8000a408 <CONSOLE_STATUS+0x3f8>
+    800059c8:	00001097          	auipc	ra,0x1
+    800059cc:	9b4080e7          	jalr	-1612(ra) # 8000637c <_Z11printStringPKc>
     finishedA = true;
-    800059cc:	00100793          	li	a5,1
-    800059d0:	00008717          	auipc	a4,0x8
-    800059d4:	88f709a3          	sb	a5,-1901(a4) # 8000d263 <_ZL9finishedA>
+    800059d0:	00100793          	li	a5,1
+    800059d4:	00008717          	auipc	a4,0x8
+    800059d8:	8cf70ba3          	sb	a5,-1833(a4) # 8000d2ab <_ZL9finishedA>
 }
-    800059d8:	01813083          	ld	ra,24(sp)
-    800059dc:	01013403          	ld	s0,16(sp)
-    800059e0:	00813483          	ld	s1,8(sp)
-    800059e4:	00013903          	ld	s2,0(sp)
-    800059e8:	02010113          	addi	sp,sp,32
-    800059ec:	00008067          	ret
+    800059dc:	01813083          	ld	ra,24(sp)
+    800059e0:	01013403          	ld	s0,16(sp)
+    800059e4:	00813483          	ld	s1,8(sp)
+    800059e8:	00013903          	ld	s2,0(sp)
+    800059ec:	02010113          	addi	sp,sp,32
+    800059f0:	00008067          	ret
 
-00000000800059f0 <_Z18Threads_C_API_testv>:
+00000000800059f4 <_Z18Threads_C_API_testv>:
 
 
 void Threads_C_API_test() {
-    800059f0:	fd010113          	addi	sp,sp,-48
-    800059f4:	02113423          	sd	ra,40(sp)
-    800059f8:	02813023          	sd	s0,32(sp)
-    800059fc:	03010413          	addi	s0,sp,48
+    800059f4:	fd010113          	addi	sp,sp,-48
+    800059f8:	02113423          	sd	ra,40(sp)
+    800059fc:	02813023          	sd	s0,32(sp)
+    80005a00:	03010413          	addi	s0,sp,48
     thread_t threads[4];
     thread_create(&threads[0], workerBodyA, nullptr);
-    80005a00:	00000613          	li	a2,0
-    80005a04:	00000597          	auipc	a1,0x0
-    80005a08:	f2058593          	addi	a1,a1,-224 # 80005924 <_ZL11workerBodyAPv>
-    80005a0c:	fd040513          	addi	a0,s0,-48
-    80005a10:	ffffc097          	auipc	ra,0xffffc
-    80005a14:	9f4080e7          	jalr	-1548(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    80005a04:	00000613          	li	a2,0
+    80005a08:	00000597          	auipc	a1,0x0
+    80005a0c:	f2058593          	addi	a1,a1,-224 # 80005928 <_ZL11workerBodyAPv>
+    80005a10:	fd040513          	addi	a0,s0,-48
+    80005a14:	ffffc097          	auipc	ra,0xffffc
+    80005a18:	9f0080e7          	jalr	-1552(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     printString("ThreadA created\n");
-    80005a18:	00005517          	auipc	a0,0x5
-    80005a1c:	a9050513          	addi	a0,a0,-1392 # 8000a4a8 <CONSOLE_STATUS+0x498>
-    80005a20:	00001097          	auipc	ra,0x1
-    80005a24:	958080e7          	jalr	-1704(ra) # 80006378 <_Z11printStringPKc>
+    80005a1c:	00005517          	auipc	a0,0x5
+    80005a20:	a8c50513          	addi	a0,a0,-1396 # 8000a4a8 <CONSOLE_STATUS+0x498>
+    80005a24:	00001097          	auipc	ra,0x1
+    80005a28:	958080e7          	jalr	-1704(ra) # 8000637c <_Z11printStringPKc>
 
     thread_create(&threads[1], workerBodyB, nullptr);
-    80005a28:	00000613          	li	a2,0
-    80005a2c:	00000597          	auipc	a1,0x0
-    80005a30:	e2458593          	addi	a1,a1,-476 # 80005850 <_ZL11workerBodyBPv>
-    80005a34:	fd840513          	addi	a0,s0,-40
-    80005a38:	ffffc097          	auipc	ra,0xffffc
-    80005a3c:	9cc080e7          	jalr	-1588(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    80005a2c:	00000613          	li	a2,0
+    80005a30:	00000597          	auipc	a1,0x0
+    80005a34:	e2458593          	addi	a1,a1,-476 # 80005854 <_ZL11workerBodyBPv>
+    80005a38:	fd840513          	addi	a0,s0,-40
+    80005a3c:	ffffc097          	auipc	ra,0xffffc
+    80005a40:	9c8080e7          	jalr	-1592(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     printString("ThreadB created\n");
-    80005a40:	00005517          	auipc	a0,0x5
-    80005a44:	a8050513          	addi	a0,a0,-1408 # 8000a4c0 <CONSOLE_STATUS+0x4b0>
-    80005a48:	00001097          	auipc	ra,0x1
-    80005a4c:	930080e7          	jalr	-1744(ra) # 80006378 <_Z11printStringPKc>
+    80005a44:	00005517          	auipc	a0,0x5
+    80005a48:	a7c50513          	addi	a0,a0,-1412 # 8000a4c0 <CONSOLE_STATUS+0x4b0>
+    80005a4c:	00001097          	auipc	ra,0x1
+    80005a50:	930080e7          	jalr	-1744(ra) # 8000637c <_Z11printStringPKc>
 
     thread_create(&threads[2], workerBodyC, nullptr);
-    80005a50:	00000613          	li	a2,0
-    80005a54:	00000597          	auipc	a1,0x0
-    80005a58:	c7c58593          	addi	a1,a1,-900 # 800056d0 <_ZL11workerBodyCPv>
-    80005a5c:	fe040513          	addi	a0,s0,-32
-    80005a60:	ffffc097          	auipc	ra,0xffffc
-    80005a64:	9a4080e7          	jalr	-1628(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    80005a54:	00000613          	li	a2,0
+    80005a58:	00000597          	auipc	a1,0x0
+    80005a5c:	c7c58593          	addi	a1,a1,-900 # 800056d4 <_ZL11workerBodyCPv>
+    80005a60:	fe040513          	addi	a0,s0,-32
+    80005a64:	ffffc097          	auipc	ra,0xffffc
+    80005a68:	9a0080e7          	jalr	-1632(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     printString("ThreadC created\n");
-    80005a68:	00005517          	auipc	a0,0x5
-    80005a6c:	a7050513          	addi	a0,a0,-1424 # 8000a4d8 <CONSOLE_STATUS+0x4c8>
-    80005a70:	00001097          	auipc	ra,0x1
-    80005a74:	908080e7          	jalr	-1784(ra) # 80006378 <_Z11printStringPKc>
+    80005a6c:	00005517          	auipc	a0,0x5
+    80005a70:	a6c50513          	addi	a0,a0,-1428 # 8000a4d8 <CONSOLE_STATUS+0x4c8>
+    80005a74:	00001097          	auipc	ra,0x1
+    80005a78:	908080e7          	jalr	-1784(ra) # 8000637c <_Z11printStringPKc>
 
     thread_create(&threads[3], workerBodyD, nullptr);
-    80005a78:	00000613          	li	a2,0
-    80005a7c:	00000597          	auipc	a1,0x0
-    80005a80:	b0c58593          	addi	a1,a1,-1268 # 80005588 <_ZL11workerBodyDPv>
-    80005a84:	fe840513          	addi	a0,s0,-24
-    80005a88:	ffffc097          	auipc	ra,0xffffc
-    80005a8c:	97c080e7          	jalr	-1668(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    80005a7c:	00000613          	li	a2,0
+    80005a80:	00000597          	auipc	a1,0x0
+    80005a84:	b0c58593          	addi	a1,a1,-1268 # 8000558c <_ZL11workerBodyDPv>
+    80005a88:	fe840513          	addi	a0,s0,-24
+    80005a8c:	ffffc097          	auipc	ra,0xffffc
+    80005a90:	978080e7          	jalr	-1672(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     printString("ThreadD created\n");
-    80005a90:	00005517          	auipc	a0,0x5
-    80005a94:	a6050513          	addi	a0,a0,-1440 # 8000a4f0 <CONSOLE_STATUS+0x4e0>
-    80005a98:	00001097          	auipc	ra,0x1
-    80005a9c:	8e0080e7          	jalr	-1824(ra) # 80006378 <_Z11printStringPKc>
-    80005aa0:	00c0006f          	j	80005aac <_Z18Threads_C_API_testv+0xbc>
+    80005a94:	00005517          	auipc	a0,0x5
+    80005a98:	a5c50513          	addi	a0,a0,-1444 # 8000a4f0 <CONSOLE_STATUS+0x4e0>
+    80005a9c:	00001097          	auipc	ra,0x1
+    80005aa0:	8e0080e7          	jalr	-1824(ra) # 8000637c <_Z11printStringPKc>
+    80005aa4:	00c0006f          	j	80005ab0 <_Z18Threads_C_API_testv+0xbc>
 
     while (!(finishedA && finishedB && finishedC && finishedD)) {
         thread_dispatch();
-    80005aa4:	ffffc097          	auipc	ra,0xffffc
-    80005aa8:	a1c080e7          	jalr	-1508(ra) # 800014c0 <_Z15thread_dispatchv>
+    80005aa8:	ffffc097          	auipc	ra,0xffffc
+    80005aac:	a18080e7          	jalr	-1512(ra) # 800014c0 <_Z15thread_dispatchv>
     while (!(finishedA && finishedB && finishedC && finishedD)) {
-    80005aac:	00007797          	auipc	a5,0x7
-    80005ab0:	7b77c783          	lbu	a5,1975(a5) # 8000d263 <_ZL9finishedA>
-    80005ab4:	fe0788e3          	beqz	a5,80005aa4 <_Z18Threads_C_API_testv+0xb4>
-    80005ab8:	00007797          	auipc	a5,0x7
-    80005abc:	7aa7c783          	lbu	a5,1962(a5) # 8000d262 <_ZL9finishedB>
-    80005ac0:	fe0782e3          	beqz	a5,80005aa4 <_Z18Threads_C_API_testv+0xb4>
-    80005ac4:	00007797          	auipc	a5,0x7
-    80005ac8:	79d7c783          	lbu	a5,1949(a5) # 8000d261 <_ZL9finishedC>
-    80005acc:	fc078ce3          	beqz	a5,80005aa4 <_Z18Threads_C_API_testv+0xb4>
-    80005ad0:	00007797          	auipc	a5,0x7
-    80005ad4:	7907c783          	lbu	a5,1936(a5) # 8000d260 <_ZL9finishedD>
-    80005ad8:	fc0786e3          	beqz	a5,80005aa4 <_Z18Threads_C_API_testv+0xb4>
+    80005ab0:	00007797          	auipc	a5,0x7
+    80005ab4:	7fb7c783          	lbu	a5,2043(a5) # 8000d2ab <_ZL9finishedA>
+    80005ab8:	fe0788e3          	beqz	a5,80005aa8 <_Z18Threads_C_API_testv+0xb4>
+    80005abc:	00007797          	auipc	a5,0x7
+    80005ac0:	7ee7c783          	lbu	a5,2030(a5) # 8000d2aa <_ZL9finishedB>
+    80005ac4:	fe0782e3          	beqz	a5,80005aa8 <_Z18Threads_C_API_testv+0xb4>
+    80005ac8:	00007797          	auipc	a5,0x7
+    80005acc:	7e17c783          	lbu	a5,2017(a5) # 8000d2a9 <_ZL9finishedC>
+    80005ad0:	fc078ce3          	beqz	a5,80005aa8 <_Z18Threads_C_API_testv+0xb4>
+    80005ad4:	00007797          	auipc	a5,0x7
+    80005ad8:	7d47c783          	lbu	a5,2004(a5) # 8000d2a8 <_ZL9finishedD>
+    80005adc:	fc0786e3          	beqz	a5,80005aa8 <_Z18Threads_C_API_testv+0xb4>
     }
 
 }
-    80005adc:	02813083          	ld	ra,40(sp)
-    80005ae0:	02013403          	ld	s0,32(sp)
-    80005ae4:	03010113          	addi	sp,sp,48
-    80005ae8:	00008067          	ret
+    80005ae0:	02813083          	ld	ra,40(sp)
+    80005ae4:	02013403          	ld	s0,32(sp)
+    80005ae8:	03010113          	addi	sp,sp,48
+    80005aec:	00008067          	ret
 
-0000000080005aec <_ZN16ProducerKeyboard16producerKeyboardEPv>:
+0000000080005af0 <_ZN16ProducerKeyboard16producerKeyboardEPv>:
     void run() override {
         producerKeyboard(td);
     }
 };
 
 void ProducerKeyboard::producerKeyboard(void *arg) {
-    80005aec:	fd010113          	addi	sp,sp,-48
-    80005af0:	02113423          	sd	ra,40(sp)
-    80005af4:	02813023          	sd	s0,32(sp)
-    80005af8:	00913c23          	sd	s1,24(sp)
-    80005afc:	01213823          	sd	s2,16(sp)
-    80005b00:	01313423          	sd	s3,8(sp)
-    80005b04:	03010413          	addi	s0,sp,48
-    80005b08:	00050993          	mv	s3,a0
-    80005b0c:	00058493          	mv	s1,a1
+    80005af0:	fd010113          	addi	sp,sp,-48
+    80005af4:	02113423          	sd	ra,40(sp)
+    80005af8:	02813023          	sd	s0,32(sp)
+    80005afc:	00913c23          	sd	s1,24(sp)
+    80005b00:	01213823          	sd	s2,16(sp)
+    80005b04:	01313423          	sd	s3,8(sp)
+    80005b08:	03010413          	addi	s0,sp,48
+    80005b0c:	00050993          	mv	s3,a0
+    80005b10:	00058493          	mv	s1,a1
     struct thread_data *data = (struct thread_data *) arg;
 
     int key;
     int i = 0;
-    80005b10:	00000913          	li	s2,0
-    80005b14:	00c0006f          	j	80005b20 <_ZN16ProducerKeyboard16producerKeyboardEPv+0x34>
+    80005b14:	00000913          	li	s2,0
+    80005b18:	00c0006f          	j	80005b24 <_ZN16ProducerKeyboard16producerKeyboardEPv+0x34>
     while ((key = getc()) != 0x1b) {
         data->buffer->put(key);
         i++;
 
         if (i % (10 * data->id) == 0) {
             Thread::dispatch();
-    80005b18:	ffffe097          	auipc	ra,0xffffe
-    80005b1c:	824080e7          	jalr	-2012(ra) # 8000333c <_ZN6Thread8dispatchEv>
+    80005b1c:	ffffe097          	auipc	ra,0xffffe
+    80005b20:	81c080e7          	jalr	-2020(ra) # 80003338 <_ZN6Thread8dispatchEv>
     while ((key = getc()) != 0x1b) {
-    80005b20:	ffffc097          	auipc	ra,0xffffc
-    80005b24:	ae0080e7          	jalr	-1312(ra) # 80001600 <_Z4getcv>
-    80005b28:	0005059b          	sext.w	a1,a0
-    80005b2c:	01b00793          	li	a5,27
-    80005b30:	02f58a63          	beq	a1,a5,80005b64 <_ZN16ProducerKeyboard16producerKeyboardEPv+0x78>
+    80005b24:	ffffc097          	auipc	ra,0xffffc
+    80005b28:	adc080e7          	jalr	-1316(ra) # 80001600 <_Z4getcv>
+    80005b2c:	0005059b          	sext.w	a1,a0
+    80005b30:	01b00793          	li	a5,27
+    80005b34:	02f58a63          	beq	a1,a5,80005b68 <_ZN16ProducerKeyboard16producerKeyboardEPv+0x78>
         data->buffer->put(key);
-    80005b34:	0084b503          	ld	a0,8(s1)
-    80005b38:	00001097          	auipc	ra,0x1
-    80005b3c:	c64080e7          	jalr	-924(ra) # 8000679c <_ZN9BufferCPP3putEi>
+    80005b38:	0084b503          	ld	a0,8(s1)
+    80005b3c:	00001097          	auipc	ra,0x1
+    80005b40:	c64080e7          	jalr	-924(ra) # 800067a0 <_ZN9BufferCPP3putEi>
         i++;
-    80005b40:	0019071b          	addiw	a4,s2,1
-    80005b44:	0007091b          	sext.w	s2,a4
+    80005b44:	0019071b          	addiw	a4,s2,1
+    80005b48:	0007091b          	sext.w	s2,a4
         if (i % (10 * data->id) == 0) {
-    80005b48:	0004a683          	lw	a3,0(s1)
-    80005b4c:	0026979b          	slliw	a5,a3,0x2
-    80005b50:	00d787bb          	addw	a5,a5,a3
-    80005b54:	0017979b          	slliw	a5,a5,0x1
-    80005b58:	02f767bb          	remw	a5,a4,a5
-    80005b5c:	fc0792e3          	bnez	a5,80005b20 <_ZN16ProducerKeyboard16producerKeyboardEPv+0x34>
-    80005b60:	fb9ff06f          	j	80005b18 <_ZN16ProducerKeyboard16producerKeyboardEPv+0x2c>
+    80005b4c:	0004a683          	lw	a3,0(s1)
+    80005b50:	0026979b          	slliw	a5,a3,0x2
+    80005b54:	00d787bb          	addw	a5,a5,a3
+    80005b58:	0017979b          	slliw	a5,a5,0x1
+    80005b5c:	02f767bb          	remw	a5,a4,a5
+    80005b60:	fc0792e3          	bnez	a5,80005b24 <_ZN16ProducerKeyboard16producerKeyboardEPv+0x34>
+    80005b64:	fb9ff06f          	j	80005b1c <_ZN16ProducerKeyboard16producerKeyboardEPv+0x2c>
         }
     }
 
     threadEnd = 1;
-    80005b64:	00100793          	li	a5,1
-    80005b68:	00007717          	auipc	a4,0x7
-    80005b6c:	70f72023          	sw	a5,1792(a4) # 8000d268 <_ZL9threadEnd>
+    80005b68:	00100793          	li	a5,1
+    80005b6c:	00007717          	auipc	a4,0x7
+    80005b70:	74f72223          	sw	a5,1860(a4) # 8000d2b0 <_ZL9threadEnd>
     td->buffer->put('!');
-    80005b70:	0209b783          	ld	a5,32(s3)
-    80005b74:	02100593          	li	a1,33
-    80005b78:	0087b503          	ld	a0,8(a5)
-    80005b7c:	00001097          	auipc	ra,0x1
-    80005b80:	c20080e7          	jalr	-992(ra) # 8000679c <_ZN9BufferCPP3putEi>
+    80005b74:	0209b783          	ld	a5,32(s3)
+    80005b78:	02100593          	li	a1,33
+    80005b7c:	0087b503          	ld	a0,8(a5)
+    80005b80:	00001097          	auipc	ra,0x1
+    80005b84:	c20080e7          	jalr	-992(ra) # 800067a0 <_ZN9BufferCPP3putEi>
 
     data->wait->signal();
-    80005b84:	0104b503          	ld	a0,16(s1)
-    80005b88:	ffffe097          	auipc	ra,0xffffe
-    80005b8c:	950080e7          	jalr	-1712(ra) # 800034d8 <_ZN9Semaphore6signalEv>
+    80005b88:	0104b503          	ld	a0,16(s1)
+    80005b8c:	ffffe097          	auipc	ra,0xffffe
+    80005b90:	948080e7          	jalr	-1720(ra) # 800034d4 <_ZN9Semaphore6signalEv>
 }
-    80005b90:	02813083          	ld	ra,40(sp)
-    80005b94:	02013403          	ld	s0,32(sp)
-    80005b98:	01813483          	ld	s1,24(sp)
-    80005b9c:	01013903          	ld	s2,16(sp)
-    80005ba0:	00813983          	ld	s3,8(sp)
-    80005ba4:	03010113          	addi	sp,sp,48
-    80005ba8:	00008067          	ret
+    80005b94:	02813083          	ld	ra,40(sp)
+    80005b98:	02013403          	ld	s0,32(sp)
+    80005b9c:	01813483          	ld	s1,24(sp)
+    80005ba0:	01013903          	ld	s2,16(sp)
+    80005ba4:	00813983          	ld	s3,8(sp)
+    80005ba8:	03010113          	addi	sp,sp,48
+    80005bac:	00008067          	ret
 
-0000000080005bac <_ZN12ProducerSync8producerEPv>:
+0000000080005bb0 <_ZN12ProducerSync8producerEPv>:
     void run() override {
         producer(td);
     }
 };
 
 void ProducerSync::producer(void *arg) {
-    80005bac:	fe010113          	addi	sp,sp,-32
-    80005bb0:	00113c23          	sd	ra,24(sp)
-    80005bb4:	00813823          	sd	s0,16(sp)
-    80005bb8:	00913423          	sd	s1,8(sp)
-    80005bbc:	01213023          	sd	s2,0(sp)
-    80005bc0:	02010413          	addi	s0,sp,32
-    80005bc4:	00058493          	mv	s1,a1
+    80005bb0:	fe010113          	addi	sp,sp,-32
+    80005bb4:	00113c23          	sd	ra,24(sp)
+    80005bb8:	00813823          	sd	s0,16(sp)
+    80005bbc:	00913423          	sd	s1,8(sp)
+    80005bc0:	01213023          	sd	s2,0(sp)
+    80005bc4:	02010413          	addi	s0,sp,32
+    80005bc8:	00058493          	mv	s1,a1
     struct thread_data *data = (struct thread_data *) arg;
 
     int i = 0;
-    80005bc8:	00000913          	li	s2,0
-    80005bcc:	00c0006f          	j	80005bd8 <_ZN12ProducerSync8producerEPv+0x2c>
+    80005bcc:	00000913          	li	s2,0
+    80005bd0:	00c0006f          	j	80005bdc <_ZN12ProducerSync8producerEPv+0x2c>
     while (!threadEnd) {
         data->buffer->put(data->id + '0');
         i++;
 
         if (i % (10 * data->id) == 0) {
             Thread::dispatch();
-    80005bd0:	ffffd097          	auipc	ra,0xffffd
-    80005bd4:	76c080e7          	jalr	1900(ra) # 8000333c <_ZN6Thread8dispatchEv>
+    80005bd4:	ffffd097          	auipc	ra,0xffffd
+    80005bd8:	764080e7          	jalr	1892(ra) # 80003338 <_ZN6Thread8dispatchEv>
     while (!threadEnd) {
-    80005bd8:	00007797          	auipc	a5,0x7
-    80005bdc:	6907a783          	lw	a5,1680(a5) # 8000d268 <_ZL9threadEnd>
-    80005be0:	02079e63          	bnez	a5,80005c1c <_ZN12ProducerSync8producerEPv+0x70>
+    80005bdc:	00007797          	auipc	a5,0x7
+    80005be0:	6d47a783          	lw	a5,1748(a5) # 8000d2b0 <_ZL9threadEnd>
+    80005be4:	02079e63          	bnez	a5,80005c20 <_ZN12ProducerSync8producerEPv+0x70>
         data->buffer->put(data->id + '0');
-    80005be4:	0004a583          	lw	a1,0(s1)
-    80005be8:	0305859b          	addiw	a1,a1,48
-    80005bec:	0084b503          	ld	a0,8(s1)
-    80005bf0:	00001097          	auipc	ra,0x1
-    80005bf4:	bac080e7          	jalr	-1108(ra) # 8000679c <_ZN9BufferCPP3putEi>
+    80005be8:	0004a583          	lw	a1,0(s1)
+    80005bec:	0305859b          	addiw	a1,a1,48
+    80005bf0:	0084b503          	ld	a0,8(s1)
+    80005bf4:	00001097          	auipc	ra,0x1
+    80005bf8:	bac080e7          	jalr	-1108(ra) # 800067a0 <_ZN9BufferCPP3putEi>
         i++;
-    80005bf8:	0019071b          	addiw	a4,s2,1
-    80005bfc:	0007091b          	sext.w	s2,a4
+    80005bfc:	0019071b          	addiw	a4,s2,1
+    80005c00:	0007091b          	sext.w	s2,a4
         if (i % (10 * data->id) == 0) {
-    80005c00:	0004a683          	lw	a3,0(s1)
-    80005c04:	0026979b          	slliw	a5,a3,0x2
-    80005c08:	00d787bb          	addw	a5,a5,a3
-    80005c0c:	0017979b          	slliw	a5,a5,0x1
-    80005c10:	02f767bb          	remw	a5,a4,a5
-    80005c14:	fc0792e3          	bnez	a5,80005bd8 <_ZN12ProducerSync8producerEPv+0x2c>
-    80005c18:	fb9ff06f          	j	80005bd0 <_ZN12ProducerSync8producerEPv+0x24>
+    80005c04:	0004a683          	lw	a3,0(s1)
+    80005c08:	0026979b          	slliw	a5,a3,0x2
+    80005c0c:	00d787bb          	addw	a5,a5,a3
+    80005c10:	0017979b          	slliw	a5,a5,0x1
+    80005c14:	02f767bb          	remw	a5,a4,a5
+    80005c18:	fc0792e3          	bnez	a5,80005bdc <_ZN12ProducerSync8producerEPv+0x2c>
+    80005c1c:	fb9ff06f          	j	80005bd4 <_ZN12ProducerSync8producerEPv+0x24>
         }
     }
 
     data->wait->signal();
-    80005c1c:	0104b503          	ld	a0,16(s1)
-    80005c20:	ffffe097          	auipc	ra,0xffffe
-    80005c24:	8b8080e7          	jalr	-1864(ra) # 800034d8 <_ZN9Semaphore6signalEv>
+    80005c20:	0104b503          	ld	a0,16(s1)
+    80005c24:	ffffe097          	auipc	ra,0xffffe
+    80005c28:	8b0080e7          	jalr	-1872(ra) # 800034d4 <_ZN9Semaphore6signalEv>
 }
-    80005c28:	01813083          	ld	ra,24(sp)
-    80005c2c:	01013403          	ld	s0,16(sp)
-    80005c30:	00813483          	ld	s1,8(sp)
-    80005c34:	00013903          	ld	s2,0(sp)
-    80005c38:	02010113          	addi	sp,sp,32
-    80005c3c:	00008067          	ret
+    80005c2c:	01813083          	ld	ra,24(sp)
+    80005c30:	01013403          	ld	s0,16(sp)
+    80005c34:	00813483          	ld	s1,8(sp)
+    80005c38:	00013903          	ld	s2,0(sp)
+    80005c3c:	02010113          	addi	sp,sp,32
+    80005c40:	00008067          	ret
 
-0000000080005c40 <_ZN12ConsumerSync8consumerEPv>:
+0000000080005c44 <_ZN12ConsumerSync8consumerEPv>:
     void run() override {
         consumer(td);
     }
 };
 
 void ConsumerSync::consumer(void *arg) {
-    80005c40:	fd010113          	addi	sp,sp,-48
-    80005c44:	02113423          	sd	ra,40(sp)
-    80005c48:	02813023          	sd	s0,32(sp)
-    80005c4c:	00913c23          	sd	s1,24(sp)
-    80005c50:	01213823          	sd	s2,16(sp)
-    80005c54:	01313423          	sd	s3,8(sp)
-    80005c58:	01413023          	sd	s4,0(sp)
-    80005c5c:	03010413          	addi	s0,sp,48
-    80005c60:	00050993          	mv	s3,a0
-    80005c64:	00058913          	mv	s2,a1
+    80005c44:	fd010113          	addi	sp,sp,-48
+    80005c48:	02113423          	sd	ra,40(sp)
+    80005c4c:	02813023          	sd	s0,32(sp)
+    80005c50:	00913c23          	sd	s1,24(sp)
+    80005c54:	01213823          	sd	s2,16(sp)
+    80005c58:	01313423          	sd	s3,8(sp)
+    80005c5c:	01413023          	sd	s4,0(sp)
+    80005c60:	03010413          	addi	s0,sp,48
+    80005c64:	00050993          	mv	s3,a0
+    80005c68:	00058913          	mv	s2,a1
     struct thread_data *data = (struct thread_data *) arg;
 
     int i = 0;
-    80005c68:	00000a13          	li	s4,0
-    80005c6c:	01c0006f          	j	80005c88 <_ZN12ConsumerSync8consumerEPv+0x48>
+    80005c6c:	00000a13          	li	s4,0
+    80005c70:	01c0006f          	j	80005c8c <_ZN12ConsumerSync8consumerEPv+0x48>
         i++;
 
         putc(key);
 
         if (i % (5 * data->id) == 0) {
             Thread::dispatch();
-    80005c70:	ffffd097          	auipc	ra,0xffffd
-    80005c74:	6cc080e7          	jalr	1740(ra) # 8000333c <_ZN6Thread8dispatchEv>
-    80005c78:	0500006f          	j	80005cc8 <_ZN12ConsumerSync8consumerEPv+0x88>
+    80005c74:	ffffd097          	auipc	ra,0xffffd
+    80005c78:	6c4080e7          	jalr	1732(ra) # 80003338 <_ZN6Thread8dispatchEv>
+    80005c7c:	0500006f          	j	80005ccc <_ZN12ConsumerSync8consumerEPv+0x88>
         }
 
         if (i % 80 == 0) {
             putc('\n');
-    80005c7c:	00a00513          	li	a0,10
-    80005c80:	ffffc097          	auipc	ra,0xffffc
-    80005c84:	9a8080e7          	jalr	-1624(ra) # 80001628 <_Z4putcc>
+    80005c80:	00a00513          	li	a0,10
+    80005c84:	ffffc097          	auipc	ra,0xffffc
+    80005c88:	9a4080e7          	jalr	-1628(ra) # 80001628 <_Z4putcc>
     while (!threadEnd) {
-    80005c88:	00007797          	auipc	a5,0x7
-    80005c8c:	5e07a783          	lw	a5,1504(a5) # 8000d268 <_ZL9threadEnd>
-    80005c90:	06079263          	bnez	a5,80005cf4 <_ZN12ConsumerSync8consumerEPv+0xb4>
+    80005c8c:	00007797          	auipc	a5,0x7
+    80005c90:	6247a783          	lw	a5,1572(a5) # 8000d2b0 <_ZL9threadEnd>
+    80005c94:	06079263          	bnez	a5,80005cf8 <_ZN12ConsumerSync8consumerEPv+0xb4>
         int key = data->buffer->get();
-    80005c94:	00893503          	ld	a0,8(s2)
-    80005c98:	00001097          	auipc	ra,0x1
-    80005c9c:	b94080e7          	jalr	-1132(ra) # 8000682c <_ZN9BufferCPP3getEv>
+    80005c98:	00893503          	ld	a0,8(s2)
+    80005c9c:	00001097          	auipc	ra,0x1
+    80005ca0:	b94080e7          	jalr	-1132(ra) # 80006830 <_ZN9BufferCPP3getEv>
         i++;
-    80005ca0:	001a049b          	addiw	s1,s4,1
-    80005ca4:	00048a1b          	sext.w	s4,s1
+    80005ca4:	001a049b          	addiw	s1,s4,1
+    80005ca8:	00048a1b          	sext.w	s4,s1
         putc(key);
-    80005ca8:	0ff57513          	andi	a0,a0,255
-    80005cac:	ffffc097          	auipc	ra,0xffffc
-    80005cb0:	97c080e7          	jalr	-1668(ra) # 80001628 <_Z4putcc>
+    80005cac:	0ff57513          	andi	a0,a0,255
+    80005cb0:	ffffc097          	auipc	ra,0xffffc
+    80005cb4:	978080e7          	jalr	-1672(ra) # 80001628 <_Z4putcc>
         if (i % (5 * data->id) == 0) {
-    80005cb4:	00092703          	lw	a4,0(s2)
-    80005cb8:	0027179b          	slliw	a5,a4,0x2
-    80005cbc:	00e787bb          	addw	a5,a5,a4
-    80005cc0:	02f4e7bb          	remw	a5,s1,a5
-    80005cc4:	fa0786e3          	beqz	a5,80005c70 <_ZN12ConsumerSync8consumerEPv+0x30>
+    80005cb8:	00092703          	lw	a4,0(s2)
+    80005cbc:	0027179b          	slliw	a5,a4,0x2
+    80005cc0:	00e787bb          	addw	a5,a5,a4
+    80005cc4:	02f4e7bb          	remw	a5,s1,a5
+    80005cc8:	fa0786e3          	beqz	a5,80005c74 <_ZN12ConsumerSync8consumerEPv+0x30>
         if (i % 80 == 0) {
-    80005cc8:	05000793          	li	a5,80
-    80005ccc:	02f4e4bb          	remw	s1,s1,a5
-    80005cd0:	fa049ce3          	bnez	s1,80005c88 <_ZN12ConsumerSync8consumerEPv+0x48>
-    80005cd4:	fa9ff06f          	j	80005c7c <_ZN12ConsumerSync8consumerEPv+0x3c>
+    80005ccc:	05000793          	li	a5,80
+    80005cd0:	02f4e4bb          	remw	s1,s1,a5
+    80005cd4:	fa049ce3          	bnez	s1,80005c8c <_ZN12ConsumerSync8consumerEPv+0x48>
+    80005cd8:	fa9ff06f          	j	80005c80 <_ZN12ConsumerSync8consumerEPv+0x3c>
         }
     }
 
 
     while (td->buffer->getCnt() > 0) {
         int key = td->buffer->get();
-    80005cd8:	0209b783          	ld	a5,32(s3)
-    80005cdc:	0087b503          	ld	a0,8(a5)
-    80005ce0:	00001097          	auipc	ra,0x1
-    80005ce4:	b4c080e7          	jalr	-1204(ra) # 8000682c <_ZN9BufferCPP3getEv>
+    80005cdc:	0209b783          	ld	a5,32(s3)
+    80005ce0:	0087b503          	ld	a0,8(a5)
+    80005ce4:	00001097          	auipc	ra,0x1
+    80005ce8:	b4c080e7          	jalr	-1204(ra) # 80006830 <_ZN9BufferCPP3getEv>
         Console::putc(key);
-    80005ce8:	0ff57513          	andi	a0,a0,255
-    80005cec:	ffffe097          	auipc	ra,0xffffe
-    80005cf0:	8b0080e7          	jalr	-1872(ra) # 8000359c <_ZN7Console4putcEc>
+    80005cec:	0ff57513          	andi	a0,a0,255
+    80005cf0:	ffffe097          	auipc	ra,0xffffe
+    80005cf4:	8a8080e7          	jalr	-1880(ra) # 80003598 <_ZN7Console4putcEc>
     while (td->buffer->getCnt() > 0) {
-    80005cf4:	0209b783          	ld	a5,32(s3)
-    80005cf8:	0087b503          	ld	a0,8(a5)
-    80005cfc:	00001097          	auipc	ra,0x1
-    80005d00:	bbc080e7          	jalr	-1092(ra) # 800068b8 <_ZN9BufferCPP6getCntEv>
-    80005d04:	fca04ae3          	bgtz	a0,80005cd8 <_ZN12ConsumerSync8consumerEPv+0x98>
+    80005cf8:	0209b783          	ld	a5,32(s3)
+    80005cfc:	0087b503          	ld	a0,8(a5)
+    80005d00:	00001097          	auipc	ra,0x1
+    80005d04:	bbc080e7          	jalr	-1092(ra) # 800068bc <_ZN9BufferCPP6getCntEv>
+    80005d08:	fca04ae3          	bgtz	a0,80005cdc <_ZN12ConsumerSync8consumerEPv+0x98>
     }
 
     data->wait->signal();
-    80005d08:	01093503          	ld	a0,16(s2)
-    80005d0c:	ffffd097          	auipc	ra,0xffffd
-    80005d10:	7cc080e7          	jalr	1996(ra) # 800034d8 <_ZN9Semaphore6signalEv>
+    80005d0c:	01093503          	ld	a0,16(s2)
+    80005d10:	ffffd097          	auipc	ra,0xffffd
+    80005d14:	7c4080e7          	jalr	1988(ra) # 800034d4 <_ZN9Semaphore6signalEv>
 }
-    80005d14:	02813083          	ld	ra,40(sp)
-    80005d18:	02013403          	ld	s0,32(sp)
-    80005d1c:	01813483          	ld	s1,24(sp)
-    80005d20:	01013903          	ld	s2,16(sp)
-    80005d24:	00813983          	ld	s3,8(sp)
-    80005d28:	00013a03          	ld	s4,0(sp)
-    80005d2c:	03010113          	addi	sp,sp,48
-    80005d30:	00008067          	ret
+    80005d18:	02813083          	ld	ra,40(sp)
+    80005d1c:	02013403          	ld	s0,32(sp)
+    80005d20:	01813483          	ld	s1,24(sp)
+    80005d24:	01013903          	ld	s2,16(sp)
+    80005d28:	00813983          	ld	s3,8(sp)
+    80005d2c:	00013a03          	ld	s4,0(sp)
+    80005d30:	03010113          	addi	sp,sp,48
+    80005d34:	00008067          	ret
 
-0000000080005d34 <_Z29producerConsumer_CPP_Sync_APIv>:
+0000000080005d38 <_Z29producerConsumer_CPP_Sync_APIv>:
 
 void producerConsumer_CPP_Sync_API() {
-    80005d34:	f8010113          	addi	sp,sp,-128
-    80005d38:	06113c23          	sd	ra,120(sp)
-    80005d3c:	06813823          	sd	s0,112(sp)
-    80005d40:	06913423          	sd	s1,104(sp)
-    80005d44:	07213023          	sd	s2,96(sp)
-    80005d48:	05313c23          	sd	s3,88(sp)
-    80005d4c:	05413823          	sd	s4,80(sp)
-    80005d50:	05513423          	sd	s5,72(sp)
-    80005d54:	05613023          	sd	s6,64(sp)
-    80005d58:	03713c23          	sd	s7,56(sp)
-    80005d5c:	03813823          	sd	s8,48(sp)
-    80005d60:	03913423          	sd	s9,40(sp)
-    80005d64:	08010413          	addi	s0,sp,128
+    80005d38:	f8010113          	addi	sp,sp,-128
+    80005d3c:	06113c23          	sd	ra,120(sp)
+    80005d40:	06813823          	sd	s0,112(sp)
+    80005d44:	06913423          	sd	s1,104(sp)
+    80005d48:	07213023          	sd	s2,96(sp)
+    80005d4c:	05313c23          	sd	s3,88(sp)
+    80005d50:	05413823          	sd	s4,80(sp)
+    80005d54:	05513423          	sd	s5,72(sp)
+    80005d58:	05613023          	sd	s6,64(sp)
+    80005d5c:	03713c23          	sd	s7,56(sp)
+    80005d60:	03813823          	sd	s8,48(sp)
+    80005d64:	03913423          	sd	s9,40(sp)
+    80005d68:	08010413          	addi	s0,sp,128
     for (int i = 0; i < threadNum; i++) {
         delete threads[i];
     }
     delete consumerThread;
     delete waitForAll;
     delete buffer;
-    80005d68:	00010b93          	mv	s7,sp
+    80005d6c:	00010b93          	mv	s7,sp
     printString("Unesite broj proizvodjaca?\n");
-    80005d6c:	00004517          	auipc	a0,0x4
-    80005d70:	5ac50513          	addi	a0,a0,1452 # 8000a318 <CONSOLE_STATUS+0x308>
-    80005d74:	00000097          	auipc	ra,0x0
-    80005d78:	604080e7          	jalr	1540(ra) # 80006378 <_Z11printStringPKc>
+    80005d70:	00004517          	auipc	a0,0x4
+    80005d74:	5a850513          	addi	a0,a0,1448 # 8000a318 <CONSOLE_STATUS+0x308>
+    80005d78:	00000097          	auipc	ra,0x0
+    80005d7c:	604080e7          	jalr	1540(ra) # 8000637c <_Z11printStringPKc>
     getString(input, 30);
-    80005d7c:	01e00593          	li	a1,30
-    80005d80:	f8040493          	addi	s1,s0,-128
-    80005d84:	00048513          	mv	a0,s1
-    80005d88:	00000097          	auipc	ra,0x0
-    80005d8c:	678080e7          	jalr	1656(ra) # 80006400 <_Z9getStringPci>
+    80005d80:	01e00593          	li	a1,30
+    80005d84:	f8040493          	addi	s1,s0,-128
+    80005d88:	00048513          	mv	a0,s1
+    80005d8c:	00000097          	auipc	ra,0x0
+    80005d90:	678080e7          	jalr	1656(ra) # 80006404 <_Z9getStringPci>
     threadNum = stringToInt(input);
-    80005d90:	00048513          	mv	a0,s1
-    80005d94:	00000097          	auipc	ra,0x0
-    80005d98:	744080e7          	jalr	1860(ra) # 800064d8 <_Z11stringToIntPKc>
-    80005d9c:	00050913          	mv	s2,a0
+    80005d94:	00048513          	mv	a0,s1
+    80005d98:	00000097          	auipc	ra,0x0
+    80005d9c:	744080e7          	jalr	1860(ra) # 800064dc <_Z11stringToIntPKc>
+    80005da0:	00050913          	mv	s2,a0
     printString("Unesite velicinu bafera?\n");
-    80005da0:	00004517          	auipc	a0,0x4
-    80005da4:	59850513          	addi	a0,a0,1432 # 8000a338 <CONSOLE_STATUS+0x328>
-    80005da8:	00000097          	auipc	ra,0x0
-    80005dac:	5d0080e7          	jalr	1488(ra) # 80006378 <_Z11printStringPKc>
+    80005da4:	00004517          	auipc	a0,0x4
+    80005da8:	59450513          	addi	a0,a0,1428 # 8000a338 <CONSOLE_STATUS+0x328>
+    80005dac:	00000097          	auipc	ra,0x0
+    80005db0:	5d0080e7          	jalr	1488(ra) # 8000637c <_Z11printStringPKc>
     getString(input, 30);
-    80005db0:	01e00593          	li	a1,30
-    80005db4:	00048513          	mv	a0,s1
-    80005db8:	00000097          	auipc	ra,0x0
-    80005dbc:	648080e7          	jalr	1608(ra) # 80006400 <_Z9getStringPci>
+    80005db4:	01e00593          	li	a1,30
+    80005db8:	00048513          	mv	a0,s1
+    80005dbc:	00000097          	auipc	ra,0x0
+    80005dc0:	648080e7          	jalr	1608(ra) # 80006404 <_Z9getStringPci>
     n = stringToInt(input);
-    80005dc0:	00048513          	mv	a0,s1
-    80005dc4:	00000097          	auipc	ra,0x0
-    80005dc8:	714080e7          	jalr	1812(ra) # 800064d8 <_Z11stringToIntPKc>
-    80005dcc:	00050493          	mv	s1,a0
+    80005dc4:	00048513          	mv	a0,s1
+    80005dc8:	00000097          	auipc	ra,0x0
+    80005dcc:	714080e7          	jalr	1812(ra) # 800064dc <_Z11stringToIntPKc>
+    80005dd0:	00050493          	mv	s1,a0
     printString("Broj proizvodjaca "); printInt(threadNum);
-    80005dd0:	00004517          	auipc	a0,0x4
-    80005dd4:	58850513          	addi	a0,a0,1416 # 8000a358 <CONSOLE_STATUS+0x348>
-    80005dd8:	00000097          	auipc	ra,0x0
-    80005ddc:	5a0080e7          	jalr	1440(ra) # 80006378 <_Z11printStringPKc>
-    80005de0:	00000613          	li	a2,0
-    80005de4:	00a00593          	li	a1,10
-    80005de8:	00090513          	mv	a0,s2
-    80005dec:	00000097          	auipc	ra,0x0
-    80005df0:	73c080e7          	jalr	1852(ra) # 80006528 <_Z8printIntiii>
+    80005dd4:	00004517          	auipc	a0,0x4
+    80005dd8:	58450513          	addi	a0,a0,1412 # 8000a358 <CONSOLE_STATUS+0x348>
+    80005ddc:	00000097          	auipc	ra,0x0
+    80005de0:	5a0080e7          	jalr	1440(ra) # 8000637c <_Z11printStringPKc>
+    80005de4:	00000613          	li	a2,0
+    80005de8:	00a00593          	li	a1,10
+    80005dec:	00090513          	mv	a0,s2
+    80005df0:	00000097          	auipc	ra,0x0
+    80005df4:	73c080e7          	jalr	1852(ra) # 8000652c <_Z8printIntiii>
     printString(" i velicina bafera "); printInt(n);
-    80005df4:	00004517          	auipc	a0,0x4
-    80005df8:	57c50513          	addi	a0,a0,1404 # 8000a370 <CONSOLE_STATUS+0x360>
-    80005dfc:	00000097          	auipc	ra,0x0
-    80005e00:	57c080e7          	jalr	1404(ra) # 80006378 <_Z11printStringPKc>
-    80005e04:	00000613          	li	a2,0
-    80005e08:	00a00593          	li	a1,10
-    80005e0c:	00048513          	mv	a0,s1
-    80005e10:	00000097          	auipc	ra,0x0
-    80005e14:	718080e7          	jalr	1816(ra) # 80006528 <_Z8printIntiii>
+    80005df8:	00004517          	auipc	a0,0x4
+    80005dfc:	57850513          	addi	a0,a0,1400 # 8000a370 <CONSOLE_STATUS+0x360>
+    80005e00:	00000097          	auipc	ra,0x0
+    80005e04:	57c080e7          	jalr	1404(ra) # 8000637c <_Z11printStringPKc>
+    80005e08:	00000613          	li	a2,0
+    80005e0c:	00a00593          	li	a1,10
+    80005e10:	00048513          	mv	a0,s1
+    80005e14:	00000097          	auipc	ra,0x0
+    80005e18:	718080e7          	jalr	1816(ra) # 8000652c <_Z8printIntiii>
     printString(".\n");
-    80005e18:	00004517          	auipc	a0,0x4
-    80005e1c:	57050513          	addi	a0,a0,1392 # 8000a388 <CONSOLE_STATUS+0x378>
-    80005e20:	00000097          	auipc	ra,0x0
-    80005e24:	558080e7          	jalr	1368(ra) # 80006378 <_Z11printStringPKc>
+    80005e1c:	00004517          	auipc	a0,0x4
+    80005e20:	56c50513          	addi	a0,a0,1388 # 8000a388 <CONSOLE_STATUS+0x378>
+    80005e24:	00000097          	auipc	ra,0x0
+    80005e28:	558080e7          	jalr	1368(ra) # 8000637c <_Z11printStringPKc>
     if(threadNum > n) {
-    80005e28:	0324c463          	blt	s1,s2,80005e50 <_Z29producerConsumer_CPP_Sync_APIv+0x11c>
+    80005e2c:	0324c463          	blt	s1,s2,80005e54 <_Z29producerConsumer_CPP_Sync_APIv+0x11c>
     } else if (threadNum < 1) {
-    80005e2c:	03205c63          	blez	s2,80005e64 <_Z29producerConsumer_CPP_Sync_APIv+0x130>
+    80005e30:	03205c63          	blez	s2,80005e68 <_Z29producerConsumer_CPP_Sync_APIv+0x130>
     BufferCPP *buffer = new BufferCPP(n);
-    80005e30:	03800513          	li	a0,56
-    80005e34:	ffffd097          	auipc	ra,0xffffd
-    80005e38:	2dc080e7          	jalr	732(ra) # 80003110 <_Znwm>
-    80005e3c:	00050a93          	mv	s5,a0
-    80005e40:	00048593          	mv	a1,s1
-    80005e44:	00001097          	auipc	ra,0x1
-    80005e48:	804080e7          	jalr	-2044(ra) # 80006648 <_ZN9BufferCPPC1Ei>
-    80005e4c:	0300006f          	j	80005e7c <_Z29producerConsumer_CPP_Sync_APIv+0x148>
+    80005e34:	03800513          	li	a0,56
+    80005e38:	ffffd097          	auipc	ra,0xffffd
+    80005e3c:	2cc080e7          	jalr	716(ra) # 80003104 <_Znwm>
+    80005e40:	00050a93          	mv	s5,a0
+    80005e44:	00048593          	mv	a1,s1
+    80005e48:	00001097          	auipc	ra,0x1
+    80005e4c:	804080e7          	jalr	-2044(ra) # 8000664c <_ZN9BufferCPPC1Ei>
+    80005e50:	0300006f          	j	80005e80 <_Z29producerConsumer_CPP_Sync_APIv+0x148>
         printString("Broj proizvodjaca ne sme biti manji od velicine bafera!\n");
-    80005e50:	00004517          	auipc	a0,0x4
-    80005e54:	54050513          	addi	a0,a0,1344 # 8000a390 <CONSOLE_STATUS+0x380>
-    80005e58:	00000097          	auipc	ra,0x0
-    80005e5c:	520080e7          	jalr	1312(ra) # 80006378 <_Z11printStringPKc>
+    80005e54:	00004517          	auipc	a0,0x4
+    80005e58:	53c50513          	addi	a0,a0,1340 # 8000a390 <CONSOLE_STATUS+0x380>
+    80005e5c:	00000097          	auipc	ra,0x0
+    80005e60:	520080e7          	jalr	1312(ra) # 8000637c <_Z11printStringPKc>
         return;
-    80005e60:	0140006f          	j	80005e74 <_Z29producerConsumer_CPP_Sync_APIv+0x140>
+    80005e64:	0140006f          	j	80005e78 <_Z29producerConsumer_CPP_Sync_APIv+0x140>
         printString("Broj proizvodjaca mora biti veci od nula!\n");
-    80005e64:	00004517          	auipc	a0,0x4
-    80005e68:	56c50513          	addi	a0,a0,1388 # 8000a3d0 <CONSOLE_STATUS+0x3c0>
-    80005e6c:	00000097          	auipc	ra,0x0
-    80005e70:	50c080e7          	jalr	1292(ra) # 80006378 <_Z11printStringPKc>
+    80005e68:	00004517          	auipc	a0,0x4
+    80005e6c:	56850513          	addi	a0,a0,1384 # 8000a3d0 <CONSOLE_STATUS+0x3c0>
+    80005e70:	00000097          	auipc	ra,0x0
+    80005e74:	50c080e7          	jalr	1292(ra) # 8000637c <_Z11printStringPKc>
         return;
-    80005e74:	000b8113          	mv	sp,s7
-    80005e78:	2380006f          	j	800060b0 <_Z29producerConsumer_CPP_Sync_APIv+0x37c>
+    80005e78:	000b8113          	mv	sp,s7
+    80005e7c:	2380006f          	j	800060b4 <_Z29producerConsumer_CPP_Sync_APIv+0x37c>
     waitForAll = new Semaphore(0);
-    80005e7c:	01000513          	li	a0,16
-    80005e80:	ffffd097          	auipc	ra,0xffffd
-    80005e84:	290080e7          	jalr	656(ra) # 80003110 <_Znwm>
-    80005e88:	00050493          	mv	s1,a0
-    80005e8c:	00000593          	li	a1,0
-    80005e90:	ffffd097          	auipc	ra,0xffffd
-    80005e94:	5e4080e7          	jalr	1508(ra) # 80003474 <_ZN9SemaphoreC1Ej>
-    80005e98:	00007797          	auipc	a5,0x7
-    80005e9c:	3c97bc23          	sd	s1,984(a5) # 8000d270 <_ZL10waitForAll>
+    80005e80:	01000513          	li	a0,16
+    80005e84:	ffffd097          	auipc	ra,0xffffd
+    80005e88:	280080e7          	jalr	640(ra) # 80003104 <_Znwm>
+    80005e8c:	00050493          	mv	s1,a0
+    80005e90:	00000593          	li	a1,0
+    80005e94:	ffffd097          	auipc	ra,0xffffd
+    80005e98:	5dc080e7          	jalr	1500(ra) # 80003470 <_ZN9SemaphoreC1Ej>
+    80005e9c:	00007797          	auipc	a5,0x7
+    80005ea0:	4097be23          	sd	s1,1052(a5) # 8000d2b8 <_ZL10waitForAll>
     Thread* threads[threadNum];
-    80005ea0:	00391793          	slli	a5,s2,0x3
-    80005ea4:	00f78793          	addi	a5,a5,15
-    80005ea8:	ff07f793          	andi	a5,a5,-16
-    80005eac:	40f10133          	sub	sp,sp,a5
-    80005eb0:	00010993          	mv	s3,sp
+    80005ea4:	00391793          	slli	a5,s2,0x3
+    80005ea8:	00f78793          	addi	a5,a5,15
+    80005eac:	ff07f793          	andi	a5,a5,-16
+    80005eb0:	40f10133          	sub	sp,sp,a5
+    80005eb4:	00010993          	mv	s3,sp
     struct thread_data data[threadNum + 1];
-    80005eb4:	0019071b          	addiw	a4,s2,1
-    80005eb8:	00171793          	slli	a5,a4,0x1
-    80005ebc:	00e787b3          	add	a5,a5,a4
-    80005ec0:	00379793          	slli	a5,a5,0x3
-    80005ec4:	00f78793          	addi	a5,a5,15
-    80005ec8:	ff07f793          	andi	a5,a5,-16
-    80005ecc:	40f10133          	sub	sp,sp,a5
-    80005ed0:	00010a13          	mv	s4,sp
+    80005eb8:	0019071b          	addiw	a4,s2,1
+    80005ebc:	00171793          	slli	a5,a4,0x1
+    80005ec0:	00e787b3          	add	a5,a5,a4
+    80005ec4:	00379793          	slli	a5,a5,0x3
+    80005ec8:	00f78793          	addi	a5,a5,15
+    80005ecc:	ff07f793          	andi	a5,a5,-16
+    80005ed0:	40f10133          	sub	sp,sp,a5
+    80005ed4:	00010a13          	mv	s4,sp
     data[threadNum].id = threadNum;
-    80005ed4:	00191c13          	slli	s8,s2,0x1
-    80005ed8:	012c07b3          	add	a5,s8,s2
-    80005edc:	00379793          	slli	a5,a5,0x3
-    80005ee0:	00fa07b3          	add	a5,s4,a5
-    80005ee4:	0127a023          	sw	s2,0(a5)
+    80005ed8:	00191c13          	slli	s8,s2,0x1
+    80005edc:	012c07b3          	add	a5,s8,s2
+    80005ee0:	00379793          	slli	a5,a5,0x3
+    80005ee4:	00fa07b3          	add	a5,s4,a5
+    80005ee8:	0127a023          	sw	s2,0(a5)
     data[threadNum].buffer = buffer;
-    80005ee8:	0157b423          	sd	s5,8(a5)
+    80005eec:	0157b423          	sd	s5,8(a5)
     data[threadNum].wait = waitForAll;
-    80005eec:	0097b823          	sd	s1,16(a5)
+    80005ef0:	0097b823          	sd	s1,16(a5)
     consumerThread = new ConsumerSync(data+threadNum);
-    80005ef0:	02800513          	li	a0,40
-    80005ef4:	ffffd097          	auipc	ra,0xffffd
-    80005ef8:	21c080e7          	jalr	540(ra) # 80003110 <_Znwm>
-    80005efc:	00050b13          	mv	s6,a0
-    80005f00:	012c0c33          	add	s8,s8,s2
-    80005f04:	003c1c13          	slli	s8,s8,0x3
-    80005f08:	018a0c33          	add	s8,s4,s8
+    80005ef4:	02800513          	li	a0,40
+    80005ef8:	ffffd097          	auipc	ra,0xffffd
+    80005efc:	20c080e7          	jalr	524(ra) # 80003104 <_Znwm>
+    80005f00:	00050b13          	mv	s6,a0
+    80005f04:	012c0c33          	add	s8,s8,s2
+    80005f08:	003c1c13          	slli	s8,s8,0x3
+    80005f0c:	018a0c33          	add	s8,s4,s8
     ConsumerSync(thread_data* _td):Thread(), td(_td) {}
-    80005f0c:	ffffd097          	auipc	ra,0xffffd
-    80005f10:	4ec080e7          	jalr	1260(ra) # 800033f8 <_ZN6ThreadC1Ev>
-    80005f14:	00007797          	auipc	a5,0x7
-    80005f18:	0d478793          	addi	a5,a5,212 # 8000cfe8 <_ZTV12ConsumerSync+0x10>
-    80005f1c:	00fb3023          	sd	a5,0(s6)
-    80005f20:	038b3023          	sd	s8,32(s6)
+    80005f10:	ffffd097          	auipc	ra,0xffffd
+    80005f14:	4e4080e7          	jalr	1252(ra) # 800033f4 <_ZN6ThreadC1Ev>
+    80005f18:	00007797          	auipc	a5,0x7
+    80005f1c:	10078793          	addi	a5,a5,256 # 8000d018 <_ZTV12ConsumerSync+0x10>
+    80005f20:	00fb3023          	sd	a5,0(s6)
+    80005f24:	038b3023          	sd	s8,32(s6)
     consumerThread->start();
-    80005f24:	000b0513          	mv	a0,s6
-    80005f28:	ffffd097          	auipc	ra,0xffffd
-    80005f2c:	3a0080e7          	jalr	928(ra) # 800032c8 <_ZN6Thread5startEv>
+    80005f28:	000b0513          	mv	a0,s6
+    80005f2c:	ffffd097          	auipc	ra,0xffffd
+    80005f30:	390080e7          	jalr	912(ra) # 800032bc <_ZN6Thread5startEv>
     for (int i = 0; i < threadNum; i++) {
-    80005f30:	00000493          	li	s1,0
-    80005f34:	0380006f          	j	80005f6c <_Z29producerConsumer_CPP_Sync_APIv+0x238>
+    80005f34:	00000493          	li	s1,0
+    80005f38:	0380006f          	j	80005f70 <_Z29producerConsumer_CPP_Sync_APIv+0x238>
     ProducerSync(thread_data* _td):Thread(), td(_td) {}
-    80005f38:	00007797          	auipc	a5,0x7
-    80005f3c:	08878793          	addi	a5,a5,136 # 8000cfc0 <_ZTV12ProducerSync+0x10>
-    80005f40:	00fcb023          	sd	a5,0(s9)
-    80005f44:	038cb023          	sd	s8,32(s9)
+    80005f3c:	00007797          	auipc	a5,0x7
+    80005f40:	0b478793          	addi	a5,a5,180 # 8000cff0 <_ZTV12ProducerSync+0x10>
+    80005f44:	00fcb023          	sd	a5,0(s9)
+    80005f48:	038cb023          	sd	s8,32(s9)
             threads[i] = new ProducerSync(data+i);
-    80005f48:	00349793          	slli	a5,s1,0x3
-    80005f4c:	00f987b3          	add	a5,s3,a5
-    80005f50:	0197b023          	sd	s9,0(a5)
+    80005f4c:	00349793          	slli	a5,s1,0x3
+    80005f50:	00f987b3          	add	a5,s3,a5
+    80005f54:	0197b023          	sd	s9,0(a5)
         threads[i]->start();
-    80005f54:	00349793          	slli	a5,s1,0x3
-    80005f58:	00f987b3          	add	a5,s3,a5
-    80005f5c:	0007b503          	ld	a0,0(a5)
-    80005f60:	ffffd097          	auipc	ra,0xffffd
-    80005f64:	368080e7          	jalr	872(ra) # 800032c8 <_ZN6Thread5startEv>
+    80005f58:	00349793          	slli	a5,s1,0x3
+    80005f5c:	00f987b3          	add	a5,s3,a5
+    80005f60:	0007b503          	ld	a0,0(a5)
+    80005f64:	ffffd097          	auipc	ra,0xffffd
+    80005f68:	358080e7          	jalr	856(ra) # 800032bc <_ZN6Thread5startEv>
     for (int i = 0; i < threadNum; i++) {
-    80005f68:	0014849b          	addiw	s1,s1,1
-    80005f6c:	0b24d063          	bge	s1,s2,8000600c <_Z29producerConsumer_CPP_Sync_APIv+0x2d8>
+    80005f6c:	0014849b          	addiw	s1,s1,1
+    80005f70:	0b24d063          	bge	s1,s2,80006010 <_Z29producerConsumer_CPP_Sync_APIv+0x2d8>
         data[i].id = i;
-    80005f70:	00149793          	slli	a5,s1,0x1
-    80005f74:	009787b3          	add	a5,a5,s1
-    80005f78:	00379793          	slli	a5,a5,0x3
-    80005f7c:	00fa07b3          	add	a5,s4,a5
-    80005f80:	0097a023          	sw	s1,0(a5)
+    80005f74:	00149793          	slli	a5,s1,0x1
+    80005f78:	009787b3          	add	a5,a5,s1
+    80005f7c:	00379793          	slli	a5,a5,0x3
+    80005f80:	00fa07b3          	add	a5,s4,a5
+    80005f84:	0097a023          	sw	s1,0(a5)
         data[i].buffer = buffer;
-    80005f84:	0157b423          	sd	s5,8(a5)
+    80005f88:	0157b423          	sd	s5,8(a5)
         data[i].wait = waitForAll;
-    80005f88:	00007717          	auipc	a4,0x7
-    80005f8c:	2e873703          	ld	a4,744(a4) # 8000d270 <_ZL10waitForAll>
-    80005f90:	00e7b823          	sd	a4,16(a5)
+    80005f8c:	00007717          	auipc	a4,0x7
+    80005f90:	32c73703          	ld	a4,812(a4) # 8000d2b8 <_ZL10waitForAll>
+    80005f94:	00e7b823          	sd	a4,16(a5)
         if(i>0) {
-    80005f94:	02905863          	blez	s1,80005fc4 <_Z29producerConsumer_CPP_Sync_APIv+0x290>
+    80005f98:	02905863          	blez	s1,80005fc8 <_Z29producerConsumer_CPP_Sync_APIv+0x290>
             threads[i] = new ProducerSync(data+i);
-    80005f98:	02800513          	li	a0,40
-    80005f9c:	ffffd097          	auipc	ra,0xffffd
-    80005fa0:	174080e7          	jalr	372(ra) # 80003110 <_Znwm>
-    80005fa4:	00050c93          	mv	s9,a0
-    80005fa8:	00149c13          	slli	s8,s1,0x1
-    80005fac:	009c0c33          	add	s8,s8,s1
-    80005fb0:	003c1c13          	slli	s8,s8,0x3
-    80005fb4:	018a0c33          	add	s8,s4,s8
+    80005f9c:	02800513          	li	a0,40
+    80005fa0:	ffffd097          	auipc	ra,0xffffd
+    80005fa4:	164080e7          	jalr	356(ra) # 80003104 <_Znwm>
+    80005fa8:	00050c93          	mv	s9,a0
+    80005fac:	00149c13          	slli	s8,s1,0x1
+    80005fb0:	009c0c33          	add	s8,s8,s1
+    80005fb4:	003c1c13          	slli	s8,s8,0x3
+    80005fb8:	018a0c33          	add	s8,s4,s8
     ProducerSync(thread_data* _td):Thread(), td(_td) {}
-    80005fb8:	ffffd097          	auipc	ra,0xffffd
-    80005fbc:	440080e7          	jalr	1088(ra) # 800033f8 <_ZN6ThreadC1Ev>
-    80005fc0:	f79ff06f          	j	80005f38 <_Z29producerConsumer_CPP_Sync_APIv+0x204>
+    80005fbc:	ffffd097          	auipc	ra,0xffffd
+    80005fc0:	438080e7          	jalr	1080(ra) # 800033f4 <_ZN6ThreadC1Ev>
+    80005fc4:	f79ff06f          	j	80005f3c <_Z29producerConsumer_CPP_Sync_APIv+0x204>
             threads[i] = new ProducerKeyboard(data+i);
-    80005fc4:	02800513          	li	a0,40
-    80005fc8:	ffffd097          	auipc	ra,0xffffd
-    80005fcc:	148080e7          	jalr	328(ra) # 80003110 <_Znwm>
-    80005fd0:	00050c93          	mv	s9,a0
-    80005fd4:	00149c13          	slli	s8,s1,0x1
-    80005fd8:	009c0c33          	add	s8,s8,s1
-    80005fdc:	003c1c13          	slli	s8,s8,0x3
-    80005fe0:	018a0c33          	add	s8,s4,s8
+    80005fc8:	02800513          	li	a0,40
+    80005fcc:	ffffd097          	auipc	ra,0xffffd
+    80005fd0:	138080e7          	jalr	312(ra) # 80003104 <_Znwm>
+    80005fd4:	00050c93          	mv	s9,a0
+    80005fd8:	00149c13          	slli	s8,s1,0x1
+    80005fdc:	009c0c33          	add	s8,s8,s1
+    80005fe0:	003c1c13          	slli	s8,s8,0x3
+    80005fe4:	018a0c33          	add	s8,s4,s8
     ProducerKeyboard(thread_data* _td):Thread(), td(_td) {}
-    80005fe4:	ffffd097          	auipc	ra,0xffffd
-    80005fe8:	414080e7          	jalr	1044(ra) # 800033f8 <_ZN6ThreadC1Ev>
-    80005fec:	00007797          	auipc	a5,0x7
-    80005ff0:	fac78793          	addi	a5,a5,-84 # 8000cf98 <_ZTV16ProducerKeyboard+0x10>
-    80005ff4:	00fcb023          	sd	a5,0(s9)
-    80005ff8:	038cb023          	sd	s8,32(s9)
+    80005fe8:	ffffd097          	auipc	ra,0xffffd
+    80005fec:	40c080e7          	jalr	1036(ra) # 800033f4 <_ZN6ThreadC1Ev>
+    80005ff0:	00007797          	auipc	a5,0x7
+    80005ff4:	fd878793          	addi	a5,a5,-40 # 8000cfc8 <_ZTV16ProducerKeyboard+0x10>
+    80005ff8:	00fcb023          	sd	a5,0(s9)
+    80005ffc:	038cb023          	sd	s8,32(s9)
             threads[i] = new ProducerKeyboard(data+i);
-    80005ffc:	00349793          	slli	a5,s1,0x3
-    80006000:	00f987b3          	add	a5,s3,a5
-    80006004:	0197b023          	sd	s9,0(a5)
-    80006008:	f4dff06f          	j	80005f54 <_Z29producerConsumer_CPP_Sync_APIv+0x220>
+    80006000:	00349793          	slli	a5,s1,0x3
+    80006004:	00f987b3          	add	a5,s3,a5
+    80006008:	0197b023          	sd	s9,0(a5)
+    8000600c:	f4dff06f          	j	80005f58 <_Z29producerConsumer_CPP_Sync_APIv+0x220>
     Thread::dispatch();
-    8000600c:	ffffd097          	auipc	ra,0xffffd
-    80006010:	330080e7          	jalr	816(ra) # 8000333c <_ZN6Thread8dispatchEv>
+    80006010:	ffffd097          	auipc	ra,0xffffd
+    80006014:	328080e7          	jalr	808(ra) # 80003338 <_ZN6Thread8dispatchEv>
     for (int i = 0; i <= threadNum; i++) {
-    80006014:	00000493          	li	s1,0
-    80006018:	00994e63          	blt	s2,s1,80006034 <_Z29producerConsumer_CPP_Sync_APIv+0x300>
+    80006018:	00000493          	li	s1,0
+    8000601c:	00994e63          	blt	s2,s1,80006038 <_Z29producerConsumer_CPP_Sync_APIv+0x300>
         waitForAll->wait();
-    8000601c:	00007517          	auipc	a0,0x7
-    80006020:	25453503          	ld	a0,596(a0) # 8000d270 <_ZL10waitForAll>
-    80006024:	ffffd097          	auipc	ra,0xffffd
-    80006028:	488080e7          	jalr	1160(ra) # 800034ac <_ZN9Semaphore4waitEv>
+    80006020:	00007517          	auipc	a0,0x7
+    80006024:	29853503          	ld	a0,664(a0) # 8000d2b8 <_ZL10waitForAll>
+    80006028:	ffffd097          	auipc	ra,0xffffd
+    8000602c:	480080e7          	jalr	1152(ra) # 800034a8 <_ZN9Semaphore4waitEv>
     for (int i = 0; i <= threadNum; i++) {
-    8000602c:	0014849b          	addiw	s1,s1,1
-    80006030:	fe9ff06f          	j	80006018 <_Z29producerConsumer_CPP_Sync_APIv+0x2e4>
+    80006030:	0014849b          	addiw	s1,s1,1
+    80006034:	fe9ff06f          	j	8000601c <_Z29producerConsumer_CPP_Sync_APIv+0x2e4>
     for (int i = 0; i < threadNum; i++) {
-    80006034:	00000493          	li	s1,0
-    80006038:	0080006f          	j	80006040 <_Z29producerConsumer_CPP_Sync_APIv+0x30c>
-    8000603c:	0014849b          	addiw	s1,s1,1
-    80006040:	0324d263          	bge	s1,s2,80006064 <_Z29producerConsumer_CPP_Sync_APIv+0x330>
+    80006038:	00000493          	li	s1,0
+    8000603c:	0080006f          	j	80006044 <_Z29producerConsumer_CPP_Sync_APIv+0x30c>
+    80006040:	0014849b          	addiw	s1,s1,1
+    80006044:	0324d263          	bge	s1,s2,80006068 <_Z29producerConsumer_CPP_Sync_APIv+0x330>
         delete threads[i];
-    80006044:	00349793          	slli	a5,s1,0x3
-    80006048:	00f987b3          	add	a5,s3,a5
-    8000604c:	0007b503          	ld	a0,0(a5)
-    80006050:	fe0506e3          	beqz	a0,8000603c <_Z29producerConsumer_CPP_Sync_APIv+0x308>
-    80006054:	00053783          	ld	a5,0(a0)
-    80006058:	0087b783          	ld	a5,8(a5)
-    8000605c:	000780e7          	jalr	a5
-    80006060:	fddff06f          	j	8000603c <_Z29producerConsumer_CPP_Sync_APIv+0x308>
+    80006048:	00349793          	slli	a5,s1,0x3
+    8000604c:	00f987b3          	add	a5,s3,a5
+    80006050:	0007b503          	ld	a0,0(a5)
+    80006054:	fe0506e3          	beqz	a0,80006040 <_Z29producerConsumer_CPP_Sync_APIv+0x308>
+    80006058:	00053783          	ld	a5,0(a0)
+    8000605c:	0087b783          	ld	a5,8(a5)
+    80006060:	000780e7          	jalr	a5
+    80006064:	fddff06f          	j	80006040 <_Z29producerConsumer_CPP_Sync_APIv+0x308>
     delete consumerThread;
-    80006064:	000b0a63          	beqz	s6,80006078 <_Z29producerConsumer_CPP_Sync_APIv+0x344>
-    80006068:	000b3783          	ld	a5,0(s6)
-    8000606c:	0087b783          	ld	a5,8(a5)
-    80006070:	000b0513          	mv	a0,s6
-    80006074:	000780e7          	jalr	a5
+    80006068:	000b0a63          	beqz	s6,8000607c <_Z29producerConsumer_CPP_Sync_APIv+0x344>
+    8000606c:	000b3783          	ld	a5,0(s6)
+    80006070:	0087b783          	ld	a5,8(a5)
+    80006074:	000b0513          	mv	a0,s6
+    80006078:	000780e7          	jalr	a5
     delete waitForAll;
-    80006078:	00007517          	auipc	a0,0x7
-    8000607c:	1f853503          	ld	a0,504(a0) # 8000d270 <_ZL10waitForAll>
-    80006080:	00050863          	beqz	a0,80006090 <_Z29producerConsumer_CPP_Sync_APIv+0x35c>
-    80006084:	00053783          	ld	a5,0(a0)
-    80006088:	0087b783          	ld	a5,8(a5)
-    8000608c:	000780e7          	jalr	a5
+    8000607c:	00007517          	auipc	a0,0x7
+    80006080:	23c53503          	ld	a0,572(a0) # 8000d2b8 <_ZL10waitForAll>
+    80006084:	00050863          	beqz	a0,80006094 <_Z29producerConsumer_CPP_Sync_APIv+0x35c>
+    80006088:	00053783          	ld	a5,0(a0)
+    8000608c:	0087b783          	ld	a5,8(a5)
+    80006090:	000780e7          	jalr	a5
     delete buffer;
-    80006090:	000a8e63          	beqz	s5,800060ac <_Z29producerConsumer_CPP_Sync_APIv+0x378>
-    80006094:	000a8513          	mv	a0,s5
-    80006098:	00001097          	auipc	ra,0x1
-    8000609c:	8a8080e7          	jalr	-1880(ra) # 80006940 <_ZN9BufferCPPD1Ev>
-    800060a0:	000a8513          	mv	a0,s5
-    800060a4:	ffffd097          	auipc	ra,0xffffd
-    800060a8:	0bc080e7          	jalr	188(ra) # 80003160 <_ZdlPv>
-    800060ac:	000b8113          	mv	sp,s7
+    80006094:	000a8e63          	beqz	s5,800060b0 <_Z29producerConsumer_CPP_Sync_APIv+0x378>
+    80006098:	000a8513          	mv	a0,s5
+    8000609c:	00001097          	auipc	ra,0x1
+    800060a0:	8a8080e7          	jalr	-1880(ra) # 80006944 <_ZN9BufferCPPD1Ev>
+    800060a4:	000a8513          	mv	a0,s5
+    800060a8:	ffffd097          	auipc	ra,0xffffd
+    800060ac:	0ac080e7          	jalr	172(ra) # 80003154 <_ZdlPv>
+    800060b0:	000b8113          	mv	sp,s7
 
 }
-    800060b0:	f8040113          	addi	sp,s0,-128
-    800060b4:	07813083          	ld	ra,120(sp)
-    800060b8:	07013403          	ld	s0,112(sp)
-    800060bc:	06813483          	ld	s1,104(sp)
-    800060c0:	06013903          	ld	s2,96(sp)
-    800060c4:	05813983          	ld	s3,88(sp)
-    800060c8:	05013a03          	ld	s4,80(sp)
-    800060cc:	04813a83          	ld	s5,72(sp)
-    800060d0:	04013b03          	ld	s6,64(sp)
-    800060d4:	03813b83          	ld	s7,56(sp)
-    800060d8:	03013c03          	ld	s8,48(sp)
-    800060dc:	02813c83          	ld	s9,40(sp)
-    800060e0:	08010113          	addi	sp,sp,128
-    800060e4:	00008067          	ret
-    800060e8:	00050493          	mv	s1,a0
+    800060b4:	f8040113          	addi	sp,s0,-128
+    800060b8:	07813083          	ld	ra,120(sp)
+    800060bc:	07013403          	ld	s0,112(sp)
+    800060c0:	06813483          	ld	s1,104(sp)
+    800060c4:	06013903          	ld	s2,96(sp)
+    800060c8:	05813983          	ld	s3,88(sp)
+    800060cc:	05013a03          	ld	s4,80(sp)
+    800060d0:	04813a83          	ld	s5,72(sp)
+    800060d4:	04013b03          	ld	s6,64(sp)
+    800060d8:	03813b83          	ld	s7,56(sp)
+    800060dc:	03013c03          	ld	s8,48(sp)
+    800060e0:	02813c83          	ld	s9,40(sp)
+    800060e4:	08010113          	addi	sp,sp,128
+    800060e8:	00008067          	ret
+    800060ec:	00050493          	mv	s1,a0
     BufferCPP *buffer = new BufferCPP(n);
-    800060ec:	000a8513          	mv	a0,s5
-    800060f0:	ffffd097          	auipc	ra,0xffffd
-    800060f4:	070080e7          	jalr	112(ra) # 80003160 <_ZdlPv>
-    800060f8:	00048513          	mv	a0,s1
-    800060fc:	00008097          	auipc	ra,0x8
-    80006100:	26c080e7          	jalr	620(ra) # 8000e368 <_Unwind_Resume>
-    80006104:	00050913          	mv	s2,a0
+    800060f0:	000a8513          	mv	a0,s5
+    800060f4:	ffffd097          	auipc	ra,0xffffd
+    800060f8:	060080e7          	jalr	96(ra) # 80003154 <_ZdlPv>
+    800060fc:	00048513          	mv	a0,s1
+    80006100:	00008097          	auipc	ra,0x8
+    80006104:	2b8080e7          	jalr	696(ra) # 8000e3b8 <_Unwind_Resume>
+    80006108:	00050913          	mv	s2,a0
     waitForAll = new Semaphore(0);
-    80006108:	00048513          	mv	a0,s1
-    8000610c:	ffffd097          	auipc	ra,0xffffd
-    80006110:	054080e7          	jalr	84(ra) # 80003160 <_ZdlPv>
-    80006114:	00090513          	mv	a0,s2
-    80006118:	00008097          	auipc	ra,0x8
-    8000611c:	250080e7          	jalr	592(ra) # 8000e368 <_Unwind_Resume>
-    80006120:	00050493          	mv	s1,a0
+    8000610c:	00048513          	mv	a0,s1
+    80006110:	ffffd097          	auipc	ra,0xffffd
+    80006114:	044080e7          	jalr	68(ra) # 80003154 <_ZdlPv>
+    80006118:	00090513          	mv	a0,s2
+    8000611c:	00008097          	auipc	ra,0x8
+    80006120:	29c080e7          	jalr	668(ra) # 8000e3b8 <_Unwind_Resume>
+    80006124:	00050493          	mv	s1,a0
     consumerThread = new ConsumerSync(data+threadNum);
-    80006124:	000b0513          	mv	a0,s6
-    80006128:	ffffd097          	auipc	ra,0xffffd
-    8000612c:	038080e7          	jalr	56(ra) # 80003160 <_ZdlPv>
-    80006130:	00048513          	mv	a0,s1
-    80006134:	00008097          	auipc	ra,0x8
-    80006138:	234080e7          	jalr	564(ra) # 8000e368 <_Unwind_Resume>
-    8000613c:	00050493          	mv	s1,a0
+    80006128:	000b0513          	mv	a0,s6
+    8000612c:	ffffd097          	auipc	ra,0xffffd
+    80006130:	028080e7          	jalr	40(ra) # 80003154 <_ZdlPv>
+    80006134:	00048513          	mv	a0,s1
+    80006138:	00008097          	auipc	ra,0x8
+    8000613c:	280080e7          	jalr	640(ra) # 8000e3b8 <_Unwind_Resume>
+    80006140:	00050493          	mv	s1,a0
             threads[i] = new ProducerSync(data+i);
-    80006140:	000c8513          	mv	a0,s9
-    80006144:	ffffd097          	auipc	ra,0xffffd
-    80006148:	01c080e7          	jalr	28(ra) # 80003160 <_ZdlPv>
-    8000614c:	00048513          	mv	a0,s1
-    80006150:	00008097          	auipc	ra,0x8
-    80006154:	218080e7          	jalr	536(ra) # 8000e368 <_Unwind_Resume>
-    80006158:	00050493          	mv	s1,a0
+    80006144:	000c8513          	mv	a0,s9
+    80006148:	ffffd097          	auipc	ra,0xffffd
+    8000614c:	00c080e7          	jalr	12(ra) # 80003154 <_ZdlPv>
+    80006150:	00048513          	mv	a0,s1
+    80006154:	00008097          	auipc	ra,0x8
+    80006158:	264080e7          	jalr	612(ra) # 8000e3b8 <_Unwind_Resume>
+    8000615c:	00050493          	mv	s1,a0
             threads[i] = new ProducerKeyboard(data+i);
-    8000615c:	000c8513          	mv	a0,s9
-    80006160:	ffffd097          	auipc	ra,0xffffd
-    80006164:	000080e7          	jalr	ra # 80003160 <_ZdlPv>
-    80006168:	00048513          	mv	a0,s1
-    8000616c:	00008097          	auipc	ra,0x8
-    80006170:	1fc080e7          	jalr	508(ra) # 8000e368 <_Unwind_Resume>
+    80006160:	000c8513          	mv	a0,s9
+    80006164:	ffffd097          	auipc	ra,0xffffd
+    80006168:	ff0080e7          	jalr	-16(ra) # 80003154 <_ZdlPv>
+    8000616c:	00048513          	mv	a0,s1
+    80006170:	00008097          	auipc	ra,0x8
+    80006174:	248080e7          	jalr	584(ra) # 8000e3b8 <_Unwind_Resume>
 
-0000000080006174 <_ZN12ConsumerSyncD1Ev>:
+0000000080006178 <_ZN12ConsumerSyncD1Ev>:
 class ConsumerSync:public Thread {
-    80006174:	ff010113          	addi	sp,sp,-16
-    80006178:	00113423          	sd	ra,8(sp)
-    8000617c:	00813023          	sd	s0,0(sp)
-    80006180:	01010413          	addi	s0,sp,16
-    80006184:	00007797          	auipc	a5,0x7
-    80006188:	e6478793          	addi	a5,a5,-412 # 8000cfe8 <_ZTV12ConsumerSync+0x10>
-    8000618c:	00f53023          	sd	a5,0(a0)
-    80006190:	ffffd097          	auipc	ra,0xffffd
-    80006194:	ea0080e7          	jalr	-352(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80006198:	00813083          	ld	ra,8(sp)
-    8000619c:	00013403          	ld	s0,0(sp)
-    800061a0:	01010113          	addi	sp,sp,16
-    800061a4:	00008067          	ret
+    80006178:	ff010113          	addi	sp,sp,-16
+    8000617c:	00113423          	sd	ra,8(sp)
+    80006180:	00813023          	sd	s0,0(sp)
+    80006184:	01010413          	addi	s0,sp,16
+    80006188:	00007797          	auipc	a5,0x7
+    8000618c:	e9078793          	addi	a5,a5,-368 # 8000d018 <_ZTV12ConsumerSync+0x10>
+    80006190:	00f53023          	sd	a5,0(a0)
+    80006194:	ffffd097          	auipc	ra,0xffffd
+    80006198:	e90080e7          	jalr	-368(ra) # 80003024 <_ZN6ThreadD1Ev>
+    8000619c:	00813083          	ld	ra,8(sp)
+    800061a0:	00013403          	ld	s0,0(sp)
+    800061a4:	01010113          	addi	sp,sp,16
+    800061a8:	00008067          	ret
 
-00000000800061a8 <_ZN12ConsumerSyncD0Ev>:
-    800061a8:	fe010113          	addi	sp,sp,-32
-    800061ac:	00113c23          	sd	ra,24(sp)
-    800061b0:	00813823          	sd	s0,16(sp)
-    800061b4:	00913423          	sd	s1,8(sp)
-    800061b8:	02010413          	addi	s0,sp,32
-    800061bc:	00050493          	mv	s1,a0
-    800061c0:	00007797          	auipc	a5,0x7
-    800061c4:	e2878793          	addi	a5,a5,-472 # 8000cfe8 <_ZTV12ConsumerSync+0x10>
-    800061c8:	00f53023          	sd	a5,0(a0)
-    800061cc:	ffffd097          	auipc	ra,0xffffd
-    800061d0:	e64080e7          	jalr	-412(ra) # 80003030 <_ZN6ThreadD1Ev>
-    800061d4:	00048513          	mv	a0,s1
-    800061d8:	ffffd097          	auipc	ra,0xffffd
-    800061dc:	f88080e7          	jalr	-120(ra) # 80003160 <_ZdlPv>
-    800061e0:	01813083          	ld	ra,24(sp)
-    800061e4:	01013403          	ld	s0,16(sp)
-    800061e8:	00813483          	ld	s1,8(sp)
-    800061ec:	02010113          	addi	sp,sp,32
-    800061f0:	00008067          	ret
+00000000800061ac <_ZN12ConsumerSyncD0Ev>:
+    800061ac:	fe010113          	addi	sp,sp,-32
+    800061b0:	00113c23          	sd	ra,24(sp)
+    800061b4:	00813823          	sd	s0,16(sp)
+    800061b8:	00913423          	sd	s1,8(sp)
+    800061bc:	02010413          	addi	s0,sp,32
+    800061c0:	00050493          	mv	s1,a0
+    800061c4:	00007797          	auipc	a5,0x7
+    800061c8:	e5478793          	addi	a5,a5,-428 # 8000d018 <_ZTV12ConsumerSync+0x10>
+    800061cc:	00f53023          	sd	a5,0(a0)
+    800061d0:	ffffd097          	auipc	ra,0xffffd
+    800061d4:	e54080e7          	jalr	-428(ra) # 80003024 <_ZN6ThreadD1Ev>
+    800061d8:	00048513          	mv	a0,s1
+    800061dc:	ffffd097          	auipc	ra,0xffffd
+    800061e0:	f78080e7          	jalr	-136(ra) # 80003154 <_ZdlPv>
+    800061e4:	01813083          	ld	ra,24(sp)
+    800061e8:	01013403          	ld	s0,16(sp)
+    800061ec:	00813483          	ld	s1,8(sp)
+    800061f0:	02010113          	addi	sp,sp,32
+    800061f4:	00008067          	ret
 
-00000000800061f4 <_ZN12ProducerSyncD1Ev>:
+00000000800061f8 <_ZN12ProducerSyncD1Ev>:
 class ProducerSync:public Thread {
-    800061f4:	ff010113          	addi	sp,sp,-16
-    800061f8:	00113423          	sd	ra,8(sp)
-    800061fc:	00813023          	sd	s0,0(sp)
-    80006200:	01010413          	addi	s0,sp,16
-    80006204:	00007797          	auipc	a5,0x7
-    80006208:	dbc78793          	addi	a5,a5,-580 # 8000cfc0 <_ZTV12ProducerSync+0x10>
-    8000620c:	00f53023          	sd	a5,0(a0)
-    80006210:	ffffd097          	auipc	ra,0xffffd
-    80006214:	e20080e7          	jalr	-480(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80006218:	00813083          	ld	ra,8(sp)
-    8000621c:	00013403          	ld	s0,0(sp)
-    80006220:	01010113          	addi	sp,sp,16
-    80006224:	00008067          	ret
+    800061f8:	ff010113          	addi	sp,sp,-16
+    800061fc:	00113423          	sd	ra,8(sp)
+    80006200:	00813023          	sd	s0,0(sp)
+    80006204:	01010413          	addi	s0,sp,16
+    80006208:	00007797          	auipc	a5,0x7
+    8000620c:	de878793          	addi	a5,a5,-536 # 8000cff0 <_ZTV12ProducerSync+0x10>
+    80006210:	00f53023          	sd	a5,0(a0)
+    80006214:	ffffd097          	auipc	ra,0xffffd
+    80006218:	e10080e7          	jalr	-496(ra) # 80003024 <_ZN6ThreadD1Ev>
+    8000621c:	00813083          	ld	ra,8(sp)
+    80006220:	00013403          	ld	s0,0(sp)
+    80006224:	01010113          	addi	sp,sp,16
+    80006228:	00008067          	ret
 
-0000000080006228 <_ZN12ProducerSyncD0Ev>:
-    80006228:	fe010113          	addi	sp,sp,-32
-    8000622c:	00113c23          	sd	ra,24(sp)
-    80006230:	00813823          	sd	s0,16(sp)
-    80006234:	00913423          	sd	s1,8(sp)
-    80006238:	02010413          	addi	s0,sp,32
-    8000623c:	00050493          	mv	s1,a0
-    80006240:	00007797          	auipc	a5,0x7
-    80006244:	d8078793          	addi	a5,a5,-640 # 8000cfc0 <_ZTV12ProducerSync+0x10>
-    80006248:	00f53023          	sd	a5,0(a0)
-    8000624c:	ffffd097          	auipc	ra,0xffffd
-    80006250:	de4080e7          	jalr	-540(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80006254:	00048513          	mv	a0,s1
-    80006258:	ffffd097          	auipc	ra,0xffffd
-    8000625c:	f08080e7          	jalr	-248(ra) # 80003160 <_ZdlPv>
-    80006260:	01813083          	ld	ra,24(sp)
-    80006264:	01013403          	ld	s0,16(sp)
-    80006268:	00813483          	ld	s1,8(sp)
-    8000626c:	02010113          	addi	sp,sp,32
-    80006270:	00008067          	ret
+000000008000622c <_ZN12ProducerSyncD0Ev>:
+    8000622c:	fe010113          	addi	sp,sp,-32
+    80006230:	00113c23          	sd	ra,24(sp)
+    80006234:	00813823          	sd	s0,16(sp)
+    80006238:	00913423          	sd	s1,8(sp)
+    8000623c:	02010413          	addi	s0,sp,32
+    80006240:	00050493          	mv	s1,a0
+    80006244:	00007797          	auipc	a5,0x7
+    80006248:	dac78793          	addi	a5,a5,-596 # 8000cff0 <_ZTV12ProducerSync+0x10>
+    8000624c:	00f53023          	sd	a5,0(a0)
+    80006250:	ffffd097          	auipc	ra,0xffffd
+    80006254:	dd4080e7          	jalr	-556(ra) # 80003024 <_ZN6ThreadD1Ev>
+    80006258:	00048513          	mv	a0,s1
+    8000625c:	ffffd097          	auipc	ra,0xffffd
+    80006260:	ef8080e7          	jalr	-264(ra) # 80003154 <_ZdlPv>
+    80006264:	01813083          	ld	ra,24(sp)
+    80006268:	01013403          	ld	s0,16(sp)
+    8000626c:	00813483          	ld	s1,8(sp)
+    80006270:	02010113          	addi	sp,sp,32
+    80006274:	00008067          	ret
 
-0000000080006274 <_ZN16ProducerKeyboardD1Ev>:
+0000000080006278 <_ZN16ProducerKeyboardD1Ev>:
 class ProducerKeyboard:public Thread {
-    80006274:	ff010113          	addi	sp,sp,-16
-    80006278:	00113423          	sd	ra,8(sp)
-    8000627c:	00813023          	sd	s0,0(sp)
-    80006280:	01010413          	addi	s0,sp,16
-    80006284:	00007797          	auipc	a5,0x7
-    80006288:	d1478793          	addi	a5,a5,-748 # 8000cf98 <_ZTV16ProducerKeyboard+0x10>
-    8000628c:	00f53023          	sd	a5,0(a0)
-    80006290:	ffffd097          	auipc	ra,0xffffd
-    80006294:	da0080e7          	jalr	-608(ra) # 80003030 <_ZN6ThreadD1Ev>
-    80006298:	00813083          	ld	ra,8(sp)
-    8000629c:	00013403          	ld	s0,0(sp)
-    800062a0:	01010113          	addi	sp,sp,16
-    800062a4:	00008067          	ret
+    80006278:	ff010113          	addi	sp,sp,-16
+    8000627c:	00113423          	sd	ra,8(sp)
+    80006280:	00813023          	sd	s0,0(sp)
+    80006284:	01010413          	addi	s0,sp,16
+    80006288:	00007797          	auipc	a5,0x7
+    8000628c:	d4078793          	addi	a5,a5,-704 # 8000cfc8 <_ZTV16ProducerKeyboard+0x10>
+    80006290:	00f53023          	sd	a5,0(a0)
+    80006294:	ffffd097          	auipc	ra,0xffffd
+    80006298:	d90080e7          	jalr	-624(ra) # 80003024 <_ZN6ThreadD1Ev>
+    8000629c:	00813083          	ld	ra,8(sp)
+    800062a0:	00013403          	ld	s0,0(sp)
+    800062a4:	01010113          	addi	sp,sp,16
+    800062a8:	00008067          	ret
 
-00000000800062a8 <_ZN16ProducerKeyboardD0Ev>:
-    800062a8:	fe010113          	addi	sp,sp,-32
-    800062ac:	00113c23          	sd	ra,24(sp)
-    800062b0:	00813823          	sd	s0,16(sp)
-    800062b4:	00913423          	sd	s1,8(sp)
-    800062b8:	02010413          	addi	s0,sp,32
-    800062bc:	00050493          	mv	s1,a0
-    800062c0:	00007797          	auipc	a5,0x7
-    800062c4:	cd878793          	addi	a5,a5,-808 # 8000cf98 <_ZTV16ProducerKeyboard+0x10>
-    800062c8:	00f53023          	sd	a5,0(a0)
-    800062cc:	ffffd097          	auipc	ra,0xffffd
-    800062d0:	d64080e7          	jalr	-668(ra) # 80003030 <_ZN6ThreadD1Ev>
-    800062d4:	00048513          	mv	a0,s1
-    800062d8:	ffffd097          	auipc	ra,0xffffd
-    800062dc:	e88080e7          	jalr	-376(ra) # 80003160 <_ZdlPv>
-    800062e0:	01813083          	ld	ra,24(sp)
-    800062e4:	01013403          	ld	s0,16(sp)
-    800062e8:	00813483          	ld	s1,8(sp)
-    800062ec:	02010113          	addi	sp,sp,32
-    800062f0:	00008067          	ret
+00000000800062ac <_ZN16ProducerKeyboardD0Ev>:
+    800062ac:	fe010113          	addi	sp,sp,-32
+    800062b0:	00113c23          	sd	ra,24(sp)
+    800062b4:	00813823          	sd	s0,16(sp)
+    800062b8:	00913423          	sd	s1,8(sp)
+    800062bc:	02010413          	addi	s0,sp,32
+    800062c0:	00050493          	mv	s1,a0
+    800062c4:	00007797          	auipc	a5,0x7
+    800062c8:	d0478793          	addi	a5,a5,-764 # 8000cfc8 <_ZTV16ProducerKeyboard+0x10>
+    800062cc:	00f53023          	sd	a5,0(a0)
+    800062d0:	ffffd097          	auipc	ra,0xffffd
+    800062d4:	d54080e7          	jalr	-684(ra) # 80003024 <_ZN6ThreadD1Ev>
+    800062d8:	00048513          	mv	a0,s1
+    800062dc:	ffffd097          	auipc	ra,0xffffd
+    800062e0:	e78080e7          	jalr	-392(ra) # 80003154 <_ZdlPv>
+    800062e4:	01813083          	ld	ra,24(sp)
+    800062e8:	01013403          	ld	s0,16(sp)
+    800062ec:	00813483          	ld	s1,8(sp)
+    800062f0:	02010113          	addi	sp,sp,32
+    800062f4:	00008067          	ret
 
-00000000800062f4 <_ZN16ProducerKeyboard3runEv>:
+00000000800062f8 <_ZN16ProducerKeyboard3runEv>:
     void run() override {
-    800062f4:	ff010113          	addi	sp,sp,-16
-    800062f8:	00113423          	sd	ra,8(sp)
-    800062fc:	00813023          	sd	s0,0(sp)
-    80006300:	01010413          	addi	s0,sp,16
+    800062f8:	ff010113          	addi	sp,sp,-16
+    800062fc:	00113423          	sd	ra,8(sp)
+    80006300:	00813023          	sd	s0,0(sp)
+    80006304:	01010413          	addi	s0,sp,16
         producerKeyboard(td);
-    80006304:	02053583          	ld	a1,32(a0)
-    80006308:	fffff097          	auipc	ra,0xfffff
-    8000630c:	7e4080e7          	jalr	2020(ra) # 80005aec <_ZN16ProducerKeyboard16producerKeyboardEPv>
+    80006308:	02053583          	ld	a1,32(a0)
+    8000630c:	fffff097          	auipc	ra,0xfffff
+    80006310:	7e4080e7          	jalr	2020(ra) # 80005af0 <_ZN16ProducerKeyboard16producerKeyboardEPv>
     }
-    80006310:	00813083          	ld	ra,8(sp)
-    80006314:	00013403          	ld	s0,0(sp)
-    80006318:	01010113          	addi	sp,sp,16
-    8000631c:	00008067          	ret
+    80006314:	00813083          	ld	ra,8(sp)
+    80006318:	00013403          	ld	s0,0(sp)
+    8000631c:	01010113          	addi	sp,sp,16
+    80006320:	00008067          	ret
 
-0000000080006320 <_ZN12ProducerSync3runEv>:
+0000000080006324 <_ZN12ProducerSync3runEv>:
     void run() override {
-    80006320:	ff010113          	addi	sp,sp,-16
-    80006324:	00113423          	sd	ra,8(sp)
-    80006328:	00813023          	sd	s0,0(sp)
-    8000632c:	01010413          	addi	s0,sp,16
+    80006324:	ff010113          	addi	sp,sp,-16
+    80006328:	00113423          	sd	ra,8(sp)
+    8000632c:	00813023          	sd	s0,0(sp)
+    80006330:	01010413          	addi	s0,sp,16
         producer(td);
-    80006330:	02053583          	ld	a1,32(a0)
-    80006334:	00000097          	auipc	ra,0x0
-    80006338:	878080e7          	jalr	-1928(ra) # 80005bac <_ZN12ProducerSync8producerEPv>
+    80006334:	02053583          	ld	a1,32(a0)
+    80006338:	00000097          	auipc	ra,0x0
+    8000633c:	878080e7          	jalr	-1928(ra) # 80005bb0 <_ZN12ProducerSync8producerEPv>
     }
-    8000633c:	00813083          	ld	ra,8(sp)
-    80006340:	00013403          	ld	s0,0(sp)
-    80006344:	01010113          	addi	sp,sp,16
-    80006348:	00008067          	ret
+    80006340:	00813083          	ld	ra,8(sp)
+    80006344:	00013403          	ld	s0,0(sp)
+    80006348:	01010113          	addi	sp,sp,16
+    8000634c:	00008067          	ret
 
-000000008000634c <_ZN12ConsumerSync3runEv>:
+0000000080006350 <_ZN12ConsumerSync3runEv>:
     void run() override {
-    8000634c:	ff010113          	addi	sp,sp,-16
-    80006350:	00113423          	sd	ra,8(sp)
-    80006354:	00813023          	sd	s0,0(sp)
-    80006358:	01010413          	addi	s0,sp,16
+    80006350:	ff010113          	addi	sp,sp,-16
+    80006354:	00113423          	sd	ra,8(sp)
+    80006358:	00813023          	sd	s0,0(sp)
+    8000635c:	01010413          	addi	s0,sp,16
         consumer(td);
-    8000635c:	02053583          	ld	a1,32(a0)
-    80006360:	00000097          	auipc	ra,0x0
-    80006364:	8e0080e7          	jalr	-1824(ra) # 80005c40 <_ZN12ConsumerSync8consumerEPv>
+    80006360:	02053583          	ld	a1,32(a0)
+    80006364:	00000097          	auipc	ra,0x0
+    80006368:	8e0080e7          	jalr	-1824(ra) # 80005c44 <_ZN12ConsumerSync8consumerEPv>
     }
-    80006368:	00813083          	ld	ra,8(sp)
-    8000636c:	00013403          	ld	s0,0(sp)
-    80006370:	01010113          	addi	sp,sp,16
-    80006374:	00008067          	ret
+    8000636c:	00813083          	ld	ra,8(sp)
+    80006370:	00013403          	ld	s0,0(sp)
+    80006374:	01010113          	addi	sp,sp,16
+    80006378:	00008067          	ret
 
-0000000080006378 <_Z11printStringPKc>:
+000000008000637c <_Z11printStringPKc>:
 
 #define LOCK() while(copy_and_swap(lockPrint, 0, 1)) thread_dispatch()
 #define UNLOCK() while(copy_and_swap(lockPrint, 1, 0))
 
 void printString(char const *string)
 {
-    80006378:	fe010113          	addi	sp,sp,-32
-    8000637c:	00113c23          	sd	ra,24(sp)
-    80006380:	00813823          	sd	s0,16(sp)
-    80006384:	00913423          	sd	s1,8(sp)
-    80006388:	02010413          	addi	s0,sp,32
-    8000638c:	00050493          	mv	s1,a0
+    8000637c:	fe010113          	addi	sp,sp,-32
+    80006380:	00113c23          	sd	ra,24(sp)
+    80006384:	00813823          	sd	s0,16(sp)
+    80006388:	00913423          	sd	s1,8(sp)
+    8000638c:	02010413          	addi	s0,sp,32
+    80006390:	00050493          	mv	s1,a0
     LOCK();
-    80006390:	00100613          	li	a2,1
-    80006394:	00000593          	li	a1,0
-    80006398:	00007517          	auipc	a0,0x7
-    8000639c:	ee050513          	addi	a0,a0,-288 # 8000d278 <lockPrint>
-    800063a0:	ffffb097          	auipc	ra,0xffffb
-    800063a4:	d84080e7          	jalr	-636(ra) # 80001124 <copy_and_swap>
-    800063a8:	00050863          	beqz	a0,800063b8 <_Z11printStringPKc+0x40>
-    800063ac:	ffffb097          	auipc	ra,0xffffb
-    800063b0:	114080e7          	jalr	276(ra) # 800014c0 <_Z15thread_dispatchv>
-    800063b4:	fddff06f          	j	80006390 <_Z11printStringPKc+0x18>
+    80006394:	00100613          	li	a2,1
+    80006398:	00000593          	li	a1,0
+    8000639c:	00007517          	auipc	a0,0x7
+    800063a0:	f2450513          	addi	a0,a0,-220 # 8000d2c0 <lockPrint>
+    800063a4:	ffffb097          	auipc	ra,0xffffb
+    800063a8:	d80080e7          	jalr	-640(ra) # 80001124 <copy_and_swap>
+    800063ac:	00050863          	beqz	a0,800063bc <_Z11printStringPKc+0x40>
+    800063b0:	ffffb097          	auipc	ra,0xffffb
+    800063b4:	110080e7          	jalr	272(ra) # 800014c0 <_Z15thread_dispatchv>
+    800063b8:	fddff06f          	j	80006394 <_Z11printStringPKc+0x18>
     while (*string != '\0')
-    800063b8:	0004c503          	lbu	a0,0(s1)
-    800063bc:	00050a63          	beqz	a0,800063d0 <_Z11printStringPKc+0x58>
+    800063bc:	0004c503          	lbu	a0,0(s1)
+    800063c0:	00050a63          	beqz	a0,800063d4 <_Z11printStringPKc+0x58>
     {
         putc(*string);
-    800063c0:	ffffb097          	auipc	ra,0xffffb
-    800063c4:	268080e7          	jalr	616(ra) # 80001628 <_Z4putcc>
+    800063c4:	ffffb097          	auipc	ra,0xffffb
+    800063c8:	264080e7          	jalr	612(ra) # 80001628 <_Z4putcc>
         string++;
-    800063c8:	00148493          	addi	s1,s1,1
+    800063cc:	00148493          	addi	s1,s1,1
     while (*string != '\0')
-    800063cc:	fedff06f          	j	800063b8 <_Z11printStringPKc+0x40>
+    800063d0:	fedff06f          	j	800063bc <_Z11printStringPKc+0x40>
     }
     UNLOCK();
-    800063d0:	00000613          	li	a2,0
-    800063d4:	00100593          	li	a1,1
-    800063d8:	00007517          	auipc	a0,0x7
-    800063dc:	ea050513          	addi	a0,a0,-352 # 8000d278 <lockPrint>
-    800063e0:	ffffb097          	auipc	ra,0xffffb
-    800063e4:	d44080e7          	jalr	-700(ra) # 80001124 <copy_and_swap>
-    800063e8:	fe0514e3          	bnez	a0,800063d0 <_Z11printStringPKc+0x58>
+    800063d4:	00000613          	li	a2,0
+    800063d8:	00100593          	li	a1,1
+    800063dc:	00007517          	auipc	a0,0x7
+    800063e0:	ee450513          	addi	a0,a0,-284 # 8000d2c0 <lockPrint>
+    800063e4:	ffffb097          	auipc	ra,0xffffb
+    800063e8:	d40080e7          	jalr	-704(ra) # 80001124 <copy_and_swap>
+    800063ec:	fe0514e3          	bnez	a0,800063d4 <_Z11printStringPKc+0x58>
 }
-    800063ec:	01813083          	ld	ra,24(sp)
-    800063f0:	01013403          	ld	s0,16(sp)
-    800063f4:	00813483          	ld	s1,8(sp)
-    800063f8:	02010113          	addi	sp,sp,32
-    800063fc:	00008067          	ret
+    800063f0:	01813083          	ld	ra,24(sp)
+    800063f4:	01013403          	ld	s0,16(sp)
+    800063f8:	00813483          	ld	s1,8(sp)
+    800063fc:	02010113          	addi	sp,sp,32
+    80006400:	00008067          	ret
 
-0000000080006400 <_Z9getStringPci>:
+0000000080006404 <_Z9getStringPci>:
 
 char* getString(char *buf, int max) {
-    80006400:	fd010113          	addi	sp,sp,-48
-    80006404:	02113423          	sd	ra,40(sp)
-    80006408:	02813023          	sd	s0,32(sp)
-    8000640c:	00913c23          	sd	s1,24(sp)
-    80006410:	01213823          	sd	s2,16(sp)
-    80006414:	01313423          	sd	s3,8(sp)
-    80006418:	01413023          	sd	s4,0(sp)
-    8000641c:	03010413          	addi	s0,sp,48
-    80006420:	00050993          	mv	s3,a0
-    80006424:	00058a13          	mv	s4,a1
+    80006404:	fd010113          	addi	sp,sp,-48
+    80006408:	02113423          	sd	ra,40(sp)
+    8000640c:	02813023          	sd	s0,32(sp)
+    80006410:	00913c23          	sd	s1,24(sp)
+    80006414:	01213823          	sd	s2,16(sp)
+    80006418:	01313423          	sd	s3,8(sp)
+    8000641c:	01413023          	sd	s4,0(sp)
+    80006420:	03010413          	addi	s0,sp,48
+    80006424:	00050993          	mv	s3,a0
+    80006428:	00058a13          	mv	s4,a1
     LOCK();
-    80006428:	00100613          	li	a2,1
-    8000642c:	00000593          	li	a1,0
-    80006430:	00007517          	auipc	a0,0x7
-    80006434:	e4850513          	addi	a0,a0,-440 # 8000d278 <lockPrint>
-    80006438:	ffffb097          	auipc	ra,0xffffb
-    8000643c:	cec080e7          	jalr	-788(ra) # 80001124 <copy_and_swap>
-    80006440:	00050863          	beqz	a0,80006450 <_Z9getStringPci+0x50>
-    80006444:	ffffb097          	auipc	ra,0xffffb
-    80006448:	07c080e7          	jalr	124(ra) # 800014c0 <_Z15thread_dispatchv>
-    8000644c:	fddff06f          	j	80006428 <_Z9getStringPci+0x28>
+    8000642c:	00100613          	li	a2,1
+    80006430:	00000593          	li	a1,0
+    80006434:	00007517          	auipc	a0,0x7
+    80006438:	e8c50513          	addi	a0,a0,-372 # 8000d2c0 <lockPrint>
+    8000643c:	ffffb097          	auipc	ra,0xffffb
+    80006440:	ce8080e7          	jalr	-792(ra) # 80001124 <copy_and_swap>
+    80006444:	00050863          	beqz	a0,80006454 <_Z9getStringPci+0x50>
+    80006448:	ffffb097          	auipc	ra,0xffffb
+    8000644c:	078080e7          	jalr	120(ra) # 800014c0 <_Z15thread_dispatchv>
+    80006450:	fddff06f          	j	8000642c <_Z9getStringPci+0x28>
     int i, cc;
     char c;
 
     for(i=0; i+1 < max; ){
-    80006450:	00000913          	li	s2,0
-    80006454:	00090493          	mv	s1,s2
-    80006458:	0019091b          	addiw	s2,s2,1
-    8000645c:	03495a63          	bge	s2,s4,80006490 <_Z9getStringPci+0x90>
+    80006454:	00000913          	li	s2,0
+    80006458:	00090493          	mv	s1,s2
+    8000645c:	0019091b          	addiw	s2,s2,1
+    80006460:	03495a63          	bge	s2,s4,80006494 <_Z9getStringPci+0x90>
         cc = getc();
-    80006460:	ffffb097          	auipc	ra,0xffffb
-    80006464:	1a0080e7          	jalr	416(ra) # 80001600 <_Z4getcv>
+    80006464:	ffffb097          	auipc	ra,0xffffb
+    80006468:	19c080e7          	jalr	412(ra) # 80001600 <_Z4getcv>
         if(cc < 1)
-    80006468:	02050463          	beqz	a0,80006490 <_Z9getStringPci+0x90>
+    8000646c:	02050463          	beqz	a0,80006494 <_Z9getStringPci+0x90>
             break;
         c = cc;
         buf[i++] = c;
-    8000646c:	009984b3          	add	s1,s3,s1
-    80006470:	00a48023          	sb	a0,0(s1)
+    80006470:	009984b3          	add	s1,s3,s1
+    80006474:	00a48023          	sb	a0,0(s1)
         if(c == '\n' || c == '\r')
-    80006474:	00a00793          	li	a5,10
-    80006478:	00f50a63          	beq	a0,a5,8000648c <_Z9getStringPci+0x8c>
-    8000647c:	00d00793          	li	a5,13
-    80006480:	fcf51ae3          	bne	a0,a5,80006454 <_Z9getStringPci+0x54>
+    80006478:	00a00793          	li	a5,10
+    8000647c:	00f50a63          	beq	a0,a5,80006490 <_Z9getStringPci+0x8c>
+    80006480:	00d00793          	li	a5,13
+    80006484:	fcf51ae3          	bne	a0,a5,80006458 <_Z9getStringPci+0x54>
         buf[i++] = c;
-    80006484:	00090493          	mv	s1,s2
-    80006488:	0080006f          	j	80006490 <_Z9getStringPci+0x90>
-    8000648c:	00090493          	mv	s1,s2
+    80006488:	00090493          	mv	s1,s2
+    8000648c:	0080006f          	j	80006494 <_Z9getStringPci+0x90>
+    80006490:	00090493          	mv	s1,s2
             break;
     }
     buf[i] = '\0';
-    80006490:	009984b3          	add	s1,s3,s1
-    80006494:	00048023          	sb	zero,0(s1)
+    80006494:	009984b3          	add	s1,s3,s1
+    80006498:	00048023          	sb	zero,0(s1)
 
     UNLOCK();
-    80006498:	00000613          	li	a2,0
-    8000649c:	00100593          	li	a1,1
-    800064a0:	00007517          	auipc	a0,0x7
-    800064a4:	dd850513          	addi	a0,a0,-552 # 8000d278 <lockPrint>
-    800064a8:	ffffb097          	auipc	ra,0xffffb
-    800064ac:	c7c080e7          	jalr	-900(ra) # 80001124 <copy_and_swap>
-    800064b0:	fe0514e3          	bnez	a0,80006498 <_Z9getStringPci+0x98>
+    8000649c:	00000613          	li	a2,0
+    800064a0:	00100593          	li	a1,1
+    800064a4:	00007517          	auipc	a0,0x7
+    800064a8:	e1c50513          	addi	a0,a0,-484 # 8000d2c0 <lockPrint>
+    800064ac:	ffffb097          	auipc	ra,0xffffb
+    800064b0:	c78080e7          	jalr	-904(ra) # 80001124 <copy_and_swap>
+    800064b4:	fe0514e3          	bnez	a0,8000649c <_Z9getStringPci+0x98>
     return buf;
 }
-    800064b4:	00098513          	mv	a0,s3
-    800064b8:	02813083          	ld	ra,40(sp)
-    800064bc:	02013403          	ld	s0,32(sp)
-    800064c0:	01813483          	ld	s1,24(sp)
-    800064c4:	01013903          	ld	s2,16(sp)
-    800064c8:	00813983          	ld	s3,8(sp)
-    800064cc:	00013a03          	ld	s4,0(sp)
-    800064d0:	03010113          	addi	sp,sp,48
-    800064d4:	00008067          	ret
+    800064b8:	00098513          	mv	a0,s3
+    800064bc:	02813083          	ld	ra,40(sp)
+    800064c0:	02013403          	ld	s0,32(sp)
+    800064c4:	01813483          	ld	s1,24(sp)
+    800064c8:	01013903          	ld	s2,16(sp)
+    800064cc:	00813983          	ld	s3,8(sp)
+    800064d0:	00013a03          	ld	s4,0(sp)
+    800064d4:	03010113          	addi	sp,sp,48
+    800064d8:	00008067          	ret
 
-00000000800064d8 <_Z11stringToIntPKc>:
+00000000800064dc <_Z11stringToIntPKc>:
 
 int stringToInt(const char *s) {
-    800064d8:	ff010113          	addi	sp,sp,-16
-    800064dc:	00813423          	sd	s0,8(sp)
-    800064e0:	01010413          	addi	s0,sp,16
-    800064e4:	00050693          	mv	a3,a0
+    800064dc:	ff010113          	addi	sp,sp,-16
+    800064e0:	00813423          	sd	s0,8(sp)
+    800064e4:	01010413          	addi	s0,sp,16
+    800064e8:	00050693          	mv	a3,a0
     int n;
 
     n = 0;
-    800064e8:	00000513          	li	a0,0
+    800064ec:	00000513          	li	a0,0
     while ('0' <= *s && *s <= '9')
-    800064ec:	0006c603          	lbu	a2,0(a3)
-    800064f0:	fd06071b          	addiw	a4,a2,-48
-    800064f4:	0ff77713          	andi	a4,a4,255
-    800064f8:	00900793          	li	a5,9
-    800064fc:	02e7e063          	bltu	a5,a4,8000651c <_Z11stringToIntPKc+0x44>
+    800064f0:	0006c603          	lbu	a2,0(a3)
+    800064f4:	fd06071b          	addiw	a4,a2,-48
+    800064f8:	0ff77713          	andi	a4,a4,255
+    800064fc:	00900793          	li	a5,9
+    80006500:	02e7e063          	bltu	a5,a4,80006520 <_Z11stringToIntPKc+0x44>
         n = n * 10 + *s++ - '0';
-    80006500:	0025179b          	slliw	a5,a0,0x2
-    80006504:	00a787bb          	addw	a5,a5,a0
-    80006508:	0017979b          	slliw	a5,a5,0x1
-    8000650c:	00168693          	addi	a3,a3,1
-    80006510:	00c787bb          	addw	a5,a5,a2
-    80006514:	fd07851b          	addiw	a0,a5,-48
+    80006504:	0025179b          	slliw	a5,a0,0x2
+    80006508:	00a787bb          	addw	a5,a5,a0
+    8000650c:	0017979b          	slliw	a5,a5,0x1
+    80006510:	00168693          	addi	a3,a3,1
+    80006514:	00c787bb          	addw	a5,a5,a2
+    80006518:	fd07851b          	addiw	a0,a5,-48
     while ('0' <= *s && *s <= '9')
-    80006518:	fd5ff06f          	j	800064ec <_Z11stringToIntPKc+0x14>
+    8000651c:	fd5ff06f          	j	800064f0 <_Z11stringToIntPKc+0x14>
     return n;
 }
-    8000651c:	00813403          	ld	s0,8(sp)
-    80006520:	01010113          	addi	sp,sp,16
-    80006524:	00008067          	ret
+    80006520:	00813403          	ld	s0,8(sp)
+    80006524:	01010113          	addi	sp,sp,16
+    80006528:	00008067          	ret
 
-0000000080006528 <_Z8printIntiii>:
+000000008000652c <_Z8printIntiii>:
 
 char digits[] = "0123456789ABCDEF";
 
 void printInt(int xx, int base, int sgn)
 {
-    80006528:	fc010113          	addi	sp,sp,-64
-    8000652c:	02113c23          	sd	ra,56(sp)
-    80006530:	02813823          	sd	s0,48(sp)
-    80006534:	02913423          	sd	s1,40(sp)
-    80006538:	03213023          	sd	s2,32(sp)
-    8000653c:	01313c23          	sd	s3,24(sp)
-    80006540:	04010413          	addi	s0,sp,64
-    80006544:	00050493          	mv	s1,a0
-    80006548:	00058913          	mv	s2,a1
-    8000654c:	00060993          	mv	s3,a2
+    8000652c:	fc010113          	addi	sp,sp,-64
+    80006530:	02113c23          	sd	ra,56(sp)
+    80006534:	02813823          	sd	s0,48(sp)
+    80006538:	02913423          	sd	s1,40(sp)
+    8000653c:	03213023          	sd	s2,32(sp)
+    80006540:	01313c23          	sd	s3,24(sp)
+    80006544:	04010413          	addi	s0,sp,64
+    80006548:	00050493          	mv	s1,a0
+    8000654c:	00058913          	mv	s2,a1
+    80006550:	00060993          	mv	s3,a2
     LOCK();
-    80006550:	00100613          	li	a2,1
-    80006554:	00000593          	li	a1,0
-    80006558:	00007517          	auipc	a0,0x7
-    8000655c:	d2050513          	addi	a0,a0,-736 # 8000d278 <lockPrint>
-    80006560:	ffffb097          	auipc	ra,0xffffb
-    80006564:	bc4080e7          	jalr	-1084(ra) # 80001124 <copy_and_swap>
-    80006568:	00050863          	beqz	a0,80006578 <_Z8printIntiii+0x50>
-    8000656c:	ffffb097          	auipc	ra,0xffffb
-    80006570:	f54080e7          	jalr	-172(ra) # 800014c0 <_Z15thread_dispatchv>
-    80006574:	fddff06f          	j	80006550 <_Z8printIntiii+0x28>
+    80006554:	00100613          	li	a2,1
+    80006558:	00000593          	li	a1,0
+    8000655c:	00007517          	auipc	a0,0x7
+    80006560:	d6450513          	addi	a0,a0,-668 # 8000d2c0 <lockPrint>
+    80006564:	ffffb097          	auipc	ra,0xffffb
+    80006568:	bc0080e7          	jalr	-1088(ra) # 80001124 <copy_and_swap>
+    8000656c:	00050863          	beqz	a0,8000657c <_Z8printIntiii+0x50>
+    80006570:	ffffb097          	auipc	ra,0xffffb
+    80006574:	f50080e7          	jalr	-176(ra) # 800014c0 <_Z15thread_dispatchv>
+    80006578:	fddff06f          	j	80006554 <_Z8printIntiii+0x28>
     char buf[16];
     int i, neg;
     uint x;
 
     neg = 0;
     if(sgn && xx < 0){
-    80006578:	00098463          	beqz	s3,80006580 <_Z8printIntiii+0x58>
-    8000657c:	0804c463          	bltz	s1,80006604 <_Z8printIntiii+0xdc>
+    8000657c:	00098463          	beqz	s3,80006584 <_Z8printIntiii+0x58>
+    80006580:	0804c463          	bltz	s1,80006608 <_Z8printIntiii+0xdc>
         neg = 1;
         x = -xx;
     } else {
         x = xx;
-    80006580:	0004851b          	sext.w	a0,s1
+    80006584:	0004851b          	sext.w	a0,s1
     neg = 0;
-    80006584:	00000593          	li	a1,0
+    80006588:	00000593          	li	a1,0
     }
 
     i = 0;
-    80006588:	00000493          	li	s1,0
+    8000658c:	00000493          	li	s1,0
     do{
         buf[i++] = digits[x % base];
-    8000658c:	0009079b          	sext.w	a5,s2
-    80006590:	0325773b          	remuw	a4,a0,s2
-    80006594:	00048613          	mv	a2,s1
-    80006598:	0014849b          	addiw	s1,s1,1
-    8000659c:	02071693          	slli	a3,a4,0x20
-    800065a0:	0206d693          	srli	a3,a3,0x20
-    800065a4:	00007717          	auipc	a4,0x7
-    800065a8:	a5c70713          	addi	a4,a4,-1444 # 8000d000 <digits>
-    800065ac:	00d70733          	add	a4,a4,a3
-    800065b0:	00074683          	lbu	a3,0(a4)
-    800065b4:	fd040713          	addi	a4,s0,-48
-    800065b8:	00c70733          	add	a4,a4,a2
-    800065bc:	fed70823          	sb	a3,-16(a4)
+    80006590:	0009079b          	sext.w	a5,s2
+    80006594:	0325773b          	remuw	a4,a0,s2
+    80006598:	00048613          	mv	a2,s1
+    8000659c:	0014849b          	addiw	s1,s1,1
+    800065a0:	02071693          	slli	a3,a4,0x20
+    800065a4:	0206d693          	srli	a3,a3,0x20
+    800065a8:	00007717          	auipc	a4,0x7
+    800065ac:	a8870713          	addi	a4,a4,-1400 # 8000d030 <digits>
+    800065b0:	00d70733          	add	a4,a4,a3
+    800065b4:	00074683          	lbu	a3,0(a4)
+    800065b8:	fd040713          	addi	a4,s0,-48
+    800065bc:	00c70733          	add	a4,a4,a2
+    800065c0:	fed70823          	sb	a3,-16(a4)
     }while((x /= base) != 0);
-    800065c0:	0005071b          	sext.w	a4,a0
-    800065c4:	0325553b          	divuw	a0,a0,s2
-    800065c8:	fcf772e3          	bgeu	a4,a5,8000658c <_Z8printIntiii+0x64>
+    800065c4:	0005071b          	sext.w	a4,a0
+    800065c8:	0325553b          	divuw	a0,a0,s2
+    800065cc:	fcf772e3          	bgeu	a4,a5,80006590 <_Z8printIntiii+0x64>
     if(neg)
-    800065cc:	00058c63          	beqz	a1,800065e4 <_Z8printIntiii+0xbc>
+    800065d0:	00058c63          	beqz	a1,800065e8 <_Z8printIntiii+0xbc>
         buf[i++] = '-';
-    800065d0:	fd040793          	addi	a5,s0,-48
-    800065d4:	009784b3          	add	s1,a5,s1
-    800065d8:	02d00793          	li	a5,45
-    800065dc:	fef48823          	sb	a5,-16(s1)
-    800065e0:	0026049b          	addiw	s1,a2,2
+    800065d4:	fd040793          	addi	a5,s0,-48
+    800065d8:	009784b3          	add	s1,a5,s1
+    800065dc:	02d00793          	li	a5,45
+    800065e0:	fef48823          	sb	a5,-16(s1)
+    800065e4:	0026049b          	addiw	s1,a2,2
 
     while(--i >= 0)
-    800065e4:	fff4849b          	addiw	s1,s1,-1
-    800065e8:	0204c463          	bltz	s1,80006610 <_Z8printIntiii+0xe8>
+    800065e8:	fff4849b          	addiw	s1,s1,-1
+    800065ec:	0204c463          	bltz	s1,80006614 <_Z8printIntiii+0xe8>
         putc(buf[i]);
-    800065ec:	fd040793          	addi	a5,s0,-48
-    800065f0:	009787b3          	add	a5,a5,s1
-    800065f4:	ff07c503          	lbu	a0,-16(a5)
-    800065f8:	ffffb097          	auipc	ra,0xffffb
-    800065fc:	030080e7          	jalr	48(ra) # 80001628 <_Z4putcc>
-    80006600:	fe5ff06f          	j	800065e4 <_Z8printIntiii+0xbc>
+    800065f0:	fd040793          	addi	a5,s0,-48
+    800065f4:	009787b3          	add	a5,a5,s1
+    800065f8:	ff07c503          	lbu	a0,-16(a5)
+    800065fc:	ffffb097          	auipc	ra,0xffffb
+    80006600:	02c080e7          	jalr	44(ra) # 80001628 <_Z4putcc>
+    80006604:	fe5ff06f          	j	800065e8 <_Z8printIntiii+0xbc>
         x = -xx;
-    80006604:	4090053b          	negw	a0,s1
+    80006608:	4090053b          	negw	a0,s1
         neg = 1;
-    80006608:	00100593          	li	a1,1
+    8000660c:	00100593          	li	a1,1
         x = -xx;
-    8000660c:	f7dff06f          	j	80006588 <_Z8printIntiii+0x60>
+    80006610:	f7dff06f          	j	8000658c <_Z8printIntiii+0x60>
 
     UNLOCK();
-    80006610:	00000613          	li	a2,0
-    80006614:	00100593          	li	a1,1
-    80006618:	00007517          	auipc	a0,0x7
-    8000661c:	c6050513          	addi	a0,a0,-928 # 8000d278 <lockPrint>
-    80006620:	ffffb097          	auipc	ra,0xffffb
-    80006624:	b04080e7          	jalr	-1276(ra) # 80001124 <copy_and_swap>
-    80006628:	fe0514e3          	bnez	a0,80006610 <_Z8printIntiii+0xe8>
-    8000662c:	03813083          	ld	ra,56(sp)
-    80006630:	03013403          	ld	s0,48(sp)
-    80006634:	02813483          	ld	s1,40(sp)
-    80006638:	02013903          	ld	s2,32(sp)
-    8000663c:	01813983          	ld	s3,24(sp)
-    80006640:	04010113          	addi	sp,sp,64
-    80006644:	00008067          	ret
+    80006614:	00000613          	li	a2,0
+    80006618:	00100593          	li	a1,1
+    8000661c:	00007517          	auipc	a0,0x7
+    80006620:	ca450513          	addi	a0,a0,-860 # 8000d2c0 <lockPrint>
+    80006624:	ffffb097          	auipc	ra,0xffffb
+    80006628:	b00080e7          	jalr	-1280(ra) # 80001124 <copy_and_swap>
+    8000662c:	fe0514e3          	bnez	a0,80006614 <_Z8printIntiii+0xe8>
+    80006630:	03813083          	ld	ra,56(sp)
+    80006634:	03013403          	ld	s0,48(sp)
+    80006638:	02813483          	ld	s1,40(sp)
+    8000663c:	02013903          	ld	s2,32(sp)
+    80006640:	01813983          	ld	s3,24(sp)
+    80006644:	04010113          	addi	sp,sp,64
+    80006648:	00008067          	ret
 
-0000000080006648 <_ZN9BufferCPPC1Ei>:
+000000008000664c <_ZN9BufferCPPC1Ei>:
 #include "buffer_CPP_API.hpp"
 
 BufferCPP::BufferCPP(int _cap) : cap(_cap + 1), head(0), tail(0) {
-    80006648:	fd010113          	addi	sp,sp,-48
-    8000664c:	02113423          	sd	ra,40(sp)
-    80006650:	02813023          	sd	s0,32(sp)
-    80006654:	00913c23          	sd	s1,24(sp)
-    80006658:	01213823          	sd	s2,16(sp)
-    8000665c:	01313423          	sd	s3,8(sp)
-    80006660:	03010413          	addi	s0,sp,48
-    80006664:	00050493          	mv	s1,a0
-    80006668:	00058913          	mv	s2,a1
-    8000666c:	0015879b          	addiw	a5,a1,1
-    80006670:	0007851b          	sext.w	a0,a5
-    80006674:	00f4a023          	sw	a5,0(s1)
-    80006678:	0004a823          	sw	zero,16(s1)
-    8000667c:	0004aa23          	sw	zero,20(s1)
+    8000664c:	fd010113          	addi	sp,sp,-48
+    80006650:	02113423          	sd	ra,40(sp)
+    80006654:	02813023          	sd	s0,32(sp)
+    80006658:	00913c23          	sd	s1,24(sp)
+    8000665c:	01213823          	sd	s2,16(sp)
+    80006660:	01313423          	sd	s3,8(sp)
+    80006664:	03010413          	addi	s0,sp,48
+    80006668:	00050493          	mv	s1,a0
+    8000666c:	00058913          	mv	s2,a1
+    80006670:	0015879b          	addiw	a5,a1,1
+    80006674:	0007851b          	sext.w	a0,a5
+    80006678:	00f4a023          	sw	a5,0(s1)
+    8000667c:	0004a823          	sw	zero,16(s1)
+    80006680:	0004aa23          	sw	zero,20(s1)
     buffer = (int *)mem_alloc(sizeof(int) * cap);
-    80006680:	00251513          	slli	a0,a0,0x2
-    80006684:	ffffb097          	auipc	ra,0xffffb
-    80006688:	d10080e7          	jalr	-752(ra) # 80001394 <_Z9mem_allocm>
-    8000668c:	00a4b423          	sd	a0,8(s1)
+    80006684:	00251513          	slli	a0,a0,0x2
+    80006688:	ffffb097          	auipc	ra,0xffffb
+    8000668c:	d0c080e7          	jalr	-756(ra) # 80001394 <_Z9mem_allocm>
+    80006690:	00a4b423          	sd	a0,8(s1)
     itemAvailable = new Semaphore(0);
-    80006690:	01000513          	li	a0,16
-    80006694:	ffffd097          	auipc	ra,0xffffd
-    80006698:	a7c080e7          	jalr	-1412(ra) # 80003110 <_Znwm>
-    8000669c:	00050993          	mv	s3,a0
-    800066a0:	00000593          	li	a1,0
-    800066a4:	ffffd097          	auipc	ra,0xffffd
-    800066a8:	dd0080e7          	jalr	-560(ra) # 80003474 <_ZN9SemaphoreC1Ej>
-    800066ac:	0334b023          	sd	s3,32(s1)
+    80006694:	01000513          	li	a0,16
+    80006698:	ffffd097          	auipc	ra,0xffffd
+    8000669c:	a6c080e7          	jalr	-1428(ra) # 80003104 <_Znwm>
+    800066a0:	00050993          	mv	s3,a0
+    800066a4:	00000593          	li	a1,0
+    800066a8:	ffffd097          	auipc	ra,0xffffd
+    800066ac:	dc8080e7          	jalr	-568(ra) # 80003470 <_ZN9SemaphoreC1Ej>
+    800066b0:	0334b023          	sd	s3,32(s1)
     spaceAvailable = new Semaphore(_cap);
-    800066b0:	01000513          	li	a0,16
-    800066b4:	ffffd097          	auipc	ra,0xffffd
-    800066b8:	a5c080e7          	jalr	-1444(ra) # 80003110 <_Znwm>
-    800066bc:	00050993          	mv	s3,a0
-    800066c0:	00090593          	mv	a1,s2
-    800066c4:	ffffd097          	auipc	ra,0xffffd
-    800066c8:	db0080e7          	jalr	-592(ra) # 80003474 <_ZN9SemaphoreC1Ej>
-    800066cc:	0134bc23          	sd	s3,24(s1)
+    800066b4:	01000513          	li	a0,16
+    800066b8:	ffffd097          	auipc	ra,0xffffd
+    800066bc:	a4c080e7          	jalr	-1460(ra) # 80003104 <_Znwm>
+    800066c0:	00050993          	mv	s3,a0
+    800066c4:	00090593          	mv	a1,s2
+    800066c8:	ffffd097          	auipc	ra,0xffffd
+    800066cc:	da8080e7          	jalr	-600(ra) # 80003470 <_ZN9SemaphoreC1Ej>
+    800066d0:	0134bc23          	sd	s3,24(s1)
     mutexHead = new Semaphore(1);
-    800066d0:	01000513          	li	a0,16
-    800066d4:	ffffd097          	auipc	ra,0xffffd
-    800066d8:	a3c080e7          	jalr	-1476(ra) # 80003110 <_Znwm>
-    800066dc:	00050913          	mv	s2,a0
-    800066e0:	00100593          	li	a1,1
-    800066e4:	ffffd097          	auipc	ra,0xffffd
-    800066e8:	d90080e7          	jalr	-624(ra) # 80003474 <_ZN9SemaphoreC1Ej>
-    800066ec:	0324b423          	sd	s2,40(s1)
+    800066d4:	01000513          	li	a0,16
+    800066d8:	ffffd097          	auipc	ra,0xffffd
+    800066dc:	a2c080e7          	jalr	-1492(ra) # 80003104 <_Znwm>
+    800066e0:	00050913          	mv	s2,a0
+    800066e4:	00100593          	li	a1,1
+    800066e8:	ffffd097          	auipc	ra,0xffffd
+    800066ec:	d88080e7          	jalr	-632(ra) # 80003470 <_ZN9SemaphoreC1Ej>
+    800066f0:	0324b423          	sd	s2,40(s1)
     mutexTail = new Semaphore(1);
-    800066f0:	01000513          	li	a0,16
-    800066f4:	ffffd097          	auipc	ra,0xffffd
-    800066f8:	a1c080e7          	jalr	-1508(ra) # 80003110 <_Znwm>
-    800066fc:	00050913          	mv	s2,a0
-    80006700:	00100593          	li	a1,1
-    80006704:	ffffd097          	auipc	ra,0xffffd
-    80006708:	d70080e7          	jalr	-656(ra) # 80003474 <_ZN9SemaphoreC1Ej>
-    8000670c:	0324b823          	sd	s2,48(s1)
+    800066f4:	01000513          	li	a0,16
+    800066f8:	ffffd097          	auipc	ra,0xffffd
+    800066fc:	a0c080e7          	jalr	-1524(ra) # 80003104 <_Znwm>
+    80006700:	00050913          	mv	s2,a0
+    80006704:	00100593          	li	a1,1
+    80006708:	ffffd097          	auipc	ra,0xffffd
+    8000670c:	d68080e7          	jalr	-664(ra) # 80003470 <_ZN9SemaphoreC1Ej>
+    80006710:	0324b823          	sd	s2,48(s1)
 }
-    80006710:	02813083          	ld	ra,40(sp)
-    80006714:	02013403          	ld	s0,32(sp)
-    80006718:	01813483          	ld	s1,24(sp)
-    8000671c:	01013903          	ld	s2,16(sp)
-    80006720:	00813983          	ld	s3,8(sp)
-    80006724:	03010113          	addi	sp,sp,48
-    80006728:	00008067          	ret
-    8000672c:	00050493          	mv	s1,a0
+    80006714:	02813083          	ld	ra,40(sp)
+    80006718:	02013403          	ld	s0,32(sp)
+    8000671c:	01813483          	ld	s1,24(sp)
+    80006720:	01013903          	ld	s2,16(sp)
+    80006724:	00813983          	ld	s3,8(sp)
+    80006728:	03010113          	addi	sp,sp,48
+    8000672c:	00008067          	ret
+    80006730:	00050493          	mv	s1,a0
     itemAvailable = new Semaphore(0);
-    80006730:	00098513          	mv	a0,s3
-    80006734:	ffffd097          	auipc	ra,0xffffd
-    80006738:	a2c080e7          	jalr	-1492(ra) # 80003160 <_ZdlPv>
-    8000673c:	00048513          	mv	a0,s1
-    80006740:	00008097          	auipc	ra,0x8
-    80006744:	c28080e7          	jalr	-984(ra) # 8000e368 <_Unwind_Resume>
-    80006748:	00050493          	mv	s1,a0
+    80006734:	00098513          	mv	a0,s3
+    80006738:	ffffd097          	auipc	ra,0xffffd
+    8000673c:	a1c080e7          	jalr	-1508(ra) # 80003154 <_ZdlPv>
+    80006740:	00048513          	mv	a0,s1
+    80006744:	00008097          	auipc	ra,0x8
+    80006748:	c74080e7          	jalr	-908(ra) # 8000e3b8 <_Unwind_Resume>
+    8000674c:	00050493          	mv	s1,a0
     spaceAvailable = new Semaphore(_cap);
-    8000674c:	00098513          	mv	a0,s3
-    80006750:	ffffd097          	auipc	ra,0xffffd
-    80006754:	a10080e7          	jalr	-1520(ra) # 80003160 <_ZdlPv>
-    80006758:	00048513          	mv	a0,s1
-    8000675c:	00008097          	auipc	ra,0x8
-    80006760:	c0c080e7          	jalr	-1012(ra) # 8000e368 <_Unwind_Resume>
-    80006764:	00050493          	mv	s1,a0
+    80006750:	00098513          	mv	a0,s3
+    80006754:	ffffd097          	auipc	ra,0xffffd
+    80006758:	a00080e7          	jalr	-1536(ra) # 80003154 <_ZdlPv>
+    8000675c:	00048513          	mv	a0,s1
+    80006760:	00008097          	auipc	ra,0x8
+    80006764:	c58080e7          	jalr	-936(ra) # 8000e3b8 <_Unwind_Resume>
+    80006768:	00050493          	mv	s1,a0
     mutexHead = new Semaphore(1);
-    80006768:	00090513          	mv	a0,s2
-    8000676c:	ffffd097          	auipc	ra,0xffffd
-    80006770:	9f4080e7          	jalr	-1548(ra) # 80003160 <_ZdlPv>
-    80006774:	00048513          	mv	a0,s1
-    80006778:	00008097          	auipc	ra,0x8
-    8000677c:	bf0080e7          	jalr	-1040(ra) # 8000e368 <_Unwind_Resume>
-    80006780:	00050493          	mv	s1,a0
+    8000676c:	00090513          	mv	a0,s2
+    80006770:	ffffd097          	auipc	ra,0xffffd
+    80006774:	9e4080e7          	jalr	-1564(ra) # 80003154 <_ZdlPv>
+    80006778:	00048513          	mv	a0,s1
+    8000677c:	00008097          	auipc	ra,0x8
+    80006780:	c3c080e7          	jalr	-964(ra) # 8000e3b8 <_Unwind_Resume>
+    80006784:	00050493          	mv	s1,a0
     mutexTail = new Semaphore(1);
-    80006784:	00090513          	mv	a0,s2
-    80006788:	ffffd097          	auipc	ra,0xffffd
-    8000678c:	9d8080e7          	jalr	-1576(ra) # 80003160 <_ZdlPv>
-    80006790:	00048513          	mv	a0,s1
-    80006794:	00008097          	auipc	ra,0x8
-    80006798:	bd4080e7          	jalr	-1068(ra) # 8000e368 <_Unwind_Resume>
+    80006788:	00090513          	mv	a0,s2
+    8000678c:	ffffd097          	auipc	ra,0xffffd
+    80006790:	9c8080e7          	jalr	-1592(ra) # 80003154 <_ZdlPv>
+    80006794:	00048513          	mv	a0,s1
+    80006798:	00008097          	auipc	ra,0x8
+    8000679c:	c20080e7          	jalr	-992(ra) # 8000e3b8 <_Unwind_Resume>
 
-000000008000679c <_ZN9BufferCPP3putEi>:
+00000000800067a0 <_ZN9BufferCPP3putEi>:
     delete mutexTail;
     delete mutexHead;
 
 }
 
 void BufferCPP::put(int val) {
-    8000679c:	fe010113          	addi	sp,sp,-32
-    800067a0:	00113c23          	sd	ra,24(sp)
-    800067a4:	00813823          	sd	s0,16(sp)
-    800067a8:	00913423          	sd	s1,8(sp)
-    800067ac:	01213023          	sd	s2,0(sp)
-    800067b0:	02010413          	addi	s0,sp,32
-    800067b4:	00050493          	mv	s1,a0
-    800067b8:	00058913          	mv	s2,a1
+    800067a0:	fe010113          	addi	sp,sp,-32
+    800067a4:	00113c23          	sd	ra,24(sp)
+    800067a8:	00813823          	sd	s0,16(sp)
+    800067ac:	00913423          	sd	s1,8(sp)
+    800067b0:	01213023          	sd	s2,0(sp)
+    800067b4:	02010413          	addi	s0,sp,32
+    800067b8:	00050493          	mv	s1,a0
+    800067bc:	00058913          	mv	s2,a1
     spaceAvailable->wait();
-    800067bc:	01853503          	ld	a0,24(a0)
-    800067c0:	ffffd097          	auipc	ra,0xffffd
-    800067c4:	cec080e7          	jalr	-788(ra) # 800034ac <_ZN9Semaphore4waitEv>
+    800067c0:	01853503          	ld	a0,24(a0)
+    800067c4:	ffffd097          	auipc	ra,0xffffd
+    800067c8:	ce4080e7          	jalr	-796(ra) # 800034a8 <_ZN9Semaphore4waitEv>
 
     mutexTail->wait();
-    800067c8:	0304b503          	ld	a0,48(s1)
-    800067cc:	ffffd097          	auipc	ra,0xffffd
-    800067d0:	ce0080e7          	jalr	-800(ra) # 800034ac <_ZN9Semaphore4waitEv>
+    800067cc:	0304b503          	ld	a0,48(s1)
+    800067d0:	ffffd097          	auipc	ra,0xffffd
+    800067d4:	cd8080e7          	jalr	-808(ra) # 800034a8 <_ZN9Semaphore4waitEv>
     buffer[tail] = val;
-    800067d4:	0084b783          	ld	a5,8(s1)
-    800067d8:	0144a703          	lw	a4,20(s1)
-    800067dc:	00271713          	slli	a4,a4,0x2
-    800067e0:	00e787b3          	add	a5,a5,a4
-    800067e4:	0127a023          	sw	s2,0(a5)
+    800067d8:	0084b783          	ld	a5,8(s1)
+    800067dc:	0144a703          	lw	a4,20(s1)
+    800067e0:	00271713          	slli	a4,a4,0x2
+    800067e4:	00e787b3          	add	a5,a5,a4
+    800067e8:	0127a023          	sw	s2,0(a5)
     tail = (tail + 1) % cap;
-    800067e8:	0144a783          	lw	a5,20(s1)
-    800067ec:	0017879b          	addiw	a5,a5,1
-    800067f0:	0004a703          	lw	a4,0(s1)
-    800067f4:	02e7e7bb          	remw	a5,a5,a4
-    800067f8:	00f4aa23          	sw	a5,20(s1)
+    800067ec:	0144a783          	lw	a5,20(s1)
+    800067f0:	0017879b          	addiw	a5,a5,1
+    800067f4:	0004a703          	lw	a4,0(s1)
+    800067f8:	02e7e7bb          	remw	a5,a5,a4
+    800067fc:	00f4aa23          	sw	a5,20(s1)
     mutexTail->signal();
-    800067fc:	0304b503          	ld	a0,48(s1)
-    80006800:	ffffd097          	auipc	ra,0xffffd
-    80006804:	cd8080e7          	jalr	-808(ra) # 800034d8 <_ZN9Semaphore6signalEv>
+    80006800:	0304b503          	ld	a0,48(s1)
+    80006804:	ffffd097          	auipc	ra,0xffffd
+    80006808:	cd0080e7          	jalr	-816(ra) # 800034d4 <_ZN9Semaphore6signalEv>
 
     itemAvailable->signal();
-    80006808:	0204b503          	ld	a0,32(s1)
-    8000680c:	ffffd097          	auipc	ra,0xffffd
-    80006810:	ccc080e7          	jalr	-820(ra) # 800034d8 <_ZN9Semaphore6signalEv>
+    8000680c:	0204b503          	ld	a0,32(s1)
+    80006810:	ffffd097          	auipc	ra,0xffffd
+    80006814:	cc4080e7          	jalr	-828(ra) # 800034d4 <_ZN9Semaphore6signalEv>
 
 }
-    80006814:	01813083          	ld	ra,24(sp)
-    80006818:	01013403          	ld	s0,16(sp)
-    8000681c:	00813483          	ld	s1,8(sp)
-    80006820:	00013903          	ld	s2,0(sp)
-    80006824:	02010113          	addi	sp,sp,32
-    80006828:	00008067          	ret
+    80006818:	01813083          	ld	ra,24(sp)
+    8000681c:	01013403          	ld	s0,16(sp)
+    80006820:	00813483          	ld	s1,8(sp)
+    80006824:	00013903          	ld	s2,0(sp)
+    80006828:	02010113          	addi	sp,sp,32
+    8000682c:	00008067          	ret
 
-000000008000682c <_ZN9BufferCPP3getEv>:
+0000000080006830 <_ZN9BufferCPP3getEv>:
 
 int BufferCPP::get() {
-    8000682c:	fe010113          	addi	sp,sp,-32
-    80006830:	00113c23          	sd	ra,24(sp)
-    80006834:	00813823          	sd	s0,16(sp)
-    80006838:	00913423          	sd	s1,8(sp)
-    8000683c:	01213023          	sd	s2,0(sp)
-    80006840:	02010413          	addi	s0,sp,32
-    80006844:	00050493          	mv	s1,a0
+    80006830:	fe010113          	addi	sp,sp,-32
+    80006834:	00113c23          	sd	ra,24(sp)
+    80006838:	00813823          	sd	s0,16(sp)
+    8000683c:	00913423          	sd	s1,8(sp)
+    80006840:	01213023          	sd	s2,0(sp)
+    80006844:	02010413          	addi	s0,sp,32
+    80006848:	00050493          	mv	s1,a0
     itemAvailable->wait();
-    80006848:	02053503          	ld	a0,32(a0)
-    8000684c:	ffffd097          	auipc	ra,0xffffd
-    80006850:	c60080e7          	jalr	-928(ra) # 800034ac <_ZN9Semaphore4waitEv>
+    8000684c:	02053503          	ld	a0,32(a0)
+    80006850:	ffffd097          	auipc	ra,0xffffd
+    80006854:	c58080e7          	jalr	-936(ra) # 800034a8 <_ZN9Semaphore4waitEv>
 
     mutexHead->wait();
-    80006854:	0284b503          	ld	a0,40(s1)
-    80006858:	ffffd097          	auipc	ra,0xffffd
-    8000685c:	c54080e7          	jalr	-940(ra) # 800034ac <_ZN9Semaphore4waitEv>
+    80006858:	0284b503          	ld	a0,40(s1)
+    8000685c:	ffffd097          	auipc	ra,0xffffd
+    80006860:	c4c080e7          	jalr	-948(ra) # 800034a8 <_ZN9Semaphore4waitEv>
 
     int ret = buffer[head];
-    80006860:	0084b703          	ld	a4,8(s1)
-    80006864:	0104a783          	lw	a5,16(s1)
-    80006868:	00279693          	slli	a3,a5,0x2
-    8000686c:	00d70733          	add	a4,a4,a3
-    80006870:	00072903          	lw	s2,0(a4)
+    80006864:	0084b703          	ld	a4,8(s1)
+    80006868:	0104a783          	lw	a5,16(s1)
+    8000686c:	00279693          	slli	a3,a5,0x2
+    80006870:	00d70733          	add	a4,a4,a3
+    80006874:	00072903          	lw	s2,0(a4)
     head = (head + 1) % cap;
-    80006874:	0017879b          	addiw	a5,a5,1
-    80006878:	0004a703          	lw	a4,0(s1)
-    8000687c:	02e7e7bb          	remw	a5,a5,a4
-    80006880:	00f4a823          	sw	a5,16(s1)
+    80006878:	0017879b          	addiw	a5,a5,1
+    8000687c:	0004a703          	lw	a4,0(s1)
+    80006880:	02e7e7bb          	remw	a5,a5,a4
+    80006884:	00f4a823          	sw	a5,16(s1)
     mutexHead->signal();
-    80006884:	0284b503          	ld	a0,40(s1)
-    80006888:	ffffd097          	auipc	ra,0xffffd
-    8000688c:	c50080e7          	jalr	-944(ra) # 800034d8 <_ZN9Semaphore6signalEv>
+    80006888:	0284b503          	ld	a0,40(s1)
+    8000688c:	ffffd097          	auipc	ra,0xffffd
+    80006890:	c48080e7          	jalr	-952(ra) # 800034d4 <_ZN9Semaphore6signalEv>
 
     spaceAvailable->signal();
-    80006890:	0184b503          	ld	a0,24(s1)
-    80006894:	ffffd097          	auipc	ra,0xffffd
-    80006898:	c44080e7          	jalr	-956(ra) # 800034d8 <_ZN9Semaphore6signalEv>
+    80006894:	0184b503          	ld	a0,24(s1)
+    80006898:	ffffd097          	auipc	ra,0xffffd
+    8000689c:	c3c080e7          	jalr	-964(ra) # 800034d4 <_ZN9Semaphore6signalEv>
 
     return ret;
 }
-    8000689c:	00090513          	mv	a0,s2
-    800068a0:	01813083          	ld	ra,24(sp)
-    800068a4:	01013403          	ld	s0,16(sp)
-    800068a8:	00813483          	ld	s1,8(sp)
-    800068ac:	00013903          	ld	s2,0(sp)
-    800068b0:	02010113          	addi	sp,sp,32
-    800068b4:	00008067          	ret
+    800068a0:	00090513          	mv	a0,s2
+    800068a4:	01813083          	ld	ra,24(sp)
+    800068a8:	01013403          	ld	s0,16(sp)
+    800068ac:	00813483          	ld	s1,8(sp)
+    800068b0:	00013903          	ld	s2,0(sp)
+    800068b4:	02010113          	addi	sp,sp,32
+    800068b8:	00008067          	ret
 
-00000000800068b8 <_ZN9BufferCPP6getCntEv>:
+00000000800068bc <_ZN9BufferCPP6getCntEv>:
 
 int BufferCPP::getCnt() {
-    800068b8:	fe010113          	addi	sp,sp,-32
-    800068bc:	00113c23          	sd	ra,24(sp)
-    800068c0:	00813823          	sd	s0,16(sp)
-    800068c4:	00913423          	sd	s1,8(sp)
-    800068c8:	01213023          	sd	s2,0(sp)
-    800068cc:	02010413          	addi	s0,sp,32
-    800068d0:	00050493          	mv	s1,a0
+    800068bc:	fe010113          	addi	sp,sp,-32
+    800068c0:	00113c23          	sd	ra,24(sp)
+    800068c4:	00813823          	sd	s0,16(sp)
+    800068c8:	00913423          	sd	s1,8(sp)
+    800068cc:	01213023          	sd	s2,0(sp)
+    800068d0:	02010413          	addi	s0,sp,32
+    800068d4:	00050493          	mv	s1,a0
     int ret;
 
     mutexHead->wait();
-    800068d4:	02853503          	ld	a0,40(a0)
-    800068d8:	ffffd097          	auipc	ra,0xffffd
-    800068dc:	bd4080e7          	jalr	-1068(ra) # 800034ac <_ZN9Semaphore4waitEv>
+    800068d8:	02853503          	ld	a0,40(a0)
+    800068dc:	ffffd097          	auipc	ra,0xffffd
+    800068e0:	bcc080e7          	jalr	-1076(ra) # 800034a8 <_ZN9Semaphore4waitEv>
     mutexTail->wait();
-    800068e0:	0304b503          	ld	a0,48(s1)
-    800068e4:	ffffd097          	auipc	ra,0xffffd
-    800068e8:	bc8080e7          	jalr	-1080(ra) # 800034ac <_ZN9Semaphore4waitEv>
+    800068e4:	0304b503          	ld	a0,48(s1)
+    800068e8:	ffffd097          	auipc	ra,0xffffd
+    800068ec:	bc0080e7          	jalr	-1088(ra) # 800034a8 <_ZN9Semaphore4waitEv>
 
     if (tail >= head) {
-    800068ec:	0144a783          	lw	a5,20(s1)
-    800068f0:	0104a903          	lw	s2,16(s1)
-    800068f4:	0327ce63          	blt	a5,s2,80006930 <_ZN9BufferCPP6getCntEv+0x78>
+    800068f0:	0144a783          	lw	a5,20(s1)
+    800068f4:	0104a903          	lw	s2,16(s1)
+    800068f8:	0327ce63          	blt	a5,s2,80006934 <_ZN9BufferCPP6getCntEv+0x78>
         ret = tail - head;
-    800068f8:	4127893b          	subw	s2,a5,s2
+    800068fc:	4127893b          	subw	s2,a5,s2
     } else {
         ret = cap - head + tail;
     }
 
     mutexTail->signal();
-    800068fc:	0304b503          	ld	a0,48(s1)
-    80006900:	ffffd097          	auipc	ra,0xffffd
-    80006904:	bd8080e7          	jalr	-1064(ra) # 800034d8 <_ZN9Semaphore6signalEv>
+    80006900:	0304b503          	ld	a0,48(s1)
+    80006904:	ffffd097          	auipc	ra,0xffffd
+    80006908:	bd0080e7          	jalr	-1072(ra) # 800034d4 <_ZN9Semaphore6signalEv>
     mutexHead->signal();
-    80006908:	0284b503          	ld	a0,40(s1)
-    8000690c:	ffffd097          	auipc	ra,0xffffd
-    80006910:	bcc080e7          	jalr	-1076(ra) # 800034d8 <_ZN9Semaphore6signalEv>
+    8000690c:	0284b503          	ld	a0,40(s1)
+    80006910:	ffffd097          	auipc	ra,0xffffd
+    80006914:	bc4080e7          	jalr	-1084(ra) # 800034d4 <_ZN9Semaphore6signalEv>
 
     return ret;
 }
-    80006914:	00090513          	mv	a0,s2
-    80006918:	01813083          	ld	ra,24(sp)
-    8000691c:	01013403          	ld	s0,16(sp)
-    80006920:	00813483          	ld	s1,8(sp)
-    80006924:	00013903          	ld	s2,0(sp)
-    80006928:	02010113          	addi	sp,sp,32
-    8000692c:	00008067          	ret
+    80006918:	00090513          	mv	a0,s2
+    8000691c:	01813083          	ld	ra,24(sp)
+    80006920:	01013403          	ld	s0,16(sp)
+    80006924:	00813483          	ld	s1,8(sp)
+    80006928:	00013903          	ld	s2,0(sp)
+    8000692c:	02010113          	addi	sp,sp,32
+    80006930:	00008067          	ret
         ret = cap - head + tail;
-    80006930:	0004a703          	lw	a4,0(s1)
-    80006934:	4127093b          	subw	s2,a4,s2
-    80006938:	00f9093b          	addw	s2,s2,a5
-    8000693c:	fc1ff06f          	j	800068fc <_ZN9BufferCPP6getCntEv+0x44>
+    80006934:	0004a703          	lw	a4,0(s1)
+    80006938:	4127093b          	subw	s2,a4,s2
+    8000693c:	00f9093b          	addw	s2,s2,a5
+    80006940:	fc1ff06f          	j	80006900 <_ZN9BufferCPP6getCntEv+0x44>
 
-0000000080006940 <_ZN9BufferCPPD1Ev>:
+0000000080006944 <_ZN9BufferCPPD1Ev>:
 BufferCPP::~BufferCPP() {
-    80006940:	fe010113          	addi	sp,sp,-32
-    80006944:	00113c23          	sd	ra,24(sp)
-    80006948:	00813823          	sd	s0,16(sp)
-    8000694c:	00913423          	sd	s1,8(sp)
-    80006950:	02010413          	addi	s0,sp,32
-    80006954:	00050493          	mv	s1,a0
+    80006944:	fe010113          	addi	sp,sp,-32
+    80006948:	00113c23          	sd	ra,24(sp)
+    8000694c:	00813823          	sd	s0,16(sp)
+    80006950:	00913423          	sd	s1,8(sp)
+    80006954:	02010413          	addi	s0,sp,32
+    80006958:	00050493          	mv	s1,a0
     Console::putc('\n');
-    80006958:	00a00513          	li	a0,10
-    8000695c:	ffffd097          	auipc	ra,0xffffd
-    80006960:	c40080e7          	jalr	-960(ra) # 8000359c <_ZN7Console4putcEc>
+    8000695c:	00a00513          	li	a0,10
+    80006960:	ffffd097          	auipc	ra,0xffffd
+    80006964:	c38080e7          	jalr	-968(ra) # 80003598 <_ZN7Console4putcEc>
     printString("Buffer deleted!\n");
-    80006964:	00004517          	auipc	a0,0x4
-    80006968:	ba450513          	addi	a0,a0,-1116 # 8000a508 <CONSOLE_STATUS+0x4f8>
-    8000696c:	00000097          	auipc	ra,0x0
-    80006970:	a0c080e7          	jalr	-1524(ra) # 80006378 <_Z11printStringPKc>
+    80006968:	00004517          	auipc	a0,0x4
+    8000696c:	ba050513          	addi	a0,a0,-1120 # 8000a508 <CONSOLE_STATUS+0x4f8>
+    80006970:	00000097          	auipc	ra,0x0
+    80006974:	a0c080e7          	jalr	-1524(ra) # 8000637c <_Z11printStringPKc>
     while (getCnt()) {
-    80006974:	00048513          	mv	a0,s1
-    80006978:	00000097          	auipc	ra,0x0
-    8000697c:	f40080e7          	jalr	-192(ra) # 800068b8 <_ZN9BufferCPP6getCntEv>
-    80006980:	02050c63          	beqz	a0,800069b8 <_ZN9BufferCPPD1Ev+0x78>
+    80006978:	00048513          	mv	a0,s1
+    8000697c:	00000097          	auipc	ra,0x0
+    80006980:	f40080e7          	jalr	-192(ra) # 800068bc <_ZN9BufferCPP6getCntEv>
+    80006984:	02050c63          	beqz	a0,800069bc <_ZN9BufferCPPD1Ev+0x78>
         char ch = buffer[head];
-    80006984:	0084b783          	ld	a5,8(s1)
-    80006988:	0104a703          	lw	a4,16(s1)
-    8000698c:	00271713          	slli	a4,a4,0x2
-    80006990:	00e787b3          	add	a5,a5,a4
+    80006988:	0084b783          	ld	a5,8(s1)
+    8000698c:	0104a703          	lw	a4,16(s1)
+    80006990:	00271713          	slli	a4,a4,0x2
+    80006994:	00e787b3          	add	a5,a5,a4
         Console::putc(ch);
-    80006994:	0007c503          	lbu	a0,0(a5)
-    80006998:	ffffd097          	auipc	ra,0xffffd
-    8000699c:	c04080e7          	jalr	-1020(ra) # 8000359c <_ZN7Console4putcEc>
+    80006998:	0007c503          	lbu	a0,0(a5)
+    8000699c:	ffffd097          	auipc	ra,0xffffd
+    800069a0:	bfc080e7          	jalr	-1028(ra) # 80003598 <_ZN7Console4putcEc>
         head = (head + 1) % cap;
-    800069a0:	0104a783          	lw	a5,16(s1)
-    800069a4:	0017879b          	addiw	a5,a5,1
-    800069a8:	0004a703          	lw	a4,0(s1)
-    800069ac:	02e7e7bb          	remw	a5,a5,a4
-    800069b0:	00f4a823          	sw	a5,16(s1)
+    800069a4:	0104a783          	lw	a5,16(s1)
+    800069a8:	0017879b          	addiw	a5,a5,1
+    800069ac:	0004a703          	lw	a4,0(s1)
+    800069b0:	02e7e7bb          	remw	a5,a5,a4
+    800069b4:	00f4a823          	sw	a5,16(s1)
     while (getCnt()) {
-    800069b4:	fc1ff06f          	j	80006974 <_ZN9BufferCPPD1Ev+0x34>
+    800069b8:	fc1ff06f          	j	80006978 <_ZN9BufferCPPD1Ev+0x34>
     Console::putc('!');
-    800069b8:	02100513          	li	a0,33
-    800069bc:	ffffd097          	auipc	ra,0xffffd
-    800069c0:	be0080e7          	jalr	-1056(ra) # 8000359c <_ZN7Console4putcEc>
+    800069bc:	02100513          	li	a0,33
+    800069c0:	ffffd097          	auipc	ra,0xffffd
+    800069c4:	bd8080e7          	jalr	-1064(ra) # 80003598 <_ZN7Console4putcEc>
     Console::putc('\n');
-    800069c4:	00a00513          	li	a0,10
-    800069c8:	ffffd097          	auipc	ra,0xffffd
-    800069cc:	bd4080e7          	jalr	-1068(ra) # 8000359c <_ZN7Console4putcEc>
+    800069c8:	00a00513          	li	a0,10
+    800069cc:	ffffd097          	auipc	ra,0xffffd
+    800069d0:	bcc080e7          	jalr	-1076(ra) # 80003598 <_ZN7Console4putcEc>
     mem_free(buffer);
-    800069d0:	0084b503          	ld	a0,8(s1)
-    800069d4:	ffffb097          	auipc	ra,0xffffb
-    800069d8:	a00080e7          	jalr	-1536(ra) # 800013d4 <_Z8mem_freePv>
+    800069d4:	0084b503          	ld	a0,8(s1)
+    800069d8:	ffffb097          	auipc	ra,0xffffb
+    800069dc:	9fc080e7          	jalr	-1540(ra) # 800013d4 <_Z8mem_freePv>
     delete itemAvailable;
-    800069dc:	0204b503          	ld	a0,32(s1)
-    800069e0:	00050863          	beqz	a0,800069f0 <_ZN9BufferCPPD1Ev+0xb0>
-    800069e4:	00053783          	ld	a5,0(a0)
-    800069e8:	0087b783          	ld	a5,8(a5)
-    800069ec:	000780e7          	jalr	a5
+    800069e0:	0204b503          	ld	a0,32(s1)
+    800069e4:	00050863          	beqz	a0,800069f4 <_ZN9BufferCPPD1Ev+0xb0>
+    800069e8:	00053783          	ld	a5,0(a0)
+    800069ec:	0087b783          	ld	a5,8(a5)
+    800069f0:	000780e7          	jalr	a5
     delete spaceAvailable;
-    800069f0:	0184b503          	ld	a0,24(s1)
-    800069f4:	00050863          	beqz	a0,80006a04 <_ZN9BufferCPPD1Ev+0xc4>
-    800069f8:	00053783          	ld	a5,0(a0)
-    800069fc:	0087b783          	ld	a5,8(a5)
-    80006a00:	000780e7          	jalr	a5
+    800069f4:	0184b503          	ld	a0,24(s1)
+    800069f8:	00050863          	beqz	a0,80006a08 <_ZN9BufferCPPD1Ev+0xc4>
+    800069fc:	00053783          	ld	a5,0(a0)
+    80006a00:	0087b783          	ld	a5,8(a5)
+    80006a04:	000780e7          	jalr	a5
     delete mutexTail;
-    80006a04:	0304b503          	ld	a0,48(s1)
-    80006a08:	00050863          	beqz	a0,80006a18 <_ZN9BufferCPPD1Ev+0xd8>
-    80006a0c:	00053783          	ld	a5,0(a0)
-    80006a10:	0087b783          	ld	a5,8(a5)
-    80006a14:	000780e7          	jalr	a5
+    80006a08:	0304b503          	ld	a0,48(s1)
+    80006a0c:	00050863          	beqz	a0,80006a1c <_ZN9BufferCPPD1Ev+0xd8>
+    80006a10:	00053783          	ld	a5,0(a0)
+    80006a14:	0087b783          	ld	a5,8(a5)
+    80006a18:	000780e7          	jalr	a5
     delete mutexHead;
-    80006a18:	0284b503          	ld	a0,40(s1)
-    80006a1c:	00050863          	beqz	a0,80006a2c <_ZN9BufferCPPD1Ev+0xec>
-    80006a20:	00053783          	ld	a5,0(a0)
-    80006a24:	0087b783          	ld	a5,8(a5)
-    80006a28:	000780e7          	jalr	a5
+    80006a1c:	0284b503          	ld	a0,40(s1)
+    80006a20:	00050863          	beqz	a0,80006a30 <_ZN9BufferCPPD1Ev+0xec>
+    80006a24:	00053783          	ld	a5,0(a0)
+    80006a28:	0087b783          	ld	a5,8(a5)
+    80006a2c:	000780e7          	jalr	a5
 }
-    80006a2c:	01813083          	ld	ra,24(sp)
-    80006a30:	01013403          	ld	s0,16(sp)
-    80006a34:	00813483          	ld	s1,8(sp)
-    80006a38:	02010113          	addi	sp,sp,32
-    80006a3c:	00008067          	ret
+    80006a30:	01813083          	ld	ra,24(sp)
+    80006a34:	01013403          	ld	s0,16(sp)
+    80006a38:	00813483          	ld	s1,8(sp)
+    80006a3c:	02010113          	addi	sp,sp,32
+    80006a40:	00008067          	ret
 
-0000000080006a40 <_Z8userMainv>:
+0000000080006a44 <_Z8userMainv>:
 #include "../test/ConsumerProducer_CPP_API_test.hpp"
 #include "System_Mode_test.hpp"
 
 #endif
 
 void userMain() {
-    80006a40:	fe010113          	addi	sp,sp,-32
-    80006a44:	00113c23          	sd	ra,24(sp)
-    80006a48:	00813823          	sd	s0,16(sp)
-    80006a4c:	00913423          	sd	s1,8(sp)
-    80006a50:	02010413          	addi	s0,sp,32
+    80006a44:	fe010113          	addi	sp,sp,-32
+    80006a48:	00113c23          	sd	ra,24(sp)
+    80006a4c:	00813823          	sd	s0,16(sp)
+    80006a50:	00913423          	sd	s1,8(sp)
+    80006a54:	02010413          	addi	s0,sp,32
     printString("Unesite broj testa? [1-7]\n");
-    80006a54:	00004517          	auipc	a0,0x4
-    80006a58:	acc50513          	addi	a0,a0,-1332 # 8000a520 <CONSOLE_STATUS+0x510>
-    80006a5c:	00000097          	auipc	ra,0x0
-    80006a60:	91c080e7          	jalr	-1764(ra) # 80006378 <_Z11printStringPKc>
+    80006a58:	00004517          	auipc	a0,0x4
+    80006a5c:	ac850513          	addi	a0,a0,-1336 # 8000a520 <CONSOLE_STATUS+0x510>
+    80006a60:	00000097          	auipc	ra,0x0
+    80006a64:	91c080e7          	jalr	-1764(ra) # 8000637c <_Z11printStringPKc>
     int test = getc() - '0';
-    80006a64:	ffffb097          	auipc	ra,0xffffb
-    80006a68:	b9c080e7          	jalr	-1124(ra) # 80001600 <_Z4getcv>
-    80006a6c:	fd05049b          	addiw	s1,a0,-48
+    80006a68:	ffffb097          	auipc	ra,0xffffb
+    80006a6c:	b98080e7          	jalr	-1128(ra) # 80001600 <_Z4getcv>
+    80006a70:	fd05049b          	addiw	s1,a0,-48
     getc(); // Enter posle broja
-    80006a70:	ffffb097          	auipc	ra,0xffffb
-    80006a74:	b90080e7          	jalr	-1136(ra) # 80001600 <_Z4getcv>
+    80006a74:	ffffb097          	auipc	ra,0xffffb
+    80006a78:	b8c080e7          	jalr	-1140(ra) # 80001600 <_Z4getcv>
             printString("Nije navedeno da je zadatak 4 implementiran\n");
             return;
         }
     }
 
     switch (test) {
-    80006a78:	00700793          	li	a5,7
-    80006a7c:	1097e263          	bltu	a5,s1,80006b80 <_Z8userMainv+0x140>
-    80006a80:	00249493          	slli	s1,s1,0x2
-    80006a84:	00004717          	auipc	a4,0x4
-    80006a88:	cf470713          	addi	a4,a4,-780 # 8000a778 <CONSOLE_STATUS+0x768>
-    80006a8c:	00e484b3          	add	s1,s1,a4
-    80006a90:	0004a783          	lw	a5,0(s1)
-    80006a94:	00e787b3          	add	a5,a5,a4
-    80006a98:	00078067          	jr	a5
+    80006a7c:	00700793          	li	a5,7
+    80006a80:	1097e263          	bltu	a5,s1,80006b84 <_Z8userMainv+0x140>
+    80006a84:	00249493          	slli	s1,s1,0x2
+    80006a88:	00004717          	auipc	a4,0x4
+    80006a8c:	cf070713          	addi	a4,a4,-784 # 8000a778 <CONSOLE_STATUS+0x768>
+    80006a90:	00e484b3          	add	s1,s1,a4
+    80006a94:	0004a783          	lw	a5,0(s1)
+    80006a98:	00e787b3          	add	a5,a5,a4
+    80006a9c:	00078067          	jr	a5
         case 1:
 #if LEVEL_2_IMPLEMENTED == 1
             Threads_C_API_test();
-    80006a9c:	fffff097          	auipc	ra,0xfffff
-    80006aa0:	f54080e7          	jalr	-172(ra) # 800059f0 <_Z18Threads_C_API_testv>
+    80006aa0:	fffff097          	auipc	ra,0xfffff
+    80006aa4:	f54080e7          	jalr	-172(ra) # 800059f4 <_Z18Threads_C_API_testv>
             printString("TEST 1 (zadatak 2, niti C API i sinhrona promena konteksta)\n");
-    80006aa4:	00004517          	auipc	a0,0x4
-    80006aa8:	a9c50513          	addi	a0,a0,-1380 # 8000a540 <CONSOLE_STATUS+0x530>
-    80006aac:	00000097          	auipc	ra,0x0
-    80006ab0:	8cc080e7          	jalr	-1844(ra) # 80006378 <_Z11printStringPKc>
+    80006aa8:	00004517          	auipc	a0,0x4
+    80006aac:	a9850513          	addi	a0,a0,-1384 # 8000a540 <CONSOLE_STATUS+0x530>
+    80006ab0:	00000097          	auipc	ra,0x0
+    80006ab4:	8cc080e7          	jalr	-1844(ra) # 8000637c <_Z11printStringPKc>
 #endif
             break;
         default:
             printString("Niste uneli odgovarajuci broj za test\n");
     }
-    80006ab4:	01813083          	ld	ra,24(sp)
-    80006ab8:	01013403          	ld	s0,16(sp)
-    80006abc:	00813483          	ld	s1,8(sp)
-    80006ac0:	02010113          	addi	sp,sp,32
-    80006ac4:	00008067          	ret
+    80006ab8:	01813083          	ld	ra,24(sp)
+    80006abc:	01013403          	ld	s0,16(sp)
+    80006ac0:	00813483          	ld	s1,8(sp)
+    80006ac4:	02010113          	addi	sp,sp,32
+    80006ac8:	00008067          	ret
             Threads_CPP_API_test();
-    80006ac8:	ffffe097          	auipc	ra,0xffffe
-    80006acc:	e08080e7          	jalr	-504(ra) # 800048d0 <_Z20Threads_CPP_API_testv>
+    80006acc:	ffffe097          	auipc	ra,0xffffe
+    80006ad0:	e08080e7          	jalr	-504(ra) # 800048d4 <_Z20Threads_CPP_API_testv>
             printString("TEST 2 (zadatak 2., niti CPP API i sinhrona promena konteksta)\n");
-    80006ad0:	00004517          	auipc	a0,0x4
-    80006ad4:	ab050513          	addi	a0,a0,-1360 # 8000a580 <CONSOLE_STATUS+0x570>
-    80006ad8:	00000097          	auipc	ra,0x0
-    80006adc:	8a0080e7          	jalr	-1888(ra) # 80006378 <_Z11printStringPKc>
+    80006ad4:	00004517          	auipc	a0,0x4
+    80006ad8:	aac50513          	addi	a0,a0,-1364 # 8000a580 <CONSOLE_STATUS+0x570>
+    80006adc:	00000097          	auipc	ra,0x0
+    80006ae0:	8a0080e7          	jalr	-1888(ra) # 8000637c <_Z11printStringPKc>
             break;
-    80006ae0:	fd5ff06f          	j	80006ab4 <_Z8userMainv+0x74>
+    80006ae4:	fd5ff06f          	j	80006ab8 <_Z8userMainv+0x74>
             producerConsumer_C_API();
-    80006ae4:	ffffd097          	auipc	ra,0xffffd
-    80006ae8:	640080e7          	jalr	1600(ra) # 80004124 <_Z22producerConsumer_C_APIv>
+    80006ae8:	ffffd097          	auipc	ra,0xffffd
+    80006aec:	640080e7          	jalr	1600(ra) # 80004128 <_Z22producerConsumer_C_APIv>
             printString("TEST 3 (zadatak 3., kompletan C API sa semaforima, sinhrona promena konteksta)\n");
-    80006aec:	00004517          	auipc	a0,0x4
-    80006af0:	ad450513          	addi	a0,a0,-1324 # 8000a5c0 <CONSOLE_STATUS+0x5b0>
-    80006af4:	00000097          	auipc	ra,0x0
-    80006af8:	884080e7          	jalr	-1916(ra) # 80006378 <_Z11printStringPKc>
+    80006af0:	00004517          	auipc	a0,0x4
+    80006af4:	ad050513          	addi	a0,a0,-1328 # 8000a5c0 <CONSOLE_STATUS+0x5b0>
+    80006af8:	00000097          	auipc	ra,0x0
+    80006afc:	884080e7          	jalr	-1916(ra) # 8000637c <_Z11printStringPKc>
             break;
-    80006afc:	fb9ff06f          	j	80006ab4 <_Z8userMainv+0x74>
+    80006b00:	fb9ff06f          	j	80006ab8 <_Z8userMainv+0x74>
             producerConsumer_CPP_Sync_API();
-    80006b00:	fffff097          	auipc	ra,0xfffff
-    80006b04:	234080e7          	jalr	564(ra) # 80005d34 <_Z29producerConsumer_CPP_Sync_APIv>
+    80006b04:	fffff097          	auipc	ra,0xfffff
+    80006b08:	234080e7          	jalr	564(ra) # 80005d38 <_Z29producerConsumer_CPP_Sync_APIv>
             printString("TEST 4 (zadatak 3., kompletan CPP API sa semaforima, sinhrona promena konteksta)\n");
-    80006b08:	00004517          	auipc	a0,0x4
-    80006b0c:	b0850513          	addi	a0,a0,-1272 # 8000a610 <CONSOLE_STATUS+0x600>
-    80006b10:	00000097          	auipc	ra,0x0
-    80006b14:	868080e7          	jalr	-1944(ra) # 80006378 <_Z11printStringPKc>
+    80006b0c:	00004517          	auipc	a0,0x4
+    80006b10:	b0450513          	addi	a0,a0,-1276 # 8000a610 <CONSOLE_STATUS+0x600>
+    80006b14:	00000097          	auipc	ra,0x0
+    80006b18:	868080e7          	jalr	-1944(ra) # 8000637c <_Z11printStringPKc>
             break;
-    80006b18:	f9dff06f          	j	80006ab4 <_Z8userMainv+0x74>
+    80006b1c:	f9dff06f          	j	80006ab8 <_Z8userMainv+0x74>
             testSleeping();
-    80006b1c:	00000097          	auipc	ra,0x0
-    80006b20:	11c080e7          	jalr	284(ra) # 80006c38 <_Z12testSleepingv>
+    80006b20:	00000097          	auipc	ra,0x0
+    80006b24:	11c080e7          	jalr	284(ra) # 80006c3c <_Z12testSleepingv>
             printString("TEST 5 (zadatak 4., thread_sleep test C API)\n");
-    80006b24:	00004517          	auipc	a0,0x4
-    80006b28:	b4450513          	addi	a0,a0,-1212 # 8000a668 <CONSOLE_STATUS+0x658>
-    80006b2c:	00000097          	auipc	ra,0x0
-    80006b30:	84c080e7          	jalr	-1972(ra) # 80006378 <_Z11printStringPKc>
+    80006b28:	00004517          	auipc	a0,0x4
+    80006b2c:	b4050513          	addi	a0,a0,-1216 # 8000a668 <CONSOLE_STATUS+0x658>
+    80006b30:	00000097          	auipc	ra,0x0
+    80006b34:	84c080e7          	jalr	-1972(ra) # 8000637c <_Z11printStringPKc>
             break;
-    80006b34:	f81ff06f          	j	80006ab4 <_Z8userMainv+0x74>
+    80006b38:	f81ff06f          	j	80006ab8 <_Z8userMainv+0x74>
             testConsumerProducer();
-    80006b38:	ffffe097          	auipc	ra,0xffffe
-    80006b3c:	258080e7          	jalr	600(ra) # 80004d90 <_Z20testConsumerProducerv>
+    80006b3c:	ffffe097          	auipc	ra,0xffffe
+    80006b40:	258080e7          	jalr	600(ra) # 80004d94 <_Z20testConsumerProducerv>
             printString("TEST 6 (zadatak 4. CPP API i asinhrona promena konteksta)\n");
-    80006b40:	00004517          	auipc	a0,0x4
-    80006b44:	b5850513          	addi	a0,a0,-1192 # 8000a698 <CONSOLE_STATUS+0x688>
-    80006b48:	00000097          	auipc	ra,0x0
-    80006b4c:	830080e7          	jalr	-2000(ra) # 80006378 <_Z11printStringPKc>
+    80006b44:	00004517          	auipc	a0,0x4
+    80006b48:	b5450513          	addi	a0,a0,-1196 # 8000a698 <CONSOLE_STATUS+0x688>
+    80006b4c:	00000097          	auipc	ra,0x0
+    80006b50:	830080e7          	jalr	-2000(ra) # 8000637c <_Z11printStringPKc>
             break;
-    80006b50:	f65ff06f          	j	80006ab4 <_Z8userMainv+0x74>
+    80006b54:	f65ff06f          	j	80006ab8 <_Z8userMainv+0x74>
             System_Mode_test();
-    80006b54:	00000097          	auipc	ra,0x0
-    80006b58:	658080e7          	jalr	1624(ra) # 800071ac <_Z16System_Mode_testv>
+    80006b58:	00000097          	auipc	ra,0x0
+    80006b5c:	658080e7          	jalr	1624(ra) # 800071b0 <_Z16System_Mode_testv>
             printString("Test se nije uspesno zavrsio\n");
-    80006b5c:	00004517          	auipc	a0,0x4
-    80006b60:	b7c50513          	addi	a0,a0,-1156 # 8000a6d8 <CONSOLE_STATUS+0x6c8>
-    80006b64:	00000097          	auipc	ra,0x0
-    80006b68:	814080e7          	jalr	-2028(ra) # 80006378 <_Z11printStringPKc>
+    80006b60:	00004517          	auipc	a0,0x4
+    80006b64:	b7850513          	addi	a0,a0,-1160 # 8000a6d8 <CONSOLE_STATUS+0x6c8>
+    80006b68:	00000097          	auipc	ra,0x0
+    80006b6c:	814080e7          	jalr	-2028(ra) # 8000637c <_Z11printStringPKc>
             printString("TEST 7 (zadatak 2., testiranje da li se korisnicki kod izvrsava u korisnickom rezimu)\n");
-    80006b6c:	00004517          	auipc	a0,0x4
-    80006b70:	b8c50513          	addi	a0,a0,-1140 # 8000a6f8 <CONSOLE_STATUS+0x6e8>
-    80006b74:	00000097          	auipc	ra,0x0
-    80006b78:	804080e7          	jalr	-2044(ra) # 80006378 <_Z11printStringPKc>
+    80006b70:	00004517          	auipc	a0,0x4
+    80006b74:	b8850513          	addi	a0,a0,-1144 # 8000a6f8 <CONSOLE_STATUS+0x6e8>
+    80006b78:	00000097          	auipc	ra,0x0
+    80006b7c:	804080e7          	jalr	-2044(ra) # 8000637c <_Z11printStringPKc>
             break;
-    80006b7c:	f39ff06f          	j	80006ab4 <_Z8userMainv+0x74>
+    80006b80:	f39ff06f          	j	80006ab8 <_Z8userMainv+0x74>
             printString("Niste uneli odgovarajuci broj za test\n");
-    80006b80:	00004517          	auipc	a0,0x4
-    80006b84:	bd050513          	addi	a0,a0,-1072 # 8000a750 <CONSOLE_STATUS+0x740>
-    80006b88:	fffff097          	auipc	ra,0xfffff
-    80006b8c:	7f0080e7          	jalr	2032(ra) # 80006378 <_Z11printStringPKc>
-    80006b90:	f25ff06f          	j	80006ab4 <_Z8userMainv+0x74>
+    80006b84:	00004517          	auipc	a0,0x4
+    80006b88:	bcc50513          	addi	a0,a0,-1076 # 8000a750 <CONSOLE_STATUS+0x740>
+    80006b8c:	fffff097          	auipc	ra,0xfffff
+    80006b90:	7f0080e7          	jalr	2032(ra) # 8000637c <_Z11printStringPKc>
+    80006b94:	f25ff06f          	j	80006ab8 <_Z8userMainv+0x74>
 
-0000000080006b94 <_ZL9sleepyRunPv>:
+0000000080006b98 <_ZL9sleepyRunPv>:
 
 #include "printing.hpp"
 
 static volatile bool finished[2];
 
 static void sleepyRun(void *arg) {
-    80006b94:	fe010113          	addi	sp,sp,-32
-    80006b98:	00113c23          	sd	ra,24(sp)
-    80006b9c:	00813823          	sd	s0,16(sp)
-    80006ba0:	00913423          	sd	s1,8(sp)
-    80006ba4:	01213023          	sd	s2,0(sp)
-    80006ba8:	02010413          	addi	s0,sp,32
+    80006b98:	fe010113          	addi	sp,sp,-32
+    80006b9c:	00113c23          	sd	ra,24(sp)
+    80006ba0:	00813823          	sd	s0,16(sp)
+    80006ba4:	00913423          	sd	s1,8(sp)
+    80006ba8:	01213023          	sd	s2,0(sp)
+    80006bac:	02010413          	addi	s0,sp,32
     time_t sleep_time = *((time_t *) arg);
-    80006bac:	00053903          	ld	s2,0(a0)
+    80006bb0:	00053903          	ld	s2,0(a0)
     int i = 6;
-    80006bb0:	00600493          	li	s1,6
+    80006bb4:	00600493          	li	s1,6
     while (--i > 0) {
-    80006bb4:	fff4849b          	addiw	s1,s1,-1
-    80006bb8:	04905463          	blez	s1,80006c00 <_ZL9sleepyRunPv+0x6c>
+    80006bb8:	fff4849b          	addiw	s1,s1,-1
+    80006bbc:	04905463          	blez	s1,80006c04 <_ZL9sleepyRunPv+0x6c>
 
         printString("Hello ");
-    80006bbc:	00004517          	auipc	a0,0x4
-    80006bc0:	bdc50513          	addi	a0,a0,-1060 # 8000a798 <CONSOLE_STATUS+0x788>
-    80006bc4:	fffff097          	auipc	ra,0xfffff
-    80006bc8:	7b4080e7          	jalr	1972(ra) # 80006378 <_Z11printStringPKc>
+    80006bc0:	00004517          	auipc	a0,0x4
+    80006bc4:	bd850513          	addi	a0,a0,-1064 # 8000a798 <CONSOLE_STATUS+0x788>
+    80006bc8:	fffff097          	auipc	ra,0xfffff
+    80006bcc:	7b4080e7          	jalr	1972(ra) # 8000637c <_Z11printStringPKc>
         printInt(sleep_time);
-    80006bcc:	00000613          	li	a2,0
-    80006bd0:	00a00593          	li	a1,10
-    80006bd4:	0009051b          	sext.w	a0,s2
-    80006bd8:	00000097          	auipc	ra,0x0
-    80006bdc:	950080e7          	jalr	-1712(ra) # 80006528 <_Z8printIntiii>
+    80006bd0:	00000613          	li	a2,0
+    80006bd4:	00a00593          	li	a1,10
+    80006bd8:	0009051b          	sext.w	a0,s2
+    80006bdc:	00000097          	auipc	ra,0x0
+    80006be0:	950080e7          	jalr	-1712(ra) # 8000652c <_Z8printIntiii>
         printString(" !\n");
-    80006be0:	00004517          	auipc	a0,0x4
-    80006be4:	bc050513          	addi	a0,a0,-1088 # 8000a7a0 <CONSOLE_STATUS+0x790>
-    80006be8:	fffff097          	auipc	ra,0xfffff
-    80006bec:	790080e7          	jalr	1936(ra) # 80006378 <_Z11printStringPKc>
+    80006be4:	00004517          	auipc	a0,0x4
+    80006be8:	bbc50513          	addi	a0,a0,-1092 # 8000a7a0 <CONSOLE_STATUS+0x790>
+    80006bec:	fffff097          	auipc	ra,0xfffff
+    80006bf0:	790080e7          	jalr	1936(ra) # 8000637c <_Z11printStringPKc>
         time_sleep(sleep_time);
-    80006bf0:	00090513          	mv	a0,s2
-    80006bf4:	ffffb097          	auipc	ra,0xffffb
-    80006bf8:	914080e7          	jalr	-1772(ra) # 80001508 <_Z10time_sleepm>
+    80006bf4:	00090513          	mv	a0,s2
+    80006bf8:	ffffb097          	auipc	ra,0xffffb
+    80006bfc:	910080e7          	jalr	-1776(ra) # 80001508 <_Z10time_sleepm>
     while (--i > 0) {
-    80006bfc:	fb9ff06f          	j	80006bb4 <_ZL9sleepyRunPv+0x20>
+    80006c00:	fb9ff06f          	j	80006bb8 <_ZL9sleepyRunPv+0x20>
     }
     finished[sleep_time/10-1] = true;
-    80006c00:	00a00793          	li	a5,10
-    80006c04:	02f95933          	divu	s2,s2,a5
-    80006c08:	fff90913          	addi	s2,s2,-1
-    80006c0c:	00006797          	auipc	a5,0x6
-    80006c10:	67478793          	addi	a5,a5,1652 # 8000d280 <_ZL8finished>
-    80006c14:	01278933          	add	s2,a5,s2
-    80006c18:	00100793          	li	a5,1
-    80006c1c:	00f90023          	sb	a5,0(s2)
+    80006c04:	00a00793          	li	a5,10
+    80006c08:	02f95933          	divu	s2,s2,a5
+    80006c0c:	fff90913          	addi	s2,s2,-1
+    80006c10:	00006797          	auipc	a5,0x6
+    80006c14:	6b878793          	addi	a5,a5,1720 # 8000d2c8 <_ZL8finished>
+    80006c18:	01278933          	add	s2,a5,s2
+    80006c1c:	00100793          	li	a5,1
+    80006c20:	00f90023          	sb	a5,0(s2)
 }
-    80006c20:	01813083          	ld	ra,24(sp)
-    80006c24:	01013403          	ld	s0,16(sp)
-    80006c28:	00813483          	ld	s1,8(sp)
-    80006c2c:	00013903          	ld	s2,0(sp)
-    80006c30:	02010113          	addi	sp,sp,32
-    80006c34:	00008067          	ret
+    80006c24:	01813083          	ld	ra,24(sp)
+    80006c28:	01013403          	ld	s0,16(sp)
+    80006c2c:	00813483          	ld	s1,8(sp)
+    80006c30:	00013903          	ld	s2,0(sp)
+    80006c34:	02010113          	addi	sp,sp,32
+    80006c38:	00008067          	ret
 
-0000000080006c38 <_Z12testSleepingv>:
+0000000080006c3c <_Z12testSleepingv>:
 
 void testSleeping() {
-    80006c38:	fc010113          	addi	sp,sp,-64
-    80006c3c:	02113c23          	sd	ra,56(sp)
-    80006c40:	02813823          	sd	s0,48(sp)
-    80006c44:	02913423          	sd	s1,40(sp)
-    80006c48:	04010413          	addi	s0,sp,64
+    80006c3c:	fc010113          	addi	sp,sp,-64
+    80006c40:	02113c23          	sd	ra,56(sp)
+    80006c44:	02813823          	sd	s0,48(sp)
+    80006c48:	02913423          	sd	s1,40(sp)
+    80006c4c:	04010413          	addi	s0,sp,64
     const int sleepy_thread_count = 2;
     time_t sleep_times[sleepy_thread_count] = {10, 20};
-    80006c4c:	00a00793          	li	a5,10
-    80006c50:	fcf43823          	sd	a5,-48(s0)
-    80006c54:	01400793          	li	a5,20
-    80006c58:	fcf43c23          	sd	a5,-40(s0)
+    80006c50:	00a00793          	li	a5,10
+    80006c54:	fcf43823          	sd	a5,-48(s0)
+    80006c58:	01400793          	li	a5,20
+    80006c5c:	fcf43c23          	sd	a5,-40(s0)
     thread_t sleepyThread[sleepy_thread_count];
 
     for (int i = 0; i < sleepy_thread_count; i++) {
-    80006c5c:	00000493          	li	s1,0
-    80006c60:	02c0006f          	j	80006c8c <_Z12testSleepingv+0x54>
+    80006c60:	00000493          	li	s1,0
+    80006c64:	02c0006f          	j	80006c90 <_Z12testSleepingv+0x54>
         thread_create(&sleepyThread[i], sleepyRun, sleep_times + i);
-    80006c64:	00349793          	slli	a5,s1,0x3
-    80006c68:	fd040613          	addi	a2,s0,-48
-    80006c6c:	00f60633          	add	a2,a2,a5
-    80006c70:	00000597          	auipc	a1,0x0
-    80006c74:	f2458593          	addi	a1,a1,-220 # 80006b94 <_ZL9sleepyRunPv>
-    80006c78:	fc040513          	addi	a0,s0,-64
-    80006c7c:	00f50533          	add	a0,a0,a5
-    80006c80:	ffffa097          	auipc	ra,0xffffa
-    80006c84:	784080e7          	jalr	1924(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    80006c68:	00349793          	slli	a5,s1,0x3
+    80006c6c:	fd040613          	addi	a2,s0,-48
+    80006c70:	00f60633          	add	a2,a2,a5
+    80006c74:	00000597          	auipc	a1,0x0
+    80006c78:	f2458593          	addi	a1,a1,-220 # 80006b98 <_ZL9sleepyRunPv>
+    80006c7c:	fc040513          	addi	a0,s0,-64
+    80006c80:	00f50533          	add	a0,a0,a5
+    80006c84:	ffffa097          	auipc	ra,0xffffa
+    80006c88:	780080e7          	jalr	1920(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     for (int i = 0; i < sleepy_thread_count; i++) {
-    80006c88:	0014849b          	addiw	s1,s1,1
-    80006c8c:	00100793          	li	a5,1
-    80006c90:	fc97dae3          	bge	a5,s1,80006c64 <_Z12testSleepingv+0x2c>
+    80006c8c:	0014849b          	addiw	s1,s1,1
+    80006c90:	00100793          	li	a5,1
+    80006c94:	fc97dae3          	bge	a5,s1,80006c68 <_Z12testSleepingv+0x2c>
     }
 
     while (!(finished[0] && finished[1])) {}
-    80006c94:	00006797          	auipc	a5,0x6
-    80006c98:	5ec7c783          	lbu	a5,1516(a5) # 8000d280 <_ZL8finished>
-    80006c9c:	fe078ce3          	beqz	a5,80006c94 <_Z12testSleepingv+0x5c>
-    80006ca0:	00006797          	auipc	a5,0x6
-    80006ca4:	5e17c783          	lbu	a5,1505(a5) # 8000d281 <_ZL8finished+0x1>
-    80006ca8:	fe0786e3          	beqz	a5,80006c94 <_Z12testSleepingv+0x5c>
+    80006c98:	00006797          	auipc	a5,0x6
+    80006c9c:	6307c783          	lbu	a5,1584(a5) # 8000d2c8 <_ZL8finished>
+    80006ca0:	fe078ce3          	beqz	a5,80006c98 <_Z12testSleepingv+0x5c>
+    80006ca4:	00006797          	auipc	a5,0x6
+    80006ca8:	6257c783          	lbu	a5,1573(a5) # 8000d2c9 <_ZL8finished+0x1>
+    80006cac:	fe0786e3          	beqz	a5,80006c98 <_Z12testSleepingv+0x5c>
 }
-    80006cac:	03813083          	ld	ra,56(sp)
-    80006cb0:	03013403          	ld	s0,48(sp)
-    80006cb4:	02813483          	ld	s1,40(sp)
-    80006cb8:	04010113          	addi	sp,sp,64
-    80006cbc:	00008067          	ret
+    80006cb0:	03813083          	ld	ra,56(sp)
+    80006cb4:	03013403          	ld	s0,48(sp)
+    80006cb8:	02813483          	ld	s1,40(sp)
+    80006cbc:	04010113          	addi	sp,sp,64
+    80006cc0:	00008067          	ret
 
-0000000080006cc0 <_ZL9fibonaccim>:
+0000000080006cc4 <_ZL9fibonaccim>:
 static volatile bool finishedA = false;
 static volatile bool finishedB = false;
 static volatile bool finishedC = false;
 static volatile bool finishedD = false;
 
 static uint64 fibonacci(uint64 n) {
-    80006cc0:	fe010113          	addi	sp,sp,-32
-    80006cc4:	00113c23          	sd	ra,24(sp)
-    80006cc8:	00813823          	sd	s0,16(sp)
-    80006ccc:	00913423          	sd	s1,8(sp)
-    80006cd0:	01213023          	sd	s2,0(sp)
-    80006cd4:	02010413          	addi	s0,sp,32
-    80006cd8:	00050493          	mv	s1,a0
+    80006cc4:	fe010113          	addi	sp,sp,-32
+    80006cc8:	00113c23          	sd	ra,24(sp)
+    80006ccc:	00813823          	sd	s0,16(sp)
+    80006cd0:	00913423          	sd	s1,8(sp)
+    80006cd4:	01213023          	sd	s2,0(sp)
+    80006cd8:	02010413          	addi	s0,sp,32
+    80006cdc:	00050493          	mv	s1,a0
     if (n == 0 || n == 1) { return n; }
-    80006cdc:	00100793          	li	a5,1
-    80006ce0:	02a7f863          	bgeu	a5,a0,80006d10 <_ZL9fibonaccim+0x50>
+    80006ce0:	00100793          	li	a5,1
+    80006ce4:	02a7f863          	bgeu	a5,a0,80006d14 <_ZL9fibonaccim+0x50>
     if (n % 10 == 0) { thread_dispatch(); }
-    80006ce4:	00a00793          	li	a5,10
-    80006ce8:	02f577b3          	remu	a5,a0,a5
-    80006cec:	02078e63          	beqz	a5,80006d28 <_ZL9fibonaccim+0x68>
+    80006ce8:	00a00793          	li	a5,10
+    80006cec:	02f577b3          	remu	a5,a0,a5
+    80006cf0:	02078e63          	beqz	a5,80006d2c <_ZL9fibonaccim+0x68>
     return fibonacci(n - 1) + fibonacci(n - 2);
-    80006cf0:	fff48513          	addi	a0,s1,-1
-    80006cf4:	00000097          	auipc	ra,0x0
-    80006cf8:	fcc080e7          	jalr	-52(ra) # 80006cc0 <_ZL9fibonaccim>
-    80006cfc:	00050913          	mv	s2,a0
-    80006d00:	ffe48513          	addi	a0,s1,-2
-    80006d04:	00000097          	auipc	ra,0x0
-    80006d08:	fbc080e7          	jalr	-68(ra) # 80006cc0 <_ZL9fibonaccim>
-    80006d0c:	00a90533          	add	a0,s2,a0
+    80006cf4:	fff48513          	addi	a0,s1,-1
+    80006cf8:	00000097          	auipc	ra,0x0
+    80006cfc:	fcc080e7          	jalr	-52(ra) # 80006cc4 <_ZL9fibonaccim>
+    80006d00:	00050913          	mv	s2,a0
+    80006d04:	ffe48513          	addi	a0,s1,-2
+    80006d08:	00000097          	auipc	ra,0x0
+    80006d0c:	fbc080e7          	jalr	-68(ra) # 80006cc4 <_ZL9fibonaccim>
+    80006d10:	00a90533          	add	a0,s2,a0
 }
-    80006d10:	01813083          	ld	ra,24(sp)
-    80006d14:	01013403          	ld	s0,16(sp)
-    80006d18:	00813483          	ld	s1,8(sp)
-    80006d1c:	00013903          	ld	s2,0(sp)
-    80006d20:	02010113          	addi	sp,sp,32
-    80006d24:	00008067          	ret
+    80006d14:	01813083          	ld	ra,24(sp)
+    80006d18:	01013403          	ld	s0,16(sp)
+    80006d1c:	00813483          	ld	s1,8(sp)
+    80006d20:	00013903          	ld	s2,0(sp)
+    80006d24:	02010113          	addi	sp,sp,32
+    80006d28:	00008067          	ret
     if (n % 10 == 0) { thread_dispatch(); }
-    80006d28:	ffffa097          	auipc	ra,0xffffa
-    80006d2c:	798080e7          	jalr	1944(ra) # 800014c0 <_Z15thread_dispatchv>
-    80006d30:	fc1ff06f          	j	80006cf0 <_ZL9fibonaccim+0x30>
+    80006d2c:	ffffa097          	auipc	ra,0xffffa
+    80006d30:	794080e7          	jalr	1940(ra) # 800014c0 <_Z15thread_dispatchv>
+    80006d34:	fc1ff06f          	j	80006cf4 <_ZL9fibonaccim+0x30>
 
-0000000080006d34 <_ZL11workerBodyDPv>:
+0000000080006d38 <_ZL11workerBodyDPv>:
     printString("A finished!\n");
     finishedC = true;
     thread_dispatch();
 }
 
 static void workerBodyD(void* arg) {
-    80006d34:	fe010113          	addi	sp,sp,-32
-    80006d38:	00113c23          	sd	ra,24(sp)
-    80006d3c:	00813823          	sd	s0,16(sp)
-    80006d40:	00913423          	sd	s1,8(sp)
-    80006d44:	01213023          	sd	s2,0(sp)
-    80006d48:	02010413          	addi	s0,sp,32
+    80006d38:	fe010113          	addi	sp,sp,-32
+    80006d3c:	00113c23          	sd	ra,24(sp)
+    80006d40:	00813823          	sd	s0,16(sp)
+    80006d44:	00913423          	sd	s1,8(sp)
+    80006d48:	01213023          	sd	s2,0(sp)
+    80006d4c:	02010413          	addi	s0,sp,32
     uint8 i = 10;
-    80006d4c:	00a00493          	li	s1,10
-    80006d50:	0400006f          	j	80006d90 <_ZL11workerBodyDPv+0x5c>
+    80006d50:	00a00493          	li	s1,10
+    80006d54:	0400006f          	j	80006d94 <_ZL11workerBodyDPv+0x5c>
     for (; i < 13; i++) {
         printString("D: i="); printInt(i); printString("\n");
-    80006d54:	00003517          	auipc	a0,0x3
-    80006d58:	71c50513          	addi	a0,a0,1820 # 8000a470 <CONSOLE_STATUS+0x460>
-    80006d5c:	fffff097          	auipc	ra,0xfffff
-    80006d60:	61c080e7          	jalr	1564(ra) # 80006378 <_Z11printStringPKc>
-    80006d64:	00000613          	li	a2,0
-    80006d68:	00a00593          	li	a1,10
-    80006d6c:	00048513          	mv	a0,s1
-    80006d70:	fffff097          	auipc	ra,0xfffff
-    80006d74:	7b8080e7          	jalr	1976(ra) # 80006528 <_Z8printIntiii>
-    80006d78:	00004517          	auipc	a0,0x4
-    80006d7c:	8e850513          	addi	a0,a0,-1816 # 8000a660 <CONSOLE_STATUS+0x650>
-    80006d80:	fffff097          	auipc	ra,0xfffff
-    80006d84:	5f8080e7          	jalr	1528(ra) # 80006378 <_Z11printStringPKc>
+    80006d58:	00003517          	auipc	a0,0x3
+    80006d5c:	71850513          	addi	a0,a0,1816 # 8000a470 <CONSOLE_STATUS+0x460>
+    80006d60:	fffff097          	auipc	ra,0xfffff
+    80006d64:	61c080e7          	jalr	1564(ra) # 8000637c <_Z11printStringPKc>
+    80006d68:	00000613          	li	a2,0
+    80006d6c:	00a00593          	li	a1,10
+    80006d70:	00048513          	mv	a0,s1
+    80006d74:	fffff097          	auipc	ra,0xfffff
+    80006d78:	7b8080e7          	jalr	1976(ra) # 8000652c <_Z8printIntiii>
+    80006d7c:	00004517          	auipc	a0,0x4
+    80006d80:	8e450513          	addi	a0,a0,-1820 # 8000a660 <CONSOLE_STATUS+0x650>
+    80006d84:	fffff097          	auipc	ra,0xfffff
+    80006d88:	5f8080e7          	jalr	1528(ra) # 8000637c <_Z11printStringPKc>
     for (; i < 13; i++) {
-    80006d88:	0014849b          	addiw	s1,s1,1
-    80006d8c:	0ff4f493          	andi	s1,s1,255
-    80006d90:	00c00793          	li	a5,12
-    80006d94:	fc97f0e3          	bgeu	a5,s1,80006d54 <_ZL11workerBodyDPv+0x20>
+    80006d8c:	0014849b          	addiw	s1,s1,1
+    80006d90:	0ff4f493          	andi	s1,s1,255
+    80006d94:	00c00793          	li	a5,12
+    80006d98:	fc97f0e3          	bgeu	a5,s1,80006d58 <_ZL11workerBodyDPv+0x20>
     }
 
     printString("D: dispatch\n");
-    80006d98:	00003517          	auipc	a0,0x3
-    80006d9c:	6e050513          	addi	a0,a0,1760 # 8000a478 <CONSOLE_STATUS+0x468>
-    80006da0:	fffff097          	auipc	ra,0xfffff
-    80006da4:	5d8080e7          	jalr	1496(ra) # 80006378 <_Z11printStringPKc>
+    80006d9c:	00003517          	auipc	a0,0x3
+    80006da0:	6dc50513          	addi	a0,a0,1756 # 8000a478 <CONSOLE_STATUS+0x468>
+    80006da4:	fffff097          	auipc	ra,0xfffff
+    80006da8:	5d8080e7          	jalr	1496(ra) # 8000637c <_Z11printStringPKc>
     __asm__ ("li t1, 5");
-    80006da8:	00500313          	li	t1,5
+    80006dac:	00500313          	li	t1,5
     thread_dispatch();
-    80006dac:	ffffa097          	auipc	ra,0xffffa
-    80006db0:	714080e7          	jalr	1812(ra) # 800014c0 <_Z15thread_dispatchv>
+    80006db0:	ffffa097          	auipc	ra,0xffffa
+    80006db4:	710080e7          	jalr	1808(ra) # 800014c0 <_Z15thread_dispatchv>
 
     uint64 result = fibonacci(16);
-    80006db4:	01000513          	li	a0,16
-    80006db8:	00000097          	auipc	ra,0x0
-    80006dbc:	f08080e7          	jalr	-248(ra) # 80006cc0 <_ZL9fibonaccim>
-    80006dc0:	00050913          	mv	s2,a0
+    80006db8:	01000513          	li	a0,16
+    80006dbc:	00000097          	auipc	ra,0x0
+    80006dc0:	f08080e7          	jalr	-248(ra) # 80006cc4 <_ZL9fibonaccim>
+    80006dc4:	00050913          	mv	s2,a0
     printString("D: fibonaci="); printInt(result); printString("\n");
-    80006dc4:	00003517          	auipc	a0,0x3
-    80006dc8:	6c450513          	addi	a0,a0,1732 # 8000a488 <CONSOLE_STATUS+0x478>
-    80006dcc:	fffff097          	auipc	ra,0xfffff
-    80006dd0:	5ac080e7          	jalr	1452(ra) # 80006378 <_Z11printStringPKc>
-    80006dd4:	00000613          	li	a2,0
-    80006dd8:	00a00593          	li	a1,10
-    80006ddc:	0009051b          	sext.w	a0,s2
-    80006de0:	fffff097          	auipc	ra,0xfffff
-    80006de4:	748080e7          	jalr	1864(ra) # 80006528 <_Z8printIntiii>
-    80006de8:	00004517          	auipc	a0,0x4
-    80006dec:	87850513          	addi	a0,a0,-1928 # 8000a660 <CONSOLE_STATUS+0x650>
-    80006df0:	fffff097          	auipc	ra,0xfffff
-    80006df4:	588080e7          	jalr	1416(ra) # 80006378 <_Z11printStringPKc>
-    80006df8:	0400006f          	j	80006e38 <_ZL11workerBodyDPv+0x104>
+    80006dc8:	00003517          	auipc	a0,0x3
+    80006dcc:	6c050513          	addi	a0,a0,1728 # 8000a488 <CONSOLE_STATUS+0x478>
+    80006dd0:	fffff097          	auipc	ra,0xfffff
+    80006dd4:	5ac080e7          	jalr	1452(ra) # 8000637c <_Z11printStringPKc>
+    80006dd8:	00000613          	li	a2,0
+    80006ddc:	00a00593          	li	a1,10
+    80006de0:	0009051b          	sext.w	a0,s2
+    80006de4:	fffff097          	auipc	ra,0xfffff
+    80006de8:	748080e7          	jalr	1864(ra) # 8000652c <_Z8printIntiii>
+    80006dec:	00004517          	auipc	a0,0x4
+    80006df0:	87450513          	addi	a0,a0,-1932 # 8000a660 <CONSOLE_STATUS+0x650>
+    80006df4:	fffff097          	auipc	ra,0xfffff
+    80006df8:	588080e7          	jalr	1416(ra) # 8000637c <_Z11printStringPKc>
+    80006dfc:	0400006f          	j	80006e3c <_ZL11workerBodyDPv+0x104>
 
     for (; i < 16; i++) {
         printString("D: i="); printInt(i); printString("\n");
-    80006dfc:	00003517          	auipc	a0,0x3
-    80006e00:	67450513          	addi	a0,a0,1652 # 8000a470 <CONSOLE_STATUS+0x460>
-    80006e04:	fffff097          	auipc	ra,0xfffff
-    80006e08:	574080e7          	jalr	1396(ra) # 80006378 <_Z11printStringPKc>
-    80006e0c:	00000613          	li	a2,0
-    80006e10:	00a00593          	li	a1,10
-    80006e14:	00048513          	mv	a0,s1
-    80006e18:	fffff097          	auipc	ra,0xfffff
-    80006e1c:	710080e7          	jalr	1808(ra) # 80006528 <_Z8printIntiii>
-    80006e20:	00004517          	auipc	a0,0x4
-    80006e24:	84050513          	addi	a0,a0,-1984 # 8000a660 <CONSOLE_STATUS+0x650>
-    80006e28:	fffff097          	auipc	ra,0xfffff
-    80006e2c:	550080e7          	jalr	1360(ra) # 80006378 <_Z11printStringPKc>
+    80006e00:	00003517          	auipc	a0,0x3
+    80006e04:	67050513          	addi	a0,a0,1648 # 8000a470 <CONSOLE_STATUS+0x460>
+    80006e08:	fffff097          	auipc	ra,0xfffff
+    80006e0c:	574080e7          	jalr	1396(ra) # 8000637c <_Z11printStringPKc>
+    80006e10:	00000613          	li	a2,0
+    80006e14:	00a00593          	li	a1,10
+    80006e18:	00048513          	mv	a0,s1
+    80006e1c:	fffff097          	auipc	ra,0xfffff
+    80006e20:	710080e7          	jalr	1808(ra) # 8000652c <_Z8printIntiii>
+    80006e24:	00004517          	auipc	a0,0x4
+    80006e28:	83c50513          	addi	a0,a0,-1988 # 8000a660 <CONSOLE_STATUS+0x650>
+    80006e2c:	fffff097          	auipc	ra,0xfffff
+    80006e30:	550080e7          	jalr	1360(ra) # 8000637c <_Z11printStringPKc>
     for (; i < 16; i++) {
-    80006e30:	0014849b          	addiw	s1,s1,1
-    80006e34:	0ff4f493          	andi	s1,s1,255
-    80006e38:	00f00793          	li	a5,15
-    80006e3c:	fc97f0e3          	bgeu	a5,s1,80006dfc <_ZL11workerBodyDPv+0xc8>
+    80006e34:	0014849b          	addiw	s1,s1,1
+    80006e38:	0ff4f493          	andi	s1,s1,255
+    80006e3c:	00f00793          	li	a5,15
+    80006e40:	fc97f0e3          	bgeu	a5,s1,80006e00 <_ZL11workerBodyDPv+0xc8>
     }
 
     printString("D finished!\n");
-    80006e40:	00003517          	auipc	a0,0x3
-    80006e44:	65850513          	addi	a0,a0,1624 # 8000a498 <CONSOLE_STATUS+0x488>
-    80006e48:	fffff097          	auipc	ra,0xfffff
-    80006e4c:	530080e7          	jalr	1328(ra) # 80006378 <_Z11printStringPKc>
+    80006e44:	00003517          	auipc	a0,0x3
+    80006e48:	65450513          	addi	a0,a0,1620 # 8000a498 <CONSOLE_STATUS+0x488>
+    80006e4c:	fffff097          	auipc	ra,0xfffff
+    80006e50:	530080e7          	jalr	1328(ra) # 8000637c <_Z11printStringPKc>
     finishedD = true;
-    80006e50:	00100793          	li	a5,1
-    80006e54:	00006717          	auipc	a4,0x6
-    80006e58:	42f70723          	sb	a5,1070(a4) # 8000d282 <_ZL9finishedD>
+    80006e54:	00100793          	li	a5,1
+    80006e58:	00006717          	auipc	a4,0x6
+    80006e5c:	46f70923          	sb	a5,1138(a4) # 8000d2ca <_ZL9finishedD>
     thread_dispatch();
-    80006e5c:	ffffa097          	auipc	ra,0xffffa
-    80006e60:	664080e7          	jalr	1636(ra) # 800014c0 <_Z15thread_dispatchv>
+    80006e60:	ffffa097          	auipc	ra,0xffffa
+    80006e64:	660080e7          	jalr	1632(ra) # 800014c0 <_Z15thread_dispatchv>
 }
-    80006e64:	01813083          	ld	ra,24(sp)
-    80006e68:	01013403          	ld	s0,16(sp)
-    80006e6c:	00813483          	ld	s1,8(sp)
-    80006e70:	00013903          	ld	s2,0(sp)
-    80006e74:	02010113          	addi	sp,sp,32
-    80006e78:	00008067          	ret
+    80006e68:	01813083          	ld	ra,24(sp)
+    80006e6c:	01013403          	ld	s0,16(sp)
+    80006e70:	00813483          	ld	s1,8(sp)
+    80006e74:	00013903          	ld	s2,0(sp)
+    80006e78:	02010113          	addi	sp,sp,32
+    80006e7c:	00008067          	ret
 
-0000000080006e7c <_ZL11workerBodyCPv>:
+0000000080006e80 <_ZL11workerBodyCPv>:
 static void workerBodyC(void* arg) {
-    80006e7c:	fe010113          	addi	sp,sp,-32
-    80006e80:	00113c23          	sd	ra,24(sp)
-    80006e84:	00813823          	sd	s0,16(sp)
-    80006e88:	00913423          	sd	s1,8(sp)
-    80006e8c:	01213023          	sd	s2,0(sp)
-    80006e90:	02010413          	addi	s0,sp,32
+    80006e80:	fe010113          	addi	sp,sp,-32
+    80006e84:	00113c23          	sd	ra,24(sp)
+    80006e88:	00813823          	sd	s0,16(sp)
+    80006e8c:	00913423          	sd	s1,8(sp)
+    80006e90:	01213023          	sd	s2,0(sp)
+    80006e94:	02010413          	addi	s0,sp,32
     uint8 i = 0;
-    80006e94:	00000493          	li	s1,0
-    80006e98:	0400006f          	j	80006ed8 <_ZL11workerBodyCPv+0x5c>
+    80006e98:	00000493          	li	s1,0
+    80006e9c:	0400006f          	j	80006edc <_ZL11workerBodyCPv+0x5c>
         printString("C: i="); printInt(i); printString("\n");
-    80006e9c:	00003517          	auipc	a0,0x3
-    80006ea0:	59450513          	addi	a0,a0,1428 # 8000a430 <CONSOLE_STATUS+0x420>
-    80006ea4:	fffff097          	auipc	ra,0xfffff
-    80006ea8:	4d4080e7          	jalr	1236(ra) # 80006378 <_Z11printStringPKc>
-    80006eac:	00000613          	li	a2,0
-    80006eb0:	00a00593          	li	a1,10
-    80006eb4:	00048513          	mv	a0,s1
-    80006eb8:	fffff097          	auipc	ra,0xfffff
-    80006ebc:	670080e7          	jalr	1648(ra) # 80006528 <_Z8printIntiii>
-    80006ec0:	00003517          	auipc	a0,0x3
-    80006ec4:	7a050513          	addi	a0,a0,1952 # 8000a660 <CONSOLE_STATUS+0x650>
-    80006ec8:	fffff097          	auipc	ra,0xfffff
-    80006ecc:	4b0080e7          	jalr	1200(ra) # 80006378 <_Z11printStringPKc>
+    80006ea0:	00003517          	auipc	a0,0x3
+    80006ea4:	59050513          	addi	a0,a0,1424 # 8000a430 <CONSOLE_STATUS+0x420>
+    80006ea8:	fffff097          	auipc	ra,0xfffff
+    80006eac:	4d4080e7          	jalr	1236(ra) # 8000637c <_Z11printStringPKc>
+    80006eb0:	00000613          	li	a2,0
+    80006eb4:	00a00593          	li	a1,10
+    80006eb8:	00048513          	mv	a0,s1
+    80006ebc:	fffff097          	auipc	ra,0xfffff
+    80006ec0:	670080e7          	jalr	1648(ra) # 8000652c <_Z8printIntiii>
+    80006ec4:	00003517          	auipc	a0,0x3
+    80006ec8:	79c50513          	addi	a0,a0,1948 # 8000a660 <CONSOLE_STATUS+0x650>
+    80006ecc:	fffff097          	auipc	ra,0xfffff
+    80006ed0:	4b0080e7          	jalr	1200(ra) # 8000637c <_Z11printStringPKc>
     for (; i < 3; i++) {
-    80006ed0:	0014849b          	addiw	s1,s1,1
-    80006ed4:	0ff4f493          	andi	s1,s1,255
-    80006ed8:	00200793          	li	a5,2
-    80006edc:	fc97f0e3          	bgeu	a5,s1,80006e9c <_ZL11workerBodyCPv+0x20>
+    80006ed4:	0014849b          	addiw	s1,s1,1
+    80006ed8:	0ff4f493          	andi	s1,s1,255
+    80006edc:	00200793          	li	a5,2
+    80006ee0:	fc97f0e3          	bgeu	a5,s1,80006ea0 <_ZL11workerBodyCPv+0x20>
     printString("C: dispatch\n");
-    80006ee0:	00003517          	auipc	a0,0x3
-    80006ee4:	55850513          	addi	a0,a0,1368 # 8000a438 <CONSOLE_STATUS+0x428>
-    80006ee8:	fffff097          	auipc	ra,0xfffff
-    80006eec:	490080e7          	jalr	1168(ra) # 80006378 <_Z11printStringPKc>
+    80006ee4:	00003517          	auipc	a0,0x3
+    80006ee8:	55450513          	addi	a0,a0,1364 # 8000a438 <CONSOLE_STATUS+0x428>
+    80006eec:	fffff097          	auipc	ra,0xfffff
+    80006ef0:	490080e7          	jalr	1168(ra) # 8000637c <_Z11printStringPKc>
     __asm__ ("li t1, 7");
-    80006ef0:	00700313          	li	t1,7
+    80006ef4:	00700313          	li	t1,7
     thread_dispatch();
-    80006ef4:	ffffa097          	auipc	ra,0xffffa
-    80006ef8:	5cc080e7          	jalr	1484(ra) # 800014c0 <_Z15thread_dispatchv>
+    80006ef8:	ffffa097          	auipc	ra,0xffffa
+    80006efc:	5c8080e7          	jalr	1480(ra) # 800014c0 <_Z15thread_dispatchv>
     __asm__ ("mv %[t1], t1" : [t1] "=r"(t1));
-    80006efc:	00030913          	mv	s2,t1
+    80006f00:	00030913          	mv	s2,t1
     printString("C: t1="); printInt(t1); printString("\n");
-    80006f00:	00003517          	auipc	a0,0x3
-    80006f04:	54850513          	addi	a0,a0,1352 # 8000a448 <CONSOLE_STATUS+0x438>
-    80006f08:	fffff097          	auipc	ra,0xfffff
-    80006f0c:	470080e7          	jalr	1136(ra) # 80006378 <_Z11printStringPKc>
-    80006f10:	00000613          	li	a2,0
-    80006f14:	00a00593          	li	a1,10
-    80006f18:	0009051b          	sext.w	a0,s2
-    80006f1c:	fffff097          	auipc	ra,0xfffff
-    80006f20:	60c080e7          	jalr	1548(ra) # 80006528 <_Z8printIntiii>
-    80006f24:	00003517          	auipc	a0,0x3
-    80006f28:	73c50513          	addi	a0,a0,1852 # 8000a660 <CONSOLE_STATUS+0x650>
-    80006f2c:	fffff097          	auipc	ra,0xfffff
-    80006f30:	44c080e7          	jalr	1100(ra) # 80006378 <_Z11printStringPKc>
+    80006f04:	00003517          	auipc	a0,0x3
+    80006f08:	54450513          	addi	a0,a0,1348 # 8000a448 <CONSOLE_STATUS+0x438>
+    80006f0c:	fffff097          	auipc	ra,0xfffff
+    80006f10:	470080e7          	jalr	1136(ra) # 8000637c <_Z11printStringPKc>
+    80006f14:	00000613          	li	a2,0
+    80006f18:	00a00593          	li	a1,10
+    80006f1c:	0009051b          	sext.w	a0,s2
+    80006f20:	fffff097          	auipc	ra,0xfffff
+    80006f24:	60c080e7          	jalr	1548(ra) # 8000652c <_Z8printIntiii>
+    80006f28:	00003517          	auipc	a0,0x3
+    80006f2c:	73850513          	addi	a0,a0,1848 # 8000a660 <CONSOLE_STATUS+0x650>
+    80006f30:	fffff097          	auipc	ra,0xfffff
+    80006f34:	44c080e7          	jalr	1100(ra) # 8000637c <_Z11printStringPKc>
     uint64 result = fibonacci(12);
-    80006f34:	00c00513          	li	a0,12
-    80006f38:	00000097          	auipc	ra,0x0
-    80006f3c:	d88080e7          	jalr	-632(ra) # 80006cc0 <_ZL9fibonaccim>
-    80006f40:	00050913          	mv	s2,a0
+    80006f38:	00c00513          	li	a0,12
+    80006f3c:	00000097          	auipc	ra,0x0
+    80006f40:	d88080e7          	jalr	-632(ra) # 80006cc4 <_ZL9fibonaccim>
+    80006f44:	00050913          	mv	s2,a0
     printString("C: fibonaci="); printInt(result); printString("\n");
-    80006f44:	00003517          	auipc	a0,0x3
-    80006f48:	50c50513          	addi	a0,a0,1292 # 8000a450 <CONSOLE_STATUS+0x440>
-    80006f4c:	fffff097          	auipc	ra,0xfffff
-    80006f50:	42c080e7          	jalr	1068(ra) # 80006378 <_Z11printStringPKc>
-    80006f54:	00000613          	li	a2,0
-    80006f58:	00a00593          	li	a1,10
-    80006f5c:	0009051b          	sext.w	a0,s2
-    80006f60:	fffff097          	auipc	ra,0xfffff
-    80006f64:	5c8080e7          	jalr	1480(ra) # 80006528 <_Z8printIntiii>
-    80006f68:	00003517          	auipc	a0,0x3
-    80006f6c:	6f850513          	addi	a0,a0,1784 # 8000a660 <CONSOLE_STATUS+0x650>
-    80006f70:	fffff097          	auipc	ra,0xfffff
-    80006f74:	408080e7          	jalr	1032(ra) # 80006378 <_Z11printStringPKc>
-    80006f78:	0400006f          	j	80006fb8 <_ZL11workerBodyCPv+0x13c>
+    80006f48:	00003517          	auipc	a0,0x3
+    80006f4c:	50850513          	addi	a0,a0,1288 # 8000a450 <CONSOLE_STATUS+0x440>
+    80006f50:	fffff097          	auipc	ra,0xfffff
+    80006f54:	42c080e7          	jalr	1068(ra) # 8000637c <_Z11printStringPKc>
+    80006f58:	00000613          	li	a2,0
+    80006f5c:	00a00593          	li	a1,10
+    80006f60:	0009051b          	sext.w	a0,s2
+    80006f64:	fffff097          	auipc	ra,0xfffff
+    80006f68:	5c8080e7          	jalr	1480(ra) # 8000652c <_Z8printIntiii>
+    80006f6c:	00003517          	auipc	a0,0x3
+    80006f70:	6f450513          	addi	a0,a0,1780 # 8000a660 <CONSOLE_STATUS+0x650>
+    80006f74:	fffff097          	auipc	ra,0xfffff
+    80006f78:	408080e7          	jalr	1032(ra) # 8000637c <_Z11printStringPKc>
+    80006f7c:	0400006f          	j	80006fbc <_ZL11workerBodyCPv+0x13c>
         printString("C: i="); printInt(i); printString("\n");
-    80006f7c:	00003517          	auipc	a0,0x3
-    80006f80:	4b450513          	addi	a0,a0,1204 # 8000a430 <CONSOLE_STATUS+0x420>
-    80006f84:	fffff097          	auipc	ra,0xfffff
-    80006f88:	3f4080e7          	jalr	1012(ra) # 80006378 <_Z11printStringPKc>
-    80006f8c:	00000613          	li	a2,0
-    80006f90:	00a00593          	li	a1,10
-    80006f94:	00048513          	mv	a0,s1
-    80006f98:	fffff097          	auipc	ra,0xfffff
-    80006f9c:	590080e7          	jalr	1424(ra) # 80006528 <_Z8printIntiii>
-    80006fa0:	00003517          	auipc	a0,0x3
-    80006fa4:	6c050513          	addi	a0,a0,1728 # 8000a660 <CONSOLE_STATUS+0x650>
-    80006fa8:	fffff097          	auipc	ra,0xfffff
-    80006fac:	3d0080e7          	jalr	976(ra) # 80006378 <_Z11printStringPKc>
+    80006f80:	00003517          	auipc	a0,0x3
+    80006f84:	4b050513          	addi	a0,a0,1200 # 8000a430 <CONSOLE_STATUS+0x420>
+    80006f88:	fffff097          	auipc	ra,0xfffff
+    80006f8c:	3f4080e7          	jalr	1012(ra) # 8000637c <_Z11printStringPKc>
+    80006f90:	00000613          	li	a2,0
+    80006f94:	00a00593          	li	a1,10
+    80006f98:	00048513          	mv	a0,s1
+    80006f9c:	fffff097          	auipc	ra,0xfffff
+    80006fa0:	590080e7          	jalr	1424(ra) # 8000652c <_Z8printIntiii>
+    80006fa4:	00003517          	auipc	a0,0x3
+    80006fa8:	6bc50513          	addi	a0,a0,1724 # 8000a660 <CONSOLE_STATUS+0x650>
+    80006fac:	fffff097          	auipc	ra,0xfffff
+    80006fb0:	3d0080e7          	jalr	976(ra) # 8000637c <_Z11printStringPKc>
     for (; i < 6; i++) {
-    80006fb0:	0014849b          	addiw	s1,s1,1
-    80006fb4:	0ff4f493          	andi	s1,s1,255
-    80006fb8:	00500793          	li	a5,5
-    80006fbc:	fc97f0e3          	bgeu	a5,s1,80006f7c <_ZL11workerBodyCPv+0x100>
+    80006fb4:	0014849b          	addiw	s1,s1,1
+    80006fb8:	0ff4f493          	andi	s1,s1,255
+    80006fbc:	00500793          	li	a5,5
+    80006fc0:	fc97f0e3          	bgeu	a5,s1,80006f80 <_ZL11workerBodyCPv+0x100>
     printString("A finished!\n");
-    80006fc0:	00003517          	auipc	a0,0x3
-    80006fc4:	44850513          	addi	a0,a0,1096 # 8000a408 <CONSOLE_STATUS+0x3f8>
-    80006fc8:	fffff097          	auipc	ra,0xfffff
-    80006fcc:	3b0080e7          	jalr	944(ra) # 80006378 <_Z11printStringPKc>
+    80006fc4:	00003517          	auipc	a0,0x3
+    80006fc8:	44450513          	addi	a0,a0,1092 # 8000a408 <CONSOLE_STATUS+0x3f8>
+    80006fcc:	fffff097          	auipc	ra,0xfffff
+    80006fd0:	3b0080e7          	jalr	944(ra) # 8000637c <_Z11printStringPKc>
     finishedC = true;
-    80006fd0:	00100793          	li	a5,1
-    80006fd4:	00006717          	auipc	a4,0x6
-    80006fd8:	2af707a3          	sb	a5,687(a4) # 8000d283 <_ZL9finishedC>
+    80006fd4:	00100793          	li	a5,1
+    80006fd8:	00006717          	auipc	a4,0x6
+    80006fdc:	2ef709a3          	sb	a5,755(a4) # 8000d2cb <_ZL9finishedC>
     thread_dispatch();
-    80006fdc:	ffffa097          	auipc	ra,0xffffa
-    80006fe0:	4e4080e7          	jalr	1252(ra) # 800014c0 <_Z15thread_dispatchv>
+    80006fe0:	ffffa097          	auipc	ra,0xffffa
+    80006fe4:	4e0080e7          	jalr	1248(ra) # 800014c0 <_Z15thread_dispatchv>
 }
-    80006fe4:	01813083          	ld	ra,24(sp)
-    80006fe8:	01013403          	ld	s0,16(sp)
-    80006fec:	00813483          	ld	s1,8(sp)
-    80006ff0:	00013903          	ld	s2,0(sp)
-    80006ff4:	02010113          	addi	sp,sp,32
-    80006ff8:	00008067          	ret
+    80006fe8:	01813083          	ld	ra,24(sp)
+    80006fec:	01013403          	ld	s0,16(sp)
+    80006ff0:	00813483          	ld	s1,8(sp)
+    80006ff4:	00013903          	ld	s2,0(sp)
+    80006ff8:	02010113          	addi	sp,sp,32
+    80006ffc:	00008067          	ret
 
-0000000080006ffc <_ZL11workerBodyBPv>:
+0000000080007000 <_ZL11workerBodyBPv>:
 static void workerBodyB(void* arg) {
-    80006ffc:	fe010113          	addi	sp,sp,-32
-    80007000:	00113c23          	sd	ra,24(sp)
-    80007004:	00813823          	sd	s0,16(sp)
-    80007008:	00913423          	sd	s1,8(sp)
-    8000700c:	01213023          	sd	s2,0(sp)
-    80007010:	02010413          	addi	s0,sp,32
+    80007000:	fe010113          	addi	sp,sp,-32
+    80007004:	00113c23          	sd	ra,24(sp)
+    80007008:	00813823          	sd	s0,16(sp)
+    8000700c:	00913423          	sd	s1,8(sp)
+    80007010:	01213023          	sd	s2,0(sp)
+    80007014:	02010413          	addi	s0,sp,32
     for (uint64 i = 0; i < 16; i++) {
-    80007014:	00000913          	li	s2,0
-    80007018:	0400006f          	j	80007058 <_ZL11workerBodyBPv+0x5c>
+    80007018:	00000913          	li	s2,0
+    8000701c:	0400006f          	j	8000705c <_ZL11workerBodyBPv+0x5c>
             thread_dispatch();
-    8000701c:	ffffa097          	auipc	ra,0xffffa
-    80007020:	4a4080e7          	jalr	1188(ra) # 800014c0 <_Z15thread_dispatchv>
+    80007020:	ffffa097          	auipc	ra,0xffffa
+    80007024:	4a0080e7          	jalr	1184(ra) # 800014c0 <_Z15thread_dispatchv>
         for (uint64 j = 0; j < 10000; j++) {
-    80007024:	00148493          	addi	s1,s1,1
-    80007028:	000027b7          	lui	a5,0x2
-    8000702c:	70f78793          	addi	a5,a5,1807 # 270f <_entry-0x7fffd8f1>
-    80007030:	0097ee63          	bltu	a5,s1,8000704c <_ZL11workerBodyBPv+0x50>
+    80007028:	00148493          	addi	s1,s1,1
+    8000702c:	000027b7          	lui	a5,0x2
+    80007030:	70f78793          	addi	a5,a5,1807 # 270f <_entry-0x7fffd8f1>
+    80007034:	0097ee63          	bltu	a5,s1,80007050 <_ZL11workerBodyBPv+0x50>
             for (uint64 k = 0; k < 30000; k++) { /* busy wait */ }
-    80007034:	00000713          	li	a4,0
-    80007038:	000077b7          	lui	a5,0x7
-    8000703c:	52f78793          	addi	a5,a5,1327 # 752f <_entry-0x7fff8ad1>
-    80007040:	fce7eee3          	bltu	a5,a4,8000701c <_ZL11workerBodyBPv+0x20>
-    80007044:	00170713          	addi	a4,a4,1
-    80007048:	ff1ff06f          	j	80007038 <_ZL11workerBodyBPv+0x3c>
+    80007038:	00000713          	li	a4,0
+    8000703c:	000077b7          	lui	a5,0x7
+    80007040:	52f78793          	addi	a5,a5,1327 # 752f <_entry-0x7fff8ad1>
+    80007044:	fce7eee3          	bltu	a5,a4,80007020 <_ZL11workerBodyBPv+0x20>
+    80007048:	00170713          	addi	a4,a4,1
+    8000704c:	ff1ff06f          	j	8000703c <_ZL11workerBodyBPv+0x3c>
         if (i == 10) {
-    8000704c:	00a00793          	li	a5,10
-    80007050:	04f90663          	beq	s2,a5,8000709c <_ZL11workerBodyBPv+0xa0>
+    80007050:	00a00793          	li	a5,10
+    80007054:	04f90663          	beq	s2,a5,800070a0 <_ZL11workerBodyBPv+0xa0>
     for (uint64 i = 0; i < 16; i++) {
-    80007054:	00190913          	addi	s2,s2,1
-    80007058:	00f00793          	li	a5,15
-    8000705c:	0527e463          	bltu	a5,s2,800070a4 <_ZL11workerBodyBPv+0xa8>
+    80007058:	00190913          	addi	s2,s2,1
+    8000705c:	00f00793          	li	a5,15
+    80007060:	0527e463          	bltu	a5,s2,800070a8 <_ZL11workerBodyBPv+0xa8>
         printString("B: i="); printInt(i); printString("\n");
-    80007060:	00003517          	auipc	a0,0x3
-    80007064:	3b850513          	addi	a0,a0,952 # 8000a418 <CONSOLE_STATUS+0x408>
-    80007068:	fffff097          	auipc	ra,0xfffff
-    8000706c:	310080e7          	jalr	784(ra) # 80006378 <_Z11printStringPKc>
-    80007070:	00000613          	li	a2,0
-    80007074:	00a00593          	li	a1,10
-    80007078:	0009051b          	sext.w	a0,s2
-    8000707c:	fffff097          	auipc	ra,0xfffff
-    80007080:	4ac080e7          	jalr	1196(ra) # 80006528 <_Z8printIntiii>
-    80007084:	00003517          	auipc	a0,0x3
-    80007088:	5dc50513          	addi	a0,a0,1500 # 8000a660 <CONSOLE_STATUS+0x650>
-    8000708c:	fffff097          	auipc	ra,0xfffff
-    80007090:	2ec080e7          	jalr	748(ra) # 80006378 <_Z11printStringPKc>
+    80007064:	00003517          	auipc	a0,0x3
+    80007068:	3b450513          	addi	a0,a0,948 # 8000a418 <CONSOLE_STATUS+0x408>
+    8000706c:	fffff097          	auipc	ra,0xfffff
+    80007070:	310080e7          	jalr	784(ra) # 8000637c <_Z11printStringPKc>
+    80007074:	00000613          	li	a2,0
+    80007078:	00a00593          	li	a1,10
+    8000707c:	0009051b          	sext.w	a0,s2
+    80007080:	fffff097          	auipc	ra,0xfffff
+    80007084:	4ac080e7          	jalr	1196(ra) # 8000652c <_Z8printIntiii>
+    80007088:	00003517          	auipc	a0,0x3
+    8000708c:	5d850513          	addi	a0,a0,1496 # 8000a660 <CONSOLE_STATUS+0x650>
+    80007090:	fffff097          	auipc	ra,0xfffff
+    80007094:	2ec080e7          	jalr	748(ra) # 8000637c <_Z11printStringPKc>
         for (uint64 j = 0; j < 10000; j++) {
-    80007094:	00000493          	li	s1,0
-    80007098:	f91ff06f          	j	80007028 <_ZL11workerBodyBPv+0x2c>
+    80007098:	00000493          	li	s1,0
+    8000709c:	f91ff06f          	j	8000702c <_ZL11workerBodyBPv+0x2c>
             asm volatile("csrr t6, sepc");
-    8000709c:	14102ff3          	csrr	t6,sepc
-    800070a0:	fb5ff06f          	j	80007054 <_ZL11workerBodyBPv+0x58>
+    800070a0:	14102ff3          	csrr	t6,sepc
+    800070a4:	fb5ff06f          	j	80007058 <_ZL11workerBodyBPv+0x58>
     printString("B finished!\n");
-    800070a4:	00003517          	auipc	a0,0x3
-    800070a8:	37c50513          	addi	a0,a0,892 # 8000a420 <CONSOLE_STATUS+0x410>
-    800070ac:	fffff097          	auipc	ra,0xfffff
-    800070b0:	2cc080e7          	jalr	716(ra) # 80006378 <_Z11printStringPKc>
+    800070a8:	00003517          	auipc	a0,0x3
+    800070ac:	37850513          	addi	a0,a0,888 # 8000a420 <CONSOLE_STATUS+0x410>
+    800070b0:	fffff097          	auipc	ra,0xfffff
+    800070b4:	2cc080e7          	jalr	716(ra) # 8000637c <_Z11printStringPKc>
     finishedB = true;
-    800070b4:	00100793          	li	a5,1
-    800070b8:	00006717          	auipc	a4,0x6
-    800070bc:	1cf70623          	sb	a5,460(a4) # 8000d284 <_ZL9finishedB>
+    800070b8:	00100793          	li	a5,1
+    800070bc:	00006717          	auipc	a4,0x6
+    800070c0:	20f70823          	sb	a5,528(a4) # 8000d2cc <_ZL9finishedB>
     thread_dispatch();
-    800070c0:	ffffa097          	auipc	ra,0xffffa
-    800070c4:	400080e7          	jalr	1024(ra) # 800014c0 <_Z15thread_dispatchv>
+    800070c4:	ffffa097          	auipc	ra,0xffffa
+    800070c8:	3fc080e7          	jalr	1020(ra) # 800014c0 <_Z15thread_dispatchv>
 }
-    800070c8:	01813083          	ld	ra,24(sp)
-    800070cc:	01013403          	ld	s0,16(sp)
-    800070d0:	00813483          	ld	s1,8(sp)
-    800070d4:	00013903          	ld	s2,0(sp)
-    800070d8:	02010113          	addi	sp,sp,32
-    800070dc:	00008067          	ret
+    800070cc:	01813083          	ld	ra,24(sp)
+    800070d0:	01013403          	ld	s0,16(sp)
+    800070d4:	00813483          	ld	s1,8(sp)
+    800070d8:	00013903          	ld	s2,0(sp)
+    800070dc:	02010113          	addi	sp,sp,32
+    800070e0:	00008067          	ret
 
-00000000800070e0 <_ZL11workerBodyAPv>:
+00000000800070e4 <_ZL11workerBodyAPv>:
 static void workerBodyA(void* arg) {
-    800070e0:	fe010113          	addi	sp,sp,-32
-    800070e4:	00113c23          	sd	ra,24(sp)
-    800070e8:	00813823          	sd	s0,16(sp)
-    800070ec:	00913423          	sd	s1,8(sp)
-    800070f0:	01213023          	sd	s2,0(sp)
-    800070f4:	02010413          	addi	s0,sp,32
+    800070e4:	fe010113          	addi	sp,sp,-32
+    800070e8:	00113c23          	sd	ra,24(sp)
+    800070ec:	00813823          	sd	s0,16(sp)
+    800070f0:	00913423          	sd	s1,8(sp)
+    800070f4:	01213023          	sd	s2,0(sp)
+    800070f8:	02010413          	addi	s0,sp,32
     for (uint64 i = 0; i < 10; i++) {
-    800070f8:	00000913          	li	s2,0
-    800070fc:	0380006f          	j	80007134 <_ZL11workerBodyAPv+0x54>
+    800070fc:	00000913          	li	s2,0
+    80007100:	0380006f          	j	80007138 <_ZL11workerBodyAPv+0x54>
             thread_dispatch();
-    80007100:	ffffa097          	auipc	ra,0xffffa
-    80007104:	3c0080e7          	jalr	960(ra) # 800014c0 <_Z15thread_dispatchv>
+    80007104:	ffffa097          	auipc	ra,0xffffa
+    80007108:	3bc080e7          	jalr	956(ra) # 800014c0 <_Z15thread_dispatchv>
         for (uint64 j = 0; j < 10000; j++) {
-    80007108:	00148493          	addi	s1,s1,1
-    8000710c:	000027b7          	lui	a5,0x2
-    80007110:	70f78793          	addi	a5,a5,1807 # 270f <_entry-0x7fffd8f1>
-    80007114:	0097ee63          	bltu	a5,s1,80007130 <_ZL11workerBodyAPv+0x50>
+    8000710c:	00148493          	addi	s1,s1,1
+    80007110:	000027b7          	lui	a5,0x2
+    80007114:	70f78793          	addi	a5,a5,1807 # 270f <_entry-0x7fffd8f1>
+    80007118:	0097ee63          	bltu	a5,s1,80007134 <_ZL11workerBodyAPv+0x50>
             for (uint64 k = 0; k < 30000; k++) { /* busy wait */ }
-    80007118:	00000713          	li	a4,0
-    8000711c:	000077b7          	lui	a5,0x7
-    80007120:	52f78793          	addi	a5,a5,1327 # 752f <_entry-0x7fff8ad1>
-    80007124:	fce7eee3          	bltu	a5,a4,80007100 <_ZL11workerBodyAPv+0x20>
-    80007128:	00170713          	addi	a4,a4,1
-    8000712c:	ff1ff06f          	j	8000711c <_ZL11workerBodyAPv+0x3c>
+    8000711c:	00000713          	li	a4,0
+    80007120:	000077b7          	lui	a5,0x7
+    80007124:	52f78793          	addi	a5,a5,1327 # 752f <_entry-0x7fff8ad1>
+    80007128:	fce7eee3          	bltu	a5,a4,80007104 <_ZL11workerBodyAPv+0x20>
+    8000712c:	00170713          	addi	a4,a4,1
+    80007130:	ff1ff06f          	j	80007120 <_ZL11workerBodyAPv+0x3c>
     for (uint64 i = 0; i < 10; i++) {
-    80007130:	00190913          	addi	s2,s2,1
-    80007134:	00900793          	li	a5,9
-    80007138:	0527e063          	bltu	a5,s2,80007178 <_ZL11workerBodyAPv+0x98>
+    80007134:	00190913          	addi	s2,s2,1
+    80007138:	00900793          	li	a5,9
+    8000713c:	0527e063          	bltu	a5,s2,8000717c <_ZL11workerBodyAPv+0x98>
         printString("A: i="); printInt(i); printString("\n");
-    8000713c:	00003517          	auipc	a0,0x3
-    80007140:	2c450513          	addi	a0,a0,708 # 8000a400 <CONSOLE_STATUS+0x3f0>
-    80007144:	fffff097          	auipc	ra,0xfffff
-    80007148:	234080e7          	jalr	564(ra) # 80006378 <_Z11printStringPKc>
-    8000714c:	00000613          	li	a2,0
-    80007150:	00a00593          	li	a1,10
-    80007154:	0009051b          	sext.w	a0,s2
-    80007158:	fffff097          	auipc	ra,0xfffff
-    8000715c:	3d0080e7          	jalr	976(ra) # 80006528 <_Z8printIntiii>
-    80007160:	00003517          	auipc	a0,0x3
-    80007164:	50050513          	addi	a0,a0,1280 # 8000a660 <CONSOLE_STATUS+0x650>
-    80007168:	fffff097          	auipc	ra,0xfffff
-    8000716c:	210080e7          	jalr	528(ra) # 80006378 <_Z11printStringPKc>
+    80007140:	00003517          	auipc	a0,0x3
+    80007144:	2c050513          	addi	a0,a0,704 # 8000a400 <CONSOLE_STATUS+0x3f0>
+    80007148:	fffff097          	auipc	ra,0xfffff
+    8000714c:	234080e7          	jalr	564(ra) # 8000637c <_Z11printStringPKc>
+    80007150:	00000613          	li	a2,0
+    80007154:	00a00593          	li	a1,10
+    80007158:	0009051b          	sext.w	a0,s2
+    8000715c:	fffff097          	auipc	ra,0xfffff
+    80007160:	3d0080e7          	jalr	976(ra) # 8000652c <_Z8printIntiii>
+    80007164:	00003517          	auipc	a0,0x3
+    80007168:	4fc50513          	addi	a0,a0,1276 # 8000a660 <CONSOLE_STATUS+0x650>
+    8000716c:	fffff097          	auipc	ra,0xfffff
+    80007170:	210080e7          	jalr	528(ra) # 8000637c <_Z11printStringPKc>
         for (uint64 j = 0; j < 10000; j++) {
-    80007170:	00000493          	li	s1,0
-    80007174:	f99ff06f          	j	8000710c <_ZL11workerBodyAPv+0x2c>
+    80007174:	00000493          	li	s1,0
+    80007178:	f99ff06f          	j	80007110 <_ZL11workerBodyAPv+0x2c>
     printString("A finished!\n");
-    80007178:	00003517          	auipc	a0,0x3
-    8000717c:	29050513          	addi	a0,a0,656 # 8000a408 <CONSOLE_STATUS+0x3f8>
-    80007180:	fffff097          	auipc	ra,0xfffff
-    80007184:	1f8080e7          	jalr	504(ra) # 80006378 <_Z11printStringPKc>
+    8000717c:	00003517          	auipc	a0,0x3
+    80007180:	28c50513          	addi	a0,a0,652 # 8000a408 <CONSOLE_STATUS+0x3f8>
+    80007184:	fffff097          	auipc	ra,0xfffff
+    80007188:	1f8080e7          	jalr	504(ra) # 8000637c <_Z11printStringPKc>
     finishedA = true;
-    80007188:	00100793          	li	a5,1
-    8000718c:	00006717          	auipc	a4,0x6
-    80007190:	0ef70ca3          	sb	a5,249(a4) # 8000d285 <_ZL9finishedA>
+    8000718c:	00100793          	li	a5,1
+    80007190:	00006717          	auipc	a4,0x6
+    80007194:	12f70ea3          	sb	a5,317(a4) # 8000d2cd <_ZL9finishedA>
 }
-    80007194:	01813083          	ld	ra,24(sp)
-    80007198:	01013403          	ld	s0,16(sp)
-    8000719c:	00813483          	ld	s1,8(sp)
-    800071a0:	00013903          	ld	s2,0(sp)
-    800071a4:	02010113          	addi	sp,sp,32
-    800071a8:	00008067          	ret
+    80007198:	01813083          	ld	ra,24(sp)
+    8000719c:	01013403          	ld	s0,16(sp)
+    800071a0:	00813483          	ld	s1,8(sp)
+    800071a4:	00013903          	ld	s2,0(sp)
+    800071a8:	02010113          	addi	sp,sp,32
+    800071ac:	00008067          	ret
 
-00000000800071ac <_Z16System_Mode_testv>:
+00000000800071b0 <_Z16System_Mode_testv>:
 
 
 void System_Mode_test() {
-    800071ac:	fd010113          	addi	sp,sp,-48
-    800071b0:	02113423          	sd	ra,40(sp)
-    800071b4:	02813023          	sd	s0,32(sp)
-    800071b8:	03010413          	addi	s0,sp,48
+    800071b0:	fd010113          	addi	sp,sp,-48
+    800071b4:	02113423          	sd	ra,40(sp)
+    800071b8:	02813023          	sd	s0,32(sp)
+    800071bc:	03010413          	addi	s0,sp,48
     thread_t threads[4];
     thread_create(&threads[0], workerBodyA, nullptr);
-    800071bc:	00000613          	li	a2,0
-    800071c0:	00000597          	auipc	a1,0x0
-    800071c4:	f2058593          	addi	a1,a1,-224 # 800070e0 <_ZL11workerBodyAPv>
-    800071c8:	fd040513          	addi	a0,s0,-48
-    800071cc:	ffffa097          	auipc	ra,0xffffa
-    800071d0:	238080e7          	jalr	568(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    800071c0:	00000613          	li	a2,0
+    800071c4:	00000597          	auipc	a1,0x0
+    800071c8:	f2058593          	addi	a1,a1,-224 # 800070e4 <_ZL11workerBodyAPv>
+    800071cc:	fd040513          	addi	a0,s0,-48
+    800071d0:	ffffa097          	auipc	ra,0xffffa
+    800071d4:	234080e7          	jalr	564(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     printString("ThreadA created\n");
-    800071d4:	00003517          	auipc	a0,0x3
-    800071d8:	2d450513          	addi	a0,a0,724 # 8000a4a8 <CONSOLE_STATUS+0x498>
-    800071dc:	fffff097          	auipc	ra,0xfffff
-    800071e0:	19c080e7          	jalr	412(ra) # 80006378 <_Z11printStringPKc>
+    800071d8:	00003517          	auipc	a0,0x3
+    800071dc:	2d050513          	addi	a0,a0,720 # 8000a4a8 <CONSOLE_STATUS+0x498>
+    800071e0:	fffff097          	auipc	ra,0xfffff
+    800071e4:	19c080e7          	jalr	412(ra) # 8000637c <_Z11printStringPKc>
 
     thread_create(&threads[1], workerBodyB, nullptr);
-    800071e4:	00000613          	li	a2,0
-    800071e8:	00000597          	auipc	a1,0x0
-    800071ec:	e1458593          	addi	a1,a1,-492 # 80006ffc <_ZL11workerBodyBPv>
-    800071f0:	fd840513          	addi	a0,s0,-40
-    800071f4:	ffffa097          	auipc	ra,0xffffa
-    800071f8:	210080e7          	jalr	528(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    800071e8:	00000613          	li	a2,0
+    800071ec:	00000597          	auipc	a1,0x0
+    800071f0:	e1458593          	addi	a1,a1,-492 # 80007000 <_ZL11workerBodyBPv>
+    800071f4:	fd840513          	addi	a0,s0,-40
+    800071f8:	ffffa097          	auipc	ra,0xffffa
+    800071fc:	20c080e7          	jalr	524(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     printString("ThreadB created\n");
-    800071fc:	00003517          	auipc	a0,0x3
-    80007200:	2c450513          	addi	a0,a0,708 # 8000a4c0 <CONSOLE_STATUS+0x4b0>
-    80007204:	fffff097          	auipc	ra,0xfffff
-    80007208:	174080e7          	jalr	372(ra) # 80006378 <_Z11printStringPKc>
+    80007200:	00003517          	auipc	a0,0x3
+    80007204:	2c050513          	addi	a0,a0,704 # 8000a4c0 <CONSOLE_STATUS+0x4b0>
+    80007208:	fffff097          	auipc	ra,0xfffff
+    8000720c:	174080e7          	jalr	372(ra) # 8000637c <_Z11printStringPKc>
 
     thread_create(&threads[2], workerBodyC, nullptr);
-    8000720c:	00000613          	li	a2,0
-    80007210:	00000597          	auipc	a1,0x0
-    80007214:	c6c58593          	addi	a1,a1,-916 # 80006e7c <_ZL11workerBodyCPv>
-    80007218:	fe040513          	addi	a0,s0,-32
-    8000721c:	ffffa097          	auipc	ra,0xffffa
-    80007220:	1e8080e7          	jalr	488(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    80007210:	00000613          	li	a2,0
+    80007214:	00000597          	auipc	a1,0x0
+    80007218:	c6c58593          	addi	a1,a1,-916 # 80006e80 <_ZL11workerBodyCPv>
+    8000721c:	fe040513          	addi	a0,s0,-32
+    80007220:	ffffa097          	auipc	ra,0xffffa
+    80007224:	1e4080e7          	jalr	484(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     printString("ThreadC created\n");
-    80007224:	00003517          	auipc	a0,0x3
-    80007228:	2b450513          	addi	a0,a0,692 # 8000a4d8 <CONSOLE_STATUS+0x4c8>
-    8000722c:	fffff097          	auipc	ra,0xfffff
-    80007230:	14c080e7          	jalr	332(ra) # 80006378 <_Z11printStringPKc>
+    80007228:	00003517          	auipc	a0,0x3
+    8000722c:	2b050513          	addi	a0,a0,688 # 8000a4d8 <CONSOLE_STATUS+0x4c8>
+    80007230:	fffff097          	auipc	ra,0xfffff
+    80007234:	14c080e7          	jalr	332(ra) # 8000637c <_Z11printStringPKc>
 
     thread_create(&threads[3], workerBodyD, nullptr);
-    80007234:	00000613          	li	a2,0
-    80007238:	00000597          	auipc	a1,0x0
-    8000723c:	afc58593          	addi	a1,a1,-1284 # 80006d34 <_ZL11workerBodyDPv>
-    80007240:	fe840513          	addi	a0,s0,-24
-    80007244:	ffffa097          	auipc	ra,0xffffa
-    80007248:	1c0080e7          	jalr	448(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
+    80007238:	00000613          	li	a2,0
+    8000723c:	00000597          	auipc	a1,0x0
+    80007240:	afc58593          	addi	a1,a1,-1284 # 80006d38 <_ZL11workerBodyDPv>
+    80007244:	fe840513          	addi	a0,s0,-24
+    80007248:	ffffa097          	auipc	ra,0xffffa
+    8000724c:	1bc080e7          	jalr	444(ra) # 80001404 <_Z13thread_createPP3TCBPFvPvES2_>
     printString("ThreadD created\n");
-    8000724c:	00003517          	auipc	a0,0x3
-    80007250:	2a450513          	addi	a0,a0,676 # 8000a4f0 <CONSOLE_STATUS+0x4e0>
-    80007254:	fffff097          	auipc	ra,0xfffff
-    80007258:	124080e7          	jalr	292(ra) # 80006378 <_Z11printStringPKc>
-    8000725c:	00c0006f          	j	80007268 <_Z16System_Mode_testv+0xbc>
+    80007250:	00003517          	auipc	a0,0x3
+    80007254:	2a050513          	addi	a0,a0,672 # 8000a4f0 <CONSOLE_STATUS+0x4e0>
+    80007258:	fffff097          	auipc	ra,0xfffff
+    8000725c:	124080e7          	jalr	292(ra) # 8000637c <_Z11printStringPKc>
+    80007260:	00c0006f          	j	8000726c <_Z16System_Mode_testv+0xbc>
 
     while (!(finishedA && finishedB && finishedC && finishedD)) {
         thread_dispatch();
-    80007260:	ffffa097          	auipc	ra,0xffffa
-    80007264:	260080e7          	jalr	608(ra) # 800014c0 <_Z15thread_dispatchv>
+    80007264:	ffffa097          	auipc	ra,0xffffa
+    80007268:	25c080e7          	jalr	604(ra) # 800014c0 <_Z15thread_dispatchv>
     while (!(finishedA && finishedB && finishedC && finishedD)) {
-    80007268:	00006797          	auipc	a5,0x6
-    8000726c:	01d7c783          	lbu	a5,29(a5) # 8000d285 <_ZL9finishedA>
-    80007270:	fe0788e3          	beqz	a5,80007260 <_Z16System_Mode_testv+0xb4>
-    80007274:	00006797          	auipc	a5,0x6
-    80007278:	0107c783          	lbu	a5,16(a5) # 8000d284 <_ZL9finishedB>
-    8000727c:	fe0782e3          	beqz	a5,80007260 <_Z16System_Mode_testv+0xb4>
-    80007280:	00006797          	auipc	a5,0x6
-    80007284:	0037c783          	lbu	a5,3(a5) # 8000d283 <_ZL9finishedC>
-    80007288:	fc078ce3          	beqz	a5,80007260 <_Z16System_Mode_testv+0xb4>
-    8000728c:	00006797          	auipc	a5,0x6
-    80007290:	ff67c783          	lbu	a5,-10(a5) # 8000d282 <_ZL9finishedD>
-    80007294:	fc0786e3          	beqz	a5,80007260 <_Z16System_Mode_testv+0xb4>
+    8000726c:	00006797          	auipc	a5,0x6
+    80007270:	0617c783          	lbu	a5,97(a5) # 8000d2cd <_ZL9finishedA>
+    80007274:	fe0788e3          	beqz	a5,80007264 <_Z16System_Mode_testv+0xb4>
+    80007278:	00006797          	auipc	a5,0x6
+    8000727c:	0547c783          	lbu	a5,84(a5) # 8000d2cc <_ZL9finishedB>
+    80007280:	fe0782e3          	beqz	a5,80007264 <_Z16System_Mode_testv+0xb4>
+    80007284:	00006797          	auipc	a5,0x6
+    80007288:	0477c783          	lbu	a5,71(a5) # 8000d2cb <_ZL9finishedC>
+    8000728c:	fc078ce3          	beqz	a5,80007264 <_Z16System_Mode_testv+0xb4>
+    80007290:	00006797          	auipc	a5,0x6
+    80007294:	03a7c783          	lbu	a5,58(a5) # 8000d2ca <_ZL9finishedD>
+    80007298:	fc0786e3          	beqz	a5,80007264 <_Z16System_Mode_testv+0xb4>
     }
 
 }
-    80007298:	02813083          	ld	ra,40(sp)
-    8000729c:	02013403          	ld	s0,32(sp)
-    800072a0:	03010113          	addi	sp,sp,48
-    800072a4:	00008067          	ret
+    8000729c:	02813083          	ld	ra,40(sp)
+    800072a0:	02013403          	ld	s0,32(sp)
+    800072a4:	03010113          	addi	sp,sp,48
+    800072a8:	00008067          	ret
 
-00000000800072a8 <_ZN6BufferC1Ei>:
+00000000800072ac <_ZN6BufferC1Ei>:
 #include "buffer.hpp"
 
 Buffer::Buffer(int _cap) : cap(_cap + 1), head(0), tail(0) {
-    800072a8:	fe010113          	addi	sp,sp,-32
-    800072ac:	00113c23          	sd	ra,24(sp)
-    800072b0:	00813823          	sd	s0,16(sp)
-    800072b4:	00913423          	sd	s1,8(sp)
-    800072b8:	01213023          	sd	s2,0(sp)
-    800072bc:	02010413          	addi	s0,sp,32
-    800072c0:	00050493          	mv	s1,a0
-    800072c4:	00058913          	mv	s2,a1
-    800072c8:	0015879b          	addiw	a5,a1,1
-    800072cc:	0007851b          	sext.w	a0,a5
-    800072d0:	00f4a023          	sw	a5,0(s1)
-    800072d4:	0004a823          	sw	zero,16(s1)
-    800072d8:	0004aa23          	sw	zero,20(s1)
+    800072ac:	fe010113          	addi	sp,sp,-32
+    800072b0:	00113c23          	sd	ra,24(sp)
+    800072b4:	00813823          	sd	s0,16(sp)
+    800072b8:	00913423          	sd	s1,8(sp)
+    800072bc:	01213023          	sd	s2,0(sp)
+    800072c0:	02010413          	addi	s0,sp,32
+    800072c4:	00050493          	mv	s1,a0
+    800072c8:	00058913          	mv	s2,a1
+    800072cc:	0015879b          	addiw	a5,a1,1
+    800072d0:	0007851b          	sext.w	a0,a5
+    800072d4:	00f4a023          	sw	a5,0(s1)
+    800072d8:	0004a823          	sw	zero,16(s1)
+    800072dc:	0004aa23          	sw	zero,20(s1)
     buffer = (int *)mem_alloc(sizeof(int) * cap);
-    800072dc:	00251513          	slli	a0,a0,0x2
-    800072e0:	ffffa097          	auipc	ra,0xffffa
-    800072e4:	0b4080e7          	jalr	180(ra) # 80001394 <_Z9mem_allocm>
-    800072e8:	00a4b423          	sd	a0,8(s1)
+    800072e0:	00251513          	slli	a0,a0,0x2
+    800072e4:	ffffa097          	auipc	ra,0xffffa
+    800072e8:	0b0080e7          	jalr	176(ra) # 80001394 <_Z9mem_allocm>
+    800072ec:	00a4b423          	sd	a0,8(s1)
     sem_open(&itemAvailable, 0);
-    800072ec:	00000593          	li	a1,0
-    800072f0:	02048513          	addi	a0,s1,32
-    800072f4:	ffffa097          	auipc	ra,0xffffa
-    800072f8:	244080e7          	jalr	580(ra) # 80001538 <_Z8sem_openPP4KSemj>
+    800072f0:	00000593          	li	a1,0
+    800072f4:	02048513          	addi	a0,s1,32
+    800072f8:	ffffa097          	auipc	ra,0xffffa
+    800072fc:	240080e7          	jalr	576(ra) # 80001538 <_Z8sem_openPP4KSemj>
     sem_open(&spaceAvailable, _cap);
-    800072fc:	00090593          	mv	a1,s2
-    80007300:	01848513          	addi	a0,s1,24
-    80007304:	ffffa097          	auipc	ra,0xffffa
-    80007308:	234080e7          	jalr	564(ra) # 80001538 <_Z8sem_openPP4KSemj>
+    80007300:	00090593          	mv	a1,s2
+    80007304:	01848513          	addi	a0,s1,24
+    80007308:	ffffa097          	auipc	ra,0xffffa
+    8000730c:	230080e7          	jalr	560(ra) # 80001538 <_Z8sem_openPP4KSemj>
     sem_open(&mutexHead, 1);
-    8000730c:	00100593          	li	a1,1
-    80007310:	02848513          	addi	a0,s1,40
-    80007314:	ffffa097          	auipc	ra,0xffffa
-    80007318:	224080e7          	jalr	548(ra) # 80001538 <_Z8sem_openPP4KSemj>
+    80007310:	00100593          	li	a1,1
+    80007314:	02848513          	addi	a0,s1,40
+    80007318:	ffffa097          	auipc	ra,0xffffa
+    8000731c:	220080e7          	jalr	544(ra) # 80001538 <_Z8sem_openPP4KSemj>
     sem_open(&mutexTail, 1);
-    8000731c:	00100593          	li	a1,1
-    80007320:	03048513          	addi	a0,s1,48
-    80007324:	ffffa097          	auipc	ra,0xffffa
-    80007328:	214080e7          	jalr	532(ra) # 80001538 <_Z8sem_openPP4KSemj>
+    80007320:	00100593          	li	a1,1
+    80007324:	03048513          	addi	a0,s1,48
+    80007328:	ffffa097          	auipc	ra,0xffffa
+    8000732c:	210080e7          	jalr	528(ra) # 80001538 <_Z8sem_openPP4KSemj>
 }
-    8000732c:	01813083          	ld	ra,24(sp)
-    80007330:	01013403          	ld	s0,16(sp)
-    80007334:	00813483          	ld	s1,8(sp)
-    80007338:	00013903          	ld	s2,0(sp)
-    8000733c:	02010113          	addi	sp,sp,32
-    80007340:	00008067          	ret
+    80007330:	01813083          	ld	ra,24(sp)
+    80007334:	01013403          	ld	s0,16(sp)
+    80007338:	00813483          	ld	s1,8(sp)
+    8000733c:	00013903          	ld	s2,0(sp)
+    80007340:	02010113          	addi	sp,sp,32
+    80007344:	00008067          	ret
 
-0000000080007344 <_ZN6Buffer3putEi>:
+0000000080007348 <_ZN6Buffer3putEi>:
     sem_close(spaceAvailable);
     sem_close(mutexTail);
     sem_close(mutexHead);
 }
 
 void Buffer::put(int val) {
-    80007344:	fe010113          	addi	sp,sp,-32
-    80007348:	00113c23          	sd	ra,24(sp)
-    8000734c:	00813823          	sd	s0,16(sp)
-    80007350:	00913423          	sd	s1,8(sp)
-    80007354:	01213023          	sd	s2,0(sp)
-    80007358:	02010413          	addi	s0,sp,32
-    8000735c:	00050493          	mv	s1,a0
-    80007360:	00058913          	mv	s2,a1
+    80007348:	fe010113          	addi	sp,sp,-32
+    8000734c:	00113c23          	sd	ra,24(sp)
+    80007350:	00813823          	sd	s0,16(sp)
+    80007354:	00913423          	sd	s1,8(sp)
+    80007358:	01213023          	sd	s2,0(sp)
+    8000735c:	02010413          	addi	s0,sp,32
+    80007360:	00050493          	mv	s1,a0
+    80007364:	00058913          	mv	s2,a1
     sem_wait(spaceAvailable);
-    80007364:	01853503          	ld	a0,24(a0)
-    80007368:	ffffa097          	auipc	ra,0xffffa
-    8000736c:	238080e7          	jalr	568(ra) # 800015a0 <_Z8sem_waitP4KSem>
+    80007368:	01853503          	ld	a0,24(a0)
+    8000736c:	ffffa097          	auipc	ra,0xffffa
+    80007370:	234080e7          	jalr	564(ra) # 800015a0 <_Z8sem_waitP4KSem>
 
     sem_wait(mutexTail);
-    80007370:	0304b503          	ld	a0,48(s1)
-    80007374:	ffffa097          	auipc	ra,0xffffa
-    80007378:	22c080e7          	jalr	556(ra) # 800015a0 <_Z8sem_waitP4KSem>
+    80007374:	0304b503          	ld	a0,48(s1)
+    80007378:	ffffa097          	auipc	ra,0xffffa
+    8000737c:	228080e7          	jalr	552(ra) # 800015a0 <_Z8sem_waitP4KSem>
     buffer[tail] = val;
-    8000737c:	0084b783          	ld	a5,8(s1)
-    80007380:	0144a703          	lw	a4,20(s1)
-    80007384:	00271713          	slli	a4,a4,0x2
-    80007388:	00e787b3          	add	a5,a5,a4
-    8000738c:	0127a023          	sw	s2,0(a5)
+    80007380:	0084b783          	ld	a5,8(s1)
+    80007384:	0144a703          	lw	a4,20(s1)
+    80007388:	00271713          	slli	a4,a4,0x2
+    8000738c:	00e787b3          	add	a5,a5,a4
+    80007390:	0127a023          	sw	s2,0(a5)
     tail = (tail + 1) % cap;
-    80007390:	0144a783          	lw	a5,20(s1)
-    80007394:	0017879b          	addiw	a5,a5,1
-    80007398:	0004a703          	lw	a4,0(s1)
-    8000739c:	02e7e7bb          	remw	a5,a5,a4
-    800073a0:	00f4aa23          	sw	a5,20(s1)
+    80007394:	0144a783          	lw	a5,20(s1)
+    80007398:	0017879b          	addiw	a5,a5,1
+    8000739c:	0004a703          	lw	a4,0(s1)
+    800073a0:	02e7e7bb          	remw	a5,a5,a4
+    800073a4:	00f4aa23          	sw	a5,20(s1)
     sem_signal(mutexTail);
-    800073a4:	0304b503          	ld	a0,48(s1)
-    800073a8:	ffffa097          	auipc	ra,0xffffa
-    800073ac:	228080e7          	jalr	552(ra) # 800015d0 <_Z10sem_signalP4KSem>
+    800073a8:	0304b503          	ld	a0,48(s1)
+    800073ac:	ffffa097          	auipc	ra,0xffffa
+    800073b0:	224080e7          	jalr	548(ra) # 800015d0 <_Z10sem_signalP4KSem>
 
     sem_signal(itemAvailable);
-    800073b0:	0204b503          	ld	a0,32(s1)
-    800073b4:	ffffa097          	auipc	ra,0xffffa
-    800073b8:	21c080e7          	jalr	540(ra) # 800015d0 <_Z10sem_signalP4KSem>
+    800073b4:	0204b503          	ld	a0,32(s1)
+    800073b8:	ffffa097          	auipc	ra,0xffffa
+    800073bc:	218080e7          	jalr	536(ra) # 800015d0 <_Z10sem_signalP4KSem>
 
 }
-    800073bc:	01813083          	ld	ra,24(sp)
-    800073c0:	01013403          	ld	s0,16(sp)
-    800073c4:	00813483          	ld	s1,8(sp)
-    800073c8:	00013903          	ld	s2,0(sp)
-    800073cc:	02010113          	addi	sp,sp,32
-    800073d0:	00008067          	ret
+    800073c0:	01813083          	ld	ra,24(sp)
+    800073c4:	01013403          	ld	s0,16(sp)
+    800073c8:	00813483          	ld	s1,8(sp)
+    800073cc:	00013903          	ld	s2,0(sp)
+    800073d0:	02010113          	addi	sp,sp,32
+    800073d4:	00008067          	ret
 
-00000000800073d4 <_ZN6Buffer3getEv>:
+00000000800073d8 <_ZN6Buffer3getEv>:
 
 int Buffer::get() {
-    800073d4:	fe010113          	addi	sp,sp,-32
-    800073d8:	00113c23          	sd	ra,24(sp)
-    800073dc:	00813823          	sd	s0,16(sp)
-    800073e0:	00913423          	sd	s1,8(sp)
-    800073e4:	01213023          	sd	s2,0(sp)
-    800073e8:	02010413          	addi	s0,sp,32
-    800073ec:	00050493          	mv	s1,a0
+    800073d8:	fe010113          	addi	sp,sp,-32
+    800073dc:	00113c23          	sd	ra,24(sp)
+    800073e0:	00813823          	sd	s0,16(sp)
+    800073e4:	00913423          	sd	s1,8(sp)
+    800073e8:	01213023          	sd	s2,0(sp)
+    800073ec:	02010413          	addi	s0,sp,32
+    800073f0:	00050493          	mv	s1,a0
     sem_wait(itemAvailable);
-    800073f0:	02053503          	ld	a0,32(a0)
-    800073f4:	ffffa097          	auipc	ra,0xffffa
-    800073f8:	1ac080e7          	jalr	428(ra) # 800015a0 <_Z8sem_waitP4KSem>
+    800073f4:	02053503          	ld	a0,32(a0)
+    800073f8:	ffffa097          	auipc	ra,0xffffa
+    800073fc:	1a8080e7          	jalr	424(ra) # 800015a0 <_Z8sem_waitP4KSem>
 
     sem_wait(mutexHead);
-    800073fc:	0284b503          	ld	a0,40(s1)
-    80007400:	ffffa097          	auipc	ra,0xffffa
-    80007404:	1a0080e7          	jalr	416(ra) # 800015a0 <_Z8sem_waitP4KSem>
+    80007400:	0284b503          	ld	a0,40(s1)
+    80007404:	ffffa097          	auipc	ra,0xffffa
+    80007408:	19c080e7          	jalr	412(ra) # 800015a0 <_Z8sem_waitP4KSem>
 
     int ret = buffer[head];
-    80007408:	0084b703          	ld	a4,8(s1)
-    8000740c:	0104a783          	lw	a5,16(s1)
-    80007410:	00279693          	slli	a3,a5,0x2
-    80007414:	00d70733          	add	a4,a4,a3
-    80007418:	00072903          	lw	s2,0(a4)
+    8000740c:	0084b703          	ld	a4,8(s1)
+    80007410:	0104a783          	lw	a5,16(s1)
+    80007414:	00279693          	slli	a3,a5,0x2
+    80007418:	00d70733          	add	a4,a4,a3
+    8000741c:	00072903          	lw	s2,0(a4)
     head = (head + 1) % cap;
-    8000741c:	0017879b          	addiw	a5,a5,1
-    80007420:	0004a703          	lw	a4,0(s1)
-    80007424:	02e7e7bb          	remw	a5,a5,a4
-    80007428:	00f4a823          	sw	a5,16(s1)
+    80007420:	0017879b          	addiw	a5,a5,1
+    80007424:	0004a703          	lw	a4,0(s1)
+    80007428:	02e7e7bb          	remw	a5,a5,a4
+    8000742c:	00f4a823          	sw	a5,16(s1)
     sem_signal(mutexHead);
-    8000742c:	0284b503          	ld	a0,40(s1)
-    80007430:	ffffa097          	auipc	ra,0xffffa
-    80007434:	1a0080e7          	jalr	416(ra) # 800015d0 <_Z10sem_signalP4KSem>
+    80007430:	0284b503          	ld	a0,40(s1)
+    80007434:	ffffa097          	auipc	ra,0xffffa
+    80007438:	19c080e7          	jalr	412(ra) # 800015d0 <_Z10sem_signalP4KSem>
 
     sem_signal(spaceAvailable);
-    80007438:	0184b503          	ld	a0,24(s1)
-    8000743c:	ffffa097          	auipc	ra,0xffffa
-    80007440:	194080e7          	jalr	404(ra) # 800015d0 <_Z10sem_signalP4KSem>
+    8000743c:	0184b503          	ld	a0,24(s1)
+    80007440:	ffffa097          	auipc	ra,0xffffa
+    80007444:	190080e7          	jalr	400(ra) # 800015d0 <_Z10sem_signalP4KSem>
 
     return ret;
 }
-    80007444:	00090513          	mv	a0,s2
-    80007448:	01813083          	ld	ra,24(sp)
-    8000744c:	01013403          	ld	s0,16(sp)
-    80007450:	00813483          	ld	s1,8(sp)
-    80007454:	00013903          	ld	s2,0(sp)
-    80007458:	02010113          	addi	sp,sp,32
-    8000745c:	00008067          	ret
+    80007448:	00090513          	mv	a0,s2
+    8000744c:	01813083          	ld	ra,24(sp)
+    80007450:	01013403          	ld	s0,16(sp)
+    80007454:	00813483          	ld	s1,8(sp)
+    80007458:	00013903          	ld	s2,0(sp)
+    8000745c:	02010113          	addi	sp,sp,32
+    80007460:	00008067          	ret
 
-0000000080007460 <_ZN6Buffer6getCntEv>:
+0000000080007464 <_ZN6Buffer6getCntEv>:
 
 int Buffer::getCnt() {
-    80007460:	fe010113          	addi	sp,sp,-32
-    80007464:	00113c23          	sd	ra,24(sp)
-    80007468:	00813823          	sd	s0,16(sp)
-    8000746c:	00913423          	sd	s1,8(sp)
-    80007470:	01213023          	sd	s2,0(sp)
-    80007474:	02010413          	addi	s0,sp,32
-    80007478:	00050493          	mv	s1,a0
+    80007464:	fe010113          	addi	sp,sp,-32
+    80007468:	00113c23          	sd	ra,24(sp)
+    8000746c:	00813823          	sd	s0,16(sp)
+    80007470:	00913423          	sd	s1,8(sp)
+    80007474:	01213023          	sd	s2,0(sp)
+    80007478:	02010413          	addi	s0,sp,32
+    8000747c:	00050493          	mv	s1,a0
     int ret;
 
     sem_wait(mutexHead);
-    8000747c:	02853503          	ld	a0,40(a0)
-    80007480:	ffffa097          	auipc	ra,0xffffa
-    80007484:	120080e7          	jalr	288(ra) # 800015a0 <_Z8sem_waitP4KSem>
+    80007480:	02853503          	ld	a0,40(a0)
+    80007484:	ffffa097          	auipc	ra,0xffffa
+    80007488:	11c080e7          	jalr	284(ra) # 800015a0 <_Z8sem_waitP4KSem>
     sem_wait(mutexTail);
-    80007488:	0304b503          	ld	a0,48(s1)
-    8000748c:	ffffa097          	auipc	ra,0xffffa
-    80007490:	114080e7          	jalr	276(ra) # 800015a0 <_Z8sem_waitP4KSem>
+    8000748c:	0304b503          	ld	a0,48(s1)
+    80007490:	ffffa097          	auipc	ra,0xffffa
+    80007494:	110080e7          	jalr	272(ra) # 800015a0 <_Z8sem_waitP4KSem>
 
     if (tail >= head) {
-    80007494:	0144a783          	lw	a5,20(s1)
-    80007498:	0104a903          	lw	s2,16(s1)
-    8000749c:	0327ce63          	blt	a5,s2,800074d8 <_ZN6Buffer6getCntEv+0x78>
+    80007498:	0144a783          	lw	a5,20(s1)
+    8000749c:	0104a903          	lw	s2,16(s1)
+    800074a0:	0327ce63          	blt	a5,s2,800074dc <_ZN6Buffer6getCntEv+0x78>
         ret = tail - head;
-    800074a0:	4127893b          	subw	s2,a5,s2
+    800074a4:	4127893b          	subw	s2,a5,s2
     } else {
         ret = cap - head + tail;
     }
 
     sem_signal(mutexTail);
-    800074a4:	0304b503          	ld	a0,48(s1)
-    800074a8:	ffffa097          	auipc	ra,0xffffa
-    800074ac:	128080e7          	jalr	296(ra) # 800015d0 <_Z10sem_signalP4KSem>
+    800074a8:	0304b503          	ld	a0,48(s1)
+    800074ac:	ffffa097          	auipc	ra,0xffffa
+    800074b0:	124080e7          	jalr	292(ra) # 800015d0 <_Z10sem_signalP4KSem>
     sem_signal(mutexHead);
-    800074b0:	0284b503          	ld	a0,40(s1)
-    800074b4:	ffffa097          	auipc	ra,0xffffa
-    800074b8:	11c080e7          	jalr	284(ra) # 800015d0 <_Z10sem_signalP4KSem>
+    800074b4:	0284b503          	ld	a0,40(s1)
+    800074b8:	ffffa097          	auipc	ra,0xffffa
+    800074bc:	118080e7          	jalr	280(ra) # 800015d0 <_Z10sem_signalP4KSem>
 
     return ret;
 }
-    800074bc:	00090513          	mv	a0,s2
-    800074c0:	01813083          	ld	ra,24(sp)
-    800074c4:	01013403          	ld	s0,16(sp)
-    800074c8:	00813483          	ld	s1,8(sp)
-    800074cc:	00013903          	ld	s2,0(sp)
-    800074d0:	02010113          	addi	sp,sp,32
-    800074d4:	00008067          	ret
+    800074c0:	00090513          	mv	a0,s2
+    800074c4:	01813083          	ld	ra,24(sp)
+    800074c8:	01013403          	ld	s0,16(sp)
+    800074cc:	00813483          	ld	s1,8(sp)
+    800074d0:	00013903          	ld	s2,0(sp)
+    800074d4:	02010113          	addi	sp,sp,32
+    800074d8:	00008067          	ret
         ret = cap - head + tail;
-    800074d8:	0004a703          	lw	a4,0(s1)
-    800074dc:	4127093b          	subw	s2,a4,s2
-    800074e0:	00f9093b          	addw	s2,s2,a5
-    800074e4:	fc1ff06f          	j	800074a4 <_ZN6Buffer6getCntEv+0x44>
+    800074dc:	0004a703          	lw	a4,0(s1)
+    800074e0:	4127093b          	subw	s2,a4,s2
+    800074e4:	00f9093b          	addw	s2,s2,a5
+    800074e8:	fc1ff06f          	j	800074a8 <_ZN6Buffer6getCntEv+0x44>
 
-00000000800074e8 <_ZN6BufferD1Ev>:
+00000000800074ec <_ZN6BufferD1Ev>:
 Buffer::~Buffer() {
-    800074e8:	fe010113          	addi	sp,sp,-32
-    800074ec:	00113c23          	sd	ra,24(sp)
-    800074f0:	00813823          	sd	s0,16(sp)
-    800074f4:	00913423          	sd	s1,8(sp)
-    800074f8:	02010413          	addi	s0,sp,32
-    800074fc:	00050493          	mv	s1,a0
+    800074ec:	fe010113          	addi	sp,sp,-32
+    800074f0:	00113c23          	sd	ra,24(sp)
+    800074f4:	00813823          	sd	s0,16(sp)
+    800074f8:	00913423          	sd	s1,8(sp)
+    800074fc:	02010413          	addi	s0,sp,32
+    80007500:	00050493          	mv	s1,a0
     putc('\n');
-    80007500:	00a00513          	li	a0,10
-    80007504:	ffffa097          	auipc	ra,0xffffa
-    80007508:	124080e7          	jalr	292(ra) # 80001628 <_Z4putcc>
+    80007504:	00a00513          	li	a0,10
+    80007508:	ffffa097          	auipc	ra,0xffffa
+    8000750c:	120080e7          	jalr	288(ra) # 80001628 <_Z4putcc>
     printString("Buffer deleted!\n");
-    8000750c:	00003517          	auipc	a0,0x3
-    80007510:	ffc50513          	addi	a0,a0,-4 # 8000a508 <CONSOLE_STATUS+0x4f8>
-    80007514:	fffff097          	auipc	ra,0xfffff
-    80007518:	e64080e7          	jalr	-412(ra) # 80006378 <_Z11printStringPKc>
+    80007510:	00003517          	auipc	a0,0x3
+    80007514:	ff850513          	addi	a0,a0,-8 # 8000a508 <CONSOLE_STATUS+0x4f8>
+    80007518:	fffff097          	auipc	ra,0xfffff
+    8000751c:	e64080e7          	jalr	-412(ra) # 8000637c <_Z11printStringPKc>
     while (getCnt() > 0) {
-    8000751c:	00048513          	mv	a0,s1
-    80007520:	00000097          	auipc	ra,0x0
-    80007524:	f40080e7          	jalr	-192(ra) # 80007460 <_ZN6Buffer6getCntEv>
-    80007528:	02a05c63          	blez	a0,80007560 <_ZN6BufferD1Ev+0x78>
+    80007520:	00048513          	mv	a0,s1
+    80007524:	00000097          	auipc	ra,0x0
+    80007528:	f40080e7          	jalr	-192(ra) # 80007464 <_ZN6Buffer6getCntEv>
+    8000752c:	02a05c63          	blez	a0,80007564 <_ZN6BufferD1Ev+0x78>
         char ch = buffer[head];
-    8000752c:	0084b783          	ld	a5,8(s1)
-    80007530:	0104a703          	lw	a4,16(s1)
-    80007534:	00271713          	slli	a4,a4,0x2
-    80007538:	00e787b3          	add	a5,a5,a4
+    80007530:	0084b783          	ld	a5,8(s1)
+    80007534:	0104a703          	lw	a4,16(s1)
+    80007538:	00271713          	slli	a4,a4,0x2
+    8000753c:	00e787b3          	add	a5,a5,a4
         putc(ch);
-    8000753c:	0007c503          	lbu	a0,0(a5)
-    80007540:	ffffa097          	auipc	ra,0xffffa
-    80007544:	0e8080e7          	jalr	232(ra) # 80001628 <_Z4putcc>
+    80007540:	0007c503          	lbu	a0,0(a5)
+    80007544:	ffffa097          	auipc	ra,0xffffa
+    80007548:	0e4080e7          	jalr	228(ra) # 80001628 <_Z4putcc>
         head = (head + 1) % cap;
-    80007548:	0104a783          	lw	a5,16(s1)
-    8000754c:	0017879b          	addiw	a5,a5,1
-    80007550:	0004a703          	lw	a4,0(s1)
-    80007554:	02e7e7bb          	remw	a5,a5,a4
-    80007558:	00f4a823          	sw	a5,16(s1)
+    8000754c:	0104a783          	lw	a5,16(s1)
+    80007550:	0017879b          	addiw	a5,a5,1
+    80007554:	0004a703          	lw	a4,0(s1)
+    80007558:	02e7e7bb          	remw	a5,a5,a4
+    8000755c:	00f4a823          	sw	a5,16(s1)
     while (getCnt() > 0) {
-    8000755c:	fc1ff06f          	j	8000751c <_ZN6BufferD1Ev+0x34>
+    80007560:	fc1ff06f          	j	80007520 <_ZN6BufferD1Ev+0x34>
     putc('!');
-    80007560:	02100513          	li	a0,33
-    80007564:	ffffa097          	auipc	ra,0xffffa
-    80007568:	0c4080e7          	jalr	196(ra) # 80001628 <_Z4putcc>
+    80007564:	02100513          	li	a0,33
+    80007568:	ffffa097          	auipc	ra,0xffffa
+    8000756c:	0c0080e7          	jalr	192(ra) # 80001628 <_Z4putcc>
     putc('\n');
-    8000756c:	00a00513          	li	a0,10
-    80007570:	ffffa097          	auipc	ra,0xffffa
-    80007574:	0b8080e7          	jalr	184(ra) # 80001628 <_Z4putcc>
+    80007570:	00a00513          	li	a0,10
+    80007574:	ffffa097          	auipc	ra,0xffffa
+    80007578:	0b4080e7          	jalr	180(ra) # 80001628 <_Z4putcc>
     mem_free(buffer);
-    80007578:	0084b503          	ld	a0,8(s1)
-    8000757c:	ffffa097          	auipc	ra,0xffffa
-    80007580:	e58080e7          	jalr	-424(ra) # 800013d4 <_Z8mem_freePv>
+    8000757c:	0084b503          	ld	a0,8(s1)
+    80007580:	ffffa097          	auipc	ra,0xffffa
+    80007584:	e54080e7          	jalr	-428(ra) # 800013d4 <_Z8mem_freePv>
     sem_close(itemAvailable);
-    80007584:	0204b503          	ld	a0,32(s1)
-    80007588:	ffffa097          	auipc	ra,0xffffa
-    8000758c:	fe8080e7          	jalr	-24(ra) # 80001570 <_Z9sem_closeP4KSem>
+    80007588:	0204b503          	ld	a0,32(s1)
+    8000758c:	ffffa097          	auipc	ra,0xffffa
+    80007590:	fe4080e7          	jalr	-28(ra) # 80001570 <_Z9sem_closeP4KSem>
     sem_close(spaceAvailable);
-    80007590:	0184b503          	ld	a0,24(s1)
-    80007594:	ffffa097          	auipc	ra,0xffffa
-    80007598:	fdc080e7          	jalr	-36(ra) # 80001570 <_Z9sem_closeP4KSem>
+    80007594:	0184b503          	ld	a0,24(s1)
+    80007598:	ffffa097          	auipc	ra,0xffffa
+    8000759c:	fd8080e7          	jalr	-40(ra) # 80001570 <_Z9sem_closeP4KSem>
     sem_close(mutexTail);
-    8000759c:	0304b503          	ld	a0,48(s1)
-    800075a0:	ffffa097          	auipc	ra,0xffffa
-    800075a4:	fd0080e7          	jalr	-48(ra) # 80001570 <_Z9sem_closeP4KSem>
+    800075a0:	0304b503          	ld	a0,48(s1)
+    800075a4:	ffffa097          	auipc	ra,0xffffa
+    800075a8:	fcc080e7          	jalr	-52(ra) # 80001570 <_Z9sem_closeP4KSem>
     sem_close(mutexHead);
-    800075a8:	0284b503          	ld	a0,40(s1)
-    800075ac:	ffffa097          	auipc	ra,0xffffa
-    800075b0:	fc4080e7          	jalr	-60(ra) # 80001570 <_Z9sem_closeP4KSem>
+    800075ac:	0284b503          	ld	a0,40(s1)
+    800075b0:	ffffa097          	auipc	ra,0xffffa
+    800075b4:	fc0080e7          	jalr	-64(ra) # 80001570 <_Z9sem_closeP4KSem>
 }
-    800075b4:	01813083          	ld	ra,24(sp)
-    800075b8:	01013403          	ld	s0,16(sp)
-    800075bc:	00813483          	ld	s1,8(sp)
-    800075c0:	02010113          	addi	sp,sp,32
-    800075c4:	00008067          	ret
+    800075b8:	01813083          	ld	ra,24(sp)
+    800075bc:	01013403          	ld	s0,16(sp)
+    800075c0:	00813483          	ld	s1,8(sp)
+    800075c4:	02010113          	addi	sp,sp,32
+    800075c8:	00008067          	ret
 
-00000000800075c8 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE>:
+00000000800075cc <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE>:
 MemoryAllocator::FreeMemSegment* MemoryAllocator::freeMemHead = nullptr;
 MemoryAllocator::UsedMemSegment* MemoryAllocator::usedMemHead = nullptr;
 
 #pragma GCC optimize("O0")
 
 void* MemoryAllocator::kmalloc(size_t size, Purpose pur) {
-    800075c8:	fa010113          	addi	sp,sp,-96
-    800075cc:	04813c23          	sd	s0,88(sp)
-    800075d0:	06010413          	addi	s0,sp,96
-    800075d4:	faa43423          	sd	a0,-88(s0)
-    800075d8:	00058793          	mv	a5,a1
-    800075dc:	faf42223          	sw	a5,-92(s0)
+    800075cc:	fa010113          	addi	sp,sp,-96
+    800075d0:	04813c23          	sd	s0,88(sp)
+    800075d4:	06010413          	addi	s0,sp,96
+    800075d8:	faa43423          	sd	a0,-88(s0)
+    800075dc:	00058793          	mv	a5,a1
+    800075e0:	faf42223          	sw	a5,-92(s0)
     //size je u broju bajtova, ukljucuje i mesto potrebno za zaglavlje UsedMemSegment
     if (size <= 0) return nullptr;
-    800075e0:	fa843783          	ld	a5,-88(s0)
-    800075e4:	00079663          	bnez	a5,800075f0 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x28>
-    800075e8:	00000793          	li	a5,0
-    800075ec:	2040006f          	j	800077f0 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x228>
+    800075e4:	fa843783          	ld	a5,-88(s0)
+    800075e8:	00079663          	bnez	a5,800075f4 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x28>
+    800075ec:	00000793          	li	a5,0
+    800075f0:	2040006f          	j	800077f4 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x228>
     //alokacija uvek zaokruzena na blokove
     //size += sizeof(UsedMemSegment); ;prebaceno u mem_alloc
     size_t blocks = size / MEM_BLOCK_SIZE + (size % MEM_BLOCK_SIZE ? 1 : 0);
-    800075f0:	fa843783          	ld	a5,-88(s0)
-    800075f4:	0067d713          	srli	a4,a5,0x6
-    800075f8:	fa843783          	ld	a5,-88(s0)
-    800075fc:	03f7f793          	andi	a5,a5,63
-    80007600:	00078663          	beqz	a5,8000760c <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x44>
-    80007604:	00100793          	li	a5,1
-    80007608:	0080006f          	j	80007610 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x48>
-    8000760c:	00000793          	li	a5,0
-    80007610:	00e787b3          	add	a5,a5,a4
-    80007614:	fcf43423          	sd	a5,-56(s0)
+    800075f4:	fa843783          	ld	a5,-88(s0)
+    800075f8:	0067d713          	srli	a4,a5,0x6
+    800075fc:	fa843783          	ld	a5,-88(s0)
+    80007600:	03f7f793          	andi	a5,a5,63
+    80007604:	00078663          	beqz	a5,80007610 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x44>
+    80007608:	00100793          	li	a5,1
+    8000760c:	0080006f          	j	80007614 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x48>
+    80007610:	00000793          	li	a5,0
+    80007614:	00e787b3          	add	a5,a5,a4
+    80007618:	fcf43423          	sd	a5,-56(s0)
     size = blocks * MEM_BLOCK_SIZE;
-    80007618:	fc843783          	ld	a5,-56(s0)
-    8000761c:	00679793          	slli	a5,a5,0x6
-    80007620:	faf43423          	sd	a5,-88(s0)
+    8000761c:	fc843783          	ld	a5,-56(s0)
+    80007620:	00679793          	slli	a5,a5,0x6
+    80007624:	faf43423          	sd	a5,-88(s0)
 
     //trazenje slobodnog segmenta po first-fit algoritmu
     FreeMemSegment* prevFree = nullptr;
-    80007624:	fe043423          	sd	zero,-24(s0)
+    80007628:	fe043423          	sd	zero,-24(s0)
     for (FreeMemSegment* firstFit = freeMemHead; firstFit; prevFree = firstFit, firstFit = firstFit->next) {
-    80007628:	00006797          	auipc	a5,0x6
-    8000762c:	c6878793          	addi	a5,a5,-920 # 8000d290 <_ZN15MemoryAllocator11freeMemHeadE>
-    80007630:	0007b783          	ld	a5,0(a5)
-    80007634:	fef43023          	sd	a5,-32(s0)
-    80007638:	fe043783          	ld	a5,-32(s0)
-    8000763c:	1a078863          	beqz	a5,800077ec <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x224>
+    8000762c:	00006797          	auipc	a5,0x6
+    80007630:	cac78793          	addi	a5,a5,-852 # 8000d2d8 <_ZN15MemoryAllocator11freeMemHeadE>
+    80007634:	0007b783          	ld	a5,0(a5)
+    80007638:	fef43023          	sd	a5,-32(s0)
+    8000763c:	fe043783          	ld	a5,-32(s0)
+    80007640:	1a078863          	beqz	a5,800077f0 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x224>
         if (firstFit->size < size) continue;
-    80007640:	fe043783          	ld	a5,-32(s0)
-    80007644:	0087b783          	ld	a5,8(a5)
-    80007648:	fa843703          	ld	a4,-88(s0)
-    8000764c:	18e7e263          	bltu	a5,a4,800077d0 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x208>
+    80007644:	fe043783          	ld	a5,-32(s0)
+    80007648:	0087b783          	ld	a5,8(a5)
+    8000764c:	fa843703          	ld	a4,-88(s0)
+    80007650:	18e7e263          	bltu	a5,a4,800077d4 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x208>
 
         //pravljenje novog slobodnog fragmenta od ostatka fragmenta
         FreeMemSegment* remainderFree = (FreeMemSegment*) ((char*) firstFit + size);
-    80007650:	fe043703          	ld	a4,-32(s0)
-    80007654:	fa843783          	ld	a5,-88(s0)
-    80007658:	00f707b3          	add	a5,a4,a5
-    8000765c:	fcf43023          	sd	a5,-64(s0)
+    80007654:	fe043703          	ld	a4,-32(s0)
+    80007658:	fa843783          	ld	a5,-88(s0)
+    8000765c:	00f707b3          	add	a5,a4,a5
+    80007660:	fcf43023          	sd	a5,-64(s0)
         size_t remainingSize = firstFit->size - size;
-    80007660:	fe043783          	ld	a5,-32(s0)
-    80007664:	0087b703          	ld	a4,8(a5)
-    80007668:	fa843783          	ld	a5,-88(s0)
-    8000766c:	40f707b3          	sub	a5,a4,a5
-    80007670:	faf43c23          	sd	a5,-72(s0)
+    80007664:	fe043783          	ld	a5,-32(s0)
+    80007668:	0087b703          	ld	a4,8(a5)
+    8000766c:	fa843783          	ld	a5,-88(s0)
+    80007670:	40f707b3          	sub	a5,a4,a5
+    80007674:	faf43c23          	sd	a5,-72(s0)
         if (remainingSize <= sizeof(UsedMemSegment)) {
-    80007674:	fb843703          	ld	a4,-72(s0)
-    80007678:	02000793          	li	a5,32
-    8000767c:	04e7e463          	bltu	a5,a4,800076c4 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0xfc>
+    80007678:	fb843703          	ld	a4,-72(s0)
+    8000767c:	02000793          	li	a5,32
+    80007680:	04e7e463          	bltu	a5,a4,800076c8 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0xfc>
             //ne preostaje dovoljno veliki slobodni segment;dodeljujemo ceo trenutno alociranom;remainderFree ne postoji
             size += remainingSize;
-    80007680:	fa843703          	ld	a4,-88(s0)
-    80007684:	fb843783          	ld	a5,-72(s0)
-    80007688:	00f707b3          	add	a5,a4,a5
-    8000768c:	faf43423          	sd	a5,-88(s0)
+    80007684:	fa843703          	ld	a4,-88(s0)
+    80007688:	fb843783          	ld	a5,-72(s0)
+    8000768c:	00f707b3          	add	a5,a4,a5
+    80007690:	faf43423          	sd	a5,-88(s0)
             if (prevFree) {
-    80007690:	fe843783          	ld	a5,-24(s0)
-    80007694:	00078c63          	beqz	a5,800076ac <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0xe4>
+    80007694:	fe843783          	ld	a5,-24(s0)
+    80007698:	00078c63          	beqz	a5,800076b0 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0xe4>
                 prevFree->next = firstFit->next;
-    80007698:	fe043783          	ld	a5,-32(s0)
-    8000769c:	0007b703          	ld	a4,0(a5)
-    800076a0:	fe843783          	ld	a5,-24(s0)
-    800076a4:	00e7b023          	sd	a4,0(a5)
-    800076a8:	0600006f          	j	80007708 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x140>
+    8000769c:	fe043783          	ld	a5,-32(s0)
+    800076a0:	0007b703          	ld	a4,0(a5)
+    800076a4:	fe843783          	ld	a5,-24(s0)
+    800076a8:	00e7b023          	sd	a4,0(a5)
+    800076ac:	0600006f          	j	8000770c <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x140>
             } else {
                 freeMemHead = firstFit->next;
-    800076ac:	fe043783          	ld	a5,-32(s0)
-    800076b0:	0007b703          	ld	a4,0(a5)
-    800076b4:	00006797          	auipc	a5,0x6
-    800076b8:	bdc78793          	addi	a5,a5,-1060 # 8000d290 <_ZN15MemoryAllocator11freeMemHeadE>
-    800076bc:	00e7b023          	sd	a4,0(a5)
-    800076c0:	0480006f          	j	80007708 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x140>
+    800076b0:	fe043783          	ld	a5,-32(s0)
+    800076b4:	0007b703          	ld	a4,0(a5)
+    800076b8:	00006797          	auipc	a5,0x6
+    800076bc:	c2078793          	addi	a5,a5,-992 # 8000d2d8 <_ZN15MemoryAllocator11freeMemHeadE>
+    800076c0:	00e7b023          	sd	a4,0(a5)
+    800076c4:	0480006f          	j	8000770c <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x140>
             }
         } else {
             remainderFree->size = remainingSize;
-    800076c4:	fc043783          	ld	a5,-64(s0)
-    800076c8:	fb843703          	ld	a4,-72(s0)
-    800076cc:	00e7b423          	sd	a4,8(a5)
+    800076c8:	fc043783          	ld	a5,-64(s0)
+    800076cc:	fb843703          	ld	a4,-72(s0)
+    800076d0:	00e7b423          	sd	a4,8(a5)
             remainderFree->next = firstFit->next;
-    800076d0:	fe043783          	ld	a5,-32(s0)
-    800076d4:	0007b703          	ld	a4,0(a5)
-    800076d8:	fc043783          	ld	a5,-64(s0)
-    800076dc:	00e7b023          	sd	a4,0(a5)
+    800076d4:	fe043783          	ld	a5,-32(s0)
+    800076d8:	0007b703          	ld	a4,0(a5)
+    800076dc:	fc043783          	ld	a5,-64(s0)
+    800076e0:	00e7b023          	sd	a4,0(a5)
             if (prevFree) {
-    800076e0:	fe843783          	ld	a5,-24(s0)
-    800076e4:	00078a63          	beqz	a5,800076f8 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x130>
+    800076e4:	fe843783          	ld	a5,-24(s0)
+    800076e8:	00078a63          	beqz	a5,800076fc <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x130>
                 prevFree->next = remainderFree;
-    800076e8:	fe843783          	ld	a5,-24(s0)
-    800076ec:	fc043703          	ld	a4,-64(s0)
-    800076f0:	00e7b023          	sd	a4,0(a5)
-    800076f4:	0140006f          	j	80007708 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x140>
+    800076ec:	fe843783          	ld	a5,-24(s0)
+    800076f0:	fc043703          	ld	a4,-64(s0)
+    800076f4:	00e7b023          	sd	a4,0(a5)
+    800076f8:	0140006f          	j	8000770c <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x140>
             } else {
                 freeMemHead = remainderFree;
-    800076f8:	00006797          	auipc	a5,0x6
-    800076fc:	b9878793          	addi	a5,a5,-1128 # 8000d290 <_ZN15MemoryAllocator11freeMemHeadE>
-    80007700:	fc043703          	ld	a4,-64(s0)
-    80007704:	00e7b023          	sd	a4,0(a5)
+    800076fc:	00006797          	auipc	a5,0x6
+    80007700:	bdc78793          	addi	a5,a5,-1060 # 8000d2d8 <_ZN15MemoryAllocator11freeMemHeadE>
+    80007704:	fc043703          	ld	a4,-64(s0)
+    80007708:	00e7b023          	sd	a4,0(a5)
             }
         }
         //ubacivanje novog fragmenta u listu zauzetih fragmenata
         UsedMemSegment* newUsed = (UsedMemSegment*) firstFit;
-    80007708:	fe043783          	ld	a5,-32(s0)
-    8000770c:	faf43823          	sd	a5,-80(s0)
+    8000770c:	fe043783          	ld	a5,-32(s0)
+    80007710:	faf43823          	sd	a5,-80(s0)
         newUsed->size = size;
-    80007710:	fb043783          	ld	a5,-80(s0)
-    80007714:	fa843703          	ld	a4,-88(s0)
-    80007718:	00e7b423          	sd	a4,8(a5)
+    80007714:	fb043783          	ld	a5,-80(s0)
+    80007718:	fa843703          	ld	a4,-88(s0)
+    8000771c:	00e7b423          	sd	a4,8(a5)
         newUsed->purpose = pur;
-    8000771c:	fb043783          	ld	a5,-80(s0)
-    80007720:	fa442703          	lw	a4,-92(s0)
-    80007724:	00e7a823          	sw	a4,16(a5)
+    80007720:	fb043783          	ld	a5,-80(s0)
+    80007724:	fa442703          	lw	a4,-92(s0)
+    80007728:	00e7a823          	sw	a4,16(a5)
         newUsed->usableFirstAddress = (char*) newUsed + sizeof(UsedMemSegment);
-    80007728:	fb043783          	ld	a5,-80(s0)
-    8000772c:	02078713          	addi	a4,a5,32
-    80007730:	fb043783          	ld	a5,-80(s0)
-    80007734:	00e7bc23          	sd	a4,24(a5)
+    8000772c:	fb043783          	ld	a5,-80(s0)
+    80007730:	02078713          	addi	a4,a5,32
+    80007734:	fb043783          	ld	a5,-80(s0)
+    80007738:	00e7bc23          	sd	a4,24(a5)
         UsedMemSegment* prevUsed = nullptr;
-    80007738:	fc043c23          	sd	zero,-40(s0)
+    8000773c:	fc043c23          	sd	zero,-40(s0)
         for (UsedMemSegment* cur = usedMemHead;
-    8000773c:	00006797          	auipc	a5,0x6
-    80007740:	b4c78793          	addi	a5,a5,-1204 # 8000d288 <_ZN15MemoryAllocator11usedMemHeadE>
-    80007744:	0007b783          	ld	a5,0(a5)
-    80007748:	fcf43823          	sd	a5,-48(s0)
+    80007740:	00006797          	auipc	a5,0x6
+    80007744:	b9078793          	addi	a5,a5,-1136 # 8000d2d0 <_ZN15MemoryAllocator11usedMemHeadE>
+    80007748:	0007b783          	ld	a5,0(a5)
+    8000774c:	fcf43823          	sd	a5,-48(s0)
              cur && ((char*) cur < (char*) newUsed); cur = cur->next) {
-    8000774c:	fd043783          	ld	a5,-48(s0)
-    80007750:	02078463          	beqz	a5,80007778 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x1b0>
-    80007754:	fd043703          	ld	a4,-48(s0)
-    80007758:	fb043783          	ld	a5,-80(s0)
-    8000775c:	00f77e63          	bgeu	a4,a5,80007778 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x1b0>
+    80007750:	fd043783          	ld	a5,-48(s0)
+    80007754:	02078463          	beqz	a5,8000777c <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x1b0>
+    80007758:	fd043703          	ld	a4,-48(s0)
+    8000775c:	fb043783          	ld	a5,-80(s0)
+    80007760:	00f77e63          	bgeu	a4,a5,8000777c <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x1b0>
             prevUsed = cur;
-    80007760:	fd043783          	ld	a5,-48(s0)
-    80007764:	fcf43c23          	sd	a5,-40(s0)
+    80007764:	fd043783          	ld	a5,-48(s0)
+    80007768:	fcf43c23          	sd	a5,-40(s0)
              cur && ((char*) cur < (char*) newUsed); cur = cur->next) {
-    80007768:	fd043783          	ld	a5,-48(s0)
-    8000776c:	0007b783          	ld	a5,0(a5)
-    80007770:	fcf43823          	sd	a5,-48(s0)
+    8000776c:	fd043783          	ld	a5,-48(s0)
+    80007770:	0007b783          	ld	a5,0(a5)
+    80007774:	fcf43823          	sd	a5,-48(s0)
         for (UsedMemSegment* cur = usedMemHead;
-    80007774:	fd9ff06f          	j	8000774c <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x184>
+    80007778:	fd9ff06f          	j	80007750 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x184>
         }
         if (!prevUsed) {
-    80007778:	fd843783          	ld	a5,-40(s0)
-    8000777c:	02079663          	bnez	a5,800077a8 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x1e0>
+    8000777c:	fd843783          	ld	a5,-40(s0)
+    80007780:	02079663          	bnez	a5,800077ac <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x1e0>
             newUsed->next = usedMemHead;
-    80007780:	00006797          	auipc	a5,0x6
-    80007784:	b0878793          	addi	a5,a5,-1272 # 8000d288 <_ZN15MemoryAllocator11usedMemHeadE>
-    80007788:	0007b703          	ld	a4,0(a5)
-    8000778c:	fb043783          	ld	a5,-80(s0)
-    80007790:	00e7b023          	sd	a4,0(a5)
+    80007784:	00006797          	auipc	a5,0x6
+    80007788:	b4c78793          	addi	a5,a5,-1204 # 8000d2d0 <_ZN15MemoryAllocator11usedMemHeadE>
+    8000778c:	0007b703          	ld	a4,0(a5)
+    80007790:	fb043783          	ld	a5,-80(s0)
+    80007794:	00e7b023          	sd	a4,0(a5)
             usedMemHead = newUsed;
-    80007794:	00006797          	auipc	a5,0x6
-    80007798:	af478793          	addi	a5,a5,-1292 # 8000d288 <_ZN15MemoryAllocator11usedMemHeadE>
-    8000779c:	fb043703          	ld	a4,-80(s0)
-    800077a0:	00e7b023          	sd	a4,0(a5)
-    800077a4:	0200006f          	j	800077c4 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x1fc>
+    80007798:	00006797          	auipc	a5,0x6
+    8000779c:	b3878793          	addi	a5,a5,-1224 # 8000d2d0 <_ZN15MemoryAllocator11usedMemHeadE>
+    800077a0:	fb043703          	ld	a4,-80(s0)
+    800077a4:	00e7b023          	sd	a4,0(a5)
+    800077a8:	0200006f          	j	800077c8 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x1fc>
         } else {
             newUsed->next = prevUsed->next;
-    800077a8:	fd843783          	ld	a5,-40(s0)
-    800077ac:	0007b703          	ld	a4,0(a5)
-    800077b0:	fb043783          	ld	a5,-80(s0)
-    800077b4:	00e7b023          	sd	a4,0(a5)
+    800077ac:	fd843783          	ld	a5,-40(s0)
+    800077b0:	0007b703          	ld	a4,0(a5)
+    800077b4:	fb043783          	ld	a5,-80(s0)
+    800077b8:	00e7b023          	sd	a4,0(a5)
             prevUsed->next = newUsed;
-    800077b8:	fd843783          	ld	a5,-40(s0)
-    800077bc:	fb043703          	ld	a4,-80(s0)
-    800077c0:	00e7b023          	sd	a4,0(a5)
+    800077bc:	fd843783          	ld	a5,-40(s0)
+    800077c0:	fb043703          	ld	a4,-80(s0)
+    800077c4:	00e7b023          	sd	a4,0(a5)
         }
         //return (char*)newUsed + sizeof(UsedMemSegment);
         return newUsed->usableFirstAddress;
-    800077c4:	fb043783          	ld	a5,-80(s0)
-    800077c8:	0187b783          	ld	a5,24(a5)
-    800077cc:	0240006f          	j	800077f0 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x228>
+    800077c8:	fb043783          	ld	a5,-80(s0)
+    800077cc:	0187b783          	ld	a5,24(a5)
+    800077d0:	0240006f          	j	800077f4 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x228>
         if (firstFit->size < size) continue;
-    800077d0:	00000013          	nop
+    800077d4:	00000013          	nop
     for (FreeMemSegment* firstFit = freeMemHead; firstFit; prevFree = firstFit, firstFit = firstFit->next) {
-    800077d4:	fe043783          	ld	a5,-32(s0)
-    800077d8:	fef43423          	sd	a5,-24(s0)
-    800077dc:	fe043783          	ld	a5,-32(s0)
-    800077e0:	0007b783          	ld	a5,0(a5)
-    800077e4:	fef43023          	sd	a5,-32(s0)
-    800077e8:	e51ff06f          	j	80007638 <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x70>
+    800077d8:	fe043783          	ld	a5,-32(s0)
+    800077dc:	fef43423          	sd	a5,-24(s0)
+    800077e0:	fe043783          	ld	a5,-32(s0)
+    800077e4:	0007b783          	ld	a5,0(a5)
+    800077e8:	fef43023          	sd	a5,-32(s0)
+    800077ec:	e51ff06f          	j	8000763c <_ZN15MemoryAllocator7kmallocEmNS_7PurposeE+0x70>
     }
     return nullptr;
-    800077ec:	00000793          	li	a5,0
+    800077f0:	00000793          	li	a5,0
 }
-    800077f0:	00078513          	mv	a0,a5
-    800077f4:	05813403          	ld	s0,88(sp)
-    800077f8:	06010113          	addi	sp,sp,96
-    800077fc:	00008067          	ret
+    800077f4:	00078513          	mv	a0,a5
+    800077f8:	05813403          	ld	s0,88(sp)
+    800077fc:	06010113          	addi	sp,sp,96
+    80007800:	00008067          	ret
 
-0000000080007800 <_ZN15MemoryAllocator5kfreeEPv>:
+0000000080007804 <_ZN15MemoryAllocator5kfreeEPv>:
 
 #pragma GCC optimize("O0")
 
 int MemoryAllocator::kfree(void* ptr) {
-    80007800:	fb010113          	addi	sp,sp,-80
-    80007804:	04113423          	sd	ra,72(sp)
-    80007808:	04813023          	sd	s0,64(sp)
-    8000780c:	05010413          	addi	s0,sp,80
-    80007810:	faa43c23          	sd	a0,-72(s0)
+    80007804:	fb010113          	addi	sp,sp,-80
+    80007808:	04113423          	sd	ra,72(sp)
+    8000780c:	04813023          	sd	s0,64(sp)
+    80007810:	05010413          	addi	s0,sp,80
+    80007814:	faa43c23          	sd	a0,-72(s0)
     if (!ptr) return 0;
-    80007814:	fb843783          	ld	a5,-72(s0)
-    80007818:	00079663          	bnez	a5,80007824 <_ZN15MemoryAllocator5kfreeEPv+0x24>
-    8000781c:	00000793          	li	a5,0
-    80007820:	1740006f          	j	80007994 <_ZN15MemoryAllocator5kfreeEPv+0x194>
+    80007818:	fb843783          	ld	a5,-72(s0)
+    8000781c:	00079663          	bnez	a5,80007828 <_ZN15MemoryAllocator5kfreeEPv+0x24>
+    80007820:	00000793          	li	a5,0
+    80007824:	1740006f          	j	80007998 <_ZN15MemoryAllocator5kfreeEPv+0x194>
     if (!usedMemHead) return -1;
-    80007824:	00006797          	auipc	a5,0x6
-    80007828:	a6478793          	addi	a5,a5,-1436 # 8000d288 <_ZN15MemoryAllocator11usedMemHeadE>
-    8000782c:	0007b783          	ld	a5,0(a5)
-    80007830:	00079663          	bnez	a5,8000783c <_ZN15MemoryAllocator5kfreeEPv+0x3c>
-    80007834:	fff00793          	li	a5,-1
-    80007838:	15c0006f          	j	80007994 <_ZN15MemoryAllocator5kfreeEPv+0x194>
+    80007828:	00006797          	auipc	a5,0x6
+    8000782c:	aa878793          	addi	a5,a5,-1368 # 8000d2d0 <_ZN15MemoryAllocator11usedMemHeadE>
+    80007830:	0007b783          	ld	a5,0(a5)
+    80007834:	00079663          	bnez	a5,80007840 <_ZN15MemoryAllocator5kfreeEPv+0x3c>
+    80007838:	fff00793          	li	a5,-1
+    8000783c:	15c0006f          	j	80007998 <_ZN15MemoryAllocator5kfreeEPv+0x194>
     //ptr pokazuje na usableFirstAddress, pre toga je zaglavlje segmenta
     ptr = (char*) ptr - sizeof(UsedMemSegment);
-    8000783c:	fb843783          	ld	a5,-72(s0)
-    80007840:	fe078793          	addi	a5,a5,-32
-    80007844:	faf43c23          	sd	a5,-72(s0)
+    80007840:	fb843783          	ld	a5,-72(s0)
+    80007844:	fe078793          	addi	a5,a5,-32
+    80007848:	faf43c23          	sd	a5,-72(s0)
 
     //trazenje adrese ptr u listi zauzetih segmenata
     UsedMemSegment* currentUsed = usedMemHead;
-    80007848:	00006797          	auipc	a5,0x6
-    8000784c:	a4078793          	addi	a5,a5,-1472 # 8000d288 <_ZN15MemoryAllocator11usedMemHeadE>
-    80007850:	0007b783          	ld	a5,0(a5)
-    80007854:	fef43423          	sd	a5,-24(s0)
+    8000784c:	00006797          	auipc	a5,0x6
+    80007850:	a8478793          	addi	a5,a5,-1404 # 8000d2d0 <_ZN15MemoryAllocator11usedMemHeadE>
+    80007854:	0007b783          	ld	a5,0(a5)
+    80007858:	fef43423          	sd	a5,-24(s0)
     UsedMemSegment* prevUsed = nullptr;
-    80007858:	fe043023          	sd	zero,-32(s0)
+    8000785c:	fe043023          	sd	zero,-32(s0)
     for (; currentUsed && ((char*) currentUsed != (char*) ptr); currentUsed = currentUsed->next) {
-    8000785c:	fe843783          	ld	a5,-24(s0)
-    80007860:	02078463          	beqz	a5,80007888 <_ZN15MemoryAllocator5kfreeEPv+0x88>
-    80007864:	fe843703          	ld	a4,-24(s0)
-    80007868:	fb843783          	ld	a5,-72(s0)
-    8000786c:	00f70e63          	beq	a4,a5,80007888 <_ZN15MemoryAllocator5kfreeEPv+0x88>
+    80007860:	fe843783          	ld	a5,-24(s0)
+    80007864:	02078463          	beqz	a5,8000788c <_ZN15MemoryAllocator5kfreeEPv+0x88>
+    80007868:	fe843703          	ld	a4,-24(s0)
+    8000786c:	fb843783          	ld	a5,-72(s0)
+    80007870:	00f70e63          	beq	a4,a5,8000788c <_ZN15MemoryAllocator5kfreeEPv+0x88>
         prevUsed = currentUsed;
-    80007870:	fe843783          	ld	a5,-24(s0)
-    80007874:	fef43023          	sd	a5,-32(s0)
+    80007874:	fe843783          	ld	a5,-24(s0)
+    80007878:	fef43023          	sd	a5,-32(s0)
     for (; currentUsed && ((char*) currentUsed != (char*) ptr); currentUsed = currentUsed->next) {
-    80007878:	fe843783          	ld	a5,-24(s0)
-    8000787c:	0007b783          	ld	a5,0(a5)
-    80007880:	fef43423          	sd	a5,-24(s0)
-    80007884:	fd9ff06f          	j	8000785c <_ZN15MemoryAllocator5kfreeEPv+0x5c>
+    8000787c:	fe843783          	ld	a5,-24(s0)
+    80007880:	0007b783          	ld	a5,0(a5)
+    80007884:	fef43423          	sd	a5,-24(s0)
+    80007888:	fd9ff06f          	j	80007860 <_ZN15MemoryAllocator5kfreeEPv+0x5c>
     }
     if ((char*) currentUsed != (char*) ptr) return -1;    //adresa ne odgovara segmentu alociranom preko kmalloc
-    80007888:	fe843703          	ld	a4,-24(s0)
-    8000788c:	fb843783          	ld	a5,-72(s0)
-    80007890:	00f70663          	beq	a4,a5,8000789c <_ZN15MemoryAllocator5kfreeEPv+0x9c>
-    80007894:	fff00793          	li	a5,-1
-    80007898:	0fc0006f          	j	80007994 <_ZN15MemoryAllocator5kfreeEPv+0x194>
+    8000788c:	fe843703          	ld	a4,-24(s0)
+    80007890:	fb843783          	ld	a5,-72(s0)
+    80007894:	00f70663          	beq	a4,a5,800078a0 <_ZN15MemoryAllocator5kfreeEPv+0x9c>
+    80007898:	fff00793          	li	a5,-1
+    8000789c:	0fc0006f          	j	80007998 <_ZN15MemoryAllocator5kfreeEPv+0x194>
 
     //izbacivanje iz liste zauzetih segmenata
     if (prevUsed) prevUsed->next = currentUsed->next;
-    8000789c:	fe043783          	ld	a5,-32(s0)
-    800078a0:	00078c63          	beqz	a5,800078b8 <_ZN15MemoryAllocator5kfreeEPv+0xb8>
-    800078a4:	fe843783          	ld	a5,-24(s0)
-    800078a8:	0007b703          	ld	a4,0(a5)
-    800078ac:	fe043783          	ld	a5,-32(s0)
-    800078b0:	00e7b023          	sd	a4,0(a5)
-    800078b4:	0180006f          	j	800078cc <_ZN15MemoryAllocator5kfreeEPv+0xcc>
+    800078a0:	fe043783          	ld	a5,-32(s0)
+    800078a4:	00078c63          	beqz	a5,800078bc <_ZN15MemoryAllocator5kfreeEPv+0xb8>
+    800078a8:	fe843783          	ld	a5,-24(s0)
+    800078ac:	0007b703          	ld	a4,0(a5)
+    800078b0:	fe043783          	ld	a5,-32(s0)
+    800078b4:	00e7b023          	sd	a4,0(a5)
+    800078b8:	0180006f          	j	800078d0 <_ZN15MemoryAllocator5kfreeEPv+0xcc>
     else usedMemHead = currentUsed->next;
-    800078b8:	fe843783          	ld	a5,-24(s0)
-    800078bc:	0007b703          	ld	a4,0(a5)
-    800078c0:	00006797          	auipc	a5,0x6
-    800078c4:	9c878793          	addi	a5,a5,-1592 # 8000d288 <_ZN15MemoryAllocator11usedMemHeadE>
-    800078c8:	00e7b023          	sd	a4,0(a5)
+    800078bc:	fe843783          	ld	a5,-24(s0)
+    800078c0:	0007b703          	ld	a4,0(a5)
+    800078c4:	00006797          	auipc	a5,0x6
+    800078c8:	a0c78793          	addi	a5,a5,-1524 # 8000d2d0 <_ZN15MemoryAllocator11usedMemHeadE>
+    800078cc:	00e7b023          	sd	a4,0(a5)
 
     //oslobadjanje segmenta i ubacivanje u listu slobodnih
     FreeMemSegment* prevFree = nullptr;
-    800078cc:	fc043c23          	sd	zero,-40(s0)
+    800078d0:	fc043c23          	sd	zero,-40(s0)
     FreeMemSegment* nextFree = freeMemHead;
-    800078d0:	00006797          	auipc	a5,0x6
-    800078d4:	9c078793          	addi	a5,a5,-1600 # 8000d290 <_ZN15MemoryAllocator11freeMemHeadE>
-    800078d8:	0007b783          	ld	a5,0(a5)
-    800078dc:	fcf43823          	sd	a5,-48(s0)
+    800078d4:	00006797          	auipc	a5,0x6
+    800078d8:	a0478793          	addi	a5,a5,-1532 # 8000d2d8 <_ZN15MemoryAllocator11freeMemHeadE>
+    800078dc:	0007b783          	ld	a5,0(a5)
+    800078e0:	fcf43823          	sd	a5,-48(s0)
     for (; nextFree && (char*) nextFree < (char*) ptr; prevFree = nextFree, nextFree = nextFree->next);
-    800078e0:	fd043783          	ld	a5,-48(s0)
-    800078e4:	02078463          	beqz	a5,8000790c <_ZN15MemoryAllocator5kfreeEPv+0x10c>
-    800078e8:	fd043703          	ld	a4,-48(s0)
-    800078ec:	fb843783          	ld	a5,-72(s0)
-    800078f0:	00f77e63          	bgeu	a4,a5,8000790c <_ZN15MemoryAllocator5kfreeEPv+0x10c>
-    800078f4:	fd043783          	ld	a5,-48(s0)
-    800078f8:	fcf43c23          	sd	a5,-40(s0)
-    800078fc:	fd043783          	ld	a5,-48(s0)
-    80007900:	0007b783          	ld	a5,0(a5)
-    80007904:	fcf43823          	sd	a5,-48(s0)
-    80007908:	fd9ff06f          	j	800078e0 <_ZN15MemoryAllocator5kfreeEPv+0xe0>
+    800078e4:	fd043783          	ld	a5,-48(s0)
+    800078e8:	02078463          	beqz	a5,80007910 <_ZN15MemoryAllocator5kfreeEPv+0x10c>
+    800078ec:	fd043703          	ld	a4,-48(s0)
+    800078f0:	fb843783          	ld	a5,-72(s0)
+    800078f4:	00f77e63          	bgeu	a4,a5,80007910 <_ZN15MemoryAllocator5kfreeEPv+0x10c>
+    800078f8:	fd043783          	ld	a5,-48(s0)
+    800078fc:	fcf43c23          	sd	a5,-40(s0)
+    80007900:	fd043783          	ld	a5,-48(s0)
+    80007904:	0007b783          	ld	a5,0(a5)
+    80007908:	fcf43823          	sd	a5,-48(s0)
+    8000790c:	fd9ff06f          	j	800078e4 <_ZN15MemoryAllocator5kfreeEPv+0xe0>
     FreeMemSegment* newFree = (FreeMemSegment*) ptr;
-    8000790c:	fb843783          	ld	a5,-72(s0)
-    80007910:	fcf43423          	sd	a5,-56(s0)
+    80007910:	fb843783          	ld	a5,-72(s0)
+    80007914:	fcf43423          	sd	a5,-56(s0)
     size_t segmentSize = ((UsedMemSegment*) ptr)->size;
-    80007914:	fb843783          	ld	a5,-72(s0)
-    80007918:	0087b783          	ld	a5,8(a5)
-    8000791c:	fcf43023          	sd	a5,-64(s0)
+    80007918:	fb843783          	ld	a5,-72(s0)
+    8000791c:	0087b783          	ld	a5,8(a5)
+    80007920:	fcf43023          	sd	a5,-64(s0)
     newFree->size = segmentSize;
-    80007920:	fc843783          	ld	a5,-56(s0)
-    80007924:	fc043703          	ld	a4,-64(s0)
-    80007928:	00e7b423          	sd	a4,8(a5)
+    80007924:	fc843783          	ld	a5,-56(s0)
+    80007928:	fc043703          	ld	a4,-64(s0)
+    8000792c:	00e7b423          	sd	a4,8(a5)
     if (prevFree) {
-    8000792c:	fd843783          	ld	a5,-40(s0)
-    80007930:	02078263          	beqz	a5,80007954 <_ZN15MemoryAllocator5kfreeEPv+0x154>
+    80007930:	fd843783          	ld	a5,-40(s0)
+    80007934:	02078263          	beqz	a5,80007958 <_ZN15MemoryAllocator5kfreeEPv+0x154>
         newFree->next = prevFree->next;
-    80007934:	fd843783          	ld	a5,-40(s0)
-    80007938:	0007b703          	ld	a4,0(a5)
-    8000793c:	fc843783          	ld	a5,-56(s0)
-    80007940:	00e7b023          	sd	a4,0(a5)
+    80007938:	fd843783          	ld	a5,-40(s0)
+    8000793c:	0007b703          	ld	a4,0(a5)
+    80007940:	fc843783          	ld	a5,-56(s0)
+    80007944:	00e7b023          	sd	a4,0(a5)
         prevFree->next = newFree;
-    80007944:	fd843783          	ld	a5,-40(s0)
-    80007948:	fc843703          	ld	a4,-56(s0)
-    8000794c:	00e7b023          	sd	a4,0(a5)
-    80007950:	0280006f          	j	80007978 <_ZN15MemoryAllocator5kfreeEPv+0x178>
+    80007948:	fd843783          	ld	a5,-40(s0)
+    8000794c:	fc843703          	ld	a4,-56(s0)
+    80007950:	00e7b023          	sd	a4,0(a5)
+    80007954:	0280006f          	j	8000797c <_ZN15MemoryAllocator5kfreeEPv+0x178>
     } else {
         newFree->next = freeMemHead;
-    80007954:	00006797          	auipc	a5,0x6
-    80007958:	93c78793          	addi	a5,a5,-1732 # 8000d290 <_ZN15MemoryAllocator11freeMemHeadE>
-    8000795c:	0007b703          	ld	a4,0(a5)
-    80007960:	fc843783          	ld	a5,-56(s0)
-    80007964:	00e7b023          	sd	a4,0(a5)
+    80007958:	00006797          	auipc	a5,0x6
+    8000795c:	98078793          	addi	a5,a5,-1664 # 8000d2d8 <_ZN15MemoryAllocator11freeMemHeadE>
+    80007960:	0007b703          	ld	a4,0(a5)
+    80007964:	fc843783          	ld	a5,-56(s0)
+    80007968:	00e7b023          	sd	a4,0(a5)
         freeMemHead = newFree;
-    80007968:	00006797          	auipc	a5,0x6
-    8000796c:	92878793          	addi	a5,a5,-1752 # 8000d290 <_ZN15MemoryAllocator11freeMemHeadE>
-    80007970:	fc843703          	ld	a4,-56(s0)
-    80007974:	00e7b023          	sd	a4,0(a5)
+    8000796c:	00006797          	auipc	a5,0x6
+    80007970:	96c78793          	addi	a5,a5,-1684 # 8000d2d8 <_ZN15MemoryAllocator11freeMemHeadE>
+    80007974:	fc843703          	ld	a4,-56(s0)
+    80007978:	00e7b023          	sd	a4,0(a5)
     }
 
     //spajanje uzastopnih slobodnih segmenata
     tryToJoin(newFree);
-    80007978:	fc843503          	ld	a0,-56(s0)
-    8000797c:	00000097          	auipc	ra,0x0
-    80007980:	02c080e7          	jalr	44(ra) # 800079a8 <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE>
+    8000797c:	fc843503          	ld	a0,-56(s0)
+    80007980:	00000097          	auipc	ra,0x0
+    80007984:	02c080e7          	jalr	44(ra) # 800079ac <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE>
     tryToJoin(prevFree);
-    80007984:	fd843503          	ld	a0,-40(s0)
-    80007988:	00000097          	auipc	ra,0x0
-    8000798c:	020080e7          	jalr	32(ra) # 800079a8 <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE>
+    80007988:	fd843503          	ld	a0,-40(s0)
+    8000798c:	00000097          	auipc	ra,0x0
+    80007990:	020080e7          	jalr	32(ra) # 800079ac <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE>
     return 0;
-    80007990:	00000793          	li	a5,0
+    80007994:	00000793          	li	a5,0
 }
-    80007994:	00078513          	mv	a0,a5
-    80007998:	04813083          	ld	ra,72(sp)
-    8000799c:	04013403          	ld	s0,64(sp)
-    800079a0:	05010113          	addi	sp,sp,80
-    800079a4:	00008067          	ret
+    80007998:	00078513          	mv	a0,a5
+    8000799c:	04813083          	ld	ra,72(sp)
+    800079a0:	04013403          	ld	s0,64(sp)
+    800079a4:	05010113          	addi	sp,sp,80
+    800079a8:	00008067          	ret
 
-00000000800079a8 <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE>:
+00000000800079ac <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE>:
 
 #pragma GCC optimize("O0")
 
 int MemoryAllocator::tryToJoin(MemoryAllocator::FreeMemSegment* current) {
-    800079a8:	fc010113          	addi	sp,sp,-64
-    800079ac:	02813c23          	sd	s0,56(sp)
-    800079b0:	04010413          	addi	s0,sp,64
-    800079b4:	fca43423          	sd	a0,-56(s0)
+    800079ac:	fc010113          	addi	sp,sp,-64
+    800079b0:	02813c23          	sd	s0,56(sp)
+    800079b4:	04010413          	addi	s0,sp,64
+    800079b8:	fca43423          	sd	a0,-56(s0)
     if (!current) return 0;
-    800079b8:	fc843783          	ld	a5,-56(s0)
-    800079bc:	00079663          	bnez	a5,800079c8 <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE+0x20>
-    800079c0:	00000793          	li	a5,0
-    800079c4:	0a00006f          	j	80007a64 <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE+0xbc>
+    800079bc:	fc843783          	ld	a5,-56(s0)
+    800079c0:	00079663          	bnez	a5,800079cc <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE+0x20>
+    800079c4:	00000793          	li	a5,0
+    800079c8:	0a00006f          	j	80007a68 <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE+0xbc>
     bool nextExists = current->next != nullptr;
-    800079c8:	fc843783          	ld	a5,-56(s0)
-    800079cc:	0007b783          	ld	a5,0(a5)
-    800079d0:	00f037b3          	snez	a5,a5
-    800079d4:	fef407a3          	sb	a5,-17(s0)
+    800079cc:	fc843783          	ld	a5,-56(s0)
+    800079d0:	0007b783          	ld	a5,0(a5)
+    800079d4:	00f037b3          	snez	a5,a5
+    800079d8:	fef407a3          	sb	a5,-17(s0)
     char* nextAddr = (char*) current + current->size;
-    800079d8:	fc843783          	ld	a5,-56(s0)
-    800079dc:	0087b783          	ld	a5,8(a5)
-    800079e0:	fc843703          	ld	a4,-56(s0)
-    800079e4:	00f707b3          	add	a5,a4,a5
-    800079e8:	fef43023          	sd	a5,-32(s0)
+    800079dc:	fc843783          	ld	a5,-56(s0)
+    800079e0:	0087b783          	ld	a5,8(a5)
+    800079e4:	fc843703          	ld	a4,-56(s0)
+    800079e8:	00f707b3          	add	a5,a4,a5
+    800079ec:	fef43023          	sd	a5,-32(s0)
     char* cnext = (char*) current->next;
-    800079ec:	fc843783          	ld	a5,-56(s0)
-    800079f0:	0007b783          	ld	a5,0(a5)
-    800079f4:	fcf43c23          	sd	a5,-40(s0)
+    800079f0:	fc843783          	ld	a5,-56(s0)
+    800079f4:	0007b783          	ld	a5,0(a5)
+    800079f8:	fcf43c23          	sd	a5,-40(s0)
     bool nextIsConnected = (nextAddr == cnext);
-    800079f8:	fe043703          	ld	a4,-32(s0)
-    800079fc:	fd843783          	ld	a5,-40(s0)
-    80007a00:	40f707b3          	sub	a5,a4,a5
-    80007a04:	0017b793          	seqz	a5,a5
-    80007a08:	fcf40ba3          	sb	a5,-41(s0)
+    800079fc:	fe043703          	ld	a4,-32(s0)
+    80007a00:	fd843783          	ld	a5,-40(s0)
+    80007a04:	40f707b3          	sub	a5,a4,a5
+    80007a08:	0017b793          	seqz	a5,a5
+    80007a0c:	fcf40ba3          	sb	a5,-41(s0)
     if (nextExists && nextIsConnected) {
-    80007a0c:	fef44783          	lbu	a5,-17(s0)
-    80007a10:	0ff7f793          	andi	a5,a5,255
-    80007a14:	04078663          	beqz	a5,80007a60 <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE+0xb8>
-    80007a18:	fd744783          	lbu	a5,-41(s0)
-    80007a1c:	0ff7f793          	andi	a5,a5,255
-    80007a20:	04078063          	beqz	a5,80007a60 <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE+0xb8>
+    80007a10:	fef44783          	lbu	a5,-17(s0)
+    80007a14:	0ff7f793          	andi	a5,a5,255
+    80007a18:	04078663          	beqz	a5,80007a64 <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE+0xb8>
+    80007a1c:	fd744783          	lbu	a5,-41(s0)
+    80007a20:	0ff7f793          	andi	a5,a5,255
+    80007a24:	04078063          	beqz	a5,80007a64 <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE+0xb8>
         current->size += current->next->size;
-    80007a24:	fc843783          	ld	a5,-56(s0)
-    80007a28:	0087b703          	ld	a4,8(a5)
-    80007a2c:	fc843783          	ld	a5,-56(s0)
-    80007a30:	0007b783          	ld	a5,0(a5)
-    80007a34:	0087b783          	ld	a5,8(a5)
-    80007a38:	00f70733          	add	a4,a4,a5
-    80007a3c:	fc843783          	ld	a5,-56(s0)
-    80007a40:	00e7b423          	sd	a4,8(a5)
+    80007a28:	fc843783          	ld	a5,-56(s0)
+    80007a2c:	0087b703          	ld	a4,8(a5)
+    80007a30:	fc843783          	ld	a5,-56(s0)
+    80007a34:	0007b783          	ld	a5,0(a5)
+    80007a38:	0087b783          	ld	a5,8(a5)
+    80007a3c:	00f70733          	add	a4,a4,a5
+    80007a40:	fc843783          	ld	a5,-56(s0)
+    80007a44:	00e7b423          	sd	a4,8(a5)
         current->next = current->next->next;
-    80007a44:	fc843783          	ld	a5,-56(s0)
-    80007a48:	0007b783          	ld	a5,0(a5)
-    80007a4c:	0007b703          	ld	a4,0(a5)
-    80007a50:	fc843783          	ld	a5,-56(s0)
-    80007a54:	00e7b023          	sd	a4,0(a5)
+    80007a48:	fc843783          	ld	a5,-56(s0)
+    80007a4c:	0007b783          	ld	a5,0(a5)
+    80007a50:	0007b703          	ld	a4,0(a5)
+    80007a54:	fc843783          	ld	a5,-56(s0)
+    80007a58:	00e7b023          	sd	a4,0(a5)
         return 1;
-    80007a58:	00100793          	li	a5,1
-    80007a5c:	0080006f          	j	80007a64 <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE+0xbc>
+    80007a5c:	00100793          	li	a5,1
+    80007a60:	0080006f          	j	80007a68 <_ZN15MemoryAllocator9tryToJoinEPNS_14FreeMemSegmentE+0xbc>
     } else return 0;
-    80007a60:	00000793          	li	a5,0
+    80007a64:	00000793          	li	a5,0
 }
-    80007a64:	00078513          	mv	a0,a5
-    80007a68:	03813403          	ld	s0,56(sp)
-    80007a6c:	04010113          	addi	sp,sp,64
-    80007a70:	00008067          	ret
+    80007a68:	00078513          	mv	a0,a5
+    80007a6c:	03813403          	ld	s0,56(sp)
+    80007a70:	04010113          	addi	sp,sp,64
+    80007a74:	00008067          	ret
 
-0000000080007a74 <_ZN15MemoryAllocator12checkPurposeEPvNS_7PurposeE>:
+0000000080007a78 <_ZN15MemoryAllocator12checkPurposeEPvNS_7PurposeE>:
 
 bool MemoryAllocator::checkPurpose(void* ptr, MemoryAllocator::Purpose p) {
-    80007a74:	fe010113          	addi	sp,sp,-32
-    80007a78:	00813c23          	sd	s0,24(sp)
-    80007a7c:	02010413          	addi	s0,sp,32
-    80007a80:	fea43423          	sd	a0,-24(s0)
-    80007a84:	00058793          	mv	a5,a1
-    80007a88:	fef42223          	sw	a5,-28(s0)
+    80007a78:	fe010113          	addi	sp,sp,-32
+    80007a7c:	00813c23          	sd	s0,24(sp)
+    80007a80:	02010413          	addi	s0,sp,32
+    80007a84:	fea43423          	sd	a0,-24(s0)
+    80007a88:	00058793          	mv	a5,a1
+    80007a8c:	fef42223          	sw	a5,-28(s0)
     ptr = (char*) ptr - sizeof(UsedMemSegment);
-    80007a8c:	fe843783          	ld	a5,-24(s0)
-    80007a90:	fe078793          	addi	a5,a5,-32
-    80007a94:	fef43423          	sd	a5,-24(s0)
+    80007a90:	fe843783          	ld	a5,-24(s0)
+    80007a94:	fe078793          	addi	a5,a5,-32
+    80007a98:	fef43423          	sd	a5,-24(s0)
     return ((UsedMemSegment*) ptr)->purpose == p;
-    80007a98:	fe843783          	ld	a5,-24(s0)
-    80007a9c:	0107a703          	lw	a4,16(a5)
-    80007aa0:	fe442783          	lw	a5,-28(s0)
-    80007aa4:	0007879b          	sext.w	a5,a5
-    80007aa8:	40e787b3          	sub	a5,a5,a4
-    80007aac:	0017b793          	seqz	a5,a5
-    80007ab0:	0ff7f793          	andi	a5,a5,255
+    80007a9c:	fe843783          	ld	a5,-24(s0)
+    80007aa0:	0107a703          	lw	a4,16(a5)
+    80007aa4:	fe442783          	lw	a5,-28(s0)
+    80007aa8:	0007879b          	sext.w	a5,a5
+    80007aac:	40e787b3          	sub	a5,a5,a4
+    80007ab0:	0017b793          	seqz	a5,a5
+    80007ab4:	0ff7f793          	andi	a5,a5,255
 }
-    80007ab4:	00078513          	mv	a0,a5
-    80007ab8:	01813403          	ld	s0,24(sp)
-    80007abc:	02010113          	addi	sp,sp,32
-    80007ac0:	00008067          	ret
+    80007ab8:	00078513          	mv	a0,a5
+    80007abc:	01813403          	ld	s0,24(sp)
+    80007ac0:	02010113          	addi	sp,sp,32
+    80007ac4:	00008067          	ret
 
-0000000080007ac4 <_ZN15MemoryAllocator19initMemoryAllocatorEv>:
+0000000080007ac8 <_ZN15MemoryAllocator19initMemoryAllocatorEv>:
 
 void MemoryAllocator::initMemoryAllocator() {
-    80007ac4:	ff010113          	addi	sp,sp,-16
-    80007ac8:	00813423          	sd	s0,8(sp)
-    80007acc:	01010413          	addi	s0,sp,16
+    80007ac8:	ff010113          	addi	sp,sp,-16
+    80007acc:	00813423          	sd	s0,8(sp)
+    80007ad0:	01010413          	addi	s0,sp,16
 //pocetna inicijalizacija
     if (!initialized) {
-    80007ad0:	00005797          	auipc	a5,0x5
-    80007ad4:	7c878793          	addi	a5,a5,1992 # 8000d298 <_ZN15MemoryAllocator11initializedE>
-    80007ad8:	0007c783          	lbu	a5,0(a5)
-    80007adc:	0017c793          	xori	a5,a5,1
-    80007ae0:	0ff7f793          	andi	a5,a5,255
-    80007ae4:	06078a63          	beqz	a5,80007b58 <_ZN15MemoryAllocator19initMemoryAllocatorEv+0x94>
+    80007ad4:	00006797          	auipc	a5,0x6
+    80007ad8:	80c78793          	addi	a5,a5,-2036 # 8000d2e0 <_ZN15MemoryAllocator11initializedE>
+    80007adc:	0007c783          	lbu	a5,0(a5)
+    80007ae0:	0017c793          	xori	a5,a5,1
+    80007ae4:	0ff7f793          	andi	a5,a5,255
+    80007ae8:	06078a63          	beqz	a5,80007b5c <_ZN15MemoryAllocator19initMemoryAllocatorEv+0x94>
         freeMemHead = (FreeMemSegment*) HEAP_START_ADDR;
-    80007ae8:	00005797          	auipc	a5,0x5
-    80007aec:	5607b783          	ld	a5,1376(a5) # 8000d048 <_GLOBAL_OFFSET_TABLE_+0x30>
-    80007af0:	0007b703          	ld	a4,0(a5)
-    80007af4:	00005797          	auipc	a5,0x5
-    80007af8:	79c78793          	addi	a5,a5,1948 # 8000d290 <_ZN15MemoryAllocator11freeMemHeadE>
-    80007afc:	00e7b023          	sd	a4,0(a5)
+    80007aec:	00005797          	auipc	a5,0x5
+    80007af0:	58c7b783          	ld	a5,1420(a5) # 8000d078 <_GLOBAL_OFFSET_TABLE_+0x30>
+    80007af4:	0007b703          	ld	a4,0(a5)
+    80007af8:	00005797          	auipc	a5,0x5
+    80007afc:	7e078793          	addi	a5,a5,2016 # 8000d2d8 <_ZN15MemoryAllocator11freeMemHeadE>
+    80007b00:	00e7b023          	sd	a4,0(a5)
         freeMemHead->next = nullptr;
-    80007b00:	00005797          	auipc	a5,0x5
-    80007b04:	79078793          	addi	a5,a5,1936 # 8000d290 <_ZN15MemoryAllocator11freeMemHeadE>
-    80007b08:	0007b783          	ld	a5,0(a5)
-    80007b0c:	0007b023          	sd	zero,0(a5)
+    80007b04:	00005797          	auipc	a5,0x5
+    80007b08:	7d478793          	addi	a5,a5,2004 # 8000d2d8 <_ZN15MemoryAllocator11freeMemHeadE>
+    80007b0c:	0007b783          	ld	a5,0(a5)
+    80007b10:	0007b023          	sd	zero,0(a5)
         //freeMemHead->prev = nullptr;
         freeMemHead->size = (char*) HEAP_END_ADDR - (char*) HEAP_START_ADDR;//- sizeof(FreeMemSegment);
-    80007b10:	00005797          	auipc	a5,0x5
-    80007b14:	5907b783          	ld	a5,1424(a5) # 8000d0a0 <_GLOBAL_OFFSET_TABLE_+0x88>
-    80007b18:	0007b703          	ld	a4,0(a5)
-    80007b1c:	00005797          	auipc	a5,0x5
-    80007b20:	52c7b783          	ld	a5,1324(a5) # 8000d048 <_GLOBAL_OFFSET_TABLE_+0x30>
-    80007b24:	0007b783          	ld	a5,0(a5)
-    80007b28:	40f70733          	sub	a4,a4,a5
-    80007b2c:	00005797          	auipc	a5,0x5
-    80007b30:	76478793          	addi	a5,a5,1892 # 8000d290 <_ZN15MemoryAllocator11freeMemHeadE>
-    80007b34:	0007b783          	ld	a5,0(a5)
-    80007b38:	00e7b423          	sd	a4,8(a5)
+    80007b14:	00005797          	auipc	a5,0x5
+    80007b18:	5bc7b783          	ld	a5,1468(a5) # 8000d0d0 <_GLOBAL_OFFSET_TABLE_+0x88>
+    80007b1c:	0007b703          	ld	a4,0(a5)
+    80007b20:	00005797          	auipc	a5,0x5
+    80007b24:	5587b783          	ld	a5,1368(a5) # 8000d078 <_GLOBAL_OFFSET_TABLE_+0x30>
+    80007b28:	0007b783          	ld	a5,0(a5)
+    80007b2c:	40f70733          	sub	a4,a4,a5
+    80007b30:	00005797          	auipc	a5,0x5
+    80007b34:	7a878793          	addi	a5,a5,1960 # 8000d2d8 <_ZN15MemoryAllocator11freeMemHeadE>
+    80007b38:	0007b783          	ld	a5,0(a5)
+    80007b3c:	00e7b423          	sd	a4,8(a5)
         usedMemHead = nullptr;
-    80007b3c:	00005797          	auipc	a5,0x5
-    80007b40:	74c78793          	addi	a5,a5,1868 # 8000d288 <_ZN15MemoryAllocator11usedMemHeadE>
-    80007b44:	0007b023          	sd	zero,0(a5)
+    80007b40:	00005797          	auipc	a5,0x5
+    80007b44:	79078793          	addi	a5,a5,1936 # 8000d2d0 <_ZN15MemoryAllocator11usedMemHeadE>
+    80007b48:	0007b023          	sd	zero,0(a5)
 
         initialized = true;
-    80007b48:	00005797          	auipc	a5,0x5
-    80007b4c:	75078793          	addi	a5,a5,1872 # 8000d298 <_ZN15MemoryAllocator11initializedE>
-    80007b50:	00100713          	li	a4,1
-    80007b54:	00e78023          	sb	a4,0(a5)
+    80007b4c:	00005797          	auipc	a5,0x5
+    80007b50:	79478793          	addi	a5,a5,1940 # 8000d2e0 <_ZN15MemoryAllocator11initializedE>
+    80007b54:	00100713          	li	a4,1
+    80007b58:	00e78023          	sb	a4,0(a5)
     }
 }
-    80007b58:	00000013          	nop
-    80007b5c:	00813403          	ld	s0,8(sp)
-    80007b60:	01010113          	addi	sp,sp,16
-    80007b64:	00008067          	ret
+    80007b5c:	00000013          	nop
+    80007b60:	00813403          	ld	s0,8(sp)
+    80007b64:	01010113          	addi	sp,sp,16
+    80007b68:	00008067          	ret
 
-0000000080007b68 <start>:
-    80007b68:	ff010113          	addi	sp,sp,-16
-    80007b6c:	00813423          	sd	s0,8(sp)
-    80007b70:	01010413          	addi	s0,sp,16
-    80007b74:	300027f3          	csrr	a5,mstatus
-    80007b78:	ffffe737          	lui	a4,0xffffe
-    80007b7c:	7ff70713          	addi	a4,a4,2047 # ffffffffffffe7ff <end+0xffffffff7fff02ff>
-    80007b80:	00e7f7b3          	and	a5,a5,a4
-    80007b84:	00001737          	lui	a4,0x1
-    80007b88:	80070713          	addi	a4,a4,-2048 # 800 <_entry-0x7ffff800>
-    80007b8c:	00e7e7b3          	or	a5,a5,a4
-    80007b90:	30079073          	csrw	mstatus,a5
-    80007b94:	00000797          	auipc	a5,0x0
-    80007b98:	16078793          	addi	a5,a5,352 # 80007cf4 <system_main>
-    80007b9c:	34179073          	csrw	mepc,a5
-    80007ba0:	00000793          	li	a5,0
-    80007ba4:	18079073          	csrw	satp,a5
-    80007ba8:	000107b7          	lui	a5,0x10
-    80007bac:	fff78793          	addi	a5,a5,-1 # ffff <_entry-0x7fff0001>
-    80007bb0:	30279073          	csrw	medeleg,a5
-    80007bb4:	30379073          	csrw	mideleg,a5
-    80007bb8:	104027f3          	csrr	a5,sie
-    80007bbc:	2227e793          	ori	a5,a5,546
-    80007bc0:	10479073          	csrw	sie,a5
-    80007bc4:	fff00793          	li	a5,-1
-    80007bc8:	00a7d793          	srli	a5,a5,0xa
-    80007bcc:	3b079073          	csrw	pmpaddr0,a5
-    80007bd0:	00f00793          	li	a5,15
-    80007bd4:	3a079073          	csrw	pmpcfg0,a5
-    80007bd8:	f14027f3          	csrr	a5,mhartid
-    80007bdc:	0200c737          	lui	a4,0x200c
-    80007be0:	ff873583          	ld	a1,-8(a4) # 200bff8 <_entry-0x7dff4008>
-    80007be4:	0007869b          	sext.w	a3,a5
-    80007be8:	00269713          	slli	a4,a3,0x2
-    80007bec:	000f4637          	lui	a2,0xf4
-    80007bf0:	24060613          	addi	a2,a2,576 # f4240 <_entry-0x7ff0bdc0>
-    80007bf4:	00d70733          	add	a4,a4,a3
-    80007bf8:	0037979b          	slliw	a5,a5,0x3
-    80007bfc:	020046b7          	lui	a3,0x2004
-    80007c00:	00d787b3          	add	a5,a5,a3
-    80007c04:	00c585b3          	add	a1,a1,a2
-    80007c08:	00371693          	slli	a3,a4,0x3
-    80007c0c:	00005717          	auipc	a4,0x5
-    80007c10:	69470713          	addi	a4,a4,1684 # 8000d2a0 <timer_scratch>
-    80007c14:	00b7b023          	sd	a1,0(a5)
-    80007c18:	00d70733          	add	a4,a4,a3
-    80007c1c:	00f73c23          	sd	a5,24(a4)
-    80007c20:	02c73023          	sd	a2,32(a4)
-    80007c24:	34071073          	csrw	mscratch,a4
-    80007c28:	00000797          	auipc	a5,0x0
-    80007c2c:	6e878793          	addi	a5,a5,1768 # 80008310 <timervec>
-    80007c30:	30579073          	csrw	mtvec,a5
-    80007c34:	300027f3          	csrr	a5,mstatus
-    80007c38:	0087e793          	ori	a5,a5,8
-    80007c3c:	30079073          	csrw	mstatus,a5
-    80007c40:	304027f3          	csrr	a5,mie
-    80007c44:	0807e793          	ori	a5,a5,128
-    80007c48:	30479073          	csrw	mie,a5
-    80007c4c:	f14027f3          	csrr	a5,mhartid
-    80007c50:	0007879b          	sext.w	a5,a5
-    80007c54:	00078213          	mv	tp,a5
-    80007c58:	30200073          	mret
-    80007c5c:	00813403          	ld	s0,8(sp)
-    80007c60:	01010113          	addi	sp,sp,16
-    80007c64:	00008067          	ret
+0000000080007b6c <start>:
+    80007b6c:	ff010113          	addi	sp,sp,-16
+    80007b70:	00813423          	sd	s0,8(sp)
+    80007b74:	01010413          	addi	s0,sp,16
+    80007b78:	300027f3          	csrr	a5,mstatus
+    80007b7c:	ffffe737          	lui	a4,0xffffe
+    80007b80:	7ff70713          	addi	a4,a4,2047 # ffffffffffffe7ff <end+0xffffffff7fff02af>
+    80007b84:	00e7f7b3          	and	a5,a5,a4
+    80007b88:	00001737          	lui	a4,0x1
+    80007b8c:	80070713          	addi	a4,a4,-2048 # 800 <_entry-0x7ffff800>
+    80007b90:	00e7e7b3          	or	a5,a5,a4
+    80007b94:	30079073          	csrw	mstatus,a5
+    80007b98:	00000797          	auipc	a5,0x0
+    80007b9c:	16078793          	addi	a5,a5,352 # 80007cf8 <system_main>
+    80007ba0:	34179073          	csrw	mepc,a5
+    80007ba4:	00000793          	li	a5,0
+    80007ba8:	18079073          	csrw	satp,a5
+    80007bac:	000107b7          	lui	a5,0x10
+    80007bb0:	fff78793          	addi	a5,a5,-1 # ffff <_entry-0x7fff0001>
+    80007bb4:	30279073          	csrw	medeleg,a5
+    80007bb8:	30379073          	csrw	mideleg,a5
+    80007bbc:	104027f3          	csrr	a5,sie
+    80007bc0:	2227e793          	ori	a5,a5,546
+    80007bc4:	10479073          	csrw	sie,a5
+    80007bc8:	fff00793          	li	a5,-1
+    80007bcc:	00a7d793          	srli	a5,a5,0xa
+    80007bd0:	3b079073          	csrw	pmpaddr0,a5
+    80007bd4:	00f00793          	li	a5,15
+    80007bd8:	3a079073          	csrw	pmpcfg0,a5
+    80007bdc:	f14027f3          	csrr	a5,mhartid
+    80007be0:	0200c737          	lui	a4,0x200c
+    80007be4:	ff873583          	ld	a1,-8(a4) # 200bff8 <_entry-0x7dff4008>
+    80007be8:	0007869b          	sext.w	a3,a5
+    80007bec:	00269713          	slli	a4,a3,0x2
+    80007bf0:	000f4637          	lui	a2,0xf4
+    80007bf4:	24060613          	addi	a2,a2,576 # f4240 <_entry-0x7ff0bdc0>
+    80007bf8:	00d70733          	add	a4,a4,a3
+    80007bfc:	0037979b          	slliw	a5,a5,0x3
+    80007c00:	020046b7          	lui	a3,0x2004
+    80007c04:	00d787b3          	add	a5,a5,a3
+    80007c08:	00c585b3          	add	a1,a1,a2
+    80007c0c:	00371693          	slli	a3,a4,0x3
+    80007c10:	00005717          	auipc	a4,0x5
+    80007c14:	6e070713          	addi	a4,a4,1760 # 8000d2f0 <timer_scratch>
+    80007c18:	00b7b023          	sd	a1,0(a5)
+    80007c1c:	00d70733          	add	a4,a4,a3
+    80007c20:	00f73c23          	sd	a5,24(a4)
+    80007c24:	02c73023          	sd	a2,32(a4)
+    80007c28:	34071073          	csrw	mscratch,a4
+    80007c2c:	00000797          	auipc	a5,0x0
+    80007c30:	6e478793          	addi	a5,a5,1764 # 80008310 <timervec>
+    80007c34:	30579073          	csrw	mtvec,a5
+    80007c38:	300027f3          	csrr	a5,mstatus
+    80007c3c:	0087e793          	ori	a5,a5,8
+    80007c40:	30079073          	csrw	mstatus,a5
+    80007c44:	304027f3          	csrr	a5,mie
+    80007c48:	0807e793          	ori	a5,a5,128
+    80007c4c:	30479073          	csrw	mie,a5
+    80007c50:	f14027f3          	csrr	a5,mhartid
+    80007c54:	0007879b          	sext.w	a5,a5
+    80007c58:	00078213          	mv	tp,a5
+    80007c5c:	30200073          	mret
+    80007c60:	00813403          	ld	s0,8(sp)
+    80007c64:	01010113          	addi	sp,sp,16
+    80007c68:	00008067          	ret
 
-0000000080007c68 <timerinit>:
-    80007c68:	ff010113          	addi	sp,sp,-16
-    80007c6c:	00813423          	sd	s0,8(sp)
-    80007c70:	01010413          	addi	s0,sp,16
-    80007c74:	f14027f3          	csrr	a5,mhartid
-    80007c78:	0200c737          	lui	a4,0x200c
-    80007c7c:	ff873583          	ld	a1,-8(a4) # 200bff8 <_entry-0x7dff4008>
-    80007c80:	0007869b          	sext.w	a3,a5
-    80007c84:	00269713          	slli	a4,a3,0x2
-    80007c88:	000f4637          	lui	a2,0xf4
-    80007c8c:	24060613          	addi	a2,a2,576 # f4240 <_entry-0x7ff0bdc0>
-    80007c90:	00d70733          	add	a4,a4,a3
-    80007c94:	0037979b          	slliw	a5,a5,0x3
-    80007c98:	020046b7          	lui	a3,0x2004
-    80007c9c:	00d787b3          	add	a5,a5,a3
-    80007ca0:	00c585b3          	add	a1,a1,a2
-    80007ca4:	00371693          	slli	a3,a4,0x3
-    80007ca8:	00005717          	auipc	a4,0x5
-    80007cac:	5f870713          	addi	a4,a4,1528 # 8000d2a0 <timer_scratch>
-    80007cb0:	00b7b023          	sd	a1,0(a5)
-    80007cb4:	00d70733          	add	a4,a4,a3
-    80007cb8:	00f73c23          	sd	a5,24(a4)
-    80007cbc:	02c73023          	sd	a2,32(a4)
-    80007cc0:	34071073          	csrw	mscratch,a4
-    80007cc4:	00000797          	auipc	a5,0x0
-    80007cc8:	64c78793          	addi	a5,a5,1612 # 80008310 <timervec>
-    80007ccc:	30579073          	csrw	mtvec,a5
-    80007cd0:	300027f3          	csrr	a5,mstatus
-    80007cd4:	0087e793          	ori	a5,a5,8
-    80007cd8:	30079073          	csrw	mstatus,a5
-    80007cdc:	304027f3          	csrr	a5,mie
-    80007ce0:	0807e793          	ori	a5,a5,128
-    80007ce4:	30479073          	csrw	mie,a5
-    80007ce8:	00813403          	ld	s0,8(sp)
-    80007cec:	01010113          	addi	sp,sp,16
-    80007cf0:	00008067          	ret
+0000000080007c6c <timerinit>:
+    80007c6c:	ff010113          	addi	sp,sp,-16
+    80007c70:	00813423          	sd	s0,8(sp)
+    80007c74:	01010413          	addi	s0,sp,16
+    80007c78:	f14027f3          	csrr	a5,mhartid
+    80007c7c:	0200c737          	lui	a4,0x200c
+    80007c80:	ff873583          	ld	a1,-8(a4) # 200bff8 <_entry-0x7dff4008>
+    80007c84:	0007869b          	sext.w	a3,a5
+    80007c88:	00269713          	slli	a4,a3,0x2
+    80007c8c:	000f4637          	lui	a2,0xf4
+    80007c90:	24060613          	addi	a2,a2,576 # f4240 <_entry-0x7ff0bdc0>
+    80007c94:	00d70733          	add	a4,a4,a3
+    80007c98:	0037979b          	slliw	a5,a5,0x3
+    80007c9c:	020046b7          	lui	a3,0x2004
+    80007ca0:	00d787b3          	add	a5,a5,a3
+    80007ca4:	00c585b3          	add	a1,a1,a2
+    80007ca8:	00371693          	slli	a3,a4,0x3
+    80007cac:	00005717          	auipc	a4,0x5
+    80007cb0:	64470713          	addi	a4,a4,1604 # 8000d2f0 <timer_scratch>
+    80007cb4:	00b7b023          	sd	a1,0(a5)
+    80007cb8:	00d70733          	add	a4,a4,a3
+    80007cbc:	00f73c23          	sd	a5,24(a4)
+    80007cc0:	02c73023          	sd	a2,32(a4)
+    80007cc4:	34071073          	csrw	mscratch,a4
+    80007cc8:	00000797          	auipc	a5,0x0
+    80007ccc:	64878793          	addi	a5,a5,1608 # 80008310 <timervec>
+    80007cd0:	30579073          	csrw	mtvec,a5
+    80007cd4:	300027f3          	csrr	a5,mstatus
+    80007cd8:	0087e793          	ori	a5,a5,8
+    80007cdc:	30079073          	csrw	mstatus,a5
+    80007ce0:	304027f3          	csrr	a5,mie
+    80007ce4:	0807e793          	ori	a5,a5,128
+    80007ce8:	30479073          	csrw	mie,a5
+    80007cec:	00813403          	ld	s0,8(sp)
+    80007cf0:	01010113          	addi	sp,sp,16
+    80007cf4:	00008067          	ret
 
-0000000080007cf4 <system_main>:
-    80007cf4:	fe010113          	addi	sp,sp,-32
-    80007cf8:	00813823          	sd	s0,16(sp)
-    80007cfc:	00913423          	sd	s1,8(sp)
-    80007d00:	00113c23          	sd	ra,24(sp)
-    80007d04:	02010413          	addi	s0,sp,32
-    80007d08:	00000097          	auipc	ra,0x0
-    80007d0c:	0c4080e7          	jalr	196(ra) # 80007dcc <cpuid>
-    80007d10:	00005497          	auipc	s1,0x5
-    80007d14:	3d048493          	addi	s1,s1,976 # 8000d0e0 <started>
-    80007d18:	02050263          	beqz	a0,80007d3c <system_main+0x48>
-    80007d1c:	0004a783          	lw	a5,0(s1)
-    80007d20:	0007879b          	sext.w	a5,a5
-    80007d24:	fe078ce3          	beqz	a5,80007d1c <system_main+0x28>
-    80007d28:	0ff0000f          	fence
-    80007d2c:	00003517          	auipc	a0,0x3
-    80007d30:	aac50513          	addi	a0,a0,-1364 # 8000a7d8 <CONSOLE_STATUS+0x7c8>
-    80007d34:	00001097          	auipc	ra,0x1
-    80007d38:	a78080e7          	jalr	-1416(ra) # 800087ac <panic>
-    80007d3c:	00001097          	auipc	ra,0x1
-    80007d40:	9cc080e7          	jalr	-1588(ra) # 80008708 <consoleinit>
-    80007d44:	00001097          	auipc	ra,0x1
-    80007d48:	158080e7          	jalr	344(ra) # 80008e9c <printfinit>
-    80007d4c:	00003517          	auipc	a0,0x3
-    80007d50:	91450513          	addi	a0,a0,-1772 # 8000a660 <CONSOLE_STATUS+0x650>
-    80007d54:	00001097          	auipc	ra,0x1
-    80007d58:	ab4080e7          	jalr	-1356(ra) # 80008808 <__printf>
-    80007d5c:	00003517          	auipc	a0,0x3
-    80007d60:	a4c50513          	addi	a0,a0,-1460 # 8000a7a8 <CONSOLE_STATUS+0x798>
-    80007d64:	00001097          	auipc	ra,0x1
-    80007d68:	aa4080e7          	jalr	-1372(ra) # 80008808 <__printf>
-    80007d6c:	00003517          	auipc	a0,0x3
-    80007d70:	8f450513          	addi	a0,a0,-1804 # 8000a660 <CONSOLE_STATUS+0x650>
-    80007d74:	00001097          	auipc	ra,0x1
-    80007d78:	a94080e7          	jalr	-1388(ra) # 80008808 <__printf>
-    80007d7c:	00001097          	auipc	ra,0x1
-    80007d80:	4ac080e7          	jalr	1196(ra) # 80009228 <kinit>
-    80007d84:	00000097          	auipc	ra,0x0
-    80007d88:	148080e7          	jalr	328(ra) # 80007ecc <trapinit>
-    80007d8c:	00000097          	auipc	ra,0x0
-    80007d90:	16c080e7          	jalr	364(ra) # 80007ef8 <trapinithart>
-    80007d94:	00000097          	auipc	ra,0x0
-    80007d98:	5bc080e7          	jalr	1468(ra) # 80008350 <plicinit>
-    80007d9c:	00000097          	auipc	ra,0x0
-    80007da0:	5dc080e7          	jalr	1500(ra) # 80008378 <plicinithart>
-    80007da4:	00000097          	auipc	ra,0x0
-    80007da8:	078080e7          	jalr	120(ra) # 80007e1c <userinit>
-    80007dac:	0ff0000f          	fence
-    80007db0:	00100793          	li	a5,1
-    80007db4:	00003517          	auipc	a0,0x3
-    80007db8:	a0c50513          	addi	a0,a0,-1524 # 8000a7c0 <CONSOLE_STATUS+0x7b0>
-    80007dbc:	00f4a023          	sw	a5,0(s1)
-    80007dc0:	00001097          	auipc	ra,0x1
-    80007dc4:	a48080e7          	jalr	-1464(ra) # 80008808 <__printf>
-    80007dc8:	0000006f          	j	80007dc8 <system_main+0xd4>
+0000000080007cf8 <system_main>:
+    80007cf8:	fe010113          	addi	sp,sp,-32
+    80007cfc:	00813823          	sd	s0,16(sp)
+    80007d00:	00913423          	sd	s1,8(sp)
+    80007d04:	00113c23          	sd	ra,24(sp)
+    80007d08:	02010413          	addi	s0,sp,32
+    80007d0c:	00000097          	auipc	ra,0x0
+    80007d10:	0c4080e7          	jalr	196(ra) # 80007dd0 <cpuid>
+    80007d14:	00005497          	auipc	s1,0x5
+    80007d18:	3fc48493          	addi	s1,s1,1020 # 8000d110 <started>
+    80007d1c:	02050263          	beqz	a0,80007d40 <system_main+0x48>
+    80007d20:	0004a783          	lw	a5,0(s1)
+    80007d24:	0007879b          	sext.w	a5,a5
+    80007d28:	fe078ce3          	beqz	a5,80007d20 <system_main+0x28>
+    80007d2c:	0ff0000f          	fence
+    80007d30:	00003517          	auipc	a0,0x3
+    80007d34:	aa850513          	addi	a0,a0,-1368 # 8000a7d8 <CONSOLE_STATUS+0x7c8>
+    80007d38:	00001097          	auipc	ra,0x1
+    80007d3c:	a74080e7          	jalr	-1420(ra) # 800087ac <panic>
+    80007d40:	00001097          	auipc	ra,0x1
+    80007d44:	9c8080e7          	jalr	-1592(ra) # 80008708 <consoleinit>
+    80007d48:	00001097          	auipc	ra,0x1
+    80007d4c:	154080e7          	jalr	340(ra) # 80008e9c <printfinit>
+    80007d50:	00003517          	auipc	a0,0x3
+    80007d54:	91050513          	addi	a0,a0,-1776 # 8000a660 <CONSOLE_STATUS+0x650>
+    80007d58:	00001097          	auipc	ra,0x1
+    80007d5c:	ab0080e7          	jalr	-1360(ra) # 80008808 <__printf>
+    80007d60:	00003517          	auipc	a0,0x3
+    80007d64:	a4850513          	addi	a0,a0,-1464 # 8000a7a8 <CONSOLE_STATUS+0x798>
+    80007d68:	00001097          	auipc	ra,0x1
+    80007d6c:	aa0080e7          	jalr	-1376(ra) # 80008808 <__printf>
+    80007d70:	00003517          	auipc	a0,0x3
+    80007d74:	8f050513          	addi	a0,a0,-1808 # 8000a660 <CONSOLE_STATUS+0x650>
+    80007d78:	00001097          	auipc	ra,0x1
+    80007d7c:	a90080e7          	jalr	-1392(ra) # 80008808 <__printf>
+    80007d80:	00001097          	auipc	ra,0x1
+    80007d84:	4a8080e7          	jalr	1192(ra) # 80009228 <kinit>
+    80007d88:	00000097          	auipc	ra,0x0
+    80007d8c:	148080e7          	jalr	328(ra) # 80007ed0 <trapinit>
+    80007d90:	00000097          	auipc	ra,0x0
+    80007d94:	16c080e7          	jalr	364(ra) # 80007efc <trapinithart>
+    80007d98:	00000097          	auipc	ra,0x0
+    80007d9c:	5b8080e7          	jalr	1464(ra) # 80008350 <plicinit>
+    80007da0:	00000097          	auipc	ra,0x0
+    80007da4:	5d8080e7          	jalr	1496(ra) # 80008378 <plicinithart>
+    80007da8:	00000097          	auipc	ra,0x0
+    80007dac:	078080e7          	jalr	120(ra) # 80007e20 <userinit>
+    80007db0:	0ff0000f          	fence
+    80007db4:	00100793          	li	a5,1
+    80007db8:	00003517          	auipc	a0,0x3
+    80007dbc:	a0850513          	addi	a0,a0,-1528 # 8000a7c0 <CONSOLE_STATUS+0x7b0>
+    80007dc0:	00f4a023          	sw	a5,0(s1)
+    80007dc4:	00001097          	auipc	ra,0x1
+    80007dc8:	a44080e7          	jalr	-1468(ra) # 80008808 <__printf>
+    80007dcc:	0000006f          	j	80007dcc <system_main+0xd4>
 
-0000000080007dcc <cpuid>:
-    80007dcc:	ff010113          	addi	sp,sp,-16
-    80007dd0:	00813423          	sd	s0,8(sp)
-    80007dd4:	01010413          	addi	s0,sp,16
-    80007dd8:	00020513          	mv	a0,tp
-    80007ddc:	00813403          	ld	s0,8(sp)
-    80007de0:	0005051b          	sext.w	a0,a0
-    80007de4:	01010113          	addi	sp,sp,16
-    80007de8:	00008067          	ret
+0000000080007dd0 <cpuid>:
+    80007dd0:	ff010113          	addi	sp,sp,-16
+    80007dd4:	00813423          	sd	s0,8(sp)
+    80007dd8:	01010413          	addi	s0,sp,16
+    80007ddc:	00020513          	mv	a0,tp
+    80007de0:	00813403          	ld	s0,8(sp)
+    80007de4:	0005051b          	sext.w	a0,a0
+    80007de8:	01010113          	addi	sp,sp,16
+    80007dec:	00008067          	ret
 
-0000000080007dec <mycpu>:
-    80007dec:	ff010113          	addi	sp,sp,-16
-    80007df0:	00813423          	sd	s0,8(sp)
-    80007df4:	01010413          	addi	s0,sp,16
-    80007df8:	00020793          	mv	a5,tp
-    80007dfc:	00813403          	ld	s0,8(sp)
-    80007e00:	0007879b          	sext.w	a5,a5
-    80007e04:	00779793          	slli	a5,a5,0x7
-    80007e08:	00006517          	auipc	a0,0x6
-    80007e0c:	4c850513          	addi	a0,a0,1224 # 8000e2d0 <cpus>
-    80007e10:	00f50533          	add	a0,a0,a5
-    80007e14:	01010113          	addi	sp,sp,16
-    80007e18:	00008067          	ret
+0000000080007df0 <mycpu>:
+    80007df0:	ff010113          	addi	sp,sp,-16
+    80007df4:	00813423          	sd	s0,8(sp)
+    80007df8:	01010413          	addi	s0,sp,16
+    80007dfc:	00020793          	mv	a5,tp
+    80007e00:	00813403          	ld	s0,8(sp)
+    80007e04:	0007879b          	sext.w	a5,a5
+    80007e08:	00779793          	slli	a5,a5,0x7
+    80007e0c:	00006517          	auipc	a0,0x6
+    80007e10:	51450513          	addi	a0,a0,1300 # 8000e320 <cpus>
+    80007e14:	00f50533          	add	a0,a0,a5
+    80007e18:	01010113          	addi	sp,sp,16
+    80007e1c:	00008067          	ret
 
-0000000080007e1c <userinit>:
-    80007e1c:	ff010113          	addi	sp,sp,-16
-    80007e20:	00813423          	sd	s0,8(sp)
-    80007e24:	01010413          	addi	s0,sp,16
-    80007e28:	00813403          	ld	s0,8(sp)
-    80007e2c:	01010113          	addi	sp,sp,16
-    80007e30:	ffffa317          	auipc	t1,0xffffa
-    80007e34:	4b030067          	jr	1200(t1) # 800022e0 <main>
+0000000080007e20 <userinit>:
+    80007e20:	ff010113          	addi	sp,sp,-16
+    80007e24:	00813423          	sd	s0,8(sp)
+    80007e28:	01010413          	addi	s0,sp,16
+    80007e2c:	00813403          	ld	s0,8(sp)
+    80007e30:	01010113          	addi	sp,sp,16
+    80007e34:	ffffa317          	auipc	t1,0xffffa
+    80007e38:	4a030067          	jr	1184(t1) # 800022d4 <main>
 
-0000000080007e38 <either_copyout>:
-    80007e38:	ff010113          	addi	sp,sp,-16
-    80007e3c:	00813023          	sd	s0,0(sp)
-    80007e40:	00113423          	sd	ra,8(sp)
-    80007e44:	01010413          	addi	s0,sp,16
-    80007e48:	02051663          	bnez	a0,80007e74 <either_copyout+0x3c>
-    80007e4c:	00058513          	mv	a0,a1
-    80007e50:	00060593          	mv	a1,a2
-    80007e54:	0006861b          	sext.w	a2,a3
-    80007e58:	00002097          	auipc	ra,0x2
-    80007e5c:	c5c080e7          	jalr	-932(ra) # 80009ab4 <__memmove>
-    80007e60:	00813083          	ld	ra,8(sp)
-    80007e64:	00013403          	ld	s0,0(sp)
-    80007e68:	00000513          	li	a0,0
-    80007e6c:	01010113          	addi	sp,sp,16
-    80007e70:	00008067          	ret
-    80007e74:	00003517          	auipc	a0,0x3
-    80007e78:	98c50513          	addi	a0,a0,-1652 # 8000a800 <CONSOLE_STATUS+0x7f0>
-    80007e7c:	00001097          	auipc	ra,0x1
-    80007e80:	930080e7          	jalr	-1744(ra) # 800087ac <panic>
+0000000080007e3c <either_copyout>:
+    80007e3c:	ff010113          	addi	sp,sp,-16
+    80007e40:	00813023          	sd	s0,0(sp)
+    80007e44:	00113423          	sd	ra,8(sp)
+    80007e48:	01010413          	addi	s0,sp,16
+    80007e4c:	02051663          	bnez	a0,80007e78 <either_copyout+0x3c>
+    80007e50:	00058513          	mv	a0,a1
+    80007e54:	00060593          	mv	a1,a2
+    80007e58:	0006861b          	sext.w	a2,a3
+    80007e5c:	00002097          	auipc	ra,0x2
+    80007e60:	c58080e7          	jalr	-936(ra) # 80009ab4 <__memmove>
+    80007e64:	00813083          	ld	ra,8(sp)
+    80007e68:	00013403          	ld	s0,0(sp)
+    80007e6c:	00000513          	li	a0,0
+    80007e70:	01010113          	addi	sp,sp,16
+    80007e74:	00008067          	ret
+    80007e78:	00003517          	auipc	a0,0x3
+    80007e7c:	98850513          	addi	a0,a0,-1656 # 8000a800 <CONSOLE_STATUS+0x7f0>
+    80007e80:	00001097          	auipc	ra,0x1
+    80007e84:	92c080e7          	jalr	-1748(ra) # 800087ac <panic>
 
-0000000080007e84 <either_copyin>:
-    80007e84:	ff010113          	addi	sp,sp,-16
-    80007e88:	00813023          	sd	s0,0(sp)
-    80007e8c:	00113423          	sd	ra,8(sp)
-    80007e90:	01010413          	addi	s0,sp,16
-    80007e94:	02059463          	bnez	a1,80007ebc <either_copyin+0x38>
-    80007e98:	00060593          	mv	a1,a2
-    80007e9c:	0006861b          	sext.w	a2,a3
-    80007ea0:	00002097          	auipc	ra,0x2
-    80007ea4:	c14080e7          	jalr	-1004(ra) # 80009ab4 <__memmove>
-    80007ea8:	00813083          	ld	ra,8(sp)
-    80007eac:	00013403          	ld	s0,0(sp)
-    80007eb0:	00000513          	li	a0,0
-    80007eb4:	01010113          	addi	sp,sp,16
-    80007eb8:	00008067          	ret
-    80007ebc:	00003517          	auipc	a0,0x3
-    80007ec0:	96c50513          	addi	a0,a0,-1684 # 8000a828 <CONSOLE_STATUS+0x818>
-    80007ec4:	00001097          	auipc	ra,0x1
-    80007ec8:	8e8080e7          	jalr	-1816(ra) # 800087ac <panic>
+0000000080007e88 <either_copyin>:
+    80007e88:	ff010113          	addi	sp,sp,-16
+    80007e8c:	00813023          	sd	s0,0(sp)
+    80007e90:	00113423          	sd	ra,8(sp)
+    80007e94:	01010413          	addi	s0,sp,16
+    80007e98:	02059463          	bnez	a1,80007ec0 <either_copyin+0x38>
+    80007e9c:	00060593          	mv	a1,a2
+    80007ea0:	0006861b          	sext.w	a2,a3
+    80007ea4:	00002097          	auipc	ra,0x2
+    80007ea8:	c10080e7          	jalr	-1008(ra) # 80009ab4 <__memmove>
+    80007eac:	00813083          	ld	ra,8(sp)
+    80007eb0:	00013403          	ld	s0,0(sp)
+    80007eb4:	00000513          	li	a0,0
+    80007eb8:	01010113          	addi	sp,sp,16
+    80007ebc:	00008067          	ret
+    80007ec0:	00003517          	auipc	a0,0x3
+    80007ec4:	96850513          	addi	a0,a0,-1688 # 8000a828 <CONSOLE_STATUS+0x818>
+    80007ec8:	00001097          	auipc	ra,0x1
+    80007ecc:	8e4080e7          	jalr	-1820(ra) # 800087ac <panic>
 
-0000000080007ecc <trapinit>:
-    80007ecc:	ff010113          	addi	sp,sp,-16
-    80007ed0:	00813423          	sd	s0,8(sp)
-    80007ed4:	01010413          	addi	s0,sp,16
-    80007ed8:	00813403          	ld	s0,8(sp)
-    80007edc:	00003597          	auipc	a1,0x3
-    80007ee0:	97458593          	addi	a1,a1,-1676 # 8000a850 <CONSOLE_STATUS+0x840>
-    80007ee4:	00006517          	auipc	a0,0x6
-    80007ee8:	46c50513          	addi	a0,a0,1132 # 8000e350 <tickslock>
-    80007eec:	01010113          	addi	sp,sp,16
-    80007ef0:	00001317          	auipc	t1,0x1
-    80007ef4:	5c830067          	jr	1480(t1) # 800094b8 <initlock>
+0000000080007ed0 <trapinit>:
+    80007ed0:	ff010113          	addi	sp,sp,-16
+    80007ed4:	00813423          	sd	s0,8(sp)
+    80007ed8:	01010413          	addi	s0,sp,16
+    80007edc:	00813403          	ld	s0,8(sp)
+    80007ee0:	00003597          	auipc	a1,0x3
+    80007ee4:	97058593          	addi	a1,a1,-1680 # 8000a850 <CONSOLE_STATUS+0x840>
+    80007ee8:	00006517          	auipc	a0,0x6
+    80007eec:	4b850513          	addi	a0,a0,1208 # 8000e3a0 <tickslock>
+    80007ef0:	01010113          	addi	sp,sp,16
+    80007ef4:	00001317          	auipc	t1,0x1
+    80007ef8:	5c430067          	jr	1476(t1) # 800094b8 <initlock>
 
-0000000080007ef8 <trapinithart>:
-    80007ef8:	ff010113          	addi	sp,sp,-16
-    80007efc:	00813423          	sd	s0,8(sp)
-    80007f00:	01010413          	addi	s0,sp,16
-    80007f04:	00000797          	auipc	a5,0x0
-    80007f08:	2fc78793          	addi	a5,a5,764 # 80008200 <kernelvec>
-    80007f0c:	10579073          	csrw	stvec,a5
-    80007f10:	00813403          	ld	s0,8(sp)
-    80007f14:	01010113          	addi	sp,sp,16
-    80007f18:	00008067          	ret
+0000000080007efc <trapinithart>:
+    80007efc:	ff010113          	addi	sp,sp,-16
+    80007f00:	00813423          	sd	s0,8(sp)
+    80007f04:	01010413          	addi	s0,sp,16
+    80007f08:	00000797          	auipc	a5,0x0
+    80007f0c:	2f878793          	addi	a5,a5,760 # 80008200 <kernelvec>
+    80007f10:	10579073          	csrw	stvec,a5
+    80007f14:	00813403          	ld	s0,8(sp)
+    80007f18:	01010113          	addi	sp,sp,16
+    80007f1c:	00008067          	ret
 
-0000000080007f1c <usertrap>:
-    80007f1c:	ff010113          	addi	sp,sp,-16
-    80007f20:	00813423          	sd	s0,8(sp)
-    80007f24:	01010413          	addi	s0,sp,16
-    80007f28:	00813403          	ld	s0,8(sp)
-    80007f2c:	01010113          	addi	sp,sp,16
-    80007f30:	00008067          	ret
+0000000080007f20 <usertrap>:
+    80007f20:	ff010113          	addi	sp,sp,-16
+    80007f24:	00813423          	sd	s0,8(sp)
+    80007f28:	01010413          	addi	s0,sp,16
+    80007f2c:	00813403          	ld	s0,8(sp)
+    80007f30:	01010113          	addi	sp,sp,16
+    80007f34:	00008067          	ret
 
-0000000080007f34 <usertrapret>:
-    80007f34:	ff010113          	addi	sp,sp,-16
-    80007f38:	00813423          	sd	s0,8(sp)
-    80007f3c:	01010413          	addi	s0,sp,16
-    80007f40:	00813403          	ld	s0,8(sp)
-    80007f44:	01010113          	addi	sp,sp,16
-    80007f48:	00008067          	ret
+0000000080007f38 <usertrapret>:
+    80007f38:	ff010113          	addi	sp,sp,-16
+    80007f3c:	00813423          	sd	s0,8(sp)
+    80007f40:	01010413          	addi	s0,sp,16
+    80007f44:	00813403          	ld	s0,8(sp)
+    80007f48:	01010113          	addi	sp,sp,16
+    80007f4c:	00008067          	ret
 
-0000000080007f4c <kerneltrap>:
-    80007f4c:	fe010113          	addi	sp,sp,-32
-    80007f50:	00813823          	sd	s0,16(sp)
-    80007f54:	00113c23          	sd	ra,24(sp)
-    80007f58:	00913423          	sd	s1,8(sp)
-    80007f5c:	02010413          	addi	s0,sp,32
-    80007f60:	142025f3          	csrr	a1,scause
-    80007f64:	100027f3          	csrr	a5,sstatus
-    80007f68:	0027f793          	andi	a5,a5,2
-    80007f6c:	10079c63          	bnez	a5,80008084 <kerneltrap+0x138>
-    80007f70:	142027f3          	csrr	a5,scause
-    80007f74:	0207ce63          	bltz	a5,80007fb0 <kerneltrap+0x64>
-    80007f78:	00003517          	auipc	a0,0x3
-    80007f7c:	92050513          	addi	a0,a0,-1760 # 8000a898 <CONSOLE_STATUS+0x888>
-    80007f80:	00001097          	auipc	ra,0x1
-    80007f84:	888080e7          	jalr	-1912(ra) # 80008808 <__printf>
-    80007f88:	141025f3          	csrr	a1,sepc
-    80007f8c:	14302673          	csrr	a2,stval
-    80007f90:	00003517          	auipc	a0,0x3
-    80007f94:	91850513          	addi	a0,a0,-1768 # 8000a8a8 <CONSOLE_STATUS+0x898>
-    80007f98:	00001097          	auipc	ra,0x1
-    80007f9c:	870080e7          	jalr	-1936(ra) # 80008808 <__printf>
-    80007fa0:	00003517          	auipc	a0,0x3
-    80007fa4:	92050513          	addi	a0,a0,-1760 # 8000a8c0 <CONSOLE_STATUS+0x8b0>
-    80007fa8:	00001097          	auipc	ra,0x1
-    80007fac:	804080e7          	jalr	-2044(ra) # 800087ac <panic>
-    80007fb0:	0ff7f713          	andi	a4,a5,255
-    80007fb4:	00900693          	li	a3,9
-    80007fb8:	04d70063          	beq	a4,a3,80007ff8 <kerneltrap+0xac>
-    80007fbc:	fff00713          	li	a4,-1
-    80007fc0:	03f71713          	slli	a4,a4,0x3f
-    80007fc4:	00170713          	addi	a4,a4,1
-    80007fc8:	fae798e3          	bne	a5,a4,80007f78 <kerneltrap+0x2c>
-    80007fcc:	00000097          	auipc	ra,0x0
-    80007fd0:	e00080e7          	jalr	-512(ra) # 80007dcc <cpuid>
-    80007fd4:	06050663          	beqz	a0,80008040 <kerneltrap+0xf4>
-    80007fd8:	144027f3          	csrr	a5,sip
-    80007fdc:	ffd7f793          	andi	a5,a5,-3
-    80007fe0:	14479073          	csrw	sip,a5
-    80007fe4:	01813083          	ld	ra,24(sp)
-    80007fe8:	01013403          	ld	s0,16(sp)
-    80007fec:	00813483          	ld	s1,8(sp)
-    80007ff0:	02010113          	addi	sp,sp,32
-    80007ff4:	00008067          	ret
-    80007ff8:	00000097          	auipc	ra,0x0
-    80007ffc:	3cc080e7          	jalr	972(ra) # 800083c4 <plic_claim>
-    80008000:	00a00793          	li	a5,10
-    80008004:	00050493          	mv	s1,a0
-    80008008:	06f50863          	beq	a0,a5,80008078 <kerneltrap+0x12c>
-    8000800c:	fc050ce3          	beqz	a0,80007fe4 <kerneltrap+0x98>
-    80008010:	00050593          	mv	a1,a0
-    80008014:	00003517          	auipc	a0,0x3
-    80008018:	86450513          	addi	a0,a0,-1948 # 8000a878 <CONSOLE_STATUS+0x868>
-    8000801c:	00000097          	auipc	ra,0x0
-    80008020:	7ec080e7          	jalr	2028(ra) # 80008808 <__printf>
-    80008024:	01013403          	ld	s0,16(sp)
-    80008028:	01813083          	ld	ra,24(sp)
-    8000802c:	00048513          	mv	a0,s1
-    80008030:	00813483          	ld	s1,8(sp)
-    80008034:	02010113          	addi	sp,sp,32
-    80008038:	00000317          	auipc	t1,0x0
-    8000803c:	3c430067          	jr	964(t1) # 800083fc <plic_complete>
-    80008040:	00006517          	auipc	a0,0x6
-    80008044:	31050513          	addi	a0,a0,784 # 8000e350 <tickslock>
-    80008048:	00001097          	auipc	ra,0x1
-    8000804c:	494080e7          	jalr	1172(ra) # 800094dc <acquire>
-    80008050:	00005717          	auipc	a4,0x5
-    80008054:	09470713          	addi	a4,a4,148 # 8000d0e4 <ticks>
-    80008058:	00072783          	lw	a5,0(a4)
-    8000805c:	00006517          	auipc	a0,0x6
-    80008060:	2f450513          	addi	a0,a0,756 # 8000e350 <tickslock>
-    80008064:	0017879b          	addiw	a5,a5,1
-    80008068:	00f72023          	sw	a5,0(a4)
-    8000806c:	00001097          	auipc	ra,0x1
-    80008070:	53c080e7          	jalr	1340(ra) # 800095a8 <release>
-    80008074:	f65ff06f          	j	80007fd8 <kerneltrap+0x8c>
-    80008078:	00001097          	auipc	ra,0x1
-    8000807c:	098080e7          	jalr	152(ra) # 80009110 <uartintr>
-    80008080:	fa5ff06f          	j	80008024 <kerneltrap+0xd8>
-    80008084:	00002517          	auipc	a0,0x2
-    80008088:	7d450513          	addi	a0,a0,2004 # 8000a858 <CONSOLE_STATUS+0x848>
-    8000808c:	00000097          	auipc	ra,0x0
-    80008090:	720080e7          	jalr	1824(ra) # 800087ac <panic>
+0000000080007f50 <kerneltrap>:
+    80007f50:	fe010113          	addi	sp,sp,-32
+    80007f54:	00813823          	sd	s0,16(sp)
+    80007f58:	00113c23          	sd	ra,24(sp)
+    80007f5c:	00913423          	sd	s1,8(sp)
+    80007f60:	02010413          	addi	s0,sp,32
+    80007f64:	142025f3          	csrr	a1,scause
+    80007f68:	100027f3          	csrr	a5,sstatus
+    80007f6c:	0027f793          	andi	a5,a5,2
+    80007f70:	10079c63          	bnez	a5,80008088 <kerneltrap+0x138>
+    80007f74:	142027f3          	csrr	a5,scause
+    80007f78:	0207ce63          	bltz	a5,80007fb4 <kerneltrap+0x64>
+    80007f7c:	00003517          	auipc	a0,0x3
+    80007f80:	91c50513          	addi	a0,a0,-1764 # 8000a898 <CONSOLE_STATUS+0x888>
+    80007f84:	00001097          	auipc	ra,0x1
+    80007f88:	884080e7          	jalr	-1916(ra) # 80008808 <__printf>
+    80007f8c:	141025f3          	csrr	a1,sepc
+    80007f90:	14302673          	csrr	a2,stval
+    80007f94:	00003517          	auipc	a0,0x3
+    80007f98:	91450513          	addi	a0,a0,-1772 # 8000a8a8 <CONSOLE_STATUS+0x898>
+    80007f9c:	00001097          	auipc	ra,0x1
+    80007fa0:	86c080e7          	jalr	-1940(ra) # 80008808 <__printf>
+    80007fa4:	00003517          	auipc	a0,0x3
+    80007fa8:	91c50513          	addi	a0,a0,-1764 # 8000a8c0 <CONSOLE_STATUS+0x8b0>
+    80007fac:	00001097          	auipc	ra,0x1
+    80007fb0:	800080e7          	jalr	-2048(ra) # 800087ac <panic>
+    80007fb4:	0ff7f713          	andi	a4,a5,255
+    80007fb8:	00900693          	li	a3,9
+    80007fbc:	04d70063          	beq	a4,a3,80007ffc <kerneltrap+0xac>
+    80007fc0:	fff00713          	li	a4,-1
+    80007fc4:	03f71713          	slli	a4,a4,0x3f
+    80007fc8:	00170713          	addi	a4,a4,1
+    80007fcc:	fae798e3          	bne	a5,a4,80007f7c <kerneltrap+0x2c>
+    80007fd0:	00000097          	auipc	ra,0x0
+    80007fd4:	e00080e7          	jalr	-512(ra) # 80007dd0 <cpuid>
+    80007fd8:	06050663          	beqz	a0,80008044 <kerneltrap+0xf4>
+    80007fdc:	144027f3          	csrr	a5,sip
+    80007fe0:	ffd7f793          	andi	a5,a5,-3
+    80007fe4:	14479073          	csrw	sip,a5
+    80007fe8:	01813083          	ld	ra,24(sp)
+    80007fec:	01013403          	ld	s0,16(sp)
+    80007ff0:	00813483          	ld	s1,8(sp)
+    80007ff4:	02010113          	addi	sp,sp,32
+    80007ff8:	00008067          	ret
+    80007ffc:	00000097          	auipc	ra,0x0
+    80008000:	3c8080e7          	jalr	968(ra) # 800083c4 <plic_claim>
+    80008004:	00a00793          	li	a5,10
+    80008008:	00050493          	mv	s1,a0
+    8000800c:	06f50863          	beq	a0,a5,8000807c <kerneltrap+0x12c>
+    80008010:	fc050ce3          	beqz	a0,80007fe8 <kerneltrap+0x98>
+    80008014:	00050593          	mv	a1,a0
+    80008018:	00003517          	auipc	a0,0x3
+    8000801c:	86050513          	addi	a0,a0,-1952 # 8000a878 <CONSOLE_STATUS+0x868>
+    80008020:	00000097          	auipc	ra,0x0
+    80008024:	7e8080e7          	jalr	2024(ra) # 80008808 <__printf>
+    80008028:	01013403          	ld	s0,16(sp)
+    8000802c:	01813083          	ld	ra,24(sp)
+    80008030:	00048513          	mv	a0,s1
+    80008034:	00813483          	ld	s1,8(sp)
+    80008038:	02010113          	addi	sp,sp,32
+    8000803c:	00000317          	auipc	t1,0x0
+    80008040:	3c030067          	jr	960(t1) # 800083fc <plic_complete>
+    80008044:	00006517          	auipc	a0,0x6
+    80008048:	35c50513          	addi	a0,a0,860 # 8000e3a0 <tickslock>
+    8000804c:	00001097          	auipc	ra,0x1
+    80008050:	490080e7          	jalr	1168(ra) # 800094dc <acquire>
+    80008054:	00005717          	auipc	a4,0x5
+    80008058:	0c070713          	addi	a4,a4,192 # 8000d114 <ticks>
+    8000805c:	00072783          	lw	a5,0(a4)
+    80008060:	00006517          	auipc	a0,0x6
+    80008064:	34050513          	addi	a0,a0,832 # 8000e3a0 <tickslock>
+    80008068:	0017879b          	addiw	a5,a5,1
+    8000806c:	00f72023          	sw	a5,0(a4)
+    80008070:	00001097          	auipc	ra,0x1
+    80008074:	538080e7          	jalr	1336(ra) # 800095a8 <release>
+    80008078:	f65ff06f          	j	80007fdc <kerneltrap+0x8c>
+    8000807c:	00001097          	auipc	ra,0x1
+    80008080:	094080e7          	jalr	148(ra) # 80009110 <uartintr>
+    80008084:	fa5ff06f          	j	80008028 <kerneltrap+0xd8>
+    80008088:	00002517          	auipc	a0,0x2
+    8000808c:	7d050513          	addi	a0,a0,2000 # 8000a858 <CONSOLE_STATUS+0x848>
+    80008090:	00000097          	auipc	ra,0x0
+    80008094:	71c080e7          	jalr	1820(ra) # 800087ac <panic>
 
-0000000080008094 <clockintr>:
-    80008094:	fe010113          	addi	sp,sp,-32
-    80008098:	00813823          	sd	s0,16(sp)
-    8000809c:	00913423          	sd	s1,8(sp)
-    800080a0:	00113c23          	sd	ra,24(sp)
-    800080a4:	02010413          	addi	s0,sp,32
-    800080a8:	00006497          	auipc	s1,0x6
-    800080ac:	2a848493          	addi	s1,s1,680 # 8000e350 <tickslock>
-    800080b0:	00048513          	mv	a0,s1
-    800080b4:	00001097          	auipc	ra,0x1
-    800080b8:	428080e7          	jalr	1064(ra) # 800094dc <acquire>
-    800080bc:	00005717          	auipc	a4,0x5
-    800080c0:	02870713          	addi	a4,a4,40 # 8000d0e4 <ticks>
-    800080c4:	00072783          	lw	a5,0(a4)
-    800080c8:	01013403          	ld	s0,16(sp)
-    800080cc:	01813083          	ld	ra,24(sp)
-    800080d0:	00048513          	mv	a0,s1
-    800080d4:	0017879b          	addiw	a5,a5,1
-    800080d8:	00813483          	ld	s1,8(sp)
-    800080dc:	00f72023          	sw	a5,0(a4)
-    800080e0:	02010113          	addi	sp,sp,32
-    800080e4:	00001317          	auipc	t1,0x1
-    800080e8:	4c430067          	jr	1220(t1) # 800095a8 <release>
+0000000080008098 <clockintr>:
+    80008098:	fe010113          	addi	sp,sp,-32
+    8000809c:	00813823          	sd	s0,16(sp)
+    800080a0:	00913423          	sd	s1,8(sp)
+    800080a4:	00113c23          	sd	ra,24(sp)
+    800080a8:	02010413          	addi	s0,sp,32
+    800080ac:	00006497          	auipc	s1,0x6
+    800080b0:	2f448493          	addi	s1,s1,756 # 8000e3a0 <tickslock>
+    800080b4:	00048513          	mv	a0,s1
+    800080b8:	00001097          	auipc	ra,0x1
+    800080bc:	424080e7          	jalr	1060(ra) # 800094dc <acquire>
+    800080c0:	00005717          	auipc	a4,0x5
+    800080c4:	05470713          	addi	a4,a4,84 # 8000d114 <ticks>
+    800080c8:	00072783          	lw	a5,0(a4)
+    800080cc:	01013403          	ld	s0,16(sp)
+    800080d0:	01813083          	ld	ra,24(sp)
+    800080d4:	00048513          	mv	a0,s1
+    800080d8:	0017879b          	addiw	a5,a5,1
+    800080dc:	00813483          	ld	s1,8(sp)
+    800080e0:	00f72023          	sw	a5,0(a4)
+    800080e4:	02010113          	addi	sp,sp,32
+    800080e8:	00001317          	auipc	t1,0x1
+    800080ec:	4c030067          	jr	1216(t1) # 800095a8 <release>
 
-00000000800080ec <devintr>:
-    800080ec:	142027f3          	csrr	a5,scause
-    800080f0:	00000513          	li	a0,0
-    800080f4:	0007c463          	bltz	a5,800080fc <devintr+0x10>
-    800080f8:	00008067          	ret
-    800080fc:	fe010113          	addi	sp,sp,-32
-    80008100:	00813823          	sd	s0,16(sp)
-    80008104:	00113c23          	sd	ra,24(sp)
-    80008108:	00913423          	sd	s1,8(sp)
-    8000810c:	02010413          	addi	s0,sp,32
-    80008110:	0ff7f713          	andi	a4,a5,255
-    80008114:	00900693          	li	a3,9
-    80008118:	04d70c63          	beq	a4,a3,80008170 <devintr+0x84>
-    8000811c:	fff00713          	li	a4,-1
-    80008120:	03f71713          	slli	a4,a4,0x3f
-    80008124:	00170713          	addi	a4,a4,1
-    80008128:	00e78c63          	beq	a5,a4,80008140 <devintr+0x54>
-    8000812c:	01813083          	ld	ra,24(sp)
-    80008130:	01013403          	ld	s0,16(sp)
-    80008134:	00813483          	ld	s1,8(sp)
-    80008138:	02010113          	addi	sp,sp,32
-    8000813c:	00008067          	ret
-    80008140:	00000097          	auipc	ra,0x0
-    80008144:	c8c080e7          	jalr	-884(ra) # 80007dcc <cpuid>
-    80008148:	06050663          	beqz	a0,800081b4 <devintr+0xc8>
-    8000814c:	144027f3          	csrr	a5,sip
-    80008150:	ffd7f793          	andi	a5,a5,-3
-    80008154:	14479073          	csrw	sip,a5
-    80008158:	01813083          	ld	ra,24(sp)
-    8000815c:	01013403          	ld	s0,16(sp)
-    80008160:	00813483          	ld	s1,8(sp)
-    80008164:	00200513          	li	a0,2
-    80008168:	02010113          	addi	sp,sp,32
-    8000816c:	00008067          	ret
-    80008170:	00000097          	auipc	ra,0x0
-    80008174:	254080e7          	jalr	596(ra) # 800083c4 <plic_claim>
-    80008178:	00a00793          	li	a5,10
-    8000817c:	00050493          	mv	s1,a0
-    80008180:	06f50663          	beq	a0,a5,800081ec <devintr+0x100>
-    80008184:	00100513          	li	a0,1
-    80008188:	fa0482e3          	beqz	s1,8000812c <devintr+0x40>
-    8000818c:	00048593          	mv	a1,s1
-    80008190:	00002517          	auipc	a0,0x2
-    80008194:	6e850513          	addi	a0,a0,1768 # 8000a878 <CONSOLE_STATUS+0x868>
-    80008198:	00000097          	auipc	ra,0x0
-    8000819c:	670080e7          	jalr	1648(ra) # 80008808 <__printf>
-    800081a0:	00048513          	mv	a0,s1
-    800081a4:	00000097          	auipc	ra,0x0
-    800081a8:	258080e7          	jalr	600(ra) # 800083fc <plic_complete>
-    800081ac:	00100513          	li	a0,1
-    800081b0:	f7dff06f          	j	8000812c <devintr+0x40>
-    800081b4:	00006517          	auipc	a0,0x6
-    800081b8:	19c50513          	addi	a0,a0,412 # 8000e350 <tickslock>
-    800081bc:	00001097          	auipc	ra,0x1
-    800081c0:	320080e7          	jalr	800(ra) # 800094dc <acquire>
-    800081c4:	00005717          	auipc	a4,0x5
-    800081c8:	f2070713          	addi	a4,a4,-224 # 8000d0e4 <ticks>
-    800081cc:	00072783          	lw	a5,0(a4)
-    800081d0:	00006517          	auipc	a0,0x6
-    800081d4:	18050513          	addi	a0,a0,384 # 8000e350 <tickslock>
-    800081d8:	0017879b          	addiw	a5,a5,1
-    800081dc:	00f72023          	sw	a5,0(a4)
-    800081e0:	00001097          	auipc	ra,0x1
-    800081e4:	3c8080e7          	jalr	968(ra) # 800095a8 <release>
-    800081e8:	f65ff06f          	j	8000814c <devintr+0x60>
-    800081ec:	00001097          	auipc	ra,0x1
-    800081f0:	f24080e7          	jalr	-220(ra) # 80009110 <uartintr>
-    800081f4:	fadff06f          	j	800081a0 <devintr+0xb4>
+00000000800080f0 <devintr>:
+    800080f0:	142027f3          	csrr	a5,scause
+    800080f4:	00000513          	li	a0,0
+    800080f8:	0007c463          	bltz	a5,80008100 <devintr+0x10>
+    800080fc:	00008067          	ret
+    80008100:	fe010113          	addi	sp,sp,-32
+    80008104:	00813823          	sd	s0,16(sp)
+    80008108:	00113c23          	sd	ra,24(sp)
+    8000810c:	00913423          	sd	s1,8(sp)
+    80008110:	02010413          	addi	s0,sp,32
+    80008114:	0ff7f713          	andi	a4,a5,255
+    80008118:	00900693          	li	a3,9
+    8000811c:	04d70c63          	beq	a4,a3,80008174 <devintr+0x84>
+    80008120:	fff00713          	li	a4,-1
+    80008124:	03f71713          	slli	a4,a4,0x3f
+    80008128:	00170713          	addi	a4,a4,1
+    8000812c:	00e78c63          	beq	a5,a4,80008144 <devintr+0x54>
+    80008130:	01813083          	ld	ra,24(sp)
+    80008134:	01013403          	ld	s0,16(sp)
+    80008138:	00813483          	ld	s1,8(sp)
+    8000813c:	02010113          	addi	sp,sp,32
+    80008140:	00008067          	ret
+    80008144:	00000097          	auipc	ra,0x0
+    80008148:	c8c080e7          	jalr	-884(ra) # 80007dd0 <cpuid>
+    8000814c:	06050663          	beqz	a0,800081b8 <devintr+0xc8>
+    80008150:	144027f3          	csrr	a5,sip
+    80008154:	ffd7f793          	andi	a5,a5,-3
+    80008158:	14479073          	csrw	sip,a5
+    8000815c:	01813083          	ld	ra,24(sp)
+    80008160:	01013403          	ld	s0,16(sp)
+    80008164:	00813483          	ld	s1,8(sp)
+    80008168:	00200513          	li	a0,2
+    8000816c:	02010113          	addi	sp,sp,32
+    80008170:	00008067          	ret
+    80008174:	00000097          	auipc	ra,0x0
+    80008178:	250080e7          	jalr	592(ra) # 800083c4 <plic_claim>
+    8000817c:	00a00793          	li	a5,10
+    80008180:	00050493          	mv	s1,a0
+    80008184:	06f50663          	beq	a0,a5,800081f0 <devintr+0x100>
+    80008188:	00100513          	li	a0,1
+    8000818c:	fa0482e3          	beqz	s1,80008130 <devintr+0x40>
+    80008190:	00048593          	mv	a1,s1
+    80008194:	00002517          	auipc	a0,0x2
+    80008198:	6e450513          	addi	a0,a0,1764 # 8000a878 <CONSOLE_STATUS+0x868>
+    8000819c:	00000097          	auipc	ra,0x0
+    800081a0:	66c080e7          	jalr	1644(ra) # 80008808 <__printf>
+    800081a4:	00048513          	mv	a0,s1
+    800081a8:	00000097          	auipc	ra,0x0
+    800081ac:	254080e7          	jalr	596(ra) # 800083fc <plic_complete>
+    800081b0:	00100513          	li	a0,1
+    800081b4:	f7dff06f          	j	80008130 <devintr+0x40>
+    800081b8:	00006517          	auipc	a0,0x6
+    800081bc:	1e850513          	addi	a0,a0,488 # 8000e3a0 <tickslock>
+    800081c0:	00001097          	auipc	ra,0x1
+    800081c4:	31c080e7          	jalr	796(ra) # 800094dc <acquire>
+    800081c8:	00005717          	auipc	a4,0x5
+    800081cc:	f4c70713          	addi	a4,a4,-180 # 8000d114 <ticks>
+    800081d0:	00072783          	lw	a5,0(a4)
+    800081d4:	00006517          	auipc	a0,0x6
+    800081d8:	1cc50513          	addi	a0,a0,460 # 8000e3a0 <tickslock>
+    800081dc:	0017879b          	addiw	a5,a5,1
+    800081e0:	00f72023          	sw	a5,0(a4)
+    800081e4:	00001097          	auipc	ra,0x1
+    800081e8:	3c4080e7          	jalr	964(ra) # 800095a8 <release>
+    800081ec:	f65ff06f          	j	80008150 <devintr+0x60>
+    800081f0:	00001097          	auipc	ra,0x1
+    800081f4:	f20080e7          	jalr	-224(ra) # 80009110 <uartintr>
+    800081f8:	fadff06f          	j	800081a4 <devintr+0xb4>
+    800081fc:	0000                	unimp
 	...
 
 0000000080008200 <kernelvec>:
@@ -10495,7 +10491,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80008274:	0fd13023          	sd	t4,224(sp)
     80008278:	0fe13423          	sd	t5,232(sp)
     8000827c:	0ff13823          	sd	t6,240(sp)
-    80008280:	ccdff0ef          	jal	ra,80007f4c <kerneltrap>
+    80008280:	cd1ff0ef          	jal	ra,80007f50 <kerneltrap>
     80008284:	00013083          	ld	ra,0(sp)
     80008288:	00813103          	ld	sp,8(sp)
     8000828c:	01013183          	ld	gp,16(sp)
@@ -10568,7 +10564,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80008380:	00113423          	sd	ra,8(sp)
     80008384:	01010413          	addi	s0,sp,16
     80008388:	00000097          	auipc	ra,0x0
-    8000838c:	a44080e7          	jalr	-1468(ra) # 80007dcc <cpuid>
+    8000838c:	a48080e7          	jalr	-1464(ra) # 80007dd0 <cpuid>
     80008390:	0085171b          	slliw	a4,a0,0x8
     80008394:	0c0027b7          	lui	a5,0xc002
     80008398:	00e787b3          	add	a5,a5,a4
@@ -10589,7 +10585,7 @@ void MemoryAllocator::initMemoryAllocator() {
     800083cc:	00113423          	sd	ra,8(sp)
     800083d0:	01010413          	addi	s0,sp,16
     800083d4:	00000097          	auipc	ra,0x0
-    800083d8:	9f8080e7          	jalr	-1544(ra) # 80007dcc <cpuid>
+    800083d8:	9fc080e7          	jalr	-1540(ra) # 80007dd0 <cpuid>
     800083dc:	00813083          	ld	ra,8(sp)
     800083e0:	00013403          	ld	s0,0(sp)
     800083e4:	00d5151b          	slliw	a0,a0,0xd
@@ -10607,7 +10603,7 @@ void MemoryAllocator::initMemoryAllocator() {
     8000840c:	02010413          	addi	s0,sp,32
     80008410:	00050493          	mv	s1,a0
     80008414:	00000097          	auipc	ra,0x0
-    80008418:	9b8080e7          	jalr	-1608(ra) # 80007dcc <cpuid>
+    80008418:	9bc080e7          	jalr	-1604(ra) # 80007dd0 <cpuid>
     8000841c:	01813083          	ld	ra,24(sp)
     80008420:	01013403          	ld	s0,16(sp)
     80008424:	00d5179b          	slliw	a5,a0,0xd
@@ -10646,7 +10642,7 @@ void MemoryAllocator::initMemoryAllocator() {
     800084a0:	000a0593          	mv	a1,s4
     800084a4:	fbf40513          	addi	a0,s0,-65
     800084a8:	00000097          	auipc	ra,0x0
-    800084ac:	9dc080e7          	jalr	-1572(ra) # 80007e84 <either_copyin>
+    800084ac:	9e0080e7          	jalr	-1568(ra) # 80007e88 <either_copyin>
     800084b0:	fd5518e3          	bne	a0,s5,80008480 <consolewrite+0x40>
     800084b4:	04813083          	ld	ra,72(sp)
     800084b8:	04013403          	ld	s0,64(sp)
@@ -10680,7 +10676,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80008520:	00058c13          	mv	s8,a1
     80008524:	00060b1b          	sext.w	s6,a2
     80008528:	00006497          	auipc	s1,0x6
-    8000852c:	e5048493          	addi	s1,s1,-432 # 8000e378 <cons>
+    8000852c:	ea048493          	addi	s1,s1,-352 # 8000e3c8 <cons>
     80008530:	00400993          	li	s3,4
     80008534:	fff00a13          	li	s4,-1
     80008538:	00a00a93          	li	s5,10
@@ -10702,7 +10698,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80008578:	00090513          	mv	a0,s2
     8000857c:	f8e40fa3          	sb	a4,-97(s0)
     80008580:	00000097          	auipc	ra,0x0
-    80008584:	8b8080e7          	jalr	-1864(ra) # 80007e38 <either_copyout>
+    80008584:	8bc080e7          	jalr	-1860(ra) # 80007e3c <either_copyout>
     80008588:	01450863          	beq	a0,s4,80008598 <consoleread+0xb4>
     8000858c:	001c0c13          	addi	s8,s8,1
     80008590:	fffb8b9b          	addiw	s7,s7,-1
@@ -10773,7 +10769,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80008684:	00113c23          	sd	ra,24(sp)
     80008688:	02010413          	addi	s0,sp,32
     8000868c:	00006917          	auipc	s2,0x6
-    80008690:	cec90913          	addi	s2,s2,-788 # 8000e378 <cons>
+    80008690:	d3c90913          	addi	s2,s2,-708 # 8000e3c8 <cons>
     80008694:	00050493          	mv	s1,a0
     80008698:	00090513          	mv	a0,s2
     8000869c:	00001097          	auipc	ra,0x1
@@ -10797,7 +10793,7 @@ void MemoryAllocator::initMemoryAllocator() {
     800086e4:	00813483          	ld	s1,8(sp)
     800086e8:	00013903          	ld	s2,0(sp)
     800086ec:	00006517          	auipc	a0,0x6
-    800086f0:	c8c50513          	addi	a0,a0,-884 # 8000e378 <cons>
+    800086f0:	cdc50513          	addi	a0,a0,-804 # 8000e3c8 <cons>
     800086f4:	02010113          	addi	sp,sp,32
     800086f8:	00001317          	auipc	t1,0x1
     800086fc:	eb030067          	jr	-336(t1) # 800095a8 <release>
@@ -10811,7 +10807,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80008714:	00913423          	sd	s1,8(sp)
     80008718:	02010413          	addi	s0,sp,32
     8000871c:	00006497          	auipc	s1,0x6
-    80008720:	c5c48493          	addi	s1,s1,-932 # 8000e378 <cons>
+    80008720:	cac48493          	addi	s1,s1,-852 # 8000e3c8 <cons>
     80008724:	00048513          	mv	a0,s1
     80008728:	00002597          	auipc	a1,0x2
     8000872c:	1a858593          	addi	a1,a1,424 # 8000a8d0 <CONSOLE_STATUS+0x8c0>
@@ -10837,7 +10833,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80008774:	01010413          	addi	s0,sp,16
     80008778:	00813403          	ld	s0,8(sp)
     8000877c:	00006317          	auipc	t1,0x6
-    80008780:	cb433303          	ld	t1,-844(t1) # 8000e430 <devsw+0x10>
+    80008780:	d0433303          	ld	t1,-764(t1) # 8000e480 <devsw+0x10>
     80008784:	01010113          	addi	sp,sp,16
     80008788:	00030067          	jr	t1
 
@@ -10847,7 +10843,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80008794:	01010413          	addi	s0,sp,16
     80008798:	00813403          	ld	s0,8(sp)
     8000879c:	00006317          	auipc	t1,0x6
-    800087a0:	c9c33303          	ld	t1,-868(t1) # 8000e438 <devsw+0x18>
+    800087a0:	cec33303          	ld	t1,-788(t1) # 8000e488 <devsw+0x18>
     800087a4:	01010113          	addi	sp,sp,16
     800087a8:	00030067          	jr	t1
 
@@ -10861,7 +10857,7 @@ void MemoryAllocator::initMemoryAllocator() {
     800087c4:	00002517          	auipc	a0,0x2
     800087c8:	11450513          	addi	a0,a0,276 # 8000a8d8 <CONSOLE_STATUS+0x8c8>
     800087cc:	00006797          	auipc	a5,0x6
-    800087d0:	d007a623          	sw	zero,-756(a5) # 8000e4d8 <pr+0x18>
+    800087d0:	d407ae23          	sw	zero,-676(a5) # 8000e528 <pr+0x18>
     800087d4:	00000097          	auipc	ra,0x0
     800087d8:	034080e7          	jalr	52(ra) # 80008808 <__printf>
     800087dc:	00048513          	mv	a0,s1
@@ -10873,7 +10869,7 @@ void MemoryAllocator::initMemoryAllocator() {
     800087f4:	018080e7          	jalr	24(ra) # 80008808 <__printf>
     800087f8:	00100793          	li	a5,1
     800087fc:	00005717          	auipc	a4,0x5
-    80008800:	8ef72623          	sw	a5,-1812(a4) # 8000d0e8 <panicked>
+    80008800:	90f72e23          	sw	a5,-1764(a4) # 8000d118 <panicked>
     80008804:	0000006f          	j	80008804 <panic+0x58>
 
 0000000080008808 <__printf>:
@@ -10893,7 +10889,7 @@ void MemoryAllocator::initMemoryAllocator() {
     8000883c:	03a13823          	sd	s10,48(sp)
     80008840:	03b13423          	sd	s11,40(sp)
     80008844:	00006317          	auipc	t1,0x6
-    80008848:	c7c30313          	addi	t1,t1,-900 # 8000e4c0 <pr>
+    80008848:	ccc30313          	addi	t1,t1,-820 # 8000e510 <pr>
     8000884c:	01832c03          	lw	s8,24(t1)
     80008850:	00b43423          	sd	a1,8(s0)
     80008854:	00c43823          	sd	a2,16(s0)
@@ -11153,7 +11149,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80008c4c:	c60510e3          	bnez	a0,800088ac <__printf+0xa4>
     80008c50:	e40c0ee3          	beqz	s8,80008aac <__printf+0x2a4>
     80008c54:	00006517          	auipc	a0,0x6
-    80008c58:	86c50513          	addi	a0,a0,-1940 # 8000e4c0 <pr>
+    80008c58:	8bc50513          	addi	a0,a0,-1860 # 8000e510 <pr>
     80008c5c:	00001097          	auipc	ra,0x1
     80008c60:	94c080e7          	jalr	-1716(ra) # 800095a8 <release>
     80008c64:	e49ff06f          	j	80008aac <__printf+0x2a4>
@@ -11306,7 +11302,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80008ea8:	00113c23          	sd	ra,24(sp)
     80008eac:	02010413          	addi	s0,sp,32
     80008eb0:	00005497          	auipc	s1,0x5
-    80008eb4:	61048493          	addi	s1,s1,1552 # 8000e4c0 <pr>
+    80008eb4:	66048493          	addi	s1,s1,1632 # 8000e510 <pr>
     80008eb8:	00048513          	mv	a0,s1
     80008ebc:	00002597          	auipc	a1,0x2
     80008ec0:	a3c58593          	addi	a1,a1,-1476 # 8000a8f8 <CONSOLE_STATUS+0x8e8>
@@ -11340,7 +11336,7 @@ void MemoryAllocator::initMemoryAllocator() {
 
 0000000080008f28 <uartputc>:
     80008f28:	00004797          	auipc	a5,0x4
-    80008f2c:	1c07a783          	lw	a5,448(a5) # 8000d0e8 <panicked>
+    80008f2c:	1f07a783          	lw	a5,496(a5) # 8000d118 <panicked>
     80008f30:	00078463          	beqz	a5,80008f38 <uartputc+0x10>
     80008f34:	0000006f          	j	80008f34 <uartputc+0xc>
     80008f38:	fd010113          	addi	sp,sp,-48
@@ -11351,10 +11347,10 @@ void MemoryAllocator::initMemoryAllocator() {
     80008f4c:	02113423          	sd	ra,40(sp)
     80008f50:	03010413          	addi	s0,sp,48
     80008f54:	00004917          	auipc	s2,0x4
-    80008f58:	19c90913          	addi	s2,s2,412 # 8000d0f0 <uart_tx_r>
+    80008f58:	1cc90913          	addi	s2,s2,460 # 8000d120 <uart_tx_r>
     80008f5c:	00093783          	ld	a5,0(s2)
     80008f60:	00004497          	auipc	s1,0x4
-    80008f64:	19848493          	addi	s1,s1,408 # 8000d0f8 <uart_tx_w>
+    80008f64:	1c848493          	addi	s1,s1,456 # 8000d128 <uart_tx_w>
     80008f68:	0004b703          	ld	a4,0(s1)
     80008f6c:	02078693          	addi	a3,a5,32
     80008f70:	00050993          	mv	s3,a0
@@ -11374,7 +11370,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80008fa8:	fce688e3          	beq	a3,a4,80008f78 <uartputc+0x50>
     80008fac:	01f77693          	andi	a3,a4,31
     80008fb0:	00005597          	auipc	a1,0x5
-    80008fb4:	53058593          	addi	a1,a1,1328 # 8000e4e0 <uart_tx_buf>
+    80008fb4:	58058593          	addi	a1,a1,1408 # 8000e530 <uart_tx_buf>
     80008fb8:	00d586b3          	add	a3,a1,a3
     80008fbc:	00170713          	addi	a4,a4,1
     80008fc0:	01368023          	sb	s3,0(a3)
@@ -11407,7 +11403,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80009024:	00813423          	sd	s0,8(sp)
     80009028:	01010413          	addi	s0,sp,16
     8000902c:	00004717          	auipc	a4,0x4
-    80009030:	0bc72703          	lw	a4,188(a4) # 8000d0e8 <panicked>
+    80009030:	0ec72703          	lw	a4,236(a4) # 8000d118 <panicked>
     80009034:	02071663          	bnez	a4,80009060 <uartputc_sync+0x40>
     80009038:	00050793          	mv	a5,a0
     8000903c:	100006b7          	lui	a3,0x10000
@@ -11426,15 +11422,15 @@ void MemoryAllocator::initMemoryAllocator() {
     80009068:	00813423          	sd	s0,8(sp)
     8000906c:	01010413          	addi	s0,sp,16
     80009070:	00004617          	auipc	a2,0x4
-    80009074:	08060613          	addi	a2,a2,128 # 8000d0f0 <uart_tx_r>
+    80009074:	0b060613          	addi	a2,a2,176 # 8000d120 <uart_tx_r>
     80009078:	00004517          	auipc	a0,0x4
-    8000907c:	08050513          	addi	a0,a0,128 # 8000d0f8 <uart_tx_w>
+    8000907c:	0b050513          	addi	a0,a0,176 # 8000d128 <uart_tx_w>
     80009080:	00063783          	ld	a5,0(a2)
     80009084:	00053703          	ld	a4,0(a0)
     80009088:	04f70263          	beq	a4,a5,800090cc <uartstart+0x68>
     8000908c:	100005b7          	lui	a1,0x10000
     80009090:	00005817          	auipc	a6,0x5
-    80009094:	45080813          	addi	a6,a6,1104 # 8000e4e0 <uart_tx_buf>
+    80009094:	4a080813          	addi	a6,a6,1184 # 8000e530 <uart_tx_buf>
     80009098:	01c0006f          	j	800090b4 <uartstart+0x50>
     8000909c:	0006c703          	lbu	a4,0(a3)
     800090a0:	00f63023          	sd	a5,0(a2)
@@ -11487,15 +11483,15 @@ void MemoryAllocator::initMemoryAllocator() {
     8000914c:	0017f793          	andi	a5,a5,1
     80009150:	fe0794e3          	bnez	a5,80009138 <uartintr+0x28>
     80009154:	00004617          	auipc	a2,0x4
-    80009158:	f9c60613          	addi	a2,a2,-100 # 8000d0f0 <uart_tx_r>
+    80009158:	fcc60613          	addi	a2,a2,-52 # 8000d120 <uart_tx_r>
     8000915c:	00004517          	auipc	a0,0x4
-    80009160:	f9c50513          	addi	a0,a0,-100 # 8000d0f8 <uart_tx_w>
+    80009160:	fcc50513          	addi	a0,a0,-52 # 8000d128 <uart_tx_w>
     80009164:	00063783          	ld	a5,0(a2)
     80009168:	00053703          	ld	a4,0(a0)
     8000916c:	04f70263          	beq	a4,a5,800091b0 <uartintr+0xa0>
     80009170:	100005b7          	lui	a1,0x10000
     80009174:	00005817          	auipc	a6,0x5
-    80009178:	36c80813          	addi	a6,a6,876 # 8000e4e0 <uart_tx_buf>
+    80009178:	3bc80813          	addi	a6,a6,956 # 8000e530 <uart_tx_buf>
     8000917c:	01c0006f          	j	80009198 <uartintr+0x88>
     80009180:	0006c703          	lbu	a4,0(a3)
     80009184:	00f63023          	sd	a5,0(a2)
@@ -11515,15 +11511,15 @@ void MemoryAllocator::initMemoryAllocator() {
     800091bc:	02010113          	addi	sp,sp,32
     800091c0:	00008067          	ret
     800091c4:	00004617          	auipc	a2,0x4
-    800091c8:	f2c60613          	addi	a2,a2,-212 # 8000d0f0 <uart_tx_r>
+    800091c8:	f5c60613          	addi	a2,a2,-164 # 8000d120 <uart_tx_r>
     800091cc:	00004517          	auipc	a0,0x4
-    800091d0:	f2c50513          	addi	a0,a0,-212 # 8000d0f8 <uart_tx_w>
+    800091d0:	f5c50513          	addi	a0,a0,-164 # 8000d128 <uart_tx_w>
     800091d4:	00063783          	ld	a5,0(a2)
     800091d8:	00053703          	ld	a4,0(a0)
     800091dc:	04f70263          	beq	a4,a5,80009220 <uartintr+0x110>
     800091e0:	100005b7          	lui	a1,0x10000
     800091e4:	00005817          	auipc	a6,0x5
-    800091e8:	2fc80813          	addi	a6,a6,764 # 8000e4e0 <uart_tx_buf>
+    800091e8:	34c80813          	addi	a6,a6,844 # 8000e530 <uart_tx_buf>
     800091ec:	01c0006f          	j	80009208 <uartintr+0xf8>
     800091f0:	0006c703          	lbu	a4,0(a3)
     800091f4:	00f63023          	sd	a5,0(a2)
@@ -11545,7 +11541,7 @@ void MemoryAllocator::initMemoryAllocator() {
     8000922c:	02913423          	sd	s1,40(sp)
     80009230:	fffff7b7          	lui	a5,0xfffff
     80009234:	00006497          	auipc	s1,0x6
-    80009238:	2cb48493          	addi	s1,s1,715 # 8000f4ff <end+0xfff>
+    80009238:	31b48493          	addi	s1,s1,795 # 8000f54f <end+0xfff>
     8000923c:	02813823          	sd	s0,48(sp)
     80009240:	01313c23          	sd	s3,24(sp)
     80009244:	00f4f4b3          	and	s1,s1,a5
@@ -11560,13 +11556,13 @@ void MemoryAllocator::initMemoryAllocator() {
     80009268:	01b99993          	slli	s3,s3,0x1b
     8000926c:	06f9e063          	bltu	s3,a5,800092cc <kinit+0xa4>
     80009270:	00005a97          	auipc	s5,0x5
-    80009274:	290a8a93          	addi	s5,s5,656 # 8000e500 <end>
+    80009274:	2e0a8a93          	addi	s5,s5,736 # 8000e550 <end>
     80009278:	0754ec63          	bltu	s1,s5,800092f0 <kinit+0xc8>
     8000927c:	0734fa63          	bgeu	s1,s3,800092f0 <kinit+0xc8>
     80009280:	00088a37          	lui	s4,0x88
     80009284:	fffa0a13          	addi	s4,s4,-1 # 87fff <_entry-0x7ff78001>
     80009288:	00004917          	auipc	s2,0x4
-    8000928c:	e7890913          	addi	s2,s2,-392 # 8000d100 <kmem>
+    8000928c:	ea890913          	addi	s2,s2,-344 # 8000d130 <kmem>
     80009290:	00ca1a13          	slli	s4,s4,0xc
     80009294:	0140006f          	j	800092a8 <kinit+0x80>
     80009298:	000017b7          	lui	a5,0x1
@@ -11615,14 +11611,14 @@ void MemoryAllocator::initMemoryAllocator() {
     8000933c:	00f487b3          	add	a5,s1,a5
     80009340:	06f5e463          	bltu	a1,a5,800093a8 <freerange+0xa8>
     80009344:	00005a97          	auipc	s5,0x5
-    80009348:	1bca8a93          	addi	s5,s5,444 # 8000e500 <end>
+    80009348:	20ca8a93          	addi	s5,s5,524 # 8000e550 <end>
     8000934c:	0954e263          	bltu	s1,s5,800093d0 <freerange+0xd0>
     80009350:	01100993          	li	s3,17
     80009354:	01b99993          	slli	s3,s3,0x1b
     80009358:	0734fc63          	bgeu	s1,s3,800093d0 <freerange+0xd0>
     8000935c:	00058a13          	mv	s4,a1
     80009360:	00004917          	auipc	s2,0x4
-    80009364:	da090913          	addi	s2,s2,-608 # 8000d100 <kmem>
+    80009364:	dd090913          	addi	s2,s2,-560 # 8000d130 <kmem>
     80009368:	00002b37          	lui	s6,0x2
     8000936c:	0140006f          	j	80009380 <freerange+0x80>
     80009370:	000017b7          	lui	a5,0x1
@@ -11663,7 +11659,7 @@ void MemoryAllocator::initMemoryAllocator() {
     800093f4:	03451793          	slli	a5,a0,0x34
     800093f8:	04079c63          	bnez	a5,80009450 <kfree+0x70>
     800093fc:	00005797          	auipc	a5,0x5
-    80009400:	10478793          	addi	a5,a5,260 # 8000e500 <end>
+    80009400:	15478793          	addi	a5,a5,340 # 8000e550 <end>
     80009404:	00050493          	mv	s1,a0
     80009408:	04f56463          	bltu	a0,a5,80009450 <kfree+0x70>
     8000940c:	01100793          	li	a5,17
@@ -11674,7 +11670,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80009420:	00000097          	auipc	ra,0x0
     80009424:	478080e7          	jalr	1144(ra) # 80009898 <__memset>
     80009428:	00004797          	auipc	a5,0x4
-    8000942c:	cd878793          	addi	a5,a5,-808 # 8000d100 <kmem>
+    8000942c:	d0878793          	addi	a5,a5,-760 # 8000d130 <kmem>
     80009430:	0007b703          	ld	a4,0(a5)
     80009434:	01813083          	ld	ra,24(sp)
     80009438:	01013403          	ld	s0,16(sp)
@@ -11695,7 +11691,7 @@ void MemoryAllocator::initMemoryAllocator() {
     8000946c:	00113c23          	sd	ra,24(sp)
     80009470:	02010413          	addi	s0,sp,32
     80009474:	00004797          	auipc	a5,0x4
-    80009478:	c8c78793          	addi	a5,a5,-884 # 8000d100 <kmem>
+    80009478:	cbc78793          	addi	a5,a5,-836 # 8000d130 <kmem>
     8000947c:	0007b483          	ld	s1,0(a5)
     80009480:	02048063          	beqz	s1,800094a0 <kalloc+0x40>
     80009484:	0004b703          	ld	a4,0(s1)
@@ -11736,11 +11732,11 @@ void MemoryAllocator::initMemoryAllocator() {
     80009500:	ffd7f793          	andi	a5,a5,-3
     80009504:	10079073          	csrw	sstatus,a5
     80009508:	fffff097          	auipc	ra,0xfffff
-    8000950c:	8e4080e7          	jalr	-1820(ra) # 80007dec <mycpu>
+    8000950c:	8e8080e7          	jalr	-1816(ra) # 80007df0 <mycpu>
     80009510:	07852783          	lw	a5,120(a0)
     80009514:	06078e63          	beqz	a5,80009590 <acquire+0xb4>
     80009518:	fffff097          	auipc	ra,0xfffff
-    8000951c:	8d4080e7          	jalr	-1836(ra) # 80007dec <mycpu>
+    8000951c:	8d8080e7          	jalr	-1832(ra) # 80007df0 <mycpu>
     80009520:	07852783          	lw	a5,120(a0)
     80009524:	0004a703          	lw	a4,0(s1)
     80009528:	0017879b          	addiw	a5,a5,1
@@ -11753,7 +11749,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80009544:	fe079ae3          	bnez	a5,80009538 <acquire+0x5c>
     80009548:	0ff0000f          	fence
     8000954c:	fffff097          	auipc	ra,0xfffff
-    80009550:	8a0080e7          	jalr	-1888(ra) # 80007dec <mycpu>
+    80009550:	8a4080e7          	jalr	-1884(ra) # 80007df0 <mycpu>
     80009554:	01813083          	ld	ra,24(sp)
     80009558:	01013403          	ld	s0,16(sp)
     8000955c:	00a4b823          	sd	a0,16(s1)
@@ -11763,7 +11759,7 @@ void MemoryAllocator::initMemoryAllocator() {
     8000956c:	00008067          	ret
     80009570:	0104b903          	ld	s2,16(s1)
     80009574:	fffff097          	auipc	ra,0xfffff
-    80009578:	878080e7          	jalr	-1928(ra) # 80007dec <mycpu>
+    80009578:	87c080e7          	jalr	-1924(ra) # 80007df0 <mycpu>
     8000957c:	faa91ce3          	bne	s2,a0,80009534 <acquire+0x58>
     80009580:	00001517          	auipc	a0,0x1
     80009584:	3a050513          	addi	a0,a0,928 # 8000a920 <digits+0x20>
@@ -11771,7 +11767,7 @@ void MemoryAllocator::initMemoryAllocator() {
     8000958c:	224080e7          	jalr	548(ra) # 800087ac <panic>
     80009590:	00195913          	srli	s2,s2,0x1
     80009594:	fffff097          	auipc	ra,0xfffff
-    80009598:	858080e7          	jalr	-1960(ra) # 80007dec <mycpu>
+    80009598:	85c080e7          	jalr	-1956(ra) # 80007df0 <mycpu>
     8000959c:	00197913          	andi	s2,s2,1
     800095a0:	07252e23          	sw	s2,124(a0)
     800095a4:	f75ff06f          	j	80009518 <acquire+0x3c>
@@ -11792,14 +11788,14 @@ void MemoryAllocator::initMemoryAllocator() {
     800095d8:	01053903          	ld	s2,16(a0)
     800095dc:	00050493          	mv	s1,a0
     800095e0:	fffff097          	auipc	ra,0xfffff
-    800095e4:	80c080e7          	jalr	-2036(ra) # 80007dec <mycpu>
+    800095e4:	810080e7          	jalr	-2032(ra) # 80007df0 <mycpu>
     800095e8:	fea910e3          	bne	s2,a0,800095c8 <release+0x20>
     800095ec:	0004b823          	sd	zero,16(s1)
     800095f0:	0ff0000f          	fence
     800095f4:	0f50000f          	fence	iorw,ow
     800095f8:	0804a02f          	amoswap.w	zero,zero,(s1)
     800095fc:	ffffe097          	auipc	ra,0xffffe
-    80009600:	7f0080e7          	jalr	2032(ra) # 80007dec <mycpu>
+    80009600:	7f4080e7          	jalr	2036(ra) # 80007df0 <mycpu>
     80009604:	100027f3          	csrr	a5,sstatus
     80009608:	0027f793          	andi	a5,a5,2
     8000960c:	04079a63          	bnez	a5,80009660 <release+0xb8>
@@ -11840,7 +11836,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80009690:	02010413          	addi	s0,sp,32
     80009694:	01053483          	ld	s1,16(a0)
     80009698:	ffffe097          	auipc	ra,0xffffe
-    8000969c:	754080e7          	jalr	1876(ra) # 80007dec <mycpu>
+    8000969c:	758080e7          	jalr	1880(ra) # 80007df0 <mycpu>
     800096a0:	01813083          	ld	ra,24(sp)
     800096a4:	01013403          	ld	s0,16(sp)
     800096a8:	40a48533          	sub	a0,s1,a0
@@ -11860,11 +11856,11 @@ void MemoryAllocator::initMemoryAllocator() {
     800096d8:	ffd7f793          	andi	a5,a5,-3
     800096dc:	10079073          	csrw	sstatus,a5
     800096e0:	ffffe097          	auipc	ra,0xffffe
-    800096e4:	70c080e7          	jalr	1804(ra) # 80007dec <mycpu>
+    800096e4:	710080e7          	jalr	1808(ra) # 80007df0 <mycpu>
     800096e8:	07852783          	lw	a5,120(a0)
     800096ec:	02078663          	beqz	a5,80009718 <push_off+0x5c>
     800096f0:	ffffe097          	auipc	ra,0xffffe
-    800096f4:	6fc080e7          	jalr	1788(ra) # 80007dec <mycpu>
+    800096f4:	700080e7          	jalr	1792(ra) # 80007df0 <mycpu>
     800096f8:	07852783          	lw	a5,120(a0)
     800096fc:	01813083          	ld	ra,24(sp)
     80009700:	01013403          	ld	s0,16(sp)
@@ -11875,7 +11871,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80009714:	00008067          	ret
     80009718:	0014d493          	srli	s1,s1,0x1
     8000971c:	ffffe097          	auipc	ra,0xffffe
-    80009720:	6d0080e7          	jalr	1744(ra) # 80007dec <mycpu>
+    80009720:	6d4080e7          	jalr	1748(ra) # 80007df0 <mycpu>
     80009724:	0014f493          	andi	s1,s1,1
     80009728:	06952e23          	sw	s1,124(a0)
     8000972c:	fc5ff06f          	j	800096f0 <push_off+0x34>
@@ -11886,7 +11882,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80009738:	00113423          	sd	ra,8(sp)
     8000973c:	01010413          	addi	s0,sp,16
     80009740:	ffffe097          	auipc	ra,0xffffe
-    80009744:	6ac080e7          	jalr	1708(ra) # 80007dec <mycpu>
+    80009744:	6b0080e7          	jalr	1712(ra) # 80007df0 <mycpu>
     80009748:	100027f3          	csrr	a5,sstatus
     8000974c:	0027f793          	andi	a5,a5,2
     80009750:	04079663          	bnez	a5,8000979c <pop_off+0x6c>
@@ -11924,11 +11920,11 @@ void MemoryAllocator::initMemoryAllocator() {
     800097c8:	0027e793          	ori	a5,a5,2
     800097cc:	10079073          	csrw	sstatus,a5
     800097d0:	ffffe097          	auipc	ra,0xffffe
-    800097d4:	61c080e7          	jalr	1564(ra) # 80007dec <mycpu>
+    800097d4:	620080e7          	jalr	1568(ra) # 80007df0 <mycpu>
     800097d8:	07852783          	lw	a5,120(a0)
     800097dc:	02078663          	beqz	a5,80009808 <push_on+0x5c>
     800097e0:	ffffe097          	auipc	ra,0xffffe
-    800097e4:	60c080e7          	jalr	1548(ra) # 80007dec <mycpu>
+    800097e4:	610080e7          	jalr	1552(ra) # 80007df0 <mycpu>
     800097e8:	07852783          	lw	a5,120(a0)
     800097ec:	01813083          	ld	ra,24(sp)
     800097f0:	01013403          	ld	s0,16(sp)
@@ -11939,7 +11935,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80009804:	00008067          	ret
     80009808:	0014d493          	srli	s1,s1,0x1
     8000980c:	ffffe097          	auipc	ra,0xffffe
-    80009810:	5e0080e7          	jalr	1504(ra) # 80007dec <mycpu>
+    80009810:	5e4080e7          	jalr	1508(ra) # 80007df0 <mycpu>
     80009814:	0014f493          	andi	s1,s1,1
     80009818:	06952e23          	sw	s1,124(a0)
     8000981c:	fc5ff06f          	j	800097e0 <push_on+0x34>
@@ -11950,7 +11946,7 @@ void MemoryAllocator::initMemoryAllocator() {
     80009828:	00113423          	sd	ra,8(sp)
     8000982c:	01010413          	addi	s0,sp,16
     80009830:	ffffe097          	auipc	ra,0xffffe
-    80009834:	5bc080e7          	jalr	1468(ra) # 80007dec <mycpu>
+    80009834:	5c0080e7          	jalr	1472(ra) # 80007df0 <mycpu>
     80009838:	100027f3          	csrr	a5,sstatus
     8000983c:	0027f793          	andi	a5,a5,2
     80009840:	04078463          	beqz	a5,80009888 <pop_on+0x68>

@@ -68,12 +68,14 @@ void TCB::operator delete(void* ptr) {
 void TCB::threadJoin(TCB* handle) {
     if (handle->status == FINISHED || TCB::running == handle) return;
     TCB::running->status = JOINING;
+    TCB::running->setJoiningWithTCB(handle);
     handle->waitingToJoin.putLast(TCB::running);
 }
 
 void TCB::releaseJoined(TCB* handle) {
     while (!handle->waitingToJoin.isEmpty()) {
         TCB* tcb = handle->waitingToJoin.getFirst();
+        tcb->setJoiningWithTCB(nullptr);
         Scheduler::put(tcb);
     }
 }

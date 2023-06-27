@@ -6,28 +6,24 @@
 
 #include "../test/printing.hpp"
 
-sem_t s12,s23,s31;
+Semaphore* s12,*s23,*s31;
+Thread* nit1, *nit2, *nit3;
 
 
 void f1(void* end) {
-    int i = 0;
-    while (*(int*)end == 0) {
-        sem_wait(s31);
-        printString("nit 1\n");
-        if (++i == 4) *(int*)end = 1;
-        sem_signal(s12);
-    }
+    s31->wait();
+    time_sleep(10);
+    delete nit2;
+    s31->wait();
+
 
     printString("\nGotova nit 1\n");
 }
 
 
 void f2(void* end ) {
-    while (*(int*)end == 0) {
-        sem_wait(s12);
-        printString("nit 2\n");
-        sem_signal(s23);
-    }
+    time_sleep(5);
+    s31->wait();
 
 
     printString("\nGotova nit 2\n");
@@ -35,11 +31,8 @@ void f2(void* end ) {
 
 
 void f3(void* end) {
-    while (*(int*)end == 0) {
-        sem_wait(s23);
-        printString("nit 3\n");
-        sem_signal(s31);
-    }
+    time_sleep(30);
+    s31->signal();
 
     printString("\nGotova nit3\n");
 }
@@ -48,35 +41,48 @@ class pt:public PeriodicThread{
 public:
     time_t period;
     int counter = 5;
-    pt(time_t p): PeriodicThread(p),period(p){}
+    explicit pt(time_t p): PeriodicThread(p),period(p){}
     void periodicActivation() override{
         printString("Janko ");
+        sleep(period);
         printInt(period);
         printString("\n");
         if(--counter==0)terminate();
     }
 };
+class timer:public PeriodicThread{
+public:
+    int counter = 0;
+    explicit timer(): PeriodicThread(1){}
+    void periodicActivation() override{
+        printString("Tajmer: ");
+        printInt(counter++);
+        printString("\n");
+    }
+};
 void user(void*) {
     int end = 0;
-    Thread* nit1 = new Thread(f1, &end);
-    Thread* nit2 = new Thread(f2, &end);
-    Thread* nit3 = new Thread(f3, &end);
-    PeriodicThread* per = new pt(10);
-    sem_open(&s12, 0);
-    sem_open(&s23, 1);
-    sem_open(&s31, 0);
+    nit1 = new Thread(f1, &end);
+    nit2 = new Thread(f2, &end);
+    nit3 = new Thread(f3, &end);
+    PeriodicThread* per = new timer();
+    s12 = new Semaphore(0);
+    s23 = new Semaphore(0);
+    s31 = new Semaphore(1);
     nit1->start();
-    nit2->start();
     nit3->start();
+    nit2->start();
     per->start();
 
+    time_sleep(50);
     nit1->join();
     nit2->join();
     nit3->join();
-    per->terminate();
 
-    per->join();
+
     printString("\nGotove user niti\n");
 
     printString("\nSad cu da izadjem iz usera\n");
+    time_sleep(10);
+    per->terminate();
 }

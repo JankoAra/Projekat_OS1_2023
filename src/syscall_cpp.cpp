@@ -76,7 +76,7 @@ int Thread::start() {
 }
 
 void Thread::join() {
-    thread_join(myHandle);
+    if (myHandle) thread_join(myHandle);
 }
 
 void Thread::dispatch() {
