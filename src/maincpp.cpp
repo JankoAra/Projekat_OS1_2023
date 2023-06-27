@@ -1,3 +1,6 @@
+//
+// Created by os on 6/27/23.
+//
 #include "../lib/hw.h"
 #include "../h/Riscv.hpp"
 #include "../h/KMemory.hpp"
@@ -6,26 +9,29 @@
 #include "../h/syscall_c.hpp"
 #include "../h/syscall_cpp.hpp"
 
+class IdleThread : public Thread {
+    void run() override {
+        while (1) { thread_dispatch(); }
+    }
+};
+
+class KernelConsumer : public Thread {
+    void run() override {
+        while (1) {
+            char c = KConsole::getFromOutput();
+            while (!(KConsole::getSRvalue() & CONSOLE_TX_STATUS_BIT)) {}
+            KConsole::setDRvalue(c);
+            sem_signal(KConsole::getOutputBufferHasSpace());
+        }
+    }
+};
+
 extern "C" void interruptHandler();
 
 void userMain();
 
-void idle(void*) {
-    while (1) { thread_dispatch(); }
-}
-
-//salje na izlaz karakter iz izlaznog bafera KConsole
-void kernelConsumerFunction(void*) {
-    while (1) {
-        char c = KConsole::getFromOutput();
-        while (!(KConsole::getSRvalue() & CONSOLE_TX_STATUS_BIT)) {}
-        KConsole::setDRvalue(c);
-        sem_signal(KConsole::getOutputBufferHasSpace());
-    }
-}
-
-int main3() {
-    //postavljanje adrese prekidne rutine u stvec
+int main() {
+//postavljanje adrese prekidne rutine u stvec
     __asm__ volatile("csrw stvec, %[handler]": :[handler] "r"(&interruptHandler));
 
     //inicijalizacija alokatora memorije
@@ -36,21 +42,21 @@ int main3() {
 
     //pravljenje niti
     thread_t mainHandle;
-    thread_t userHandle;
-    thread_t idleHandle;
-    thread_t consoleOutputHandle;
+    Thread* idleHandle = new IdleThread();
+    Thread* consoleOutputHandle = new KernelConsumer();
+    Thread* userThr = new Thread((TCB::Body)userMain, nullptr);
     thread_create(&mainHandle, (TCB::Body)main, nullptr);
     TCB::setRunning(mainHandle);
     mainHandle->setStatus(TCB::ACTIVE);
-    thread_create(&userHandle, (TCB::Body)userMain, nullptr);
-    thread_create(&consoleOutputHandle, kernelConsumerFunction, nullptr);
-    thread_create(&idleHandle, idle, nullptr);
+    idleHandle->start();
+    consoleOutputHandle->start();
+    userThr->start();
 
     //omogucavanje prekida
     Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
 
     //cekanje da se userMain zavrsi
-    thread_join(userHandle);
+    userThr->join();
 
     //flush output bafera za konzolu
     KConsole::flush();

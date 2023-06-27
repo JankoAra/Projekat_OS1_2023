@@ -52,6 +52,8 @@ public:
 
     TCB* getFirst();
 
+    int remove(TCB* tcb);
+
     static void* operator new(size_t size) {
         return mem_alloc(size);
     }

@@ -10,33 +10,35 @@
 //klasa napravljena po uzoru na semafor u skolskom jezgru
 class KSem {
 public:
-	static KSem* initSem(uint val);
+    static KSem* initSem(uint val);
 
-	int wait();
+    int wait();
 
-	int signal();
+    int signal();
 
     //deaktiviranje semafora i oslobadjanje svih niti koje cekaju na njemu
-	static int closeSem(sem_t handle);
+    static int closeSem(sem_t handle);
 
-	static void* operator new(size_t size);
+    static void* operator new(size_t size);
 
-	static void operator delete(void* ptr);
+    static void operator delete(void* ptr);
+
+    ThreadQueue* getBlocked() { return &blocked; }
 
 protected:
-	void block();
+    void block();
 
-	void unblock();
+    void unblock();
 
 private:
-	KSem(uint val) : val(val) {}
+    KSem(uint val) : val(val) {}
 
-	KSem(const KSem&) = delete;
+    KSem(const KSem &) = delete;
 
-	KSem& operator=(const KSem&) = delete;
+    KSem &operator=(const KSem &) = delete;
 
-	int val;
-	ThreadQueue blocked;
+    int val;
+    ThreadQueue blocked;
 };
 
 

@@ -74,7 +74,6 @@ public:
 
 private:
     sem_t myHandle;
-
 };
 
 

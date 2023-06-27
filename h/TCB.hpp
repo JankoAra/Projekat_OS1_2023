@@ -30,6 +30,8 @@ public:
 
     Body getBody() { return threadFunction; }
 
+    ThreadQueue* getListOfJoiningThreads(){return &waitingToJoin;}
+
     static TCB* getRunning() { return running; }
 
     static void setRunning(TCB* newRunning) { running = newRunning; }
@@ -38,11 +40,13 @@ public:
 
     static void threadJoin(TCB* handle);
 
-    static void releaseJoined();
+    static void releaseJoined(TCB* handle);
 
     static void dispatch();
 
     static void wrapper();
+
+    static void quitThread(TCB* handle);
 
     static void* operator new(size_t size);
 
@@ -52,7 +56,8 @@ private:
     TCB(Body function, void* args, uint64* stack) : threadFunction(function), stack(stack), args(args),
                                                     timeSlice(DEFAULT_TIME_SLICE), nextInScheduler(nullptr),
                                                     timeToSleep(0),
-                                                    nextSleeping(nullptr), status(CREATED) {
+                                                    nextSleeping(nullptr), status(CREATED), mySemaphore(nullptr),
+                                                    joiningWithTCB(nullptr) {
         //formiranje pocetnog konteksta;
         //specijalni uslovi za main funkciju kojoj se pocetni kontekst automatski formira
         uint64 startRa = threadFunction != (TCB::Body)main ? (uint64)&wrapper : 0;
@@ -75,6 +80,8 @@ private:
     TCB* nextSleeping;        //sledeca nit u listi za spavanje u Scheduler-u
     ThreadQueue waitingToJoin;    //red niti koje su pozvale join nad ovom niti
     ThreadStatus status;    //status niti
+    KSem* mySemaphore;  //semafor na kom je nit blokirana
+    TCB* joiningWithTCB;    //nit za koju je ova nit pozvala join
 
     static TCB* running;    //pokazivac na tekucu nit
     static uint64 runningTimeSlice; //proteklo vreme od poslednje promene konteksta

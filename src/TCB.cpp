@@ -5,6 +5,7 @@
 #include "../h/TCB.hpp"
 #include "../h/Riscv.hpp"
 #include "../h/Scheduler.hpp"
+#include "../h/KSem.hpp"
 
 void kernelConsumerFunction(void*);
 
@@ -70,10 +71,64 @@ void TCB::threadJoin(TCB* handle) {
     handle->waitingToJoin.putLast(TCB::running);
 }
 
-void TCB::releaseJoined() {
-    while (!TCB::running->waitingToJoin.isEmpty()) {
-        TCB* tcb = TCB::running->waitingToJoin.getFirst();
+void TCB::releaseJoined(TCB* handle) {
+    while (!handle->waitingToJoin.isEmpty()) {
+        TCB* tcb = handle->waitingToJoin.getFirst();
         Scheduler::put(tcb);
     }
+}
+
+void TCB::quitThread(TCB* handle) {
+    TCB* prev, * curr;
+    switch (handle->status) {
+        case CREATED:
+            break;
+        case ACTIVE:
+            //nit je u Scheduler-u, treba da se izbaci nit i preveze Scheduler
+            for (prev = nullptr, curr = Scheduler::getHead();
+                 curr != handle; prev = curr, curr = curr->nextInScheduler);
+            if (!prev) {
+                Scheduler::setHead(curr->nextInScheduler);
+            } else {
+                prev->nextInScheduler = curr->nextInScheduler;
+            }
+            if (curr == Scheduler::getTail()) {
+                Scheduler::setTail(prev);
+            }
+            curr->nextInScheduler = nullptr;
+            break;
+        case BLOCKED:
+            //nit blokirana na semaforu, treba da se izbaci iz reda blokiranih na semaforu
+            if (handle->mySemaphore->getBlocked()->remove(handle) < 0) {
+                //greska
+            }
+            break;
+        case JOINING:
+            //nit ceka da se neka druga nit zavrsi
+            if (handle->joiningWithTCB->getListOfJoiningThreads()->remove(handle) < 0) {
+                //greska
+            }
+            break;
+        case SLEEPING:
+            //nit je u redu uspavanih, treba da se izbaci
+            for (prev = nullptr, curr = Scheduler::getSleepingHead();
+                 curr != handle; prev = curr, curr = curr->nextSleeping);
+            if (!prev) {
+                Scheduler::setSleepingHead(curr->nextSleeping);
+            } else {
+                prev->nextSleeping = curr->nextSleeping;
+            }
+            if (curr->nextSleeping) {
+                curr->nextSleeping->timeToSleep += curr->timeToSleep;
+            }
+            curr->timeToSleep = 0;
+            curr->nextSleeping = nullptr;
+            break;
+        case FINISHED:
+            break;
+        default:
+            break;
+    }
+    handle->status = FINISHED;
 }
 

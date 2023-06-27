@@ -69,7 +69,7 @@ extern "C" void interruptRoutine() {
             case 0x12:
                 //thread_exit
                 TCB::getRunning()->setStatus(TCB::FINISHED);
-                TCB::releaseJoined();
+                TCB::releaseJoined(TCB::getRunning());
                 __asm__ volatile("li a0, 0");
                 __asm__ volatile("sd a0, 80(s0)");
                 TCB::dispatch();
@@ -83,6 +83,19 @@ extern "C" void interruptRoutine() {
                 //a1 = rucka niti na koju tekuca nit treba da ceka
                 TCB::threadJoin((thread_t)a1);
                 TCB::dispatch();
+                break;
+            case 0x15:
+                //destruktor klase Thread, brise nit ciji je handle prosledjen
+                //a1 = rucka niti koja se brise
+                if(TCB::getRunning()==(thread_t)a1){
+                    TCB::getRunning()->setStatus(TCB::FINISHED);
+                    TCB::releaseJoined(TCB::getRunning());
+                    TCB::dispatch();
+                }
+                else{
+                    TCB::quitThread((thread_t)a1);
+                    TCB::releaseJoined((thread_t)a1);
+                }
                 break;
             case 0x21:
                 //sem_open

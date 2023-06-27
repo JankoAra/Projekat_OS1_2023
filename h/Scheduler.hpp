@@ -28,6 +28,19 @@ public:
 
     //azuriranje vrednosti u redu uspavanih niti, budjenje niti po potrebi
     static void wake();
+
+    static TCB* getHead() { return head; }
+
+    static void setHead(TCB* tcb) { head = tcb; }
+
+    static TCB* getTail() { return tail; }
+
+    static void setTail(TCB* tcb) { tail = tcb; }
+
+    static TCB* getSleepingHead() { return sleepingHead; }
+
+    static void setSleepingHead(TCB* tcb) { sleepingHead = tcb; }
+
 };
 
 

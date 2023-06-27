@@ -56,8 +56,13 @@ Thread::Thread(void (* body)(void*), void* arg) {
 
 Thread::~Thread() {
     //ne treba da se gasi running nit, vec nit na koju pokazuje rucka od this
-    thread_join(this->myHandle);
-    delete myHandle;
+//    thread_join(this->myHandle);
+//    delete myHandle;
+
+    __asm__ volatile("mv a1, %[handle]": :[handle] "r"(myHandle):"a5", "a0", "a1", "a2", "a3", "a4", "a6", "a7");
+    __asm__ volatile("li a0, 0x15");
+
+    __asm__ volatile("ecall");
 }
 
 int Thread::start() {
