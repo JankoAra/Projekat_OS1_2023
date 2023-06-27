@@ -1,5 +1,5 @@
 //
-// Created by os on 5/29/23.
+// Created by os on 6/27/23.
 //
 #include "../lib/hw.h"
 #include "../h/Riscv.hpp"
@@ -19,36 +19,68 @@ void idle(void*);
 
 void kernelConsumerFunction(void*);
 
+sem_t s12, s23, s31;
+bool end;
 
-void emptyFunction(void*) {}
+class idlethr : public Thread {
+public:
+    void run() override {
+        thread_dispatch();
+    }
+};
 
-void nit1f(void*) {
-    while (true) {
-        thread_t handle;
-        thread_create(&handle, emptyFunction, nullptr);
+class per : public PeriodicThread {
+public:
+    per(time_t period) : PeriodicThread(period), period(period) {}
+
+    int period;
+
+    void periodicActivation() override {
+        printString("Janko ");
+        printInt(period);
+        printString("\n");
+    }
+};
+
+void emptyFunction(void*);
+
+void f1(void*) {
+    int i = 0;
+    while (!end) {
+        sem_wait(s31);
+        printString("nit 1\n");
+        if (++i == 4) end = true;
+        sem_signal(s12);
     }
 
     printString("\nGotova nit 1\n");
 }
 
-void nit2f(void* arg2) {
+
+void f2(void*) {
+    while (!end) {
+        sem_wait(s12);
+        printString("nit 2\n");
+        sem_signal(s23);
+    }
+
+
     printString("\nGotova nit 2\n");
 }
 
 
-void nit3f(void*) {
-    char slovo;
-    do {
-        slovo = getc();
-        putc(slovo);
-        if (slovo == '\r') putc('\n');
-    } while (slovo != '0');
+void f3(void*) {
+    while (!end) {
+        sem_wait(s23);
+        printString("nit 3\n");
+        sem_signal(s31);
+    }
 
     printString("\nGotova nit3\n");
 }
 
 
-int main5() {
+int main4() {
 //postavi adresu prekidne rutine u stvec
     __asm__ volatile("csrw stvec, %[handler]": :[handler] "r"(&interruptHandler));
 
@@ -58,11 +90,9 @@ int main5() {
     //inicijalizacija komunikacije sa konzolom
     KConsole::initKConsole();
 
+
     //testiranje kreiranja niti
     thread_t glavnaNit = nullptr;
-    thread_t nit1 = nullptr;
-    thread_t nit2 = nullptr;
-    thread_t nit3 = nullptr;
     thread_t idleNit = nullptr;
     thread_t kernelConsumerThread = nullptr;
     thread_create(&glavnaNit, (TCB::Body)main, nullptr);
@@ -70,18 +100,24 @@ int main5() {
     thread_create(&idleNit, idle, nullptr);
     thread_create(&kernelConsumerThread, kernelConsumerFunction, nullptr);
 
-
-    thread_create(&nit1, nit1f, nullptr);
-    thread_create(&nit2, nit2f, nullptr);
-    thread_create(&nit3, nit3f, nullptr);
+    Thread* nit1 = new Thread(f1, nullptr);
+    Thread* nit2 = new Thread(f2, nullptr);
+    Thread* nit3 = new Thread(f3, nullptr);
+    sem_open(&s12, 0);
+    sem_open(&s23, 0);
+    sem_open(&s31, 1);
+    nit1->start();
+    nit2->start();
+    nit3->start();
+    end = false;
 
     //omoguci prekide
     Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
 
-    thread_join(nit1);
-    thread_join(nit2);
-    thread_join(nit3);
-    //thread_join(idleNit);
+    nit1->join();
+    nit2->join();
+    nit3->join();
+
 
     printString("\nGotove user niti\n");
 

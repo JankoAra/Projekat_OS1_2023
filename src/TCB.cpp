@@ -101,12 +101,17 @@ void TCB::quitThread(TCB* handle) {
             //nit blokirana na semaforu, treba da se izbaci iz reda blokiranih na semaforu
             if (handle->mySemaphore->getBlocked()->remove(handle) < 0) {
                 //greska
+            } else {
+                handle->mySemaphore->increaseVal(1);
+                handle->mySemaphore = nullptr;
             }
             break;
         case JOINING:
             //nit ceka da se neka druga nit zavrsi
             if (handle->joiningWithTCB->getListOfJoiningThreads()->remove(handle) < 0) {
                 //greska
+            } else {
+                handle->joiningWithTCB = nullptr;
             }
             break;
         case SLEEPING:
@@ -130,5 +135,6 @@ void TCB::quitThread(TCB* handle) {
             break;
     }
     handle->status = FINISHED;
+    delete handle->stack;
 }
 

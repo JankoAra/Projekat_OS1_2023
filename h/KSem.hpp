@@ -25,6 +25,8 @@ public:
 
     ThreadQueue* getBlocked() { return &blocked; }
 
+    void increaseVal(int add) { val += add; }
+
 protected:
     void block();
 
