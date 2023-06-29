@@ -35,6 +35,13 @@ void TCB::dispatch() {
     TCB::running = Scheduler::get();
     TCB::runningTimeSlice = 0;
 
+    if (old != TCB::running) TCB::contextSwitch(&old->context, &running->context);
+}
+
+void TCB::wrapper() {
+    //pocetak wrappera se izvrsava u supervisor modu,
+    //jer nismo izasli iz prekidne rutine prilikom promene konteksta (dispatch)
+
     //sada biramo u kom rezimu ce se izvrsavati nit, upisom bita SSTATUS_SPP
     //ako treba da se izvrsava kernel nit, povratak je u sistemski rezim, inace u korisnicki
     if (TCB::running->threadFunction == (TCB::Body)main || TCB::running->threadFunction == kernelConsumerFunction ||
@@ -43,13 +50,6 @@ void TCB::dispatch() {
     } else {
         Riscv::mc_sstatus(Riscv::SSTATUS_SPP);
     }
-
-    if (old != TCB::running) TCB::contextSwitch(&old->context, &running->context);
-}
-
-void TCB::wrapper() {
-    //pocetak wrappera se izvrsava u supervisor modu,
-    //jer nismo izasli iz prekidne rutine prilikom promene konteksta (dispatch)
     Riscv::returnFromInterrupt();
     //na dalje se izvrsavamo u user modu (osim za kernel funkcije)
     running->threadFunction(running->args);

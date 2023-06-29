@@ -130,6 +130,7 @@ int Semaphore::signal() {
 
 void PeriodicThread::terminate() {
     this->period = -1;
+    join();
 }
 
 PeriodicThread::PeriodicThread(time_t period) : Thread(), period(period) {

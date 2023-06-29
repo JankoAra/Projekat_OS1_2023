@@ -211,12 +211,13 @@ extern "C" void interruptRoutine() {
         //prekid od tajmera
         Scheduler::wake();
         TCB::getRunningTimeSlice()++;
+        Riscv::mc_sip(Riscv::SIP_SSIP);
         if (TCB::getRunningTimeSlice() >= TCB::getRunning()->getTimeSlice()) {
             TCB::dispatch();
         }
         __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc));
         __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus));
-        Riscv::mc_sip(Riscv::SIP_SSIP);
+
     } else {
         printString("\nGreska u prekidnoj rutini\n");
         printString("scause: ");

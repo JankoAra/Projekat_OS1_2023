@@ -6,52 +6,51 @@
 
 #include "../test/printing.hpp"
 
-#include "../h/KMemory.hpp"
-
 //Semaphore* s12,*s23,*s31;
 Thread* nit1, * nit2, * nit3;
 
+uint64 fact(uint64 i) {
+    if (i <= 1) return 1;
+    if (i % 2) thread_dispatch();
+    return i * fact(i - 1);
+}
 
 void f1(void* end) {
-
-    time_sleep(10);
+    uint64 i = fact(*(uint64*)end);
+    printString("f1: i=");
+    printInt(i);
     printString("\nGotova nit 1\n");
 }
 
 
 void f2(void* end) {
-
+    uint64 i = fact(20);
+    printString("f2: i=");
+    printInt(i);
 
     printString("\nGotova nit 2\n");
 }
 
 
-void f3(void* end) {
+static void f3(void* end) {
+    time_t sleep_time = *((time_t*)end);
+    int i = 6;
+    while (--i > 0) {
 
-    printString("\nGotova nit3\n");
+        printString("Hello ");
+        printInt(sleep_time);
+        printString(" !\n");
+        time_sleep(sleep_time);
+    }
+    //printString("\nGotova nit3\n");
 }
 
-class pt : public PeriodicThread {
-public:
-    time_t period;
-    int counter = 5;
 
-    explicit pt(time_t p) : PeriodicThread(p), period(p) {}
-
-    void periodicActivation() override {
-        printString("Janko ");
-        sleep(period);
-        printInt(period);
-        printString("\n");
-        if (--counter == 0)terminate();
-    }
-};
-
-class timer : public PeriodicThread {
+class timer1 : public PeriodicThread {
 public:
     int counter = 0;
 
-    explicit timer() : PeriodicThread(1) {}
+    explicit timer1() : PeriodicThread(1) {}
 
     void periodicActivation() override {
         printString("Tajmer: ");
@@ -60,92 +59,64 @@ public:
     }
 };
 
-void user(void*) {
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-    int end = 0;
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-    nit1 = new Thread(f1, &end);
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-    nit2 = new Thread(f2, &end);
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-    nit3 = new Thread(f3, &end);
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-    PeriodicThread* per = new timer();
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-//    s12 = new Semaphore(0);
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-//    s23 = new Semaphore(0);
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-//    s31 = new Semaphore(1);
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-    nit1->start();
-    nit3->start();
-    nit2->start();
-    per->start();
+struct rowdesc {
+    uint64* row;
+    int len;
+    int num;
+};
 
-    nit1->join();
-    nit2->join();
-    nit3->join();
-
-
-    //printString("\nGotove user niti\n");
-
-    //printString("\nSad cu da izadjem iz usera\n");
-    per->terminate();
-
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-    delete nit1;
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-    delete nit2;
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-    delete nit3;
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-    per->join();
-    delete per;
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-
-//    delete s12;
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-//    delete s23;
-//    printInt(KMemory::freeBlocksLeft);
-//    printString("\n");
-//    delete s31;
-//    printInt(KMemory::freeBlocksLeft);
+void sumRow(void* rowd) {
+    if (!rowd) return;
+    rowdesc rd = *(rowdesc*)rowd;
+    uint64 sum = 0;
+    for (int i = 0; i < rd.len; i++) {
+        sum += rd.row[i];
+    }
+    printString("Suma reda ");
+    printInt(rd.num);
+    printString(". = ");
+    printInt(sum);
     printString("\n");
 }
 
-void user2(void*) {
-    Semaphore* s12, * s23, * s31;
-    s12 = new Semaphore(0);
-    s23 = new Semaphore(0);
-    s31 = new Semaphore(1);
-    delete s12;
-    delete s23;
-    delete s31;
-    printString("\n");
+void user(void*) {
+    const int dim = 10;
+    uint64 matrix[dim][dim];
+    for (int i = 0; i < dim; i++) {
+        for (int j = 0; j < dim; j++) {
+            matrix[i][j] = ((i * 10 + j) * ((i+j) * j ^ i<<j)) % 100;
+            printInt(matrix[i][j]);
+            if (j == dim - 1) printString("\n");
+            else printString(" ");
+        }
+    }
+    thread_t handles[dim];
+    rowdesc rds[dim];
+    for (int i = 0; i < dim; i++) {
 
-    Thread t(f1, nullptr);
+        rds[i].row = matrix[i];
+        rds[i].len = dim;
+        rds[i].num = i;
+        thread_create(&handles[i], sumRow, &rds[i]);
+    }
+    for (int i = 0; i < dim; i++) {
+        thread_join(handles[i]);
+    }
+}
+
+void user2(void*) {
+    const int sleepy_thread_count = 2;
+    time_t sleep_times[sleepy_thread_count] = {10, 20};
+    thread_t sleepyThread[sleepy_thread_count];
+    timer1 t;
     t.start();
-    time_sleep(20);
-    Thread* t2 = new Thread(f2,nullptr);
-    t2->start();
-    t2->join();
-    t.join();
-    delete t2;
+    for (int i = 0; i < sleepy_thread_count; i++) {
+        thread_create(&sleepyThread[i], f3, sleep_times + i);
+    }
+
+    thread_join(sleepyThread[0]);
+    thread_join(sleepyThread[1]);
+    t.terminate();
+    //t.join();
     printString("izlazim iz user 2\n");
 }
