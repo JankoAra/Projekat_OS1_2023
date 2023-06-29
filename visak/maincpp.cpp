@@ -32,7 +32,7 @@ void userMain();
 
 void user(void*);
 void user2(void*);
-int main() {
+int maincpp() {
     //postavljanje adrese prekidne rutine u stvec
     __asm__ volatile("csrw stvec, %[handler]": :[handler] "r"(&interruptHandler));
 

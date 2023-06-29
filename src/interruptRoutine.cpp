@@ -10,7 +10,7 @@
 #include "../h/TCB.hpp"
 #include "../h/Scheduler.hpp"
 
-#include "../test/printing.hpp"
+//#include "../test/printing.hpp"
 
 int main();
 
@@ -87,12 +87,11 @@ extern "C" void interruptRoutine() {
             case 0x15:
                 //destruktor klase Thread, brise nit ciji je handle prosledjen
                 //a1 = rucka niti koja se brise
-                if(TCB::getRunning()==(thread_t)a1){
+                if (TCB::getRunning() == (thread_t)a1) {
                     TCB::getRunning()->setStatus(TCB::FINISHED);
                     TCB::releaseJoined(TCB::getRunning());
                     TCB::dispatch();
-                }
-                else{
+                } else {
                     TCB::quitThread((thread_t)a1);
                     TCB::releaseJoined((thread_t)a1);
                 }
@@ -182,12 +181,13 @@ extern "C" void interruptRoutine() {
                 }
                 break;
             default:
-                printString("\nNepostojeci op code: ");
-                printInt(a0);
-                printString("\nscause: ");
-                printInt(scause);
-                printString("\nsepc: ");
-                printInt(sepc);
+                //potreban printing.hpp
+//                printString("\nNepostojeci op code: ");
+//                printInt(a0);
+//                printString("\nscause: ");
+//                printInt(scause);
+//                printString("\nsepc: ");
+//                printInt(sepc);
                 break;
         }
         //sepc pokazuje na ecall instrukciju, treba preci na sledecu instrukciju
@@ -219,11 +219,12 @@ extern "C" void interruptRoutine() {
         __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus));
 
     } else {
-        printString("\nGreska u prekidnoj rutini\n");
-        printString("scause: ");
-        printInt(scause);
-        printString("\nsepc: ");
-        printInt(sepc);
+        //potreban printing.hpp
+//        printString("\nGreska u prekidnoj rutini\n");
+//        printString("scause: ");
+//        printInt(scause);
+//        printString("\nsepc: ");
+//        printInt(sepc);
         __asm__ volatile("csrw sepc, %[sepc]": :[sepc] "r"(sepc));
         __asm__ volatile("csrw sstatus, %[stat]": :[stat]"r"(sstatus));
     }

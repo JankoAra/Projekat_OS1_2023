@@ -24,7 +24,7 @@ void kernelConsumerFunction(void*) {
     }
 }
 
-int main1() {
+int main() {
     //postavljanje adrese prekidne rutine u stvec
     __asm__ volatile("csrw stvec, %[handler]": :[handler] "r"(&interruptHandler));
 
